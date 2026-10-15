@@ -1,0 +1,7 @@
+const fs=require('node:fs'),path=require('node:path'),os=require('node:os'),{execFileSync}=require('node:child_process');
+const root=path.resolve(__dirname,'..'),stage=fs.mkdtempSync(path.join(os.tmpdir(),'prism-source-')),target=path.join(stage,'Prism-Electron-'+require('../package.json').version+'-Source');fs.mkdirSync(target);
+for(const name of ['src','scripts','test','design','assets','vendor-source','ELECTRON-LICENSE','package.json','pnpm-lock.yaml','README.md','RELEASE-0.5.md','RELEASE-0.13.md','RELEASE-0.14.md','RELEASE-0.15.md','RELEASE-0.15.1.md','RELEASE-0.15.2.md','RELEASE-0.15.3.md','RELEASE-0.16.md','RELEASE-0.17.md','RELEASE-0.18.md','RELEASE-0.19.md','RELEASE-0.20.md','RELEASE-0.21.md','RELEASE-0.21.1.md','RELEASE-0.21.2.md','RELEASE-0.21.4.md','RELEASE-0.21.5.md','AI-ROADMAP.md','AI-INTEGRATION.md','UPDATE-PUBLISHING.md','ui-policy.json','LICENSE','THIRD-PARTY-NOTICES.md','NEXT-IMPLEMENTATION.md','reports'])fs.cpSync(path.join(root,name),path.join(target,name),{recursive:true,filter:file=>path.basename(file)!=='.DS_Store'});
+const output=path.resolve(root,'../Prism-Electron-'+require('../package.json').version+'-Source.zip');execFileSync('ditto',['-c','-k','--norsrc','--noextattr','--keepParent',target,output]);
+execFileSync('ditto',['-c','-k','--norsrc','--noextattr','--keepParent',path.join(root,'design/figma-kit'),path.resolve(root,'../Prism-Figma-Kit.zip')]);console.log(output);
+
+fs.rmSync(stage,{recursive:true,force:true});

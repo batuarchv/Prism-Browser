@@ -1,0 +1,8 @@
+Prism 0.4 includes electron-chrome-extensions 4.9.0 by Samuel Maddock, under GPL-3.0. Prism's corresponding source is supplied in Prism-Source.zip under GPL-3.0. The full license is in LICENSE. The generated browser-action preload retains the dependency's implementation. Rebuild it with npm run build:preload.
+
+Chrome Web Store installation uses electron-chrome-web-store 0.13.0 (MIT). Runtime dependency license files are included in the app's node_modules. Exact sources/versions are identified by pnpm-lock.yaml; source archive includes runtime dependency sources and licenses. Electron's license is in ELECTRON-LICENSE and the app bundle includes Chromium notices.
+
+Prism patches the extension preload to disable three development IPC logging branches. Reproduce with scripts/prepare-extensions.cjs. Upstream source (version 4.9.0), including build scripts, is included in vendor-source/electron-browser-shell.tar.gz.
+Prism 0.14 includes the unmodified @ghostery/adblocker 2.18.2 engine (Mozilla Public License 2.0). Its compiled code and license are included in node_modules/@ghostery/adblocker. Corresponding upstream source is supplied in the source package at vendor-source/ghostery-adblocker-2.18.2.tar.gz and available at https://github.com/ghostery/adblocker/tree/v2.18.2. Transitive dependency licenses are retained in node_modules.
+
+EasyList and EasyPrivacy are by The EasyList authors (https://easylist.to/), distributed here under GPL-3.0-or-later. The full GPL text is in LICENSE. Original lists, their headers, source URLs, SHA-256 hashes and compiled representation are in assets/blocker. Compile with scripts/build-blocker.cjs. Licence: https://easylist.to/pages/licence.html. No list content is modified before compilation.

@@ -1,0 +1,4 @@
+function defaultBrowserStatus(app){return {available:app.isPackaged,isDefault:app.isPackaged&&['http','https'].every(s=>app.isDefaultProtocolClient(s))};}
+function requestDefaultBrowser(app){if(!app.isPackaged)return {...defaultBrowserStatus(app),message:'Install Prism in Applications first, then choose it as your default browser.'};for(const scheme of ['http','https'])app.setAsDefaultProtocolClient(scheme);const status=defaultBrowserStatus(app);return {...status,message:status.isDefault?'Prism is your default browser.':'Confirm the macOS request, or choose Prism under Default web browser in System Settings.'};}
+function externalURL(value){try{if(typeof value!=='string'||value.length>8192)return null;const u=new URL(value);return ['http:','https:'].includes(u.protocol)&&!u.username&&!u.password?u.href:null;}catch{return null;}}
+module.exports={defaultBrowserStatus,requestDefaultBrowser,externalURL};

@@ -1,0 +1,23 @@
+# Local installs and packaged output
+node_modules/
+dist/
+release/
+*.dmg
+*.zip
+
+# Local macOS files and scratch data
+.DS_Store
+.AppleDouble
+._*
+*.log
+.env
+.env.*
+!.env.example
+
+# Local beta signing material and profile data
+.prism-release-key.pem
+*.sqlite
+*.sqlite-shm
+*.sqlite-wal
+profile/
+user-data/

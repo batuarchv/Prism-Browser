@@ -1,0 +1,10 @@
+(() => {
+ const nav=document.createElement('button');nav.dataset.section='updates';nav.append(icon('reload'),document.createTextNode('Updates'));nav.onclick=()=>openPanel('updates');$('prefs-nav').append(nav);
+ const pane=document.createElement('section');pane.dataset.pane='updates';pane.hidden=true;
+ pane.innerHTML='<h2>Prism updates</h2><p class="section-description">Beta releases for this Mac.</p><div class="settings-group"><div class="setting-row"><span>Installed version</span><strong id="update-version"></strong></div><label class="setting-row"><span>Automatic updates<small>Check local beta releases before opening and install newer builds automatically.</small></span><input type="checkbox" role="switch" id="automatic-updates"></label></div><p id="update-status" role="status"></p><div class="manager-actions"><button id="update-check" class="primary">Check for Updates…</button><button id="update-install" hidden>Restart and install</button></div>';
+ $('prefs-content').append(pane);
+ $('automatic-updates').onchange=e=>act('set-setting',{key:'automaticUpdates',value:e.target.checked});
+ $('update-check').onclick=()=>act('update-check');$('update-install').onclick=()=>act('update-install');
+ const messages={'setup-required':'Update publishing is not configured yet. This beta uses manual installation.',idle:'Ready to check for updates.',checking:'Checking for updates…',downloading:'Downloading an update…',current:'Prism is up to date.',ready:'An update is ready. Restart to install it.',error:'Could not check for updates. Try again later.'};
+ window.prism.onState(s=>{const u=s.updates;if(!u)return;$('update-version').textContent=s.version+' · beta';$('update-status').textContent=(u.source==='local'?'Local beta feed · ':'')+(messages[u.status]||messages.idle);$('automatic-updates').checked=u.configured&&s.settings.automaticUpdates;$('automatic-updates').disabled=!u.configured;$('update-check').disabled=['checking','downloading'].includes(u.status);$('update-install').hidden=u.status!=='ready';document.querySelector('.prefs-footer').firstChild.textContent='Prism '+s.version+' ';});
+})();

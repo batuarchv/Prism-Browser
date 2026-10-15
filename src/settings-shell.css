@@ -1,0 +1,81 @@
+/* Shared settings components. Theme colors remain owned by Design Studio. */
+#preferences[data-mode=settings] { --settings-card:color-mix(in srgb,var(--raised) 78%,var(--surface)); background:var(--surface); }
+#preferences[data-mode=settings] .prefs-heading { padding:14px 18px; min-height:54px; background:var(--surface); }
+#preferences[data-mode=settings] .prefs-heading>div { display:flex; align-items:center; gap:9px; }
+#preferences[data-mode=settings] .prefs-heading h1 { font-size:13px; font-weight:600; letter-spacing:-.15px; }
+.preferences-mark { width:24px; height:24px; object-fit:contain; }
+#preferences:not([data-mode=settings]) .preferences-mark { display:none; }
+#preferences[data-mode=settings] #close-settings { width:26px; height:26px; border-radius:50%; background:var(--hover); }
+#preferences[data-mode=settings] #close-settings .icon { width:13px; height:13px; }
+#preferences[data-mode=settings] #prefs-nav { width:184px; padding:12px 10px 20px; background:color-mix(in srgb,var(--raised) 35%,var(--surface)); scrollbar-width:thin; scrollbar-color:var(--line) transparent; }
+.preferences-search { display:flex; align-items:center; gap:6px; padding:7px 8px; border:1px solid var(--line); border-radius:8px; background:var(--surface); margin:0 2px 17px; }
+.preferences-search .icon { width:13px; height:13px; color:var(--muted); }
+.preferences-search input { width:100%; border:0; background:transparent; font-size:.85rem; padding:0; outline:none; }
+.preferences-search:focus-within { outline:2px solid var(--accent); outline-offset:2px; }
+.preferences-nav-group { margin:0 0 15px; }
+.preferences-nav-caption { font-size:.76rem; font-weight:550; color:var(--muted); margin:0 8px 5px; user-select:none; }
+#preferences[data-mode=settings] #prefs-nav button { min-height:31px; padding:7px 8px; gap:8px; font-size:.85rem; font-weight:450; border-radius:7px; margin:1px 0; color:var(--ink); }
+#preferences[data-mode=settings] #prefs-nav button.selected { background:var(--selected); box-shadow:inset 0 0 0 1px var(--line); font-weight:600; }
+#preferences[data-mode=settings] #prefs-nav .icon { display:block; width:14px; height:14px; color:var(--muted); }
+#preferences[data-mode=settings] #prefs-nav button.selected .icon { color:var(--accent); }
+.preferences-no-results { padding:0 8px; font-size:.85rem; }
+#preferences[data-mode=settings] #prefs-content { padding:26px 26px 32px; scrollbar-gutter:stable; }
+#preferences[data-mode=settings] #prefs-content>section { max-width:680px; min-width:0; }
+#preferences[data-mode=settings] #prefs-content h2 { font-size:20px; line-height:1.25; letter-spacing:-.55px; font-weight:650; margin:0 0 7px; }
+#preferences[data-mode=settings] #prefs-content h3 { font-size:1rem; font-weight:600; letter-spacing:-.15px; }
+#preferences[data-mode=settings] .section-description { font-size:.88rem; line-height:1.5; margin:0 0 20px; }
+#preferences[data-mode=settings] .settings-group,
+#preferences[data-mode=settings] .settings-card,
+#preferences[data-mode=settings] .manager-card { border:1px solid var(--line); border-radius:11px; background:var(--settings-card); box-shadow:0 1px 2px #00000003; margin:15px 0; }
+#preferences[data-mode=settings] .setting-row { min-height:49px; padding:12px 14px; gap:14px; flex-wrap:nowrap; font-size:.92rem; }
+#preferences[data-mode=settings] .setting-row>span { flex:1; min-width:0; }
+#preferences[data-mode=settings] .setting-row small { font-size:.8rem; line-height:1.45; margin-top:3px; }
+#preferences[data-mode=settings] .setting-row select { max-width:46%; }
+#preferences[data-mode=settings] input:not([type=checkbox]):not([type=range]):not([type=color]),
+#preferences[data-mode=settings] textarea { border:1px solid var(--line); border-radius:7px; background:var(--surface); padding:7px 9px; font-size:.9rem; box-shadow:inset 0 1px 2px #00000003; max-width:100%; }
+#preferences[data-mode=settings] .preferences-search input { padding:0; border:0; box-shadow:none; }
+#preferences[data-mode=settings] .setting-row input:not([type=checkbox]):not([type=range]):not([type=color]) { width:48%; }
+#preferences[data-mode=settings] select { background:var(--raised); padding:6px 24px 6px 8px; font-size:.85rem; border-radius:7px; }
+#preferences[data-mode=settings] #prefs-content button:not([role=switch]):not(.theme-preset) { min-height:28px; padding:5px 10px; font-size:.85rem; border-radius:7px; background:var(--raised); box-shadow:0 1px 1px #00000008; line-height:1.4; }
+#preferences[data-mode=settings] #prefs-content button:hover { background:var(--hover); }
+#preferences[data-mode=settings] #prefs-content button.primary { background:var(--ink); color:var(--surface); }
+#preferences[data-mode=settings] #prefs-content button:active:not(:disabled) { transform:translateY(.5px); box-shadow:none; }
+#preferences[data-mode=settings] input[role=switch] { width:30px; height:18px; }
+#preferences[data-mode=settings] input[role=switch]:before { width:14px; height:14px; top:2px; left:2px; }
+#preferences[data-mode=settings] input[role=switch]:checked:before { transform:translateX(12px); }
+#preferences[data-mode=settings] .manager-actions { gap:7px; margin:12px 0; }
+#preferences[data-mode=settings] .manager-card { padding:14px; }
+#preferences[data-mode=settings] .manager-heading { gap:10px; }
+#preferences[data-mode=settings] .manager-heading>.icon { width:19px; height:19px; }
+#preferences[data-mode=settings] .info-card { background:transparent; border:0; border-left:2px solid var(--line); border-radius:0; padding:2px 0 2px 12px; font-size:.83rem; line-height:1.6; margin:16px 0; }
+#preferences[data-mode=settings] .settings-section-toolbar { display:flex; flex-wrap:wrap; align-items:center; gap:8px; margin-bottom:16px; }
+#preferences[data-mode=settings] .settings-section-toolbar>div { flex:1 0 100%; }
+#preferences[data-mode=settings] .settings-section-toolbar .section-description { margin-bottom:4px; }
+#preferences[data-mode=settings] .settings-disclosure { margin:14px 0; }
+#preferences[data-mode=settings] .settings-disclosure summary { width:auto; font-size:.85rem; padding:5px 0; min-height:28px; }
+#preferences[data-mode=settings] .settings-disclosure .info-card { margin-top:7px; }
+#preferences[data-mode=settings] .prefs-footer { padding:9px 16px; font-size:.73rem; background:var(--surface); }
+#preferences[data-mode=settings] .connection-grid { gap:8px; }
+#preferences[data-mode=settings] #profile-connections button { padding:11px; box-shadow:none; }
+#preferences[data-mode=settings] #profile-connections strong { font-size:.92rem; }
+#preferences[data-mode=settings] #profile-connections small { font-size:.8rem; }
+#preferences[data-mode=settings] #account-manager { padding:14px; }
+#preferences[data-mode=settings] #account-manager .setting-row { padding:10px 0; }
+#preferences[data-mode=settings] #account-manager .manager-actions { padding:0; }
+@media(max-width:680px){
+ #preferences[data-mode=settings] #prefs-nav { width:154px; padding:10px 7px; }
+ #preferences[data-mode=settings] #prefs-content { padding:20px 16px; }
+ #preferences[data-mode=settings] .setting-row { flex-wrap:wrap; }
+ #preferences[data-mode=settings] .setting-row>span { flex-basis:55%; }
+ #preferences[data-mode=settings] .setting-row select { max-width:100%; }
+ #preferences[data-mode=settings] .setting-row input:not([type=checkbox]):not([type=range]):not([type=color]) { width:100%; }
+ #preferences[data-mode=settings] .connection-grid { grid-template-columns:1fr; }
+}
+@media(prefers-reduced-motion:reduce){#preferences[data-mode=settings] * { transition:none!important; }}
+#preferences[data-mode=settings] #prefs-nav .preferences-search { position:sticky; top:-12px; z-index:1; background:var(--surface); }
+#preferences[data-mode=settings] #prefs-nav .preferences-search input { border:0; box-shadow:none; padding:0; background:transparent; }
+#preferences[data-mode=settings] #prefs-nav button { white-space:normal; overflow-wrap:anywhere; }
+#preferences[data-mode=settings] #prefs-content button.primary:not([role=switch]):not(.theme-preset) { background:var(--ink); color:var(--surface); border-color:var(--ink); }
+#preferences[data-mode=settings] .setting-row .text-link { font-size:.88rem; text-decoration:none; padding:3px 0; }
+#preferences[data-mode=settings] .setting-row .text-link:hover { text-decoration:underline; }
+:root[data-motion=reduced] #preferences * { transition:none!important; }

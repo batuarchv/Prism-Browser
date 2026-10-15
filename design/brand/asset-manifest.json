@@ -1,0 +1,42 @@
+{
+  "source": "user-supplied Prism logo directions",
+  "source": "project design assets",
+  "assets": [
+    {
+      "file": "source/prism-mark-gradient.svg",
+      "type": "mark",
+      "viewBox": "0 0 1024 1024",
+      "recommendedUse": ["app-icon", "profile", "favicon-fallback"]
+    },
+    {
+      "file": "source/prism-mark-alt.svg",
+      "type": "mark-alternate",
+      "viewBox": "0 0 890.48 715.04",
+      "recommendedUse": ["marketing", "welcome-surface"]
+    },
+    {
+      "file": "source/prism-wordmark-gradient.svg",
+      "type": "wordmark",
+      "viewBox": "0 0 2888.62 639.22",
+      "recommendedUse": ["about", "welcome-surface"]
+    },
+    {
+      "file": "source/prism-wordmark-block-gradient.svg",
+      "type": "wordmark",
+      "viewBox": "0 0 1957.41 365.49",
+      "recommendedUse": ["title", "onboarding"]
+    },
+    {
+      "file": "source/prism-wordmark-whytokey.svg",
+      "type": "font-based-wordmark",
+      "viewBox": "0 0 1977.12 689.49",
+      "requiresFontReview": true
+    },
+    {
+      "file": "source/prism-wordmark-benzin.svg",
+      "type": "font-based-wordmark",
+      "viewBox": "0 0 2963.17 963.43",
+      "requiresFontReview": true
+    }
+  ]
+}

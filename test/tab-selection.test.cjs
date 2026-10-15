@@ -1,0 +1,7 @@
+const {test}=require('node:test'),assert=require('node:assert/strict');
+const {createTabSelection}=require('../src/tab-selection.cjs');
+const {rankedCandidates,createMemoryManager}=require('../src/memory-manager.cjs');
+test('closing a new tab returns to the last selected favorite, independent of order or timestamps',()=>{const h=createTabSelection();h.select(2);h.select(1);h.select(3);h.remove(3);assert.equal(h.previous([{id:2},{id:1}]).id,1);h.remove(1);assert.equal(h.previous([{id:2}]).id,2);assert.equal(h.previous([]),null);});
+test('selection never chooses a tab outside the supplied space',()=>{const h=createTabSelection();h.select(1);h.select(9);assert.equal(h.previous([{id:1}]).id,1);});
+test('memory prioritizes large eligible renderers and excludes active and protected tabs',()=>{const tab=(id,pid,extra={})=>({id,view:{webContents:{getOSProcessId:()=>pid}},lastUsed:0,...extra});const result=rankedCandidates([tab(1,1),tab(2,2),tab(3,3),tab(4,4,{keepAwake:true})],1,[{pid:2,memory:{workingSetSize:10}},{pid:3,memory:{workingSetSize:500}},{pid:4,memory:{workingSetSize:1000}}]);assert.deepEqual(result.map(t=>t.id),[3,2]);});
+test('automatic release stops when pressure clears',async()=>{let calls=0;const manager=createMemoryManager({app:{getAppMetrics:()=>[{memory:{workingSetSize:calls?1:4*1024*1024}}]},settings:{leanMemory:true},tabs:()=>[1,2,3].map(id=>({id,view:{},lastUsed:0})),activeId:()=>9,sleepTab:async()=>{calls++;return true;}});await manager.sweep();assert.equal(calls,1);});

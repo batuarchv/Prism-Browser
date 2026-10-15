@@ -1,0 +1,11 @@
+function origin(value){try{const u=new URL(value);return u.protocol==='https:'||u.protocol==='http:'&&['localhost','127.0.0.1','[::1]'].includes(u.hostname)?u.origin:null;}catch{return null;}}
+function keys(permission,details={}){if(permission==='media'){const types=details.mediaTypes||[details.mediaType];return types.length&&types.every(x=>['audio','video'].includes(x))?[...new Set(types.map(x=>x==='audio'?'microphone':'camera'))]:[];}return ['notifications','geolocation'].includes(permission)?[permission]:[];}
+function createPermissions({load={},save,tabFor,prompt}){
+ const decisions=new Map();for(const row of Array.isArray(load)?load:[])if(origin(row.origin)===row.origin&&['camera','microphone','notifications','geolocation'].includes(row.permission)&&['allow','block'].includes(row.decision))decisions.set(row.origin+'|'+row.permission,row);
+ const rows=()=>[...decisions.values()];const pending=new Set();
+ function context(wc,url,details){const t=tabFor(wc),site=origin(url);return t&&t.space!=='private'&&!wc.isDestroyed()&&details.isMainFrame===true&&site&&origin(wc.getURL())===site?{t,site,version:t.navigationVersion}:null;}
+ function check(wc,p,url,d){const c=context(wc,url,d),k=keys(p,d);return !!c&&k.length>0&&k.every(key=>decisions.get(c.site+'|'+key)?.decision==='allow');}
+ async function request(wc,p,callback,d){let allowed=false;try{const c=context(wc,d.requestingUrl,d),k=keys(p,d);if(!c||!k.length)return;const existing=k.map(key=>decisions.get(c.site+'|'+key)?.decision);if(existing.includes('block'))return;if(existing.every(x=>x==='allow')){allowed=true;return;}if(pending.has(wc.id))return;pending.add(wc.id);try{const answer=await prompt(c.site,k);const current=context(wc,d.requestingUrl,d);if(!current||current.version!==c.version)return;if(answer==='allow'||answer==='block'){for(const key of k)decisions.set(c.site+'|'+key,{origin:c.site,permission:key,decision:answer});save(rows());}allowed=answer==='allow';}finally{pending.delete(wc.id);}}finally{callback(allowed);}}
+ return {rows,check,request,reset(site,permission){decisions.delete(site+'|'+permission);save(rows());}};
+}
+module.exports={createPermissions,origin,keys};

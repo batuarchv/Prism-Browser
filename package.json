@@ -1,0 +1,37 @@
+{
+  "name": "prism-browser",
+  "productName": "Prism",
+  "version": "0.21.6",
+  "description": "A glass Chromium browser prototype with sleeping tabs",
+  "main": "src/main.cjs",
+  "scripts": {
+    "start": "electron .",
+    "test": "node --test test/*.test.cjs",
+    "smoke": "electron . --smoke-test",
+    "package": "node scripts/package.cjs",
+    "build:native": "node scripts/build-native.cjs",
+    "build:preload": "node scripts/build-preload.cjs",
+    "prepare:extensions": "node scripts/prepare-extensions.cjs",
+    "lint:ui": "node scripts/lint-ui.mjs",
+    "release:check": "node scripts/release-check.cjs",
+    "build:ai": "xcrun swiftc -parse-as-library -O -target arm64-apple-macos26.0 src/native/prism-ai.swift -o src/native/prism-ai",
+    "release:local": "node scripts/release-local.cjs"
+  },
+  "dependencies": {
+    "@ghostery/adblocker": "2.18.2",
+    "electron-chrome-extensions": "4.9.0",
+    "electron-chrome-web-store": "0.13.0"
+  },
+  "devDependencies": {
+    "@electron/packager": "19.0.1",
+    "electron": "44.5.1",
+    "lintapple": "0.1.19",
+    "node-api-headers": "1.9.0"
+  },
+  "license": "GPL-3.0-only",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/batuarchv/Prism-Browser.git"
+  },
+  "homepage": "https://batuarchv.github.io/Prism-Browser/"
+}

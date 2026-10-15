@@ -1,0 +1,27 @@
+const assert=require('node:assert/strict'),fs=require('node:fs'),path=require('node:path'),https=require('node:https');
+const {execFileSync}=require('node:child_process');
+const {safeStorage,session}=require('electron');
+const delay=ms=>new Promise(resolve=>setTimeout(resolve,ms));
+async function until(fn){const deadline=Date.now()+10000;while(!await fn()){if(Date.now()>deadline)throw Error('Credential integration timeout');await delay(50);}}
+exports.run=async({app,win,makeTab,action,snapshot,passwords})=>{
+ const dir=app.getPath('userData');fs.mkdirSync(dir,{recursive:true});const cert=path.join(dir,'fixture-cert.pem'),key=path.join(dir,'fixture-key.pem');
+ execFileSync('/usr/bin/openssl',['req','-x509','-newkey','rsa:2048','-nodes','-keyout',key,'-out',cert,'-days','1','-subj','/CN=localhost'],{stdio:'ignore'});
+ const server=https.createServer({key:fs.readFileSync(key),cert:fs.readFileSync(cert)},(_req,res)=>{res.setHeader('Content-Type','text/html');res.end('<title>Sign-in fixture</title><form><input autocomplete="username" id="username"><input type="password" id="password" autocomplete="current-password"><button>Sign in</button></form>');});
+ await new Promise(r=>server.listen(0,'127.0.0.1',r));const origin=`https://127.0.0.1:${server.address().port}`;
+ session.fromPartition(snapshot().browserPartition).setCertificateVerifyProc((request,callback)=>callback(request.hostname==='127.0.0.1'?0:-3));
+ const secret='fixture-only-password';const entries=Array.from({length:15},(_,i)=>({origin,username:'account-'+i,password:secret+'-'+i}));const vault=path.join(dir,'passwords.enc');fs.writeFileSync(vault,safeStorage.encryptString(JSON.stringify(entries)));
+ const tab=makeTab(origin+'/login');await until(()=>tab.view?.webContents.getURL().endsWith('/login')&&!tab.loading);const wc=tab.view.webContents;
+ const rows=await action('password-list');assert.equal(rows.entries.length,15);assert.ok(!JSON.stringify(rows).includes(secret));assert.ok(!JSON.stringify(snapshot()).includes(secret));
+ const edit=await action('password-begin-edit',rows.entries[0].id);assert.ok(!JSON.stringify(edit).includes(secret));const revealed=await action('password-reveal',edit.token);assert.equal(revealed.password,entries[0].password);
+ await action('password-update',{token:edit.token,origin,username:'renamed-account',password:'edited-fixture-secret'});assert.ok(!fs.readFileSync(vault).includes(Buffer.from('edited-fixture-secret')));const stored=JSON.parse(safeStorage.decryptString(fs.readFileSync(vault)));assert.equal(stored.find(x=>x.username==='renamed-account').password,'edited-fixture-secret');
+ await win.webContents.executeJavaScript("openPanel('passwords')");await delay(250);assert.ok(await win.webContents.executeJavaScript("document.querySelector('[data-pane=passwords]').textContent.includes('renamed-account')"));
+ await win.webContents.executeJavaScript("document.querySelector('#credential-rows button').click()");await until(()=>win.webContents.executeJavaScript("!!document.querySelector('.credential-dialog[open]')"));assert.equal(await win.webContents.executeJavaScript("document.querySelector('.credential-dialog input[name=password]').value"),'');
+ await win.webContents.executeJavaScript("document.querySelector('[data-reveal]').click()");await until(()=>win.webContents.executeJavaScript("document.querySelector('.credential-dialog input[name=password]').value.length>0"));await win.webContents.executeJavaScript("document.querySelector('[data-cancel]').click()");assert.equal(await win.webContents.executeJavaScript("document.querySelector('.credential-dialog input[name=password]').value"),'');
+ try{fs.writeFileSync(path.join(__dirname,'../reports/password-manager-preview.png'),(await win.webContents.capturePage()).toPNG());}catch(error){console.log('Password manager visual capture unavailable: '+error.message);}
+ await win.webContents.executeJavaScript('closePanel()');
+ const fill=action('fill-password');await until(()=>snapshot().passwords.picker);const picker=snapshot().passwords.picker;assert.equal(picker.accounts.length,15);assert.ok(!JSON.stringify(picker).includes(secret));const last=picker.accounts.find(x=>x.username==='account-14');await action('password-pick',{token:picker.token,id:last.id});await fill;
+ assert.equal(await wc.executeJavaScript('document.getElementById("username").value'),'account-14');assert.equal(await wc.executeJavaScript('document.getElementById("password").value'),secret+'-14');
+ const stale=action('fill-password');await until(()=>snapshot().passwords.picker);const old=snapshot().passwords.picker;await wc.loadURL(origin+'/next');await action('password-pick',{token:old.token,id:old.accounts[0].id});await stale;assert.equal(await wc.executeJavaScript('document.getElementById("password").value'),'');
+ await action('space','private');const blocked=await action('password-list');assert.ok(blocked?.error||!blocked?.entries?.length);assert.equal(snapshot().passwords.picker,undefined);
+ const report={passed:true,checks:['metadata-only listing and edit sessions','explicit reveal','encrypted password update','password manager rendering','15-account picker and real HTTPS form fill','navigation cancels pending fill','Private vault guard'],electron:process.versions.electron};fs.writeFileSync(path.join(__dirname,'../reports/credentials-results.json'),JSON.stringify(report,null,2));console.log(JSON.stringify(report));passwords.cancelPicker();server.close();app.exit(0);
+};

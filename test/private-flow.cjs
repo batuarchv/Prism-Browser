@@ -1,0 +1,32 @@
+const assert=require('node:assert/strict');
+const delay=ms=>new Promise(r=>setTimeout(r,ms));
+async function waitUntil(fn){const deadline=Date.now()+10000;while(!await fn()){if(Date.now()>deadline)throw Error('Private test timeout');await delay(100);}}
+exports.run=async({win,makeTab,action,snapshot,base,a,privateController,toolWindows})=>{
+ const checks=[];const check=(name,value)=>{assert.ok(value,name);checks.push(name);};
+ const ses=a.view.webContents.session;await ses.cookies.set({url:base,name:'normal-only',value:'fixture'});
+ await action('space','work');check('Work has its own tab list',snapshot().tabs.every(t=>t.space==='work'));
+ await action('space','private');const p=makeTab(base+'/private');await waitUntil(()=>!p.loading&&p.view.webContents.getURL());
+ const privateSession=p.view.webContents.session;check('First Private site starts Zapret automatically',snapshot().privateNetwork.status==='active');const runner=privateController().runner;const next=makeTab(base+'/another-private-site');await waitUntil(()=>!next.loading&&next.view.webContents.getURL());check('New Private site reuses the same Zapret process',privateController().runner===runner);await action('select',p.id);
+ check('Private session is in-memory',!privateSession.isPersistent());
+ check('Private cannot read normal cookies',!(await privateSession.cookies.get({name:'normal-only'})).length);
+ check('Private has no extensions',snapshot().extensions.length===0&&privateSession.extensions.getAllExtensions().length===0);
+ check('Private excludes favorites and images',snapshot().bookmarks.length===0&&Object.keys(snapshot().images).length===0);
+ check('Private rejects password fill',(await action('fill-password')).error);
+ await privateSession.cookies.set({url:base,name:'private-only',value:'fixture'});
+ await action('private-network',{mode:'stopped'});check('Stop blocks Private',snapshot().privateNetwork.status==='stopped');
+ await assert.rejects(privateSession.fetch(base+'/must-block'));check('Blocked Private request fails',true);
+ const normal=await ses.fetch(base+'/normal-still-works');check('Normal session remains connected',normal.ok);
+ await action('private-network',{mode:'zapret',profile:'plain'});check('Installed tpws starts as isolated SOCKS helper',snapshot().privateNetwork.status==='active');
+ check('Private uses a SOCKS route',(await privateSession.resolveProxy('https://example.test')).startsWith('SOCKS5'));
+ privateController().runner.kill('SIGTERM');await waitUntil(()=>snapshot().privateNetwork.status==='error');await assert.rejects(privateSession.fetch(base+'/helper-failed'));check('Unexpected helper exit blocks requests without Direct fallback',true);
+ await action('private-network',{mode:'stopped'});await assert.rejects(privateSession.fetch(base+'/still-blocked'));
+ await action('private-network',{mode:'direct'});check('Direct is an explicit user choice',(await privateSession.fetch(base+'/direct')).ok);
+ await action('end-private');check('Ending Private returns to Personal',snapshot().space==='personal');
+ check('Old Private cookies are cleared',(await privateSession.cookies.get({})).length===0);
+ check('Normal cookies survive',(await ses.cookies.get({name:'normal-only'})).length===1);
+ await action('space','private');const fresh=makeTab(base+'/fresh');check('Next Private session is a new store',fresh.view.webContents.session!==privateSession);await waitUntil(()=>!privateController().busy&&snapshot().privateNetwork.status==='active');await action('end-private');
+ await win.webContents.executeJavaScript("openPanel('design')");check('Design studio renders',await win.webContents.executeJavaScript("document.querySelector('[data-pane=design]').hidden===false && document.querySelectorAll('#design-colors input').length===7"));
+ await win.webContents.executeJavaScript('closePanel()');
+ await action('set-setting',{key:'sidebarCollapsed',value:true});await delay(100);check('Sidebar collapse updates UI',await win.webContents.executeJavaScript("document.documentElement.dataset.collapsed==='true'"));await action('set-setting',{key:'sidebarCollapsed',value:false});
+ console.log(JSON.stringify({privateChecks:checks}));return checks;
+};

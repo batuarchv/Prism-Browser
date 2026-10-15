@@ -1,0 +1,9 @@
+# Prism 0.15.3
+
+Settings and compact utility panels now render inside the existing browser shell, with short open/close animations and reduced-motion support. No utility BrowserWindow or extra renderer is created. While a panel is open, a bounded, one-time page capture preserves the visible background; the actual site continues running but is not interactive until the panel closes. The capture is released on close. Panels close when the active tab changes. Keyboard focus is contained within panel controls and restored to the originating toolbar button.
+
+The toolbar is 44 points high, its controls 28 points, its icons consistently 16 points, and the address field 30 points high. Removed the browser-action strip between keep-awake and Extensions. Sidebar favorite icons are 19 points; home favorite tiles are smaller. History, Site permissions and Ads & trackers have matching symbols.
+
+Extensions opens a compact toggle panel with a Manage extensions in Settings link. Full extension removal/options/reload/popup controls remain in Settings. Pending toggle buttons disable until the action completes. Downloads retains both its compact panel and the full Settings section.
+
+Validation: 55 unit tests pass. Focused live-Electron GUI checks passed for in-browser panels, extension toggles, page-snapshot cleanup, favorite navigation, reduced motion and onboarding. The full GUI smoke suite passed for extensions, downloads, password filling, native glass, tab sleep/wake, Private isolation and setup. Captured quick-extension layout was visually inspected. The search test was updated to wait for panel-close animation before entering a query; no production change was needed during this validation pass. Tests used isolated temporary profiles. Real default-browser settings and the installed app were not changed.

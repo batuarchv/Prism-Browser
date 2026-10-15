@@ -1,0 +1,6 @@
+const fs=require('node:fs'),path=require('node:path'),os=require('node:os'),{execFileSync}=require('node:child_process');
+const app=process.argv[2];if(!app||!fs.existsSync(path.join(app,'Contents/Info.plist')))throw Error('Pass the packaged Prism.app path');
+const stage=fs.mkdtempSync(path.join(os.tmpdir(),'prism-installer-'));const output=path.resolve(__dirname,'../../Prism-Installer-'+require('../package.json').version+'.dmg');
+execFileSync('/usr/bin/ditto',[app,path.join(stage,'Prism.app')]);fs.symlinkSync('/Applications',path.join(stage,'Applications'));
+fs.writeFileSync(path.join(stage,'Start here.txt'),'Welcome to Prism\n\n1. Drag Prism.app to Applications.\n2. Open Prism from Applications.\n3. Choose your theme, import bookmarks and passwords, and take the short tour.\n\nYou can skip setup and reopen it from Settings > Imports > Open welcome guide.\n\nImports are optional. Passwords use an exported CSV and are stored encrypted on this Mac. Cookies, passkeys, extensions and active sign-ins are not migrated by this installer.\n\nThis preview is locally signed, not Apple-notarized.\n');
+execFileSync('/usr/bin/hdiutil',['create','-volname','Install Prism','-srcfolder',stage,'-ov','-format','UDZO',output],{stdio:'inherit'});execFileSync('/usr/bin/hdiutil',['verify',output],{stdio:'inherit'});console.log(output);
