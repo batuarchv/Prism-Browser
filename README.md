@@ -3,7 +3,7 @@
 
   <h1>Prism</h1>
 
-  **A liquid-glass Chromium browser for macOS, with sleeping tabs that keep memory use down.**
+  **A liquid-glass Chromium browser for macOS, while keeping memory usage down.**
 
   <a href="https://github.com/batuarchv/Prism-Browser/releases/latest"><b>⬇︎ Download for Mac</b></a>
   &nbsp;·&nbsp; <a href="https://batuarchv.github.io/Prism-Browser/">Website</a>
