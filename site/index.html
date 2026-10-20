@@ -19,7 +19,7 @@
     <nav aria-label="Main navigation">
       <a href="#about">About</a><a href="#features">Features</a><a href="#principles">Principles</a>
     </nav>
-    <a class="nav-cta" href="#project-links">Explore the project <span aria-hidden="true">↗</span></a>
+    <a class="nav-cta" data-link="download" href="#project-links">Download <span aria-hidden="true">↓</span></a>
   </header>
 
   <main id="top">
@@ -29,10 +29,10 @@
         <h1>Chromium,<br><em>refracted.</em></h1>
         <p class="lede">A browser shaped around the clarity of Liquid Glass and the freedom of an open web.</p>
         <div class="hero-actions" id="project-links">
-          <a class="button button-primary" data-link="repo" href="#project-links">View source <span aria-hidden="true">↗</span></a>
-          <a class="button button-quiet" data-link="releases" href="#project-links">Release builds <span aria-hidden="true">↓</span></a>
+          <a class="button button-primary" data-link="download" href="#project-links">Download for Mac <span aria-hidden="true">↓</span></a>
+          <a class="button button-quiet" data-link="repo" href="#project-links">View source <span aria-hidden="true">↗</span></a>
         </div>
-        <p class="hero-note"><span class="dot"></span> Experimental · macOS · GPL-3.0</p>
+        <p class="hero-note"><span class="dot"></span> Free · macOS on Apple Silicon · GPL-3.0 · <a href="https://github.com/batuarchv/Prism-Browser#install">How to install</a></p>
       </div>
       <div class="visual" aria-label="Abstract illustration of Prism's translucent browser interface">
         <div class="orbit orbit-a"></div><div class="orbit orbit-b"></div>
@@ -88,6 +88,7 @@
   <script src="config.js"></script>
   <script>
     document.querySelectorAll('[data-link="repo"]').forEach(a => { if (PrismSite.repository) a.href = PrismSite.repository; else a.addEventListener('click', e => { e.preventDefault(); document.querySelector('#project-links').scrollIntoView({behavior:'smooth'}); }); });
+    document.querySelectorAll('[data-link="download"]').forEach(a => { if (PrismSite.download) a.href = PrismSite.download; });
     document.querySelectorAll('[data-link="releases"]').forEach(a => { if (PrismSite.releases) a.href = PrismSite.releases; else a.addEventListener('click', e => { e.preventDefault(); document.querySelector('#project-links').scrollIntoView({behavior:'smooth'}); }); });
   </script>
 </body>

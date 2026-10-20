@@ -1,56 +1,5 @@
 (function(root){
 const catalog={
-
- "Search settings": {
-  "tr": "Ayarlarda ara",
-  "es": "Buscar ajustes",
-  "pt": "Pesquisar definições",
-  "fr": "Rechercher un réglage",
-  "uk": "Пошук налаштувань"
- },
- "No matching settings": {
-  "tr": "Eşleşen ayar yok",
-  "es": "No hay ajustes coincidentes",
-  "pt": "Nenhuma definição encontrada",
-  "fr": "Aucun réglage correspondant",
-  "uk": "Налаштувань не знайдено"
- },
- "Browsing": {
-  "tr": "Gezinme",
-  "es": "Navegación",
-  "pt": "Navegação",
-  "fr": "Navigation",
-  "uk": "Перегляд"
- },
- "Privacy & security": {
-  "tr": "Gizlilik ve güvenlik",
-  "es": "Privacidad y seguridad",
-  "pt": "Privacidade e segurança",
-  "fr": "Confidentialité et sécurité",
-  "uk": "Приватність і безпека"
- },
- "Intelligence": {
-  "tr": "Zekâ",
-  "es": "Inteligencia",
-  "pt": "Inteligência",
-  "fr": "Intelligence",
-  "uk": "Інтелект"
- },
- "System": {
-  "tr": "Sistem",
-  "es": "Sistema",
-  "pt": "Sistema",
-  "fr": "Système",
-  "uk": "Система"
- },
- "Compatibility & updates": {
-  "tr": "Uyumluluk ve güncellemeler",
-  "es": "Compatibilidad y actualizaciones",
-  "pt": "Compatibilidade e atualizações",
-  "fr": "Compatibilité et mises à jour",
-  "uk": "Сумісність та оновлення"
- }
-,
  "Settings": {
   "tr": "Ayarlar",
   "es": "Ajustes",
@@ -1640,13 +1589,6 @@ const catalog={
   "fr": "Vous pouvez passer cette étape. Plus tard, ouvrez Réglages Système → Bureau et Dock → Navigateur Web par défaut et choisissez Prism. Installez-le dans Applications s’il n’apparaît pas.",
   "uk": "Цей крок можна пропустити. Пізніше відкрийте Системні параметри → Робочий стіл і Dock → Типовий веббраузер та виберіть Prism. Якщо його немає, установіть у Програми."
  },
- "Private uses temporary site data and starts Zapret on its first site when the helper is installed. If it can’t start, requests stay blocked. Private is not a VPN.": {
-  "tr": "Özel, geçici site verisi kullanır ve yardımcı kuruluysa ilk sitede Zapret’i başlatır. Başlayamazsa istekler engelli kalır. Özel bir VPN değildir.",
-  "es": "Privado usa datos temporales e inicia Zapret al abrir el primer sitio si está instalado. Si no arranca, las solicitudes siguen bloqueadas. Privado no es una VPN.",
-  "pt": "Privado usa dados temporários e inicia o Zapret no primeiro site se estiver instalado. Se falhar, os pedidos continuam bloqueados. Privado não é uma VPN.",
-  "fr": "Privé utilise des données temporaires et démarre Zapret au premier site si l’outil est installé. En cas d’échec, les requêtes restent bloquées. Privé n’est pas un VPN.",
-  "uk": "Приватний режим використовує тимчасові дані та запускає Zapret на першому сайті, якщо помічник установлений. Якщо запуск не вдається, запити залишаються заблокованими. Це не VPN."
- },
  "A little extra capability": {
   "tr": "Biraz daha işlev",
   "es": "Un poco más de funcionalidad",
@@ -1968,6 +1910,1049 @@ const catalog={
   "pt": "Remover chave",
   "fr": "Supprimer la clé",
   "uk": "Видалити ключ"
+ },
+ "Search settings": {
+  "tr": "Ayarlarda ara",
+  "es": "Buscar ajustes",
+  "pt": "Buscar definições",
+  "fr": "Rechercher dans les réglages",
+  "uk": "Пошук у налаштуваннях"
+ },
+ "Privacy & security": {
+  "tr": "Gizlilik ve güvenlik",
+  "es": "Privacidad y seguridad",
+  "pt": "Privacidade e segurança",
+  "fr": "Confidentialité et sécurité",
+  "uk": "Приватність і безпека"
+ },
+ "Intelligence": {
+  "tr": "Yapay zekâ",
+  "es": "Inteligencia",
+  "pt": "Inteligência",
+  "fr": "Intelligence",
+  "uk": "Інтелектуальні функції"
+ },
+ "Matches": {
+  "tr": "eşleşme",
+  "es": "coincidencias",
+  "pt": "resultados",
+  "fr": "résultats",
+  "uk": "збігів"
+ },
+ "No matching settings": {
+  "tr": "Eşleşen ayar yok",
+  "es": "No hay ajustes coincidentes",
+  "pt": "Nenhuma definição correspondente",
+  "fr": "Aucun réglage correspondant",
+  "uk": "Налаштувань не знайдено"
+ },
+ "Match": {
+  "tr": "eşleşme",
+  "es": "coincidencia",
+  "pt": "resultado",
+  "fr": "résultat",
+  "uk": "збіг"
+ },
+ "Profile": {
+  "tr": "Profil",
+  "es": "Perfil",
+  "pt": "Perfil",
+  "fr": "Profil",
+  "uk": "Профіль"
+ },
+ "Tabs & layout": {
+  "tr": "Sekmeler ve düzen",
+  "es": "Pestañas y diseño",
+  "pt": "Separadores e disposição",
+  "fr": "Onglets et disposition",
+  "uk": "Вкладки й розташування"
+ },
+ "Browsing": {
+  "tr": "Gezinme",
+  "es": "Navegación",
+  "pt": "Navegação",
+  "fr": "Navigation",
+  "uk": "Перегляд"
+ },
+ "Page assistant": {
+  "tr": "Sayfa asistanı",
+  "es": "Asistente de página",
+  "pt": "Assistente de página",
+  "fr": "Assistant de page",
+  "uk": "Помічник сторінки"
+ },
+ "System": {
+  "tr": "Sistem",
+  "es": "Sistema",
+  "pt": "Sistema",
+  "fr": "Système",
+  "uk": "Система"
+ },
+ "Saved accounts appear when you focus a sign-in field. Choose an account to fill it; Prism never submits the form.": {
+  "tr": "Bir giriş alanına odaklandığında kayıtlı hesaplar görünür. Doldurmak için bir hesap seç; Prism formu asla göndermez.",
+  "es": "Las cuentas guardadas aparecen al seleccionar un campo de inicio de sesión. Elige una cuenta para rellenarlo; Prism nunca envía el formulario.",
+  "pt": "As contas guardadas aparecem quando seleciona um campo de início de sessão. Escolha uma conta para o preencher; o Prism nunca envia o formulário.",
+  "fr": "Les comptes enregistrés apparaissent lorsque vous sélectionnez un champ de connexion. Choisissez un compte pour le remplir ; Prism n’envoie jamais le formulaire.",
+  "uk": "Збережені облікові записи з’являються, коли ви переходите до поля входу. Виберіть обліковий запис, щоб заповнити його; Prism ніколи не надсилає форму."
+ },
+ "Choose a saved account directly on the page. HTTPS sites only.": {
+  "tr": "Kayıtlı bir hesabı doğrudan sayfada seç. Yalnızca HTTPS siteleri.",
+  "es": "Elige una cuenta guardada directamente en la página. Solo sitios HTTPS.",
+  "pt": "Escolha uma conta guardada diretamente na página. Apenas sites HTTPS.",
+  "fr": "Choisissez un compte enregistré directement sur la page. Sites HTTPS uniquement.",
+  "uk": "Вибирайте збережений обліковий запис просто на сторінці. Лише сайти HTTPS."
+ },
+ "Encrypted on this Mac. Fill from a card field’s dropdown. Security codes are never stored or filled.": {
+  "tr": "Bu Mac’te şifrelenir. Kart alanının açılır menüsünden doldur. Güvenlik kodları asla saklanmaz veya doldurulmaz.",
+  "es": "Cifradas en este Mac. Rellena desde el menú desplegable de un campo de tarjeta. Los códigos de seguridad nunca se guardan ni se rellenan.",
+  "pt": "Encriptados neste Mac. Preencha a partir do menu pendente de um campo de cartão. Os códigos de segurança nunca são guardados nem preenchidos.",
+  "fr": "Chiffrées sur ce Mac. Remplissez depuis le menu déroulant d’un champ de carte. Les codes de sécurité ne sont jamais enregistrés ni remplis.",
+  "uk": "Зашифровано на цьому Mac. Заповнюйте з розкривного меню поля картки. Коди безпеки ніколи не зберігаються й не заповнюються."
+ },
+ "Logins are encrypted using macOS Keychain.": {
+  "tr": "Girişler macOS Anahtar Zinciri ile şifrelenir.",
+  "es": "Los inicios de sesión se cifran con el Llavero de macOS.",
+  "pt": "Os inícios de sessão são encriptados com o Porta-chaves do macOS.",
+  "fr": "Les identifiants sont chiffrés avec le Trousseau macOS.",
+  "uk": "Дані входу зашифровано за допомогою В’язки ключів macOS."
+ },
+ "encrypted using macOS Keychain.": {
+  "tr": "macOS Anahtar Zinciri ile şifreli.",
+  "es": "cifrados con el Llavero de macOS.",
+  "pt": "encriptados com o Porta-chaves do macOS.",
+  "fr": "chiffrés avec le Trousseau macOS.",
+  "uk": "зашифровано за допомогою В’язки ключів macOS."
+ },
+ "saved login": {
+  "tr": "kayıtlı giriş",
+  "es": "inicio de sesión guardado",
+  "pt": "início de sessão guardado",
+  "fr": "identifiant enregistré",
+  "uk": "збережений вхід"
+ },
+ "saved logins": {
+  "tr": "kayıtlı giriş",
+  "es": "inicios de sesión guardados",
+  "pt": "inícios de sessão guardados",
+  "fr": "identifiants enregistrés",
+  "uk": "збережених входів"
+ },
+ "Showing first 200; search to narrow results": {
+  "tr": "İlk 200 gösteriliyor; daraltmak için ara",
+  "es": "Se muestran los primeros 200; busca para acotar",
+  "pt": "A mostrar os primeiros 200; pesquise para restringir",
+  "fr": "200 premiers affichés ; recherchez pour affiner",
+  "uk": "Показано перші 200; уточніть пошуком"
+ },
+ "Apple Passwords & imports": {
+  "tr": "Apple Parolalar ve içe aktarma",
+  "es": "Contraseñas de Apple e importaciones",
+  "pt": "Palavras-passe da Apple e importações",
+  "fr": "Mots de passe Apple et importations",
+  "uk": "Паролі Apple та імпорт"
+ },
+ "The official iCloud Passwords extension could not connect to Apple’s helper in this build. Direct iCloud autofill and sync are unavailable. Open Apple's Passwords app to look up a login, or export selected passwords there and import the CSV into Prism. Imported passwords are a separate, encrypted copy on this Mac.": {
+  "tr": "Resmî iCloud Parolaları uzantısı bu sürümde Apple’ın yardımcısına bağlanamadı. Doğrudan iCloud otomatik doldurma ve eşzamanlama kullanılamıyor. Bir girişi bulmak için Apple’ın Parolalar uygulamasını aç ya da oradan seçili parolaları dışa aktarıp CSV dosyasını Prism’e aktar. İçe aktarılan parolalar bu Mac’te ayrı, şifreli bir kopyadır.",
+  "es": "La extensión oficial Contraseñas de iCloud no pudo conectarse con el asistente de Apple en esta versión. El autorrelleno y la sincronización directos con iCloud no están disponibles. Abre la app Contraseñas de Apple para consultar un inicio de sesión, o exporta allí las contraseñas seleccionadas e importa el CSV en Prism. Las contraseñas importadas son una copia independiente y cifrada en este Mac.",
+  "pt": "A extensão oficial Palavras-passe do iCloud não conseguiu ligar-se ao assistente da Apple nesta versão. O preenchimento automático e a sincronização diretos com o iCloud não estão disponíveis. Abra a app Palavras-passe da Apple para consultar um início de sessão, ou exporte aí as palavras-passe selecionadas e importe o CSV para o Prism. As palavras-passe importadas são uma cópia separada e encriptada neste Mac.",
+  "fr": "L’extension officielle Mots de passe iCloud n’a pas pu se connecter à l’assistant d’Apple dans cette version. Le remplissage automatique et la synchronisation iCloud directs ne sont pas disponibles. Ouvrez l’app Mots de passe d’Apple pour retrouver un identifiant, ou exportez-y les mots de passe choisis puis importez le fichier CSV dans Prism. Les mots de passe importés sont une copie distincte et chiffrée sur ce Mac.",
+  "uk": "Офіційне розширення «Паролі iCloud» не змогло під’єднатися до помічника Apple у цій збірці. Пряме автозаповнення й синхронізація iCloud недоступні. Відкрийте застосунок «Паролі» від Apple, щоб знайти дані входу, або експортуйте там вибрані паролі й імпортуйте CSV у Prism. Імпортовані паролі — це окрема зашифрована копія на цьому Mac."
+ },
+ "Keyboard shortcuts: ⌘L address · ⌘T new tab · ⌘D bookmark · ⌘, settings · ⌘J downloads. Focus the sidebar divider and use arrow keys to resize.": {
+  "tr": "Klavye kısayolları: ⌘L adres · ⌘T yeni sekme · ⌘D yer imi · ⌘, ayarlar · ⌘J indirilenler. Boyutlandırmak için kenar çubuğu ayırıcısına odaklan ve ok tuşlarını kullan.",
+  "es": "Atajos de teclado: ⌘L dirección · ⌘T nueva pestaña · ⌘D marcador · ⌘, ajustes · ⌘J descargas. Selecciona el divisor de la barra lateral y usa las flechas para cambiar su tamaño.",
+  "pt": "Atalhos de teclado: ⌘L endereço · ⌘T novo separador · ⌘D marcador · ⌘, definições · ⌘J transferências. Selecione o divisor da barra lateral e use as setas para redimensionar.",
+  "fr": "Raccourcis clavier : ⌘L adresse · ⌘T nouvel onglet · ⌘D signet · ⌘, réglages · ⌘J téléchargements. Sélectionnez le séparateur de la barre latérale et utilisez les flèches pour redimensionner.",
+  "uk": "Клавіатурні скорочення: ⌘L адреса · ⌘T нова вкладка · ⌘D закладка · ⌘, налаштування · ⌘J завантаження. Перейдіть до роздільника бічної панелі й змінюйте розмір клавішами зі стрілками."
+ },
+ "This page": {
+  "tr": "Bu sayfa",
+  "es": "Esta página",
+  "pt": "Esta página",
+  "fr": "Cette page",
+  "uk": "Ця сторінка"
+ },
+ "Open “{app}”?": {
+  "tr": "“{app}” açılsın mı?",
+  "es": "¿Abrir “{app}”?",
+  "pt": "Abrir “{app}”?",
+  "fr": "Ouvrir « {app} » ?",
+  "uk": "Відкрити «{app}»?"
+ },
+ "{site} wants to open this link with {app}.": {
+  "tr": "{site}, bu bağlantıyı {app} ile açmak istiyor.",
+  "es": "{site} quiere abrir este enlace con {app}.",
+  "pt": "{site} pretende abrir esta ligação com {app}.",
+  "fr": "{site} souhaite ouvrir ce lien avec {app}.",
+  "uk": "{site} хоче відкрити це посилання в {app}."
+ },
+ "Open {app}": {
+  "tr": "{app} uygulamasını aç",
+  "es": "Abrir {app}",
+  "pt": "Abrir {app}",
+  "fr": "Ouvrir {app}",
+  "uk": "Відкрити {app}"
+ },
+ "Always allow {site} to open these links": {
+  "tr": "{site} bu bağlantıları her zaman açabilsin",
+  "es": "Permitir siempre que {site} abra estos enlaces",
+  "pt": "Permitir sempre que {site} abra estas ligações",
+  "fr": "Toujours autoriser {site} à ouvrir ces liens",
+  "uk": "Завжди дозволяти {site} відкривати такі посилання"
+ },
+ "Welcome": {
+  "tr": "Hoş geldin",
+  "es": "Bienvenida",
+  "pt": "Boas-vindas",
+  "fr": "Bienvenue",
+  "uk": "Вітаємо"
+ },
+ "Look": {
+  "tr": "Görünüm",
+  "es": "Aspecto",
+  "pt": "Aspeto",
+  "fr": "Style",
+  "uk": "Стиль"
+ },
+ "Places": {
+  "tr": "Yerler",
+  "es": "Lugares",
+  "pt": "Locais",
+  "fr": "Lieux",
+  "uk": "Місця"
+ },
+ "Logins": {
+  "tr": "Girişler",
+  "es": "Inicios de sesión",
+  "pt": "Inícios de sessão",
+  "fr": "Identifiants",
+  "uk": "Дані входу"
+ },
+ "Default browser": {
+  "tr": "Varsayılan tarayıcı",
+  "es": "Navegador predeterminado",
+  "pt": "Navegador predefinido",
+  "fr": "Navigateur par défaut",
+  "uk": "Типовий браузер"
+ },
+ "Sidebar & tabs": {
+  "tr": "Kenar çubuğu ve sekmeler",
+  "es": "Barra lateral y pestañas",
+  "pt": "Barra lateral e separadores",
+  "fr": "Barre latérale et onglets",
+  "uk": "Бічна панель і вкладки"
+ },
+ "Privacy": {
+  "tr": "Gizlilik",
+  "es": "Privacidad",
+  "pt": "Privacidade",
+  "fr": "Confidentialité",
+  "uk": "Приватність"
+ },
+ "Your sidebar, your rhythm.": {
+  "tr": "Kenar çubuğun, senin ritmin.",
+  "es": "Tu barra lateral, a tu ritmo.",
+  "pt": "A sua barra lateral, ao seu ritmo.",
+  "fr": "Votre barre latérale, à votre rythme.",
+  "uk": "Ваша бічна панель — ваш ритм."
+ },
+ "Tabs stay tidy on the left, out of your way.": {
+  "tr": "Sekmeler solda düzenli kalır, yolunu kesmez.",
+  "es": "Las pestañas se mantienen ordenadas a la izquierda, sin estorbar.",
+  "pt": "Os separadores ficam arrumados à esquerda, sem atrapalhar.",
+  "fr": "Les onglets restent rangés à gauche, sans vous gêner.",
+  "uk": "Вкладки охайно тримаються ліворуч і не заважають."
+ },
+ "Private by design.": {
+  "tr": "Özünde gizli.",
+  "es": "Privado por diseño.",
+  "pt": "Privado por natureza.",
+  "fr": "Confidentiel par conception.",
+  "uk": "Приватність за задумом."
+ },
+ "Protection is built in, and you stay in control.": {
+  "tr": "Koruma yerleşik gelir, kontrol sende kalır.",
+  "es": "La protección viene integrada y tú mantienes el control.",
+  "pt": "A proteção vem incluída e o controlo é seu.",
+  "fr": "La protection est intégrée, et vous gardez le contrôle.",
+  "uk": "Захист вбудовано, а керування — у ваших руках."
+ },
+ "Ads and trackers are blocked in every space.": {
+  "tr": "Reklamlar ve izleyiciler her alanda engellenir.",
+  "es": "Los anuncios y rastreadores se bloquean en todos los espacios.",
+  "pt": "Os anúncios e rastreadores são bloqueados em todos os espaços.",
+  "fr": "Les publicités et traqueurs sont bloqués dans chaque espace.",
+  "uk": "Реклама й трекери блокуються в кожному просторі."
+ },
+ "Passwords stay encrypted on this Mac. Prism never submits a form for you.": {
+  "tr": "Parolalar bu Mac’te şifreli kalır. Prism formları asla senin yerine göndermez.",
+  "es": "Las contraseñas permanecen cifradas en este Mac. Prism nunca envía un formulario por ti.",
+  "pt": "As palavras-passe ficam encriptadas neste Mac. O Prism nunca envia um formulário por si.",
+  "fr": "Les mots de passe restent chiffrés sur ce Mac. Prism n’envoie jamais un formulaire à votre place.",
+  "uk": "Паролі залишаються зашифрованими на цьому Mac. Prism ніколи не надсилає форму замість вас."
+ },
+ "Links that open other apps always ask first.": {
+  "tr": "Başka uygulamaları açan bağlantılar her zaman önce sorar.",
+  "es": "Los enlaces que abren otras apps siempre preguntan primero.",
+  "pt": "As ligações que abrem outras apps perguntam sempre primeiro.",
+  "fr": "Les liens qui ouvrent d’autres apps demandent toujours d’abord.",
+  "uk": "Посилання, що відкривають інші застосунки, завжди спершу запитують."
+ },
+ "Choose an exported password CSV to begin.": {
+  "tr": "Başlamak için dışa aktarılmış bir parola CSV’si seç.",
+  "es": "Elige un CSV de contraseñas exportado para empezar.",
+  "pt": "Escolha um CSV de palavras-passe exportado para começar.",
+  "fr": "Choisissez un export CSV de mots de passe pour commencer.",
+  "uk": "Щоб почати, виберіть експортований CSV із паролями."
+ },
+ "Personal and Work share their normal sign-ins. Private has temporary cookies and no extensions, saved logins or persisted tab history. Downloaded files remain on disk.": {
+  "tr": "Kişisel ve İş alanları normal oturumlarını paylaşır. Özel; geçici çerezler kullanır, uzantı, kayıtlı giriş veya kalıcı sekme geçmişi içermez. İndirilen dosyalar diskte kalır.",
+  "es": "Personal y Trabajo comparten sus sesiones habituales. Privado usa cookies temporales y no tiene extensiones, inicios de sesión guardados ni historial de pestañas persistente. Los archivos descargados permanecen en el disco.",
+  "pt": "Pessoal e Trabalho partilham as sessões habituais. Privado usa cookies temporários e não tem extensões, inícios de sessão guardados nem histórico de separadores persistente. Os ficheiros transferidos ficam no disco.",
+  "fr": "Personnel et Travail partagent leurs connexions habituelles. Privé utilise des cookies temporaires, sans extensions, identifiants enregistrés ni historique d’onglets conservé. Les fichiers téléchargés restent sur le disque.",
+  "uk": "Особистий і Робочий простори мають спільні звичайні входи. Приватний використовує тимчасові файли cookie і не має розширень, збережених входів чи постійної історії вкладок. Завантажені файли залишаються на диску."
+ },
+ "Bypass censorship starts with your first Private site and stays on until you end Private or change the connection.": {
+  "tr": "Sansürü aş, ilk Özel sitede başlar ve Özel’i bitirene ya da bağlantıyı değiştirene kadar açık kalır.",
+  "es": "Evitar la censura se activa con el primer sitio privado y sigue activo hasta que termines Privado o cambies la conexión.",
+  "pt": "Contornar a censura começa com o primeiro site privado e continua ativo até terminar o Privado ou mudar a ligação.",
+  "fr": "Contourner la censure démarre avec le premier site privé et reste actif jusqu’à la fin de Privé ou un changement de connexion.",
+  "uk": "Обхід цензури вмикається з першим приватним сайтом і працює, доки ви не завершите Приватний режим або не зміните з’єднання."
+ },
+ "Bypass method": {
+  "tr": "Aşma yöntemi",
+  "es": "Método de evasión",
+  "pt": "Método de contorno",
+  "fr": "Méthode de contournement",
+  "uk": "Спосіб обходу"
+ },
+ "Standard (recommended)": {
+  "tr": "Standart (önerilen)",
+  "es": "Estándar (recomendado)",
+  "pt": "Padrão (recomendado)",
+  "fr": "Standard (recommandé)",
+  "uk": "Стандартний (рекомендовано)"
+ },
+ "Alternative (TLS)": {
+  "tr": "Alternatif (TLS)",
+  "es": "Alternativo (TLS)",
+  "pt": "Alternativo (TLS)",
+  "fr": "Alternative (TLS)",
+  "uk": "Альтернативний (TLS)"
+ },
+ "Diagnostic (no bypass)": {
+  "tr": "Tanılama (aşma yok)",
+  "es": "Diagnóstico (sin evasión)",
+  "pt": "Diagnóstico (sem contorno)",
+  "fr": "Diagnostic (sans contournement)",
+  "uk": "Діагностика (без обходу)"
+ },
+ "Start bypass": {
+  "tr": "Aşmayı başlat",
+  "es": "Iniciar evasión",
+  "pt": "Iniciar contorno",
+  "fr": "Démarrer le contournement",
+  "uk": "Запустити обхід"
+ },
+ "Stop & block": {
+  "tr": "Durdur ve engelle",
+  "es": "Detener y bloquear",
+  "pt": "Parar e bloquear",
+  "fr": "Arrêter et bloquer",
+  "uk": "Зупинити й блокувати"
+ },
+ "Use Direct": {
+  "tr": "Doğrudan kullan",
+  "es": "Usar conexión directa",
+  "pt": "Usar ligação direta",
+  "fr": "Utiliser la connexion directe",
+  "uk": "Пряме з’єднання"
+ },
+ "While it runs, Prism splits the first packets of each connection so filters can’t read them, and looks up sites over encrypted DNS (Cloudflare, Google) so blocked addresses resolve correctly. It uses the installed tpws helper from the open-source Zapret project and never changes system settings. If it fails, Private requests stay blocked; Prism never switches to Direct by itself. It is not a VPN: sites still see your IP address.": {
+  "tr": "Çalışırken Prism, filtrelerin okuyamaması için her bağlantının ilk paketlerini böler ve engellenen adreslerin doğru çözülmesi için siteleri şifreli DNS (Cloudflare, Google) üzerinden arar. Açık kaynaklı Zapret projesindeki kurulu tpws yardımcısını kullanır ve sistem ayarlarını değiştirmez. Başarısız olursa Özel istekler engelli kalır; Prism kendiliğinden Doğrudan’a geçmez. Bu bir VPN değildir: siteler IP adresini görmeye devam eder.",
+  "es": "Mientras funciona, Prism divide los primeros paquetes de cada conexión para que los filtros no puedan leerlos y busca los sitios mediante DNS cifrado (Cloudflare, Google) para que las direcciones bloqueadas se resuelvan correctamente. Usa el asistente tpws instalado, del proyecto de código abierto Zapret, y nunca cambia los ajustes del sistema. Si falla, las solicitudes privadas siguen bloqueadas; Prism nunca cambia a conexión directa por sí solo. No es una VPN: los sitios siguen viendo tu dirección IP.",
+  "pt": "Enquanto funciona, o Prism divide os primeiros pacotes de cada ligação para que os filtros não os consigam ler e procura os sites através de DNS encriptado (Cloudflare, Google) para que os endereços bloqueados sejam resolvidos corretamente. Usa o assistente tpws instalado, do projeto de código aberto Zapret, e nunca altera as definições do sistema. Se falhar, os pedidos privados continuam bloqueados; o Prism nunca muda para ligação direta sozinho. Não é uma VPN: os sites continuam a ver o seu endereço IP.",
+  "fr": "Pendant son fonctionnement, Prism fragmente les premiers paquets de chaque connexion pour que les filtres ne puissent pas les lire et résout les sites via un DNS chiffré (Cloudflare, Google) afin que les adresses bloquées soient correctement trouvées. Il utilise l’outil tpws installé, issu du projet open source Zapret, et ne modifie jamais les réglages du système. En cas d’échec, les requêtes privées restent bloquées ; Prism ne passe jamais en connexion directe de lui-même. Ce n’est pas un VPN : les sites voient toujours votre adresse IP.",
+  "uk": "Під час роботи Prism розбиває перші пакети кожного з’єднання, щоб фільтри не могли їх прочитати, і шукає сайти через зашифрований DNS (Cloudflare, Google), щоб заблоковані адреси визначалися правильно. Використовується встановлений помічник tpws із проєкту з відкритим кодом Zapret, системні налаштування не змінюються. Якщо щось не працює, приватні запити залишаються заблокованими; Prism ніколи сам не перемикається на пряме з’єднання. Це не VPN: сайти й надалі бачать вашу IP-адресу."
+ },
+ "Bypass censorship starts automatically when you open a Private site.": {
+  "tr": "Sansürü aş, bir Özel site açtığında otomatik başlar.",
+  "es": "Evitar la censura se inicia automáticamente al abrir un sitio privado.",
+  "pt": "Contornar a censura começa automaticamente quando abre um site privado.",
+  "fr": "Contourner la censure démarre automatiquement à l’ouverture d’un site privé.",
+  "uk": "Обхід цензури запускається автоматично, коли ви відкриваєте приватний сайт."
+ },
+ "Changing Private connection…": {
+  "tr": "Özel bağlantı değiştiriliyor…",
+  "es": "Cambiando la conexión privada…",
+  "pt": "A mudar a ligação privada…",
+  "fr": "Changement de la connexion privée…",
+  "uk": "Змінення приватного з’єднання…"
+ },
+ "Private uses your normal connection.": {
+  "tr": "Özel, normal bağlantını kullanıyor.",
+  "es": "Privado usa tu conexión normal.",
+  "pt": "O Privado usa a sua ligação normal.",
+  "fr": "Privé utilise votre connexion normale.",
+  "uk": "Приватний режим використовує звичайне з’єднання."
+ },
+ "Private network stopped. Choose Direct or start the bypass to continue.": {
+  "tr": "Özel ağ durduruldu. Devam etmek için Doğrudan’ı seç ya da aşmayı başlat.",
+  "es": "Red privada detenida. Elige Directa o inicia la evasión para continuar.",
+  "pt": "Rede privada parada. Escolha Direta ou inicie o contorno para continuar.",
+  "fr": "Réseau privé arrêté. Choisissez Directe ou démarrez le contournement pour continuer.",
+  "uk": "Приватну мережу зупинено. Щоб продовжити, виберіть пряме з’єднання або запустіть обхід."
+ },
+ "Bypass censorship is on for Private browsing.": {
+  "tr": "Sansürü aş, Özel gezinme için açık.",
+  "es": "Evitar la censura está activo para la navegación privada.",
+  "pt": "Contornar a censura está ativo para a navegação privada.",
+  "fr": "Contourner la censure est actif pour la navigation privée.",
+  "uk": "Обхід цензури увімкнено для приватного перегляду."
+ },
+ "The bypass helper could not start. Check the installed tpws version.": {
+  "tr": "Aşma yardımcısı başlatılamadı. Kurulu tpws sürümünü kontrol et.",
+  "es": "No se pudo iniciar el asistente de evasión. Comprueba la versión de tpws instalada.",
+  "pt": "Não foi possível iniciar o assistente de contorno. Verifique a versão do tpws instalada.",
+  "fr": "L’outil de contournement n’a pas pu démarrer. Vérifiez la version de tpws installée.",
+  "uk": "Не вдалося запустити помічник обходу. Перевірте встановлену версію tpws."
+ },
+ "The bypass helper could not start.": {
+  "tr": "Aşma yardımcısı başlatılamadı.",
+  "es": "No se pudo iniciar el asistente de evasión.",
+  "pt": "Não foi possível iniciar o assistente de contorno.",
+  "fr": "L’outil de contournement n’a pas pu démarrer.",
+  "uk": "Не вдалося запустити помічник обходу."
+ },
+ "The bypass helper did not become ready. Private requests remain blocked.": {
+  "tr": "Aşma yardımcısı hazır hale gelmedi. Özel istekler engelli kalıyor.",
+  "es": "El asistente de evasión no estuvo listo. Las solicitudes privadas siguen bloqueadas.",
+  "pt": "O assistente de contorno não ficou pronto. Os pedidos privados continuam bloqueados.",
+  "fr": "L’outil de contournement n’est pas prêt. Les requêtes privées restent bloquées.",
+  "uk": "Помічник обходу не встиг запуститися. Приватні запити залишаються заблокованими."
+ },
+ "The bypass helper stopped. Private requests are blocked until you restart it or choose Direct.": {
+  "tr": "Aşma yardımcısı durdu. Yeniden başlatana ya da Doğrudan’ı seçene kadar Özel istekler engelli.",
+  "es": "El asistente de evasión se detuvo. Las solicitudes privadas quedan bloqueadas hasta que lo reinicies o elijas Directa.",
+  "pt": "O assistente de contorno parou. Os pedidos privados ficam bloqueados até o reiniciar ou escolher Direta.",
+  "fr": "L’outil de contournement s’est arrêté. Les requêtes privées sont bloquées jusqu’à son redémarrage ou le choix de Directe.",
+  "uk": "Помічник обходу зупинився. Приватні запити заблоковано, доки ви не перезапустите його або не виберете пряме з’єднання."
+ },
+ "The bypass helper must not be writable by other users.": {
+  "tr": "Aşma yardımcısı başka kullanıcılar tarafından yazılabilir olmamalı.",
+  "es": "El asistente de evasión no debe poder ser modificado por otros usuarios.",
+  "pt": "O assistente de contorno não pode ser editável por outros utilizadores.",
+  "fr": "L’outil de contournement ne doit pas être modifiable par d’autres utilisateurs.",
+  "uk": "Помічник обходу не має бути доступним для запису іншим користувачам."
+ },
+ "Private uses temporary site data and can bypass censorship from its first site when the helper is installed. If it can’t start, requests stay blocked. Private is not a VPN.": {
+  "tr": "Özel, geçici site verisi kullanır ve yardımcı kuruluysa ilk siteden itibaren sansürü aşabilir. Başlayamazsa istekler engelli kalır. Özel bir VPN değildir.",
+  "es": "Privado usa datos temporales y puede evitar la censura desde el primer sitio si el asistente está instalado. Si no arranca, las solicitudes siguen bloqueadas. Privado no es una VPN.",
+  "pt": "O Privado usa dados temporários e pode contornar a censura desde o primeiro site se o assistente estiver instalado. Se falhar, os pedidos continuam bloqueados. O Privado não é uma VPN.",
+  "fr": "Privé utilise des données temporaires et peut contourner la censure dès le premier site si l’outil est installé. En cas d’échec, les requêtes restent bloquées. Privé n’est pas un VPN.",
+  "uk": "Приватний режим використовує тимчасові дані й може обходити цензуру з першого сайту, якщо помічник установлено. Якщо запуск не вдається, запити залишаються заблокованими. Приватний режим — не VPN."
+ },
+ "Bypass censorship": {
+  "tr": "Sansürü aş",
+  "es": "Evitar la censura",
+  "pt": "Contornar a censura",
+  "fr": "Contourner la censure",
+  "uk": "Обхід цензури"
+ },
+ "Link copied": {
+  "tr": "Bağlantı kopyalandı",
+  "es": "Enlace copiado",
+  "pt": "Ligação copiada",
+  "fr": "Lien copié",
+  "uk": "Посилання скопійовано"
+ },
+ "Bookmarked": {
+  "tr": "Yer imlerine eklendi",
+  "es": "Añadido a marcadores",
+  "pt": "Adicionado aos marcadores",
+  "fr": "Ajouté aux signets",
+  "uk": "Додано до закладок"
+ },
+ "Bookmark removed": {
+  "tr": "Yer imi kaldırıldı",
+  "es": "Marcador eliminado",
+  "pt": "Marcador removido",
+  "fr": "Signet supprimé",
+  "uk": "Закладку видалено"
+ },
+ "Reloaded": {
+  "tr": "Yenilendi",
+  "es": "Recargada",
+  "pt": "Recarregada",
+  "fr": "Rechargée",
+  "uk": "Оновлено"
+ },
+ "Reloaded without cache": {
+  "tr": "Önbelleksiz yenilendi",
+  "es": "Recargada sin caché",
+  "pt": "Recarregada sem cache",
+  "fr": "Rechargée sans cache",
+  "uk": "Оновлено без кешу"
+ },
+ "Unpinned": {
+  "tr": "Sabitleme kaldırıldı",
+  "es": "Desfijada",
+  "pt": "Desafixado",
+  "fr": "Désépinglé",
+  "uk": "Відкріплено"
+ },
+ "Tab reopened": {
+  "tr": "Sekme yeniden açıldı",
+  "es": "Pestaña reabierta",
+  "pt": "Separador reaberto",
+  "fr": "Onglet rouvert",
+  "uk": "Вкладку знову відкрито"
+ },
+ "Zoom {n}%": {
+  "tr": "Yakınlaştırma %{n}",
+  "es": "Zoom {n} %",
+  "pt": "Zoom {n}%",
+  "fr": "Zoom {n} %",
+  "uk": "Масштаб {n}%"
+ },
+ "Reload without cache": {
+  "tr": "Önbelleksiz yenile",
+  "es": "Recargar sin caché",
+  "pt": "Recarregar sem cache",
+  "fr": "Recharger sans cache",
+  "uk": "Оновити без кешу"
+ },
+ "Zoom in": {
+  "tr": "Yakınlaştır",
+  "es": "Acercar",
+  "pt": "Ampliar",
+  "fr": "Zoom avant",
+  "uk": "Збільшити"
+ },
+ "Zoom out": {
+  "tr": "Uzaklaştır",
+  "es": "Alejar",
+  "pt": "Reduzir",
+  "fr": "Zoom arrière",
+  "uk": "Зменшити"
+ },
+ "Actual size": {
+  "tr": "Gerçek boyut",
+  "es": "Tamaño real",
+  "pt": "Tamanho real",
+  "fr": "Taille réelle",
+  "uk": "Фактичний розмір"
+ },
+ "Rename tab…": {
+  "tr": "Sekmeyi yeniden adlandır…",
+  "es": "Cambiar nombre de la pestaña…",
+  "pt": "Mudar o nome do separador…",
+  "fr": "Renommer l’onglet…",
+  "uk": "Перейменувати вкладку…"
+ },
+ "Use page title": {
+  "tr": "Sayfa başlığını kullan",
+  "es": "Usar el título de la página",
+  "pt": "Usar o título da página",
+  "fr": "Utiliser le titre de la page",
+  "uk": "Використати назву сторінки"
+ },
+ "Pin tab": {
+  "tr": "Sekmeyi sabitle",
+  "es": "Fijar pestaña",
+  "pt": "Fixar separador",
+  "fr": "Épingler l’onglet",
+  "uk": "Закріпити вкладку"
+ },
+ "Unpin tab": {
+  "tr": "Sekme sabitlemesini kaldır",
+  "es": "Desfijar pestaña",
+  "pt": "Desafixar separador",
+  "fr": "Désépingler l’onglet",
+  "uk": "Відкріпити вкладку"
+ },
+ "Duplicate tab": {
+  "tr": "Sekmeyi çoğalt",
+  "es": "Duplicar pestaña",
+  "pt": "Duplicar separador",
+  "fr": "Dupliquer l’onglet",
+  "uk": "Дублювати вкладку"
+ },
+ "Add to folder": {
+  "tr": "Klasöre ekle",
+  "es": "Añadir a carpeta",
+  "pt": "Adicionar à pasta",
+  "fr": "Ajouter au dossier",
+  "uk": "Додати до папки"
+ },
+ "Split with current tab": {
+  "tr": "Geçerli sekmeyle böl",
+  "es": "Dividir con la pestaña actual",
+  "pt": "Dividir com o separador atual",
+  "fr": "Partager avec l’onglet actuel",
+  "uk": "Розділити з поточною вкладкою"
+ },
+ "Close other tabs": {
+  "tr": "Diğer sekmeleri kapat",
+  "es": "Cerrar las demás pestañas",
+  "pt": "Fechar os outros separadores",
+  "fr": "Fermer les autres onglets",
+  "uk": "Закрити інші вкладки"
+ },
+ "Close tabs below": {
+  "tr": "Alttaki sekmeleri kapat",
+  "es": "Cerrar las pestañas de abajo",
+  "pt": "Fechar os separadores abaixo",
+  "fr": "Fermer les onglets en dessous",
+  "uk": "Закрити вкладки нижче"
+ },
+ "Rename folder…": {
+  "tr": "Klasörü yeniden adlandır…",
+  "es": "Cambiar nombre de la carpeta…",
+  "pt": "Mudar o nome da pasta…",
+  "fr": "Renommer le dossier…",
+  "uk": "Перейменувати папку…"
+ },
+ "Add bookmark…": {
+  "tr": "Yer imi ekle…",
+  "es": "Añadir marcador…",
+  "pt": "Adicionar marcador…",
+  "fr": "Ajouter un signet…",
+  "uk": "Додати закладку…"
+ },
+ "Remove folder, keep bookmarks": {
+  "tr": "Klasörü kaldır, yer imlerini koru",
+  "es": "Quitar carpeta y conservar marcadores",
+  "pt": "Remover pasta e manter marcadores",
+  "fr": "Supprimer le dossier, garder les signets",
+  "uk": "Видалити папку, зберегти закладки"
+ },
+ "Delete folder and its bookmarks": {
+  "tr": "Klasörü ve yer imlerini sil",
+  "es": "Eliminar la carpeta y sus marcadores",
+  "pt": "Eliminar a pasta e os marcadores",
+  "fr": "Supprimer le dossier et ses signets",
+  "uk": "Видалити папку та її закладки"
+ },
+ "Open in Instagram Mobile": {
+  "tr": "Instagram Mobil’de aç",
+  "es": "Abrir en Instagram móvil",
+  "pt": "Abrir no Instagram móvel",
+  "fr": "Ouvrir dans Instagram mobile",
+  "uk": "Відкрити в мобільному Instagram"
+ },
+ "Add to Favorites": {
+  "tr": "Favorilere ekle",
+  "es": "Añadir a favoritos",
+  "pt": "Adicionar aos favoritos",
+  "fr": "Ajouter aux favoris",
+  "uk": "Додати до вибраного"
+ },
+ "Remove from Favorites": {
+  "tr": "Favorilerden kaldır",
+  "es": "Quitar de favoritos",
+  "pt": "Remover dos favoritos",
+  "fr": "Retirer des favoris",
+  "uk": "Видалити з вибраного"
+ },
+ "Edit bookmark…": {
+  "tr": "Yer imini düzenle…",
+  "es": "Editar marcador…",
+  "pt": "Editar marcador…",
+  "fr": "Modifier le signet…",
+  "uk": "Редагувати закладку…"
+ },
+ "Move to folder": {
+  "tr": "Klasöre taşı",
+  "es": "Mover a carpeta",
+  "pt": "Mover para pasta",
+  "fr": "Déplacer vers le dossier",
+  "uk": "Перемістити до папки"
+ },
+ "Remove bookmark": {
+  "tr": "Yer imini kaldır",
+  "es": "Quitar marcador",
+  "pt": "Remover marcador",
+  "fr": "Supprimer le signet",
+  "uk": "Видалити закладку"
+ },
+ "Organize tabs by site": {
+  "tr": "Sekmeleri siteye göre düzenle",
+  "es": "Organizar pestañas por sitio",
+  "pt": "Organizar separadores por site",
+  "fr": "Organiser les onglets par site",
+  "uk": "Упорядкувати вкладки за сайтом"
+ },
+ "Tab name": {
+  "tr": "Sekme adı",
+  "es": "Nombre de la pestaña",
+  "pt": "Nome do separador",
+  "fr": "Nom de l’onglet",
+  "uk": "Назва вкладки"
+ },
+ "Undo": {
+  "tr": "Geri al",
+  "es": "Deshacer",
+  "pt": "Anular",
+  "fr": "Annuler",
+  "uk": "Скасувати"
+ },
+ "{n} tabs closed": {
+  "tr": "{n} sekme kapatıldı",
+  "es": "{n} pestañas cerradas",
+  "pt": "{n} separadores fechados",
+  "fr": "{n} onglets fermés",
+  "uk": "Закрито вкладок: {n}"
+ },
+ "Tabs organized by site": {
+  "tr": "Sekmeler siteye göre düzenlendi",
+  "es": "Pestañas organizadas por sitio",
+  "pt": "Separadores organizados por site",
+  "fr": "Onglets organisés par site",
+  "uk": "Вкладки впорядковано за сайтом"
+ },
+ "Folder removed": {
+  "tr": "Klasör kaldırıldı",
+  "es": "Carpeta quitada",
+  "pt": "Pasta removida",
+  "fr": "Dossier supprimé",
+  "uk": "Папку видалено"
+ },
+ "Folder deleted": {
+  "tr": "Klasör silindi",
+  "es": "Carpeta eliminada",
+  "pt": "Pasta eliminada",
+  "fr": "Dossier et signets supprimés",
+  "uk": "Папку й закладки видалено"
+ },
+ "Tab duplicated": {
+  "tr": "Sekme çoğaltıldı",
+  "es": "Pestaña duplicada",
+  "pt": "Separador duplicado",
+  "fr": "Onglet dupliqué",
+  "uk": "Вкладку продубльовано"
+ },
+ "Added to {folder}": {
+  "tr": "{folder} klasörüne eklendi",
+  "es": "Añadido a {folder}",
+  "pt": "Adicionado a {folder}",
+  "fr": "Ajouté à {folder}",
+  "uk": "Додано до {folder}"
+ },
+ "Password copied": {
+  "tr": "Parola kopyalandı",
+  "es": "Contraseña copiada",
+  "pt": "Palavra-passe copiada",
+  "fr": "Mot de passe copié",
+  "uk": "Пароль скопійовано"
+ },
+ "Username copied": {
+  "tr": "Kullanıcı adı kopyalandı",
+  "es": "Usuario copiado",
+  "pt": "Nome de utilizador copiado",
+  "fr": "Nom d’utilisateur copié",
+  "uk": "Ім’я користувача скопійовано"
+ },
+ "active": {
+  "tr": "etkin",
+  "es": "activas",
+  "pt": "ativas",
+  "fr": "actifs",
+  "uk": "активні"
+ },
+ "new": {
+  "tr": "yeni",
+  "es": "nuevas",
+  "pt": "novas",
+  "fr": "nouveaux",
+  "uk": "нові"
+ },
+ "Recent": {
+  "tr": "Son indirilenler",
+  "es": "Recientes",
+  "pt": "Recentes",
+  "fr": "Récents",
+  "uk": "Нещодавні"
+ },
+ "Downloading": {
+  "tr": "İndiriliyor",
+  "es": "Descargando",
+  "pt": "A transferir",
+  "fr": "Téléchargement",
+  "uk": "Завантаження"
+ },
+ "Paused": {
+  "tr": "Duraklatıldı",
+  "es": "En pausa",
+  "pt": "Em pausa",
+  "fr": "En pause",
+  "uk": "Призупинено"
+ },
+ "Completed": {
+  "tr": "Tamamlandı",
+  "es": "Completada",
+  "pt": "Concluída",
+  "fr": "Terminé",
+  "uk": "Завершено"
+ },
+ "Canceled": {
+  "tr": "İptal edildi",
+  "es": "Cancelada",
+  "pt": "Cancelada",
+  "fr": "Annulé",
+  "uk": "Скасовано"
+ },
+ "Failed": {
+  "tr": "Başarısız",
+  "es": "Falló",
+  "pt": "Falhou",
+  "fr": "Échec",
+  "uk": "Помилка"
+ },
+ "download progress": {
+  "tr": "indirme ilerlemesi",
+  "es": "progreso de la descarga",
+  "pt": "progresso da transferência",
+  "fr": "progression du téléchargement",
+  "uk": "перебіг завантаження"
+ },
+ "Add login": {
+  "tr": "Giriş ekle",
+  "es": "Añadir inicio de sesión",
+  "pt": "Adicionar início de sessão",
+  "fr": "Ajouter un identifiant",
+  "uk": "Додати дані входу"
+ },
+ "Edit login": {
+  "tr": "Girişi düzenle",
+  "es": "Editar inicio de sesión",
+  "pt": "Editar início de sessão",
+  "fr": "Modifier l’identifiant",
+  "uk": "Редагувати дані входу"
+ },
+ "Save login": {
+  "tr": "Girişi kaydet",
+  "es": "Guardar inicio de sesión",
+  "pt": "Guardar início de sessão",
+  "fr": "Enregistrer l’identifiant",
+  "uk": "Зберегти дані входу"
+ },
+ "Save changes": {
+  "tr": "Değişiklikleri kaydet",
+  "es": "Guardar cambios",
+  "pt": "Guardar alterações",
+  "fr": "Enregistrer les modifications",
+  "uk": "Зберегти зміни"
+ },
+ "Password": {
+  "tr": "Parola",
+  "es": "Contraseña",
+  "pt": "Palavra-passe",
+  "fr": "Mot de passe",
+  "uk": "Пароль"
+ },
+ "Leave unchanged": {
+  "tr": "Değiştirmeden bırak",
+  "es": "Dejar sin cambios",
+  "pt": "Manter inalterada",
+  "fr": "Laisser inchangé",
+  "uk": "Залишити без змін"
+ },
+ "No saved logins yet": {
+  "tr": "Henüz kayıtlı giriş yok",
+  "es": "Aún no hay inicios de sesión guardados",
+  "pt": "Ainda não há inícios de sessão guardados",
+  "fr": "Aucun identifiant enregistré",
+  "uk": "Ще немає збережених даних входу"
+ },
+ "Prism offers to save a login when you sign in, or add one yourself.": {
+  "tr": "Prism, oturum açtığında girişi kaydetmeyi önerir; istersen kendin de ekleyebilirsin.",
+  "es": "Prism ofrece guardar un inicio de sesión cuando inicias sesión, o puedes añadir uno tú.",
+  "pt": "O Prism oferece guardar o início de sessão quando inicia sessão, ou pode adicionar um.",
+  "fr": "Prism propose d’enregistrer l’identifiant quand vous vous connectez, ou ajoutez-en un vous-même.",
+  "uk": "Prism пропонує зберегти дані під час входу, або додайте їх самостійно."
+ },
+ "Copy username": {
+  "tr": "Kullanıcı adını kopyala",
+  "es": "Copiar usuario",
+  "pt": "Copiar nome de utilizador",
+  "fr": "Copier le nom d’utilisateur",
+  "uk": "Копіювати ім’я користувача"
+ },
+ "Copy password": {
+  "tr": "Parolayı kopyala",
+  "es": "Copiar contraseña",
+  "pt": "Copiar palavra-passe",
+  "fr": "Copier le mot de passe",
+  "uk": "Копіювати пароль"
+ },
+ "Account without a username": {
+  "tr": "Kullanıcı adı olmayan hesap",
+  "es": "Cuenta sin nombre de usuario",
+  "pt": "Conta sem nome de utilizador",
+  "fr": "Compte sans nom d’utilisateur",
+  "uk": "Обліковий запис без імені користувача"
+ },
+ "Search extensions": {
+  "tr": "Uzantılarda ara",
+  "es": "Buscar extensiones",
+  "pt": "Pesquisar extensões",
+  "fr": "Rechercher des extensions",
+  "uk": "Пошук розширень"
+ },
+ "How extensions work in Prism": {
+  "tr": "Uzantılar Prism’de nasıl çalışır",
+  "es": "Cómo funcionan las extensiones en Prism",
+  "pt": "Como funcionam as extensões no Prism",
+  "fr": "Fonctionnement des extensions dans Prism",
+  "uk": "Як працюють розширення в Prism"
+ },
+ "Version": {
+  "tr": "Sürüm",
+  "es": "Versión",
+  "pt": "Versão",
+  "fr": "Version",
+  "uk": "Версія"
+ },
+ "On": {
+  "tr": "Açık",
+  "es": "Activada",
+  "pt": "Ativada",
+  "fr": "Activée",
+  "uk": "Увімкнено"
+ },
+ "Off": {
+  "tr": "Kapalı",
+  "es": "Desactivada",
+  "pt": "Desativada",
+  "fr": "Désactivée",
+  "uk": "Вимкнено"
+ },
+ "Could not load": {
+  "tr": "Yüklenemedi",
+  "es": "No se pudo cargar",
+  "pt": "Não foi possível carregar",
+  "fr": "Chargement impossible",
+  "uk": "Не вдалося завантажити"
+ },
+ "Turn off": {
+  "tr": "Kapat",
+  "es": "Desactivar",
+  "pt": "Desativar",
+  "fr": "Désactiver",
+  "uk": "Вимкнути"
+ },
+ "Turn on": {
+  "tr": "Aç",
+  "es": "Activar",
+  "pt": "Ativar",
+  "fr": "Activer",
+  "uk": "Увімкнути"
+ },
+ "No matching extensions": {
+  "tr": "Eşleşen uzantı yok",
+  "es": "No hay extensiones coincidentes",
+  "pt": "Nenhuma extensão correspondente",
+  "fr": "Aucune extension correspondante",
+  "uk": "Розширень не знайдено"
+ },
+ "Use a saved password?": {
+  "tr": "Kayıtlı parola kullanılsın mı?",
+  "es": "¿Usar una contraseña guardada?",
+  "pt": "Usar uma palavra-passe guardada?",
+  "fr": "Utiliser un mot de passe enregistré ?",
+  "uk": "Використати збережений пароль?"
+ },
+ "This Mac has no Touch ID. Make sure nobody else can see your screen.": {
+  "tr": "Bu Mac’te Touch ID yok. Ekranını başka kimsenin görmediğinden emin ol.",
+  "es": "Este Mac no tiene Touch ID. Asegúrate de que nadie más vea tu pantalla.",
+  "pt": "Este Mac não tem Touch ID. Certifique-se de que mais ninguém vê o ecrã.",
+  "fr": "Ce Mac n’a pas Touch ID. Assurez-vous que personne d’autre ne voit votre écran.",
+  "uk": "На цьому Mac немає Touch ID. Переконайтеся, що ніхто інший не бачить ваш екран."
+ },
+ "Password not shown.": {
+  "tr": "Parola gösterilmedi.",
+  "es": "No se mostró la contraseña.",
+  "pt": "A palavra-passe não foi mostrada.",
+  "fr": "Mot de passe non affiché.",
+  "uk": "Пароль не показано."
+ },
+ "Password not copied.": {
+  "tr": "Parola kopyalanmadı.",
+  "es": "No se copió la contraseña.",
+  "pt": "A palavra-passe não foi copiada.",
+  "fr": "Mot de passe non copié.",
+  "uk": "Пароль не скопійовано."
+ },
+ "Login saved.": {
+  "tr": "Giriş kaydedildi.",
+  "es": "Inicio de sesión guardado.",
+  "pt": "Início de sessão guardado.",
+  "fr": "Identifiant enregistré.",
+  "uk": "Дані входу збережено."
+ },
+ "Nothing downloaded yet": {
+  "tr": "Henüz bir şey indirilmedi",
+  "es": "Aún no hay descargas",
+  "pt": "Ainda não há transferências",
+  "fr": "Aucun téléchargement",
+  "uk": "Ще нічого не завантажено"
+ },
+ "New downloads will appear here.": {
+  "tr": "Yeni indirilenler burada görünür.",
+  "es": "Las descargas nuevas aparecerán aquí.",
+  "pt": "As novas transferências aparecem aqui.",
+  "fr": "Les nouveaux téléchargements apparaîtront ici.",
+  "uk": "Нові завантаження з’являться тут."
+ },
+ "Camera": {
+  "tr": "Kamera",
+  "es": "Cámara",
+  "pt": "Câmara",
+  "fr": "Caméra",
+  "uk": "Камера"
+ },
+ "Microphone": {
+  "tr": "Mikrofon",
+  "es": "Micrófono",
+  "pt": "Microfone",
+  "fr": "Micro",
+  "uk": "Мікрофон"
+ },
+ "Notifications": {
+  "tr": "Bildirimler",
+  "es": "Notificaciones",
+  "pt": "Notificações",
+  "fr": "Notifications",
+  "uk": "Сповіщення"
+ },
+ "Location": {
+  "tr": "Konum",
+  "es": "Ubicación",
+  "pt": "Localização",
+  "fr": "Position",
+  "uk": "Розташування"
+ },
+ "Clipboard": {
+  "tr": "Pano",
+  "es": "Portapapeles",
+  "pt": "Área de transferência",
+  "fr": "Presse-papiers",
+  "uk": "Буфер обміну"
+ },
+ "Allowed": {
+  "tr": "İzin verildi",
+  "es": "Permitido",
+  "pt": "Permitido",
+  "fr": "Autorisé",
+  "uk": "Дозволено"
+ },
+ "Blocked": {
+  "tr": "Engellendi",
+  "es": "Bloqueado",
+  "pt": "Bloqueado",
+  "fr": "Bloqué",
+  "uk": "Заблоковано"
  }
 };
 const languages=["en","tr","es","pt","fr","uk"];

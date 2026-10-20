@@ -24,3 +24,20 @@ if(process.isMainFrame){
  addEventListener('scroll',()=>{if(open)ipcRenderer.send('prism-autofill-dismiss');},true);
  addEventListener('pagehide',()=>{clearTimeout(timer);open=false;});
 }
+// Web Share: navigator.share hands a title, text and URL (never files) to the macOS share menu, only during a user gesture.
+// The page-facing shim lives in the main world; this isolated world re-checks the gesture before asking the browser.
+if(process.isMainFrame){
+ require('electron').webFrame.executeJavaScript(`(()=>{if(navigator.share)return;let next=0;const pending=new Map();
+  addEventListener('prism-share-result',event=>{const [id,ok]=String(event.detail).split(':'),entry=pending.get(id);if(!entry)return;pending.delete(id);ok==='1'?entry[0]():entry[1](new DOMException('Share canceled','AbortError'));});
+  const clean=data=>({title:typeof data?.title==='string'?data.title.slice(0,500):'',text:typeof data?.text==='string'?data.text.slice(0,5000):'',url:data?.url==null?'':new URL(String(data.url),location.href).href});
+  const valid=data=>{const d=clean(data);if(!/^(https?|mailto):/.test(d.url||'https:'))throw new TypeError('Only web and mail links can be shared.');return d;};
+  Object.defineProperty(Navigator.prototype,'canShare',{configurable:true,writable:true,value:function canShare(data){try{const d=valid(data);return !data?.files?.length&&!!(d.title||d.text||d.url);}catch{return false;}}});
+  Object.defineProperty(Navigator.prototype,'share',{configurable:true,writable:true,value:function share(data){
+   if(!navigator.userActivation?.isActive)return Promise.reject(new DOMException('Must be handling a user gesture to perform a share request.','NotAllowedError'));
+   if(data?.files?.length)return Promise.reject(new DOMException('Sharing files is not supported.','NotAllowedError'));
+   let d;try{d=valid(data);}catch(error){return Promise.reject(error);}if(!d.title&&!d.text&&!d.url)return Promise.reject(new TypeError('Nothing to share.'));
+   const id=String(++next);return new Promise((resolve,reject)=>{pending.set(id,[resolve,reject]);dispatchEvent(new CustomEvent('prism-share',{detail:id+'\\n'+JSON.stringify(d)}));});}});})()`).catch(()=>{});
+ addEventListener('prism-share',event=>{const raw=String(event.detail||''),cut=raw.indexOf('\n'),id=raw.slice(0,cut);let data;try{data=JSON.parse(raw.slice(cut+1));}catch{return;}
+  const reply=ok=>dispatchEvent(new CustomEvent('prism-share-result',{detail:id+':'+(ok?1:0)}));
+  if(!navigator.userActivation?.isActive)return reply(false);ipcRenderer.invoke('prism-share',data).then(reply,()=>reply(false));});
+}

@@ -1,7 +1,7 @@
 {
   "name": "prism-browser",
   "productName": "Prism",
-  "version": "0.21.6",
+  "version": "0.24.1",
   "description": "A glass Chromium browser prototype with sleeping tabs",
   "main": "src/main.cjs",
   "scripts": {
@@ -28,10 +28,5 @@
     "lintapple": "0.1.19",
     "node-api-headers": "1.9.0"
   },
-  "license": "GPL-3.0-only",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/batuarchv/Prism-Browser.git"
-  },
-  "homepage": "https://batuarchv.github.io/Prism-Browser/"
+  "license": "GPL-3.0-only"
 }

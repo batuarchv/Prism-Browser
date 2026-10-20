@@ -1,0 +1,23 @@
+<!doctype html>
+<!-- DMG window background, 660×420 points. Icons sit on top at (170,214) Prism and (490,214) Applications; keep that band clear. -->
+<html><head><meta charset="utf-8"><style>
+html,body{margin:0;width:100vw;height:100vh;overflow:hidden}
+body{--u:calc(100vw / 660);position:relative;background:radial-gradient(70% 80% at 85% 0%,#d9e7f3 0%,transparent 60%),radial-gradient(60% 70% at 0% 100%,#e6eef0 0%,transparent 60%),linear-gradient(170deg,#f7f9fb 0%,#edf2f6 100%);font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display",system-ui,sans-serif;color:#1f2a36}
+.spectrum{position:absolute;left:calc(260*var(--u));top:calc(150*var(--u));width:calc(520*var(--u));height:calc(150*var(--u));transform:rotate(-12deg);transform-origin:left center;display:grid;grid-template-rows:repeat(6,1fr);filter:blur(calc(26*var(--u)));opacity:.28}
+.spectrum i:nth-child(1){background:#ff8a8a}.spectrum i:nth-child(2){background:#ffc36b}.spectrum i:nth-child(3){background:#f5ea7a}.spectrum i:nth-child(4){background:#86e3a4}.spectrum i:nth-child(5){background:#7cc0ff}.spectrum i:nth-child(6){background:#b49bff}
+.wordmark{position:absolute;left:50%;top:calc(42*var(--u));transform:translateX(-50%);height:calc(30*var(--u));opacity:.9}
+.well{position:absolute;top:calc(144*var(--u));width:calc(150*var(--u));height:calc(150*var(--u));border-radius:calc(36*var(--u));background:rgba(255,255,255,.55);border:calc(1*var(--u)) solid rgba(31,42,54,.08);box-shadow:0 calc(18*var(--u)) calc(40*var(--u)) calc(-24*var(--u)) rgba(31,42,54,.35),inset 0 calc(1*var(--u)) 0 rgba(255,255,255,.9)}
+.well.app{left:calc(95*var(--u))}.well.apps{left:calc(415*var(--u))}
+svg.arrow{position:absolute;left:calc(262*var(--u));top:calc(180*var(--u));width:calc(136*var(--u));height:calc(60*var(--u));overflow:visible}
+svg.arrow path{fill:none;stroke:#5f86ab;stroke-width:calc(2.4*var(--u));stroke-linecap:round;stroke-linejoin:round}
+svg.arrow .dash{stroke-dasharray:calc(1*var(--u)) calc(9*var(--u));opacity:.9}
+.caption{position:absolute;left:0;right:0;top:calc(338*var(--u));text-align:center;font-size:calc(15*var(--u));font-weight:600;letter-spacing:-.01em}
+.hint{position:absolute;left:0;right:0;top:calc(362*var(--u));text-align:center;font-size:calc(11.5*var(--u));color:#5d6b79}
+</style></head><body>
+<div class="spectrum"><i></i><i></i><i></i><i></i><i></i><i></i></div>
+<img class="wordmark" src="../../assets/prism-wordmark.svg" alt="">
+<div class="well app"></div><div class="well apps"></div>
+<svg class="arrow" viewBox="0 0 136 60"><path class="dash" d="M4 40 C44 6 92 6 126 34"/><path d="M114 22 L127 35 L110 40"/></svg>
+<div class="caption">Drag Prism into Applications</div>
+<div class="hint">Then open it from Applications or Launchpad.</div>
+</body></html>

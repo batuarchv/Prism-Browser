@@ -1,5 +1,9 @@
 {
-  "enabled": false,
-  "directory": "",
-  "publicKey": ""
+  "enabled": true,
+  "directory": "~/Library/Application Support/Prism Local Updates",
+  "publicKey": "-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEAARIghKtP5+Rv/Ry/cSqWpbwxWTOPCM3qbvKjPqlZpL4=\n-----END PUBLIC KEY-----\n",
+  "github": {
+    "enabled": true,
+    "repository": "batuarchv/Prism-Browser"
+  }
 }

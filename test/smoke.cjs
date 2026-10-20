@@ -4,25 +4,27 @@ const delay=ms=>new Promise(r=>setTimeout(r,ms));
 async function eventually(check,message){const deadline=Date.now()+5000;while(!await check()){if(Date.now()>deadline)throw Error(message);await delay(100);}}
 async function loaded(t){const until=Date.now()+15000;while(t.loading||!t.view?.webContents.getURL()){if(Date.now()>until)throw Error('Page load timeout');await delay(100);}await delay(250);}
 exports.run=async({app,win,makeTab,selectTab,sleepTab,action,snapshot,tabs,settings,services,passwords,toolWindows,privateController})=>{
-  const settingsWC=()=>win.webContents;
+  // Settings renders in its own tool view, not in the main window.
+  const settingsWC=()=>toolWindows.get()?.webContents;
+  const openSettings=async section=>{await win.webContents.executeJavaScript(`openPanel('${section}')`);await eventually(async()=>toolWindows.visible()&&toolWindows.section()===section&&!settingsWC().isLoading()&&await settingsWC().executeJavaScript(`panel===${JSON.stringify(section)}`),'Settings opened: '+section);};
   await require('./password-flow.cjs').run();
   const database=new (require('node:sqlite').DatabaseSync)(':memory:');database.close();
   const server=http.createServer((_req,res)=>{if(_req.url==='/download.bin'){res.writeHead(200,{'Content-Type':'application/octet-stream','Content-Disposition':'attachment; filename=Prism-test.bin','Content-Length':1048576});let sent=0;const interval=setInterval(()=>{if(sent>=1048576){clearInterval(interval);res.end();return;}res.write(Buffer.alloc(65536,65));sent+=65536;},150);res.on('close',()=>clearInterval(interval));return;}res.setHeader('Content-Type','text/html');res.end('<title>Prism test page</title><h1>Chromium works</h1><input id="draft"><a href="/next">Next</a>');});
   await new Promise(r=>server.listen(0,'127.0.0.1',r));const base=`http://127.0.0.1:${server.address().port}`;
   const a=makeTab(base);await loaded(a);
-  await win.webContents.executeJavaScript("document.getElementById('blocker-shield').click()");await eventually(()=>win.webContents.executeJavaScript("panel==='blocking'"),'Settings opened');
+  await win.webContents.executeJavaScript("document.getElementById('blocker-shield').click()");await eventually(async()=>toolWindows.visible()&&toolWindows.section()==='blocking'&&!settingsWC().isLoading()&&await settingsWC().executeJavaScript("panel==='blocking'"),'Settings opened');
   assert.equal(await settingsWC().executeJavaScript("document.querySelector('[data-pane=blocking]').hidden"),false);
   await action('blocker-site');assert.equal(snapshot().blocking.active,false);
   await action('blocker-site');assert.equal(snapshot().blocking.active,true);
   await action('blocker-toggle',false);assert.equal(snapshot().blocking.enabled,false);
   await action('blocker-toggle',true);assert.equal(snapshot().blocking.enabled,true);
   win.webContents.setBackgroundThrottling(false);await delay(250);fs.writeFileSync(path.join(reportDir,'blocker-settings-0.14.png'),(await win.webContents.capturePage()).toPNG());win.webContents.setBackgroundThrottling(true);
-  await win.webContents.executeJavaScript('closePanel()');
+  await action('close-tools');
   assert.ok((await action('history-list')).some(x=>x.url===base+'/'),'navigation records history');
   await action('find',{query:'Chromium'});await delay(400);assert.equal(snapshot().find.matches,1);assert.equal(a.view.getBounds().y,86);
   await action('find-close');assert.equal(a.view.getBounds().y,44);
   const recover=makeTab(base+'/recover');await loaded(recover);await action('close',recover.id);await action('reopen');const reopened=tabs.find(t=>t.id===snapshot().activeId);await loaded(reopened);assert.equal(reopened.url,base+'/recover');await action('close',reopened.id);
-  await win.webContents.executeJavaScript("openPanel('history')");await delay(200);assert.ok(await settingsWC().executeJavaScript("document.querySelectorAll('#history-rows article').length>0"));await win.webContents.executeJavaScript('closePanel()');selectTab(a.id);
+  await openSettings('history');await delay(200);assert.ok(await settingsWC().executeJavaScript("document.querySelectorAll('#history-rows article').length>0"));await action('close-tools');selectTab(a.id);
   assert.equal(await a.view.webContents.executeJavaScript('typeof require'),'undefined');
   assert.equal(await a.view.webContents.executeJavaScript('typeof window.prism'),'undefined');
   const dirty=makeTab(base+'/draft');await loaded(dirty);
@@ -59,7 +61,7 @@ exports.run=async({app,win,makeTab,selectTab,sleepTab,action,snapshot,tabs,setti
   await action('set-setting',{key:'hardwareAcceleration',value:initialHardware});
   if(process.env.PRISM_TEST_HARDWARE_OFF==='1'){assert.equal(initialHardware,false);assert.match(snapshot().system.gpu.gpu_compositing,/disabled/);}
   await action('set-setting',{key:'sidebarWidth',value:260});
-  win.webContents.setBackgroundThrottling(false);await win.webContents.executeJavaScript("openPanel('performance')");await settingsWC().executeJavaScript("document.querySelector('[data-budget=\"4\"]').click()");await delay(250);assert.equal(snapshot().settings.maxAwakeTabs,4);assert.equal(snapshot().settings.sleepMinutes,2);assert.match(await settingsWC().executeJavaScript("document.getElementById('resource-summary').textContent"),/MB.*CPU/);assert.ok(await settingsWC().executeJavaScript("document.querySelectorAll('.resource-row').length>0"));fs.writeFileSync(path.join(reportDir,'performance-0.13-preview.png'),(await win.webContents.capturePage()).toPNG());
+  win.webContents.setBackgroundThrottling(false);await openSettings('performance');await settingsWC().executeJavaScript("document.querySelector('[data-budget=\"4\"]').click()");await delay(250);assert.equal(snapshot().settings.maxAwakeTabs,4);assert.equal(snapshot().settings.sleepMinutes,2);assert.match(await settingsWC().executeJavaScript("document.getElementById('resource-summary').textContent"),/MB.*CPU/);assert.ok(await settingsWC().executeJavaScript("document.querySelectorAll('.resource-row').length>0"));fs.writeFileSync(path.join(reportDir,'performance-0.13-preview.png'),(await win.webContents.capturePage()).toPNG());
   await settingsWC().executeJavaScript("document.querySelector('[data-budget=\"8\"]').click()");await action('close-tools');await delay(100);assert.equal(snapshot().settings.maxAwakeTabs,8);win.webContents.setBackgroundThrottling(true);
   const extDir=path.join(app.getPath('userData'),'test-extension');fs.mkdirSync(extDir,{recursive:true});
   fs.writeFileSync(path.join(extDir,'manifest.json'),JSON.stringify({manifest_version:3,name:'Prism integration fixture',version:'1.0',content_scripts:[{matches:['http://127.0.0.1/*'],js:['content.js']}],action:{default_popup:'popup.html'}}));
@@ -95,23 +97,24 @@ exports.run=async({app,win,makeTab,selectTab,sleepTab,action,snapshot,tabs,setti
   }
   assert.ok((await passwords.saveCurrent(a)).error,'saving insecure HTTP forms is rejected');
   const privateChecks=await require('./private-flow.cjs').run({app,win,makeTab,selectTab,action,snapshot,base,a,privateController,toolWindows});
-  selectTab(tabs[0].id);await delay(300);await win.webContents.executeJavaScript("openPanel('appearance')");await delay(350);
-  fs.writeFileSync(path.join(reportDir,'settings-preview.png'),(await win.webContents.capturePage()).toPNG());
-  await action('set-setting',{key:'theme',value:'dark'});await delay(300);fs.writeFileSync(path.join(reportDir,'settings-dark-preview.png'),(await win.webContents.capturePage()).toPNG());
-  await action('set-setting',{key:'theme',value:'light'});await win.webContents.executeJavaScript('closePanel()');await delay(200);
+  selectTab(tabs[0].id);await delay(300);await openSettings('appearance');await delay(350);
+  fs.writeFileSync(path.join(reportDir,'settings-preview.png'),(await settingsWC().capturePage()).toPNG());
+  await action('set-setting',{key:'theme',value:'dark'});await delay(300);fs.writeFileSync(path.join(reportDir,'settings-dark-preview.png'),(await settingsWC().capturePage()).toPNG());
+  await action('set-setting',{key:'theme',value:'light'});await action('close-tools');await delay(200);
   const image=await win.webContents.capturePage();fs.writeFileSync(path.join(reportDir,'preview.png'),image.toPNG());
   const custom=structuredClone(snapshot().designTheme);custom.light.accent='#456789';await action('set-design-theme',custom);
   const {prismPresets,presetTheme}=require('../src/theme-presets.js');await action('apply-design-preset',presetTheme(prismPresets[1]));assert.equal(snapshot().designTheme.light.accent,'#507342');await action('restore-custom-theme');assert.equal(snapshot().designTheme.light.accent,'#456789');
-  await win.webContents.executeJavaScript("openPanel('design')");await delay(200);assert.equal(await settingsWC().executeJavaScript("document.querySelectorAll('.theme-preset').length"),6);fs.writeFileSync(path.join(reportDir,'themes-preview.png'),(await win.webContents.capturePage()).toPNG());
+  await openSettings('design');await delay(200);assert.equal(await settingsWC().executeJavaScript("document.querySelectorAll('.theme-preset').length"),6);fs.writeFileSync(path.join(reportDir,'themes-preview.png'),(await win.webContents.capturePage()).toPNG());
+  await action('close-tools');await delay(200);
   await win.webContents.executeJavaScript("(async()=>{await closePanel();document.getElementById('address').focus();document.getElementById('address').value='Reading';document.getElementById('address').dispatchEvent(new Event('input'));})()");await delay(300);
-  assert.equal(await win.webContents.executeJavaScript("document.getElementById('address').getAttribute('aria-expanded')"),'true');await eventually(()=>win.webContents.executeJavaScript("document.querySelectorAll('.suggestion-option').length>1"),'Search suggestions did not resolve');
+  await eventually(async()=>await win.webContents.executeJavaScript("document.getElementById('address').getAttribute('aria-expanded')")==='true','Address suggestions did not open');await eventually(()=>win.webContents.executeJavaScript("document.querySelectorAll('.suggestion-option').length>1"),'Search suggestions did not resolve');
   await win.webContents.executeJavaScript("document.getElementById('address').dispatchEvent(new KeyboardEvent('keydown',{key:'ArrowDown',bubbles:true}))");assert.equal(await win.webContents.executeJavaScript("document.getElementById('address').getAttribute('aria-activedescendant')"),'suggestion-1');
   await delay(200);fs.writeFileSync(path.join(reportDir,'suggestions-preview.png'),(await win.webContents.capturePage()).toPNG());
   await win.webContents.executeJavaScript("document.getElementById('address').dispatchEvent(new KeyboardEvent('keydown',{key:'Escape',bubbles:true}))");assert.equal(await win.webContents.executeJavaScript("document.getElementById('suggestion-layer').hidden"),true);
   await win.webContents.executeJavaScript('showSetup()');assert.equal(await win.webContents.executeJavaScript('onboardingOpen'),true);await delay(150);fs.writeFileSync(path.join(reportDir,'setup-welcome.png'),(await win.webContents.capturePage()).toPNG());
   await win.webContents.executeJavaScript("document.getElementById('setup-next').click()");assert.equal(await win.webContents.executeJavaScript("document.querySelectorAll('#setup-themes button').length"),6);
   await win.webContents.executeJavaScript("document.getElementById('setup-next').click();document.getElementById('setup-next').click()");assert.ok(await win.webContents.executeJavaScript("!!document.getElementById('setup-password-progress')"));
-  await win.webContents.executeJavaScript("document.getElementById('setup-next').click();document.getElementById('setup-next').click();document.getElementById('setup-next').click()");await delay(200);assert.equal(snapshot().settings.onboardingComplete,true);assert.equal(await win.webContents.executeJavaScript('onboardingOpen'),false);
+  await win.webContents.executeJavaScript("document.getElementById('setup-next').click();document.getElementById('setup-next').click()");assert.ok(await win.webContents.executeJavaScript("!!document.querySelector('#onboarding .setup-tips')"),'Sidebar and tabs step renders');await win.webContents.executeJavaScript("document.getElementById('setup-next').click()");assert.ok(await win.webContents.executeJavaScript("!!document.querySelector('#onboarding .setup-privacy')&&document.getElementById('setup-skip').hidden"),'Privacy is the last step');await win.webContents.executeJavaScript("document.getElementById('setup-next').click()");await delay(200);assert.equal(snapshot().settings.onboardingComplete,true);assert.equal(await win.webContents.executeJavaScript('onboardingOpen'),false);
   const report={passed:true,privateChecks,checks:['HTTP navigation','remote Node isolation','no privileged bridge in pages','active tab protection','edited-form protection','keep-awake protection','renderer destruction on sleep','wake and reload','unsafe scheme rejection','popup routed to tab','bookmark creation and folders','light and dark themes','native glass material switching','hardware acceleration restart flag','sidebar size controls','unpacked extension content script','extension popup and enable/disable','download pause/resume/completion/cancel','bookmark movement','startup hardware acceleration state','local favorite screenshot capture','extension tabs query/create/remove','password exact-origin refusal','password and username-step fill without submission','insecure password saving blocked','password save consent and encrypted update'],chromium:process.versions.chrome,electron:process.versions.electron,glass:snapshot().glass,rendererPid:pid};
   fs.writeFileSync(path.join(reportDir,'smoke-results.json'),JSON.stringify(report,null,2));console.log(JSON.stringify(report,null,2));server.close();app.exit(0);
 };
