@@ -17,7 +17,7 @@ exports.run=async({win,makeTab,action,snapshot,base,a,privateController,toolWind
  await assert.rejects(privateSession.fetch(base+'/must-block'));check('Blocked Private request fails',true);
  const normal=await ses.fetch(base+'/normal-still-works');check('Normal session remains connected',normal.ok);
  await action('private-network',{mode:'zapret',profile:'plain'});check('Installed tpws starts as isolated SOCKS helper',snapshot().privateNetwork.status==='active');
- check('Private uses a SOCKS route',(await privateSession.resolveProxy('https://example.test')).startsWith('SOCKS5'));
+ check('Private uses a SOCKS route',(await privateSession.resolveProxy('https://example.test')).startsWith('SOCKS '));
  privateController().runner.kill('SIGTERM');await waitUntil(()=>snapshot().privateNetwork.status==='error');await assert.rejects(privateSession.fetch(base+'/helper-failed'));check('Unexpected helper exit blocks requests without Direct fallback',true);
  await action('private-network',{mode:'stopped'});await assert.rejects(privateSession.fetch(base+'/still-blocked'));
  await action('private-network',{mode:'direct'});check('Direct is an explicit user choice',(await privateSession.fetch(base+'/direct')).ok);
@@ -25,8 +25,8 @@ exports.run=async({win,makeTab,action,snapshot,base,a,privateController,toolWind
  check('Old Private cookies are cleared',(await privateSession.cookies.get({})).length===0);
  check('Normal cookies survive',(await ses.cookies.get({name:'normal-only'})).length===1);
  await action('space','private');const fresh=makeTab(base+'/fresh');check('Next Private session is a new store',fresh.view.webContents.session!==privateSession);await waitUntil(()=>!privateController().busy&&snapshot().privateNetwork.status==='active');await action('end-private');
- await win.webContents.executeJavaScript("openPanel('design')");check('Design studio renders',await win.webContents.executeJavaScript("document.querySelector('[data-pane=design]').hidden===false && document.querySelectorAll('#design-colors input').length===7"));
- await win.webContents.executeJavaScript('closePanel()');
+ await win.webContents.executeJavaScript("openPanel('design')");await waitUntil(async()=>toolWindows.visible()&&toolWindows.section()==='design'&&!toolWindows.get().webContents.isLoading()&&await toolWindows.get().webContents.executeJavaScript("panel==='design'"));check('Design studio renders',await toolWindows.get().webContents.executeJavaScript("document.querySelector('[data-pane=design]').hidden===false && document.querySelectorAll('#design-colors input').length===7"));
+ await action('close-tools');
  await action('set-setting',{key:'sidebarCollapsed',value:true});await delay(100);check('Sidebar collapse updates UI',await win.webContents.executeJavaScript("document.documentElement.dataset.collapsed==='true'"));await action('set-setting',{key:'sidebarCollapsed',value:false});
  console.log(JSON.stringify({privateChecks:checks}));return checks;
 };

@@ -1,5 +1,6 @@
 /* Public project links for the Prism GitHub Pages site. */
 const PrismSite = {
   repository: "https://github.com/batuarchv/Prism-Browser",
-  releases: "https://github.com/batuarchv/Prism-Browser/releases"
+  releases: "https://github.com/batuarchv/Prism-Browser/releases",
+  download: "https://github.com/batuarchv/Prism-Browser/releases/latest"
 };

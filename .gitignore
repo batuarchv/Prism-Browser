@@ -21,3 +21,9 @@ release/
 *.sqlite-wal
 profile/
 user-data/
+
+# Development reports, test captures and assistant notes
+reports/
+CLAUDE.md
+.claude/
+*.pem

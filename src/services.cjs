@@ -11,7 +11,14 @@ function createServices({app,ses,window,settings,saveSettings,emit,smoke,private
  function changedImages(){images=trimImages(images,settings.leanMemory?2*1024*1024:4*1024*1024);imageRevision++;if(!smoke)writeJSON(imagesFile,images);}
 const popupWindows=new Set();let lastEmit=0;
  const persistDownloads=()=>{if(!smoke)writeJSON(downloadsFile,downloads.slice(0,150));};
- function extensionRows(){return settings.extensions.map(e=>{const loaded=ses.extensions.getExtension(e.id);const m=loaded?.manifest;return {...e,loaded:!!loaded,hasPopup:!!(m?.action?.default_popup||m?.browser_action?.default_popup),hasOptions:!!(m?.options_page||m?.options_ui?.page)};});}
+ // Each extension's own icon (largest declared size up to 128 px, under 256 KB) as an inline image, cached per version.
+ const extensionIcons=new Map();
+ function extensionIcon(loaded){const m=loaded?.manifest;if(!m)return null;const key=loaded.id+'@'+m.version;if(extensionIcons.has(key))return extensionIcons.get(key);let icon=null;
+  try{const icons=m.icons||m.action?.default_icon||m.browser_action?.default_icon;const entries=typeof icons==='string'?[[128,icons]]:Object.entries(icons||{}).map(([size,file])=>[Number(size),file]).filter(([size,file])=>size<=128&&typeof file==='string').sort((a,b)=>b[0]-a[0]);
+   const file=entries[0]&&path.resolve(loaded.path,entries[0][1].replace(/^\/+/,''));const type=file&&{'.png':'image/png','.svg':'image/svg+xml','.jpg':'image/jpeg','.jpeg':'image/jpeg','.webp':'image/webp'}[path.extname(file).toLowerCase()];
+   if(type&&file.startsWith(path.resolve(loaded.path)+path.sep)&&fs.statSync(file).size<262144)icon='data:'+type+';base64,'+fs.readFileSync(file).toString('base64');}catch{}
+  extensionIcons.set(key,icon);return icon;}
+ function extensionRows(){return settings.extensions.map(e=>{const loaded=ses.extensions.getExtension(e.id);const m=loaded?.manifest;return {...e,loaded:!!loaded,hasPopup:!!(m?.action?.default_popup||m?.browser_action?.default_popup),hasOptions:!!(m?.options_page||m?.options_ui?.page),icon:extensionIcon(loaded),description:typeof m?.description==='string'&&!m.description.startsWith('__MSG_')?m.description.slice(0,200):''};});}
  async function loadExtension(record){try{const extension=await ses.extensions.loadExtension(record.path,{allowFileAccess:false});record.id=extension.id;record.name=extension.name;record.version=extension.version;record.error='';record.enabled=true;return extension;}catch(error){record.error=error.message;return null;}}
  async function restoreExtensions(){for(const record of settings.extensions)if(record.enabled)await loadExtension(record);saveSettings();emit();}
  async function reviewExtension(manifest,name=manifest.name){

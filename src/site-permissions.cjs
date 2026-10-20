@@ -1,7 +1,7 @@
 function origin(value){try{const u=new URL(value);return u.protocol==='https:'||u.protocol==='http:'&&['localhost','127.0.0.1','[::1]'].includes(u.hostname)?u.origin:null;}catch{return null;}}
-function keys(permission,details={}){if(permission==='media'){const types=details.mediaTypes||[details.mediaType];return types.length&&types.every(x=>['audio','video'].includes(x))?[...new Set(types.map(x=>x==='audio'?'microphone':'camera'))]:[];}return ['notifications','geolocation'].includes(permission)?[permission]:[];}
+function keys(permission,details={}){if(permission==='media'){const types=details.mediaTypes||[details.mediaType];return types.length&&types.every(x=>['audio','video'].includes(x))?[...new Set(types.map(x=>x==='audio'?'microphone':'camera'))]:[];}if(permission==='clipboard-read')return ['clipboard'];return ['notifications','geolocation'].includes(permission)?[permission]:[];}
 function createPermissions({load={},save,tabFor,prompt}){
- const decisions=new Map();for(const row of Array.isArray(load)?load:[])if(origin(row.origin)===row.origin&&['camera','microphone','notifications','geolocation'].includes(row.permission)&&['allow','block'].includes(row.decision))decisions.set(row.origin+'|'+row.permission,row);
+ const decisions=new Map();for(const row of Array.isArray(load)?load:[])if(origin(row.origin)===row.origin&&['camera','microphone','notifications','geolocation','clipboard'].includes(row.permission)&&['allow','block'].includes(row.decision))decisions.set(row.origin+'|'+row.permission,row);
  const rows=()=>[...decisions.values()];const pending=new Set();
  function context(wc,url,details){const t=tabFor(wc),site=origin(url);return t&&t.space!=='private'&&!wc.isDestroyed()&&details.isMainFrame===true&&site&&origin(wc.getURL())===site?{t,site,version:t.navigationVersion}:null;}
  function check(wc,p,url,d){const c=context(wc,url,d),k=keys(p,d);return !!c&&k.length>0&&k.every(key=>decisions.get(c.site+'|'+key)?.decision==='allow');}
