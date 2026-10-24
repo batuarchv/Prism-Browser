@@ -895,12 +895,6 @@ img.glass-fallback{visibility:hidden!important}
 .dock-address #address-form:focus-within{background:var(--raised);border-color:color-mix(in srgb,var(--accent) 60%,transparent)}
 .dock-address #address{font-size:12.5px}
 .dock-address #address-form kbd{display:none}
-.dock-address #dock-new{width:30px;height:30px;flex-shrink:0;color:var(--muted)}
-.dock-tools{display:flex;align-items:center;gap:1px;min-height:30px;margin:0 -4px 2px;color:var(--muted)}
-.dock-tools #workspace-tools{margin-left:auto;border:0}
-.dock-tools #workspace-tools span{display:none}
-.dock-tools #browser-actions{max-width:96px;overflow:hidden}
-.dock-tools button{width:28px;height:28px}
 :root[data-address=sidebar] #welcome,:root[data-address=sidebar] #preferences:not([data-mode]),:root[data-address=sidebar] #resize-preview,:root[data-address=sidebar] #panel-preview{top:6px}
 :root[data-address=sidebar] #resize-preview,:root[data-address=sidebar] #panel-preview{height:calc(100% - 12px)}
 :root[data-address=sidebar] #workspace-bar,:root[data-address=sidebar] #page-find{top:6px}
@@ -981,3 +975,36 @@ img.glass-fallback{visibility:hidden!important}
 :root[data-compact=revealed] #sidebar{animation:compactIn .2s var(--ease-out,cubic-bezier(.2,.7,.2,1))}
 @keyframes compactIn{from{opacity:.4;transform:translateX(-14px)}to{opacity:1;transform:none}}
 [data-motion=reduced] #sidebar{animation:none!important}
+/* 0.32.1 · Page tools behind Settings (address-dock.js): a small glass menu above the Settings button with the tools as
+   live tiles (on = tinted, like Control Center) and Settings at the bottom. */
+#tools-menu{position:absolute;left:0;bottom:44px;z-index:40;width:min(244px,calc(100% - 4px));padding:8px;border-radius:14px;background:color-mix(in srgb,var(--raised) 90%,transparent);box-shadow:0 18px 44px #00000038,0 0 0 .5px var(--line);-webkit-backdrop-filter:blur(26px) saturate(1.5);backdrop-filter:blur(26px) saturate(1.5);transform-origin:12px 100%;animation:toolsIn .18s var(--ease-out,cubic-bezier(.2,.7,.2,1))}
+#tools-menu[hidden]{display:none}
+@keyframes toolsIn{from{opacity:0;transform:translateY(6px) scale(.96)}to{opacity:1;transform:none}}
+.sidebar-bottom{position:relative}
+#tools-menu .dock-tools{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:5px}
+#tools-menu .dock-tools>button{width:auto;height:38px;border-radius:10px;color:var(--ink);background:color-mix(in srgb,var(--ink) 6%,transparent)}
+#tools-menu .dock-tools>button:hover:not(:disabled){background:color-mix(in srgb,var(--ink) 11%,transparent)}
+#tools-menu .dock-tools>button:disabled{opacity:.38}
+#tools-menu .dock-tools>button.on,#tools-menu .dock-tools>button.is-bookmarked,#tools-menu .dock-tools>button[aria-pressed=true]{color:#fff;background:color-mix(in srgb,var(--accent) 85%,transparent)}
+#tools-menu .dock-tools #workspace-tools{border:0;padding:0}
+#tools-menu .dock-tools #workspace-tools span{display:none}
+#tools-menu .dock-tools #browser-actions{grid-column:1/-1;max-width:none}
+#tools-menu .dock-tools #browser-actions:empty,#tools-menu .dock-tools #browser-actions[hidden]{display:none}
+.tools-separator{height:.5px;margin:8px 2px;background:var(--line)}
+.tools-settings{display:flex;align-items:center;gap:9px;width:100%;height:32px;padding:0 8px;border-radius:8px;font-size:12.5px;color:var(--ink);background:transparent;text-align:left}
+.tools-settings:hover{background:color-mix(in srgb,var(--accent) 85%,transparent);color:#fff}
+.tools-settings .icon{width:16px;height:16px}
+.tools-settings kbd{margin-left:auto;font-size:10.5px;color:inherit;opacity:.6;background:none;border:0}
+#settings.selected{background:color-mix(in srgb,var(--ink) 10%,transparent)}
+#settings.tools-arrived{animation:toolsArrived 1.2s ease-out}
+@keyframes toolsArrived{0%{box-shadow:0 0 0 0 color-mix(in srgb,var(--accent) 70%,transparent);color:var(--accent)}60%{box-shadow:0 0 0 10px color-mix(in srgb,var(--accent) 0%,transparent);color:var(--accent)}100%{box-shadow:none}}
+.tool-ghost{position:fixed;z-index:200;display:grid;place-items:center;margin:0;border:0;border-radius:8px;color:var(--ink);background:color-mix(in srgb,var(--raised) 80%,transparent);box-shadow:0 6px 18px #0003;pointer-events:none}
+.tool-ghost span{display:none}
+.tools-note{position:absolute;left:0;bottom:44px;z-index:39;padding:6px 10px;border-radius:9px;font-size:11.5px;color:var(--ink);background:color-mix(in srgb,var(--raised) 92%,transparent);box-shadow:0 8px 24px #0002,0 0 0 .5px var(--line);animation:toolsIn .25s var(--ease-out,ease);transition:opacity .3s,transform .3s}
+.tools-note.leaving{opacity:0;transform:translateY(4px)}
+[data-motion=reduced] #tools-menu,[data-motion=reduced] .tools-note,[data-motion=reduced] #settings.tools-arrived{animation:none}
+/* 0.32.1 · End Private is a small icon beside the space name. */
+#end-private.end-private-icon{display:grid;place-items:center;width:24px;height:24px;padding:0;margin-left:2px;border-radius:7px;color:var(--muted);font-size:0}
+#end-private.end-private-icon[hidden]{display:none}
+#end-private.end-private-icon:hover{color:var(--accent);background:color-mix(in srgb,var(--accent) 14%,transparent)}
+#end-private.end-private-icon .icon{width:14px;height:14px;stroke-width:1.9}

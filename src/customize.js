@@ -38,6 +38,8 @@ $('design-mode').onchange=()=>{if(state)renderDesign(state);};
 $('theme-import').onclick=()=>act('import-design-theme');$('theme-export').onclick=()=>act('export-design-theme');$('theme-reset').onclick=()=>act('reset-design-theme');
 window.prism.onState(renderDesign);
 $('space-picker').onchange=e=>{if(panel)closePanel();act('space',e.target.value);};
+// 0.32.1: End Private is a small icon (its name stays as the tooltip and for VoiceOver).
+{const end=$('end-private');end.classList.add('end-private-icon');end.textContent='';end.append(icon('power'));end.title='End Private';end.setAttribute('aria-label','End Private');}
 $('end-private').onclick=()=>act('end-private');
 $('network-direct').onclick=()=>act('private-network',{mode:'direct'});
 $('network-start').onclick=()=>act('private-network',{mode:'zapret',profile:$('private-profile').value});

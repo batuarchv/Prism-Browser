@@ -3779,6 +3779,13 @@ const catalog={
   "pt": "O Privado não guarda arquivo.",
   "fr": "Le mode Privé ne conserve pas d’archives.",
   "uk": "Приватний режим не зберігає архів."
+ },
+ "Page tools are in Settings now": {
+  "tr": "Sayfa araçları artık Ayarlar’da",
+  "es": "Las herramientas de página están ahora en Ajustes",
+  "pt": "As ferramentas da página estão agora nas Definições",
+  "fr": "Les outils de la page sont maintenant dans Réglages",
+  "uk": "Інструменти сторінки тепер у Налаштуваннях"
  }
 };
 const languages=["en","tr","es","pt","fr","uk"];

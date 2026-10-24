@@ -2,6 +2,16 @@
 
 All notable changes to Prism, newest first. Downloads are on the [Releases page](https://github.com/batuarchv/Prism-Browser/releases).
 
+## 0.32.1 — A tidier sidebar address bar
+
+### New
+- **Page tools behind Settings.** With the address bar in the sidebar, the Settings button opens a small glass menu: protection, bookmark, passwords, keep awake, extensions and split view as live tiles, with Settings itself at the bottom.
+- **You can see where they went.** When you switch the address bar into the sidebar, the toolbar icons glide down into the Settings button.
+- **A cleaner sidebar.** No separate New tab button next to the address field (⌘T still opens one), and End Private is now a small icon beside the space name.
+
+### Install notes
+This beta is **ad-hoc signed and not notarized by Apple**. The first time you open it, macOS may say it can't verify the developer: right-click (or Control-click) Prism in Applications and choose **Open**, then **Open** again. Apple Silicon (arm64) only.
+
 ## 0.32.0 — Arc's best ideas, made for Prism
 
 ### New
