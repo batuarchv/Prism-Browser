@@ -4052,6 +4052,83 @@ const catalog={
   "pt": "Adormece separadores inativos quando o macOS fica com pouca memória. Mantém até 1 GB de cache web no disco para que separadores adormecidos voltem depressa. Cookies, palavras-passe e dados de sites mantêm-se.",
   "fr": "Met en veille les onglets inactifs quand macOS manque de mémoire. Garde jusqu’à 1 Go de cache web sur le disque pour que les onglets en veille reviennent vite. Cookies, mots de passe et données des sites sont conservés.",
   "uk": "Присипляє неактивні вкладки, коли macOS бракує пам’яті. Зберігає до 1 ГБ веб-кешу на диску, щоб приспані вкладки швидко поверталися. Cookie, паролі й дані сайтів зберігаються."
+ },
+ "Chromium {n} is out · Prism will update": {
+  "tr": "Chromium {n} çıktı · Prism güncellenecek",
+  "es": "Chromium {n} ya salió · Prism se actualizará",
+  "pt": "Chromium {n} já saiu · o Prism vai atualizar",
+  "fr": "Chromium {n} est sorti · Prism se mettra à jour",
+  "uk": "Вийшов Chromium {n} · Prism оновиться"
+ },
+ "Checks are off.": {
+  "tr": "Denetim kapalı.",
+  "es": "Las comprobaciones están desactivadas.",
+  "pt": "As verificações estão desligadas.",
+  "fr": "Les vérifications sont désactivées.",
+  "uk": "Перевірки вимкнено."
+ },
+ "Chromium {v} is available in Electron {e}. Prism’s next update brings it.": {
+  "tr": "Chromium {v}, Electron {e} ile çıktı. Prism’in bir sonraki güncellemesi onu getirecek.",
+  "es": "Chromium {v} está disponible en Electron {e}. La próxima actualización de Prism lo traerá.",
+  "pt": "O Chromium {v} está disponível no Electron {e}. A próxima atualização do Prism traz.",
+  "fr": "Chromium {v} est disponible dans Electron {e}. La prochaine mise à jour de Prism l’apportera.",
+  "uk": "Chromium {v} доступний в Electron {e}. Наступне оновлення Prism його принесе."
+ },
+ "Electron {e} is available. Prism’s next update brings it.": {
+  "tr": "Electron {e} çıktı. Prism’in bir sonraki güncellemesi onu getirecek.",
+  "es": "Electron {e} está disponible. La próxima actualización de Prism lo traerá.",
+  "pt": "O Electron {e} está disponível. A próxima atualização do Prism traz.",
+  "fr": "Electron {e} est disponible. La prochaine mise à jour de Prism l’apportera.",
+  "uk": "Electron {e} доступний. Наступне оновлення Prism його принесе."
+ },
+ "Chrome {v} is out; Electron has not shipped it yet.": {
+  "tr": "Chrome {v} çıktı; Electron henüz yayımlamadı.",
+  "es": "Chrome {v} ya salió; Electron aún no lo incluye.",
+  "pt": "O Chrome {v} já saiu; o Electron ainda não o inclui.",
+  "fr": "Chrome {v} est sorti ; Electron ne l’a pas encore intégré.",
+  "uk": "Вийшов Chrome {v}; Electron його ще не випустив."
+ },
+ "Up to date with Chrome {v}.": {
+  "tr": "Chrome {v} ile güncel.",
+  "es": "Al día con Chrome {v}.",
+  "pt": "Atualizado com o Chrome {v}.",
+  "fr": "À jour avec Chrome {v}.",
+  "uk": "Актуально з Chrome {v}."
+ },
+ "Could not check. Prism will try again next time it opens.": {
+  "tr": "Denetlenemedi. Prism bir sonraki açılışta yeniden deneyecek.",
+  "es": "No se pudo comprobar. Prism lo intentará de nuevo la próxima vez que se abra.",
+  "pt": "Não foi possível verificar. O Prism tenta de novo na próxima vez que abrir.",
+  "fr": "Vérification impossible. Prism réessaiera à sa prochaine ouverture.",
+  "uk": "Не вдалося перевірити. Prism спробує знову під час наступного запуску."
+ },
+ "Checked each time Prism opens.": {
+  "tr": "Prism her açıldığında denetlenir.",
+  "es": "Se comprueba cada vez que se abre Prism.",
+  "pt": "Verificado sempre que o Prism abre.",
+  "fr": "Vérifié à chaque ouverture de Prism.",
+  "uk": "Перевіряється щоразу, коли відкривається Prism."
+ },
+ "Check for Chromium updates": {
+  "tr": "Chromium güncellemelerini denetle",
+  "es": "Buscar actualizaciones de Chromium",
+  "pt": "Procurar atualizações do Chromium",
+  "fr": "Rechercher les mises à jour de Chromium",
+  "uk": "Перевіряти оновлення Chromium"
+ },
+ "Each time Prism opens, compare its Chromium with the newest Chrome and Electron releases. Only public version lists are requested.": {
+  "tr": "Prism her açıldığında Chromium sürümünü en yeni Chrome ve Electron sürümleriyle karşılaştırır. Yalnızca herkese açık sürüm listeleri istenir.",
+  "es": "Cada vez que se abre Prism, compara su Chromium con las versiones más recientes de Chrome y Electron. Solo se piden listas de versiones públicas.",
+  "pt": "Sempre que o Prism abre, compara o seu Chromium com as versões mais recentes do Chrome e do Electron. Só são pedidas listas públicas de versões.",
+  "fr": "À chaque ouverture, Prism compare son Chromium aux dernières versions de Chrome et d’Electron. Seules des listes publiques de versions sont demandées.",
+  "uk": "Щоразу під час запуску Prism порівнює свій Chromium з найновішими випусками Chrome і Electron. Запитуються лише публічні списки версій."
+ },
+ "Checking…": {
+  "tr": "Denetleniyor…",
+  "es": "Comprobando…",
+  "pt": "A verificar…",
+  "fr": "Vérification…",
+  "uk": "Перевірка…"
  }
 };
 const languages=["en","tr","es","pt","fr","uk"];

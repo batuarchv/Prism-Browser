@@ -2,6 +2,19 @@
 
 All notable changes to Prism, newest first. Downloads are on the [Releases page](https://github.com/batuarchv/Prism-Browser/releases).
 
+## 0.34.0 — A watch on Chromium
+
+### New
+- **Newest Chromium 152 security build.** Prism moves to Electron 44.9.3 with Chromium 152.0.7977.167, which has the latest security fixes for this Chromium.
+- **Chromium update check.** Each time Prism opens, it compares its Chromium with the newest Chrome and Electron releases. Settings → Updates shows the result, and a quiet note appears once when a newer Chromium is ready for Prism. Only public version lists are requested, and you can turn it off.
+
+### Also new
+- **More reliable Settings, popovers and suggestions.** They no longer wait for a hidden page to finish loading before they appear.
+- **Extension buttons work when the extension is asleep.** Prism wakes an extension's background worker before deciding what its button does.
+
+### Install notes
+This beta is **ad-hoc signed and not notarized by Apple**. The first time you open it, macOS may say it can't verify the developer: right-click (or Control-click) Prism in Applications and choose **Open**, then **Open** again. Apple Silicon (arm64) only.
+
 ## 0.33.2 — Tabs that stay ready
 
 ### New

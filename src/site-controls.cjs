@@ -29,7 +29,7 @@ function eraseScript(labels){return `new Promise(done=>{if(window.__prismErase)r
 
 function createSiteControls({permissions,activeTab,settings,saveSettings,readHidden,writeHidden,confirm,translate=t=>t,defaultZoom=()=>1}){
  let hidden=readHidden()||{};const applied=new WeakMap();
- const siteOf=t=>t&&t.view&&!t.view.webContents.isDestroyed()?origin(t.view.webContents.getURL()):null;
+ const siteOf=t=>t?.view?.webContents&&!t.view.webContents.isDestroyed()?origin(t.view.webContents.getURL()):null;
  const zoomFor=site=>{const z=settings.siteZoom?.[site];return Number.isFinite(z)?z:defaultZoom();};
  async function cookies(wc,site){try{const list=await wc.session.cookies.get({url:site});return list;}catch{return [];}}
  // Re-applies this origin's hidden elements and zoom after each navigation (called from main.cjs).

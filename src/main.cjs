@@ -18,6 +18,12 @@ const {installChromeWebStore}=require('electron-chrome-web-store');
 const {createPasswords}=require('./passwords.cjs');
 const {createServices}=require('./services.cjs');
 const {Blocker}=require('./blocker.cjs');let blocker;
+// Chromium update check (0.34, chromium-check.cjs): at every launch, unless turned off in Settings → Updates. When an
+// Electron release with a newer Chromium appears, a quiet note says so once for that version.
+const chromiumCheck=require('./chromium-check.cjs').createChromiumCheck({changed:()=>{if(win)emit();}});
+const chromiumNotedFile=path.join(app.getPath('userData'),'chromium-check.json');
+function noteChromium(result){if(result?.status!=='available'||!result.nextChromium)return;const key=result.nextChromium;let noted='';try{noted=JSON.parse(fs.readFileSync(chromiumNotedFile,'utf8')).noted||'';}catch{}if(noted===key)return;
+ try{fs.writeFileSync(chromiumNotedFile,JSON.stringify({noted:key}),{mode:0o600});}catch{}feedback('chromium-update',Number(key.split('.')[0]));}
 const {PrivateNetwork}=require('./private-network.cjs');
 const {normalTabs,inSpace,validSpace,fallbackSpace,addSpace,updateSpace,removeSpace,moveSpace}=require('./spaces.cjs');
 const {favoriteTab,opensNewFavoriteTab}=require('./favorite-tabs.cjs');
@@ -120,7 +126,7 @@ function snapshot() {
   const active = tabs.find(t => t.id === activeId);
   const privateMode=space==='private';
   return {popover:{open:toolWindows?.visible()?toolWindows.section():null,returnTo:popoverReturn},account:privateMode?null:accounts.snapshot(),profile:privateMode?null:profile,split,inspecting:!!inspector?.isOpen(),ai:privateMode?null:ai?.snapshot(),updates:updateOverride||updater?.snapshot(),version:require('../package.json').version,blocking:blocker?.snapshot(active?.url,privateMode,active?.view?.webContents.id),space,privateNetwork:privateNetwork?.snapshot(),tabs: tabs.filter(t=>inSpace(t,space)).map(({view,recovery,restoring,scrollCapturePending,returns,linkClick, ...t}) => ({...t,title:t.customTitle||t.title, sleeping: !view && !!t.url})), activeId, glass,settings:{...settings,extensions:undefined},system:{...accessibility(),dark:nativeTheme.shouldUseDarkColors,accent:privateMode?'#9275b5':accent(),hardwareAcceleration:launchHardwareAcceleration,gpu:app.getGPUFeatureStatus(),restartRequired:settings.hardwareAcceleration!==launchHardwareAcceleration||settings.leanMemory!==launchLeanMemory},extensions:privateMode?[]:services?.extensionRows()||[],sidePanel:privateMode?null:sidePanels?.snapshot()||null,downloads:(privateMode?privateServices:services)?.downloads()||[],imageRevision:privateMode?'private':'normal-'+(services?.imageRevision()||0),images:privateMode?{}:services?.images()||{},passwords:privateMode?{message:'Password vault is disabled in Private.'}:passwords?.status()||{},browserPartition:privateMode?'private-disabled':browserPartition,activeWebContentsId:privateMode?-1:active?.view?.webContents.id||-1,bookmarks:privateMode?[]:library.bookmarks,folders:privateMode?[]:library.folders,theme:library.theme,importReport:privateMode?null:library.importReport,importing,sessionRecovery:sessionStore.status(),recentlyClosed:privateMode?[]:recentlyClosed.list(space),spaceTabs:tabs.reduce((n,t)=>{const k=t.space||'personal';n[k]=(n[k]||0)+1;return n;},{}),
-    find,designTheme,chromium: process.versions.chrome, live: tabs.filter(t => t.view).length,archived:privateMode?0:(library.archive||[]).filter(e=>e.space===space).length,spectrum:privateMode?null:spectrum.revision(),media:privateMode?null:media?.snapshot()||null,compactReveal,pip:pip?.snapshot()||null,
+    find,designTheme,chromium: process.versions.chrome,chromiumCheck:chromiumCheck.snapshot(), live: tabs.filter(t => t.view).length,archived:privateMode?0:(library.archive||[]).filter(e=>e.space===space).length,spectrum:privateMode?null:spectrum.revision(),media:privateMode?null:media?.snapshot()||null,compactReveal,pip:pip?.snapshot()||null,
 
     canBack: !!active?.view?.webContents.navigationHistory.canGoBack(), canForward: !!active?.view?.webContents.navigationHistory.canGoForward()};
 }
@@ -181,8 +187,13 @@ function layout() {
 
 // Toolbar click on an extension without a popup, as in Chrome: openPanelOnActionClick toggles its side panel, otherwise
 // chrome.action.onClicked goes to the extension (Claude opens its panel from there). With neither, Prism toggles the panel.
-function sideAction(id){
- const router=extensionApi.ctx.router,t=tabs.find(t=>t.id===activeId),listening=(router.listeners?.get('browserAction.onClicked')||[]).some(l=>l.extensionId===id);
+// An MV3 extension's service worker may be asleep (or still starting after install), and its onClicked listener is
+// only known once it runs: wake it and give it up to two seconds before deciding there is no listener (0.34).
+async function sideAction(id){
+ const router=extensionApi.ctx.router,listens=()=>(router.listeners?.get('browserAction.onClicked')||[]).some(l=>l.extensionId===id);
+ if(!listens()&&!sidePanels.behavior(id).openPanelOnActionClick){const ext=services.extensionRows().find(e=>e.id===id);const ses=session.fromPartition(browserPartition);
+  if(ext?.serviceWorker){try{await ses.serviceWorkers.startWorkerForScope('chrome-extension://'+id+'/');}catch{}for(let i=0;i<20&&!listens();i++)await new Promise(r=>setTimeout(r,100));}}
+ const t=tabs.find(t=>t.id===activeId),listening=listens();
  if(sidePanels.behavior(id).openPanelOnActionClick||(!listening&&sidePanels.has(id))){sidePanels.toggle(id);return true;}
  if(!t?.view||t.space==='private')return {error:'Open a page first.'};
  router.sendEvent(id,'browserAction.onClicked',extensionApi.ctx.store.tabDetailsCache.get(t.view.webContents.id)||{id:t.view.webContents.id});return true;
@@ -533,7 +544,7 @@ async function action(name,value) {
   if(name==='ai-rename-apply')return ai.apply(value);
   if(name==='open-chatgpt'){if(space==='private')return {error:'AI is disabled in Private.'};makeTab('https://chatgpt.com/',true,homeSpace());return;}
   if(name==='open-shortcuts'){await shell.openPath('/System/Applications/Shortcuts.app');return;}
-  if(name==='update-check')return updater.check();
+  if(name==='update-check'){if(settings.chromiumCheck!==false)chromiumCheck.check().catch(()=>{});return updater.check();}
   if(name==='whats-new'){showWhatsNew();return;}
   if(name==='update-install'){if(updater.snapshot().status!=='ready')return;installUpdateRequested=true;win.close();return;}
   const t=tabs.find(t=>t.id===activeId);
@@ -840,7 +851,7 @@ app.whenReady().then(async()=>{
   let sweeping=false;timer=setInterval(async()=>{if(sweeping)return;sweeping=true;try{for(const t of [...tabs]){if(quitting)break;await sleepTab(t);}if(!quitting){await enforceAwakeBudget();await memoryManager?.sweep();archiveIdle();}}finally{sweeping=false;}},30000);
   scrollTimer=setInterval(()=>{captureScroll(tabs.find(t=>t.id===activeId));},5000);
   win.webContents.on('did-finish-load',()=>{passwords?.closeManager();stateTransport.reset();emit();});
-  win.show();localUpdater?.healthy(); emit();if(!smoke)setTimeout(()=>toolWindows?.prewarm(),4000).unref?.();externalReady=true;for(const url of pendingExternal.splice(0))receiveExternal(url);
+  win.show();localUpdater?.healthy(); emit();if(!smoke&&settings.chromiumCheck!==false)setTimeout(()=>chromiumCheck.check().then(noteChromium).catch(()=>{}),6000).unref?.();if(!smoke)setTimeout(()=>toolWindows?.prewarm(),4000).unref?.();externalReady=true;for(const url of pendingExternal.splice(0))receiveExternal(url);
   if(process.argv.includes('--import-arc')&&!smoke) importArc().then(result=>console.log('Arc import:',JSON.stringify(result)));
   // PRISM_TEST_FLOW=<name> runs one flow from test/ on its own (development; smoke profile only).
   if(smoke) require(process.env.PRISM_TEST_FLOW?'../test/'+path.basename(process.env.PRISM_TEST_FLOW):process.env.PRISM_TEST_PRIVATE_PUBLIC==='1'?'../test/private-public-flow.cjs':restartTest?'../test/restart-flow.cjs':process.env.PRISM_TEST_COMPATIBILITY==='1'?'../test/compatibility-flow.cjs':process.env.PRISM_PERFORMANCE==='1'?'../test/performance-flow.cjs':process.env.PRISM_TEST_CREDENTIALS==='1'?'../test/credentials-flow.cjs':process.env.PRISM_TEST_RECOVERY==='1'?'../test/recovery-flow.cjs':process.env.PRISM_TEST_BASICS==='1'?'../test/basics-flow.cjs':process.env.PRISM_BENCHMARK==='1'?'../test/benchmark.cjs':process.env.PRISM_TEST_STORE==='1'?'../test/store.cjs':'../test/smoke.cjs').run({app,win,makeTab,selectTab,sleepTab,archiveIdle,spectrum,pip:()=>pip,media:()=>media,commandBar:()=>commandBar,peek:()=>peek,library:()=>library,enforceAwakeBudget,action,snapshot,tabs,settings,services,passwords,autofill,wallet,ai,toolWindows,inspector,sessionStore,captureScroll,restoreSession,dispose,privateController:()=>privateNetwork,sidePanels:()=>sidePanels,showWhatsNew,whatsNewWindow:()=>whatsNewWindow,checkWhatsNew,passkeys:()=>passkeys,setUpdateOverride:value=>{updateOverride=value;emit();}}).catch(error=>{console.error(error);app.exit(1);});
