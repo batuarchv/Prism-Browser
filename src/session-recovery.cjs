@@ -31,6 +31,7 @@ function tabRecord(tab){
  if(!tab||typeof tab!=='object'||tab.space!==undefined&&(tab.space==='private'||!/^[a-z0-9][a-z0-9-]{0,39}$/.test(tab.space)))return null;
  const safe=tab.url===''?'':url(tab.url);if(safe===null)return null;
  const record={customTitle:text(tab.customTitle).slice(0,200),url:safe,title:text(tab.title)||'New tab',space:tab.space||'personal',pinned:!!tab.pinned,keepAwake:!!tab.keepAwake};
+ if(Number.isFinite(tab.lastUsed))record.lastUsed=Math.round(tab.lastUsed);
  if(typeof tab.favoriteId==='string'&&tab.favoriteId.length<=500)record.favoriteId=tab.favoriteId;
  const source=tab.recovery||tab;
  if(safe){record.navigation=navigationRecord(source.navigation,safe,record.title);const scroll=scrollRecord(source.scroll,safe);if(scroll)record.scroll=scroll;}

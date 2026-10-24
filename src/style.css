@@ -906,3 +906,17 @@ img.glass-fallback{visibility:hidden!important}
 :root[data-address=sidebar] #workspace-bar,:root[data-address=sidebar] #page-find{top:6px}
 :root[data-address=sidebar] #suggestion-layer{top:0}
 :root[data-address=sidebar] #sidebar-resize{top:0}
+/* 0.32 · Archive (archive-ui.js): a quiet row under the open tabs; rows reuse the tab look. */
+#archive{margin:6px 0 2px}
+.archive-toggle{display:flex;align-items:center;gap:9px;width:100%;min-height:30px;padding:5px 10px;border-radius:8px;color:var(--muted);font-size:.86rem;text-align:left;background:transparent}
+.archive-toggle:hover{background:color-mix(in srgb,var(--ink) 6%,transparent);color:var(--ink)}
+.archive-toggle .icon{width:15px;height:15px;stroke-width:1.6}
+.archive-count{margin-left:auto;font-variant-numeric:tabular-nums;font-size:.76rem;opacity:.8}
+.archive-chevron{width:12px!important;height:12px!important;transition:transform .18s var(--ease-out,ease)}
+#archive.open .archive-chevron{transform:rotate(90deg)}
+.archive-list{max-height:40vh;overflow:auto;scrollbar-width:thin;padding-top:2px}
+.tab.archived{opacity:.82}.tab.archived:hover{opacity:1}
+.archive-when{margin-left:auto;padding-left:8px;color:var(--muted);font-size:.72rem;white-space:nowrap}
+.tab.archived:hover .archive-when{display:none}
+.archive-clear{display:block;margin:4px 0 0 auto;padding:4px 10px;border-radius:7px;color:var(--muted);font-size:.76rem;background:transparent}
+.archive-clear:hover{background:color-mix(in srgb,var(--ink) 6%,transparent);color:var(--ink)}
