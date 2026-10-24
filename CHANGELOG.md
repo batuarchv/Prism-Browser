@@ -2,6 +2,17 @@
 
 All notable changes to Prism, newest first. Downloads are on the [Releases page](https://github.com/batuarchv/Prism-Browser/releases).
 
+## 0.33.2 — Tabs that stay ready
+
+### New
+- **Fewer reloads.** Prism used to think memory was short as soon as a few modern sites were open, and put tabs to sleep, so they reloaded when you came back. It now asks macOS, and only puts tabs to sleep for memory when your Mac is really running short.
+- **Your everyday tabs stay awake.** Pinned tabs, favorites and tabs you return to often get much longer before they sleep (at least 20 minutes), and they're the last to go when Prism needs memory.
+- **Sleeping tabs come back faster.** Lean memory mode now keeps up to 1 GB of web cache on disk instead of 128 MB, so a sleeping tab reloads from your Mac instead of the network.
+- **Ready before you click.** Pointing at a sleeping tab starts waking it in the background.
+
+### Install notes
+This beta is **ad-hoc signed and not notarized by Apple**. The first time you open it, macOS may say it can't verify the developer: right-click (or Control-click) Prism in Applications and choose **Open**, then **Open** again. Apple Silicon (arm64) only.
+
 ## 0.33.1 — Fast again
 
 ### New

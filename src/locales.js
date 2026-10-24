@@ -4038,6 +4038,20 @@ const catalog={
   "pt": "O Apple Intelligence dá título a cada parte do seu dia e sugere os sites que costuma abrir. Funciona neste Mac; nada é enviado.",
   "fr": "Apple Intelligence donne un titre à chaque moment de votre journée et suggère les sites que vous ouvrez souvent. Tout se fait sur ce Mac ; rien n’est envoyé.",
   "uk": "Apple Intelligence дає назву кожній частині вашого дня й пропонує сайти, які ви зазвичай відкриваєте. Працює на цьому Mac; нічого нікуди не надсилається."
+ },
+ "Lean memory mode": {
+  "tr": "Hafif bellek modu",
+  "es": "Modo de memoria ligera",
+  "pt": "Modo de memória leve",
+  "fr": "Mode mémoire légère",
+  "uk": "Ощадливий режим пам’яті"
+ },
+ "Sleep idle tabs when macOS runs short of memory. Keeps up to 1 GB of web cache on disk so sleeping tabs come back quickly. Cookies, passwords and site storage stay intact.": {
+  "tr": "macOS’ta bellek azaldığında boştaki sekmeleri uyutur. Uyuyan sekmeler hızlı geri gelsin diye diskte 1 GB’a kadar web önbelleği tutar. Çerezler, parolalar ve site verileri korunur.",
+  "es": "Duerme las pestañas inactivas cuando macOS se queda sin memoria. Guarda hasta 1 GB de caché web en el disco para que las pestañas dormidas vuelvan rápido. Cookies, contraseñas y datos de sitios se conservan.",
+  "pt": "Adormece separadores inativos quando o macOS fica com pouca memória. Mantém até 1 GB de cache web no disco para que separadores adormecidos voltem depressa. Cookies, palavras-passe e dados de sites mantêm-se.",
+  "fr": "Met en veille les onglets inactifs quand macOS manque de mémoire. Garde jusqu’à 1 Go de cache web sur le disque pour que les onglets en veille reviennent vite. Cookies, mots de passe et données des sites sont conservés.",
+  "uk": "Присипляє неактивні вкладки, коли macOS бракує пам’яті. Зберігає до 1 ГБ веб-кешу на диску, щоб приспані вкладки швидко поверталися. Cookie, паролі й дані сайтів зберігаються."
  }
 };
 const languages=["en","tr","es","pt","fr","uk"];

@@ -45,7 +45,9 @@ app.setPath('userData', path.join(smoke ? app.getPath('temp') : app.getPath('app
 const settingsFile=path.join(app.getPath('userData'),'settings.json');
 let rawSettings={};try{rawSettings=JSON.parse(fs.readFileSync(settingsFile,'utf8'));}catch{}
 if(smoke&&process.env.PRISM_TEST_HARDWARE_OFF==='1')rawSettings.hardwareAcceleration=false;
-const settings=normalizeSettings(rawSettings);if(settings.leanMemory)app.commandLine.appendSwitch('disk-cache-size',String(128*1024*1024));if(smoke)settings.onboardingComplete=true;const launchHardwareAcceleration=settings.hardwareAcceleration,launchLeanMemory=settings.leanMemory;
+const settings=normalizeSettings(rawSettings);// Lean memory used to cap the HTTP disk cache at 128 MB, which made every sleeping tab reload from the network; the
+// cache is on disk, not in memory, so it now keeps up to 1 GB (0.33.2).
+if(settings.leanMemory)app.commandLine.appendSwitch('disk-cache-size',String(1024*1024*1024));if(smoke)settings.onboardingComplete=true;const launchHardwareAcceleration=settings.hardwareAcceleration,launchLeanMemory=settings.leanMemory;
 const themeFile=path.join(app.getPath('userData'),'design-theme.json');let designTheme=structuredClone(defaultTheme);try{designTheme=validateTheme(JSON.parse(fs.readFileSync(themeFile,'utf8')));}catch{}
 const customThemeFile=path.join(app.getPath('userData'),'custom-design-theme.json');let customTheme=structuredClone(designTheme);try{customTheme=validateTheme(JSON.parse(fs.readFileSync(customThemeFile,'utf8')));}catch{}
 function saveDesign(value,preset=false){designTheme=validateTheme(value);if(!preset){customTheme=structuredClone(designTheme);}if(!smoke){fs.mkdirSync(path.dirname(customThemeFile),{recursive:true});fs.writeFileSync(customThemeFile+'.tmp',JSON.stringify(customTheme),{mode:0o600});fs.renameSync(customThemeFile+'.tmp',customThemeFile);}if(!smoke){fs.mkdirSync(path.dirname(themeFile),{recursive:true});fs.writeFileSync(themeFile+'.tmp',JSON.stringify(designTheme,null,2),{mode:0o600});fs.renameSync(themeFile+'.tmp',themeFile);}emit();}
@@ -117,7 +119,7 @@ function applyAppearance(){
 function snapshot() {
   const active = tabs.find(t => t.id === activeId);
   const privateMode=space==='private';
-  return {popover:{open:toolWindows?.visible()?toolWindows.section():null,returnTo:popoverReturn},account:privateMode?null:accounts.snapshot(),profile:privateMode?null:profile,split,inspecting:!!inspector?.isOpen(),ai:privateMode?null:ai?.snapshot(),updates:updateOverride||updater?.snapshot(),version:require('../package.json').version,blocking:blocker?.snapshot(active?.url,privateMode,active?.view?.webContents.id),space,privateNetwork:privateNetwork?.snapshot(),tabs: tabs.filter(t=>inSpace(t,space)).map(({view,recovery,restoring,scrollCapturePending, ...t}) => ({...t,title:t.customTitle||t.title, sleeping: !view && !!t.url})), activeId, glass,settings:{...settings,extensions:undefined},system:{...accessibility(),dark:nativeTheme.shouldUseDarkColors,accent:privateMode?'#9275b5':accent(),hardwareAcceleration:launchHardwareAcceleration,gpu:app.getGPUFeatureStatus(),restartRequired:settings.hardwareAcceleration!==launchHardwareAcceleration||settings.leanMemory!==launchLeanMemory},extensions:privateMode?[]:services?.extensionRows()||[],sidePanel:privateMode?null:sidePanels?.snapshot()||null,downloads:(privateMode?privateServices:services)?.downloads()||[],imageRevision:privateMode?'private':'normal-'+(services?.imageRevision()||0),images:privateMode?{}:services?.images()||{},passwords:privateMode?{message:'Password vault is disabled in Private.'}:passwords?.status()||{},browserPartition:privateMode?'private-disabled':browserPartition,activeWebContentsId:privateMode?-1:active?.view?.webContents.id||-1,bookmarks:privateMode?[]:library.bookmarks,folders:privateMode?[]:library.folders,theme:library.theme,importReport:privateMode?null:library.importReport,importing,sessionRecovery:sessionStore.status(),recentlyClosed:privateMode?[]:recentlyClosed.list(space),spaceTabs:tabs.reduce((n,t)=>{const k=t.space||'personal';n[k]=(n[k]||0)+1;return n;},{}),
+  return {popover:{open:toolWindows?.visible()?toolWindows.section():null,returnTo:popoverReturn},account:privateMode?null:accounts.snapshot(),profile:privateMode?null:profile,split,inspecting:!!inspector?.isOpen(),ai:privateMode?null:ai?.snapshot(),updates:updateOverride||updater?.snapshot(),version:require('../package.json').version,blocking:blocker?.snapshot(active?.url,privateMode,active?.view?.webContents.id),space,privateNetwork:privateNetwork?.snapshot(),tabs: tabs.filter(t=>inSpace(t,space)).map(({view,recovery,restoring,scrollCapturePending,returns,linkClick, ...t}) => ({...t,title:t.customTitle||t.title, sleeping: !view && !!t.url})), activeId, glass,settings:{...settings,extensions:undefined},system:{...accessibility(),dark:nativeTheme.shouldUseDarkColors,accent:privateMode?'#9275b5':accent(),hardwareAcceleration:launchHardwareAcceleration,gpu:app.getGPUFeatureStatus(),restartRequired:settings.hardwareAcceleration!==launchHardwareAcceleration||settings.leanMemory!==launchLeanMemory},extensions:privateMode?[]:services?.extensionRows()||[],sidePanel:privateMode?null:sidePanels?.snapshot()||null,downloads:(privateMode?privateServices:services)?.downloads()||[],imageRevision:privateMode?'private':'normal-'+(services?.imageRevision()||0),images:privateMode?{}:services?.images()||{},passwords:privateMode?{message:'Password vault is disabled in Private.'}:passwords?.status()||{},browserPartition:privateMode?'private-disabled':browserPartition,activeWebContentsId:privateMode?-1:active?.view?.webContents.id||-1,bookmarks:privateMode?[]:library.bookmarks,folders:privateMode?[]:library.folders,theme:library.theme,importReport:privateMode?null:library.importReport,importing,sessionRecovery:sessionStore.status(),recentlyClosed:privateMode?[]:recentlyClosed.list(space),spaceTabs:tabs.reduce((n,t)=>{const k=t.space||'personal';n[k]=(n[k]||0)+1;return n;},{}),
     find,designTheme,chromium: process.versions.chrome, live: tabs.filter(t => t.view).length,archived:privateMode?0:(library.archive||[]).filter(e=>e.space===space).length,spectrum:privateMode?null:spectrum.revision(),media:privateMode?null:media?.snapshot()||null,compactReveal,pip:pip?.snapshot()||null,
 
     canBack: !!active?.view?.webContents.navigationHistory.canGoBack(), canForward: !!active?.view?.webContents.navigationHistory.canGoForward()};
@@ -298,15 +300,20 @@ function selectTab(id) {
   // Picture in picture (0.32): leaving a tab whose video is playing floats the video; coming back to it returns it.
   if(t.pip)pip?.end('return');else if(old&&old.id!==id&&settings.autoPip&&old.view&&old.audible&&!old.pip&&!split?.ids.includes(old.id))pip?.enter(old,{auto:true});
   if(id!==activeId){closeFind(false);passwords?.closeManager();}
-  t.parked=false;space=t.space||'personal';tabSelection.select(t.id);selectedInSpace[space]=id;activeId=id; t.lastUsed=Date.now(); attach(t); if(t.view&&space!=='private')extensionApi?.selectTab(t.view.webContents);sidePanels?.sync();layout(); emit(); persist();queueFavoriteThumbnail(t);spectrum.presence(t.url,t.space,t.title);
+  t.parked=false;{const now=Date.now();t.returns=[...(t.returns||[]).filter(x=>now-x<3600000),now].slice(-12);}space=t.space||'personal';tabSelection.select(t.id);selectedInSpace[space]=id;activeId=id; t.lastUsed=Date.now(); attach(t); if(t.view&&space!=='private')extensionApi?.selectTab(t.view.webContents);sidePanels?.sync();layout(); emit(); persist();queueFavoriteThumbnail(t);spectrum.presence(t.url,t.space,t.title);
 }
+// How long a tab may sit unused before the idle timer puts it to sleep (0.33.2). Pinned tabs, favorites and tabs you
+// keep coming back to (three times in the last hour) get four times the setting and at least 20 minutes, so the tabs
+// you live in are not reloaded every time you return to them. Real memory pressure can still put any of them to sleep.
+function returnsOften(t,now=Date.now()){return (t.returns||[]).filter(x=>now-x<3600000).length>=3;}
+function idleLimit(t){const base=settings.sleepMinutes*60000;return t.pinned||t.favoriteId||returnsOften(t)?Math.max(base*4,20*60000):base;}
 async function sleepTab(t, manual=false) {
   if (!t?.view||t.pip||t.id===activeId||split?.ids.includes(t.id)||t.keepAwake||t.loading||t.audible) return false;
-  if(!manual&&Date.now()-t.lastUsed<settings.sleepMinutes*60000)return false;
+  if(!manual&&Date.now()-t.lastUsed<idleLimit(t))return false;
   const view=t.view,wc=view.webContents,version=t.navigationVersion;
   try {const state=await wc.executeJavaScriptInIsolatedWorld(999,[{code:tracker}]); if(state.pip)return false;t.dirty=state.dirty;t.frames=state.frames&&await framesHoldState(wc.mainFrame);t.capturing=wc.isBeingCaptured(); t.audible=state.media || wc.isCurrentlyAudible();} catch {return false;}
   if(t.view!==view||wc.isDestroyed()||t.navigationVersion!==version)return false;
-  if (!manual && Date.now()-t.lastUsed<settings.sleepMinutes*60000)return false;
+  if (!manual && Date.now()-t.lastUsed<idleLimit(t))return false;
   if(split?.ids.includes(t.id))return false;
   if (!canSleep(t, activeId, Date.now(), true)) return false;
   await captureScroll(t);if(t.view!==view||t.id===activeId||split?.ids.includes(t.id)||t.navigationVersion!==version)return false;dispose(t);persist();emit();return true;
@@ -361,7 +368,8 @@ function commandRun(id,{query,alt}){
  if(kind==='history'&&/^https?:\/\//.test(rest)){makeTab(rest,true,space);persist();return;}
  if(kind==='action')return commandActions().find(a=>a.id===id)?.go();
 }
-async function enforceAwakeBudget(){if(!settings.maxAwakeTabs)return;for(const t of budgetCandidates(tabs,activeId)){if(quitting||tabs.filter(t=>t.view).length<=settings.maxAwakeTabs)break;await sleepTab(t,true);}}
+// Over the awake limit, ordinary tabs go to sleep before pinned tabs, favorites and tabs you return to often.
+async function enforceAwakeBudget(){if(!settings.maxAwakeTabs)return;const kept=t=>t.pinned||t.favoriteId||returnsOften(t)?1:0;for(const t of budgetCandidates(tabs,activeId).sort((a,b)=>kept(a)-kept(b))){if(quitting||tabs.filter(t=>t.view).length<=settings.maxAwakeTabs)break;await sleepTab(t,true);}}
 async function closeTab(id) {
   const t=tabs.find(t=>t.id===id); if (!t) return;
   if (t.view) {
@@ -388,7 +396,7 @@ let clipboardWipe=null;async function confirmOwner(reason){if(smoke)return true;
 const extensionWindows=new Set();
 // Last position of the toolbar Extensions button, so an extension's panel opens right under it.
 let toolbarAnchor=null,spaceIntent=null;
-let undoable=null,lastCloseAt=0;function offerUndo(message,run,count){undoable={run,at:Date.now()};feedback('undo',{message,count});}
+let undoable=null,lastCloseAt=0,warmedAt=0,warming=null;function offerUndo(message,run,count){undoable={run,at:Date.now()};feedback('undo',{message,count});}
 // ⌘Z (and ⌃Z) outside a text field brings back what was closed or removed last: the latest sidebar edit that offered Undo,
 // or else the last closed tab, favorite or pinned tab, in its old place. In a text field it is the usual Undo.
 async function undoKey(){
@@ -646,6 +654,11 @@ async function action(name,value) {
   if (name==='select' && Number.isInteger(value)) selectTab(value);
   if (name==='close' && Number.isInteger(value)) await closeTab(value);
   if(name==='restore-closed')return undoKey();
+  // Pointing at a sleeping tab starts waking it (0.33.2), so it is usually ready by the time the click lands; never in
+  // Private, for a closed pinned tab, or while macOS is short of memory.
+  if(name==='tab-warm'&&Number.isInteger(value)){const target=tabs.find(x=>x.id===value&&inSpace(x,space));if(!target||target.view||!target.url||target.parked||target.space==='private'||Date.now()-warmedAt<400)return;if(settings.leanMemory&&await memoryManager?.underPressure())return;warmedAt=Date.now();target.lastUsed=Date.now();
+   // The extension layer makes a new tab active when it does not know the front one; keep the front tab in front.
+   warming=target;try{attach(target);}finally{warming=null;}const front=tabs.find(x=>x.id===activeId);if(front?.view&&front.space!=='private')extensionApi?.selectTab(front.view.webContents);emit();return;}
   if(name==='tab-park'&&Number.isInteger(value)){const target=tabs.find(x=>x.id===value&&inSpace(x,space));if(!target)return;if(target.pinned&&!target.parked)await parkTab(target);else await closeTab(target.id);return;}
   if (name==='navigate' && typeof value==='string' && value.length<8192) {
     const url=normalizeAddress(value); if (!url) return {error:'Use an HTTP or HTTPS address, or enter a search.'};
@@ -729,7 +742,7 @@ app.whenReady().then(async()=>{
   registerGestures(ses);
   extensionApi=new ElectronChromeExtensions({license:'GPL-3.0',session:ses,
     createTab:async details=>{if(details.url&&!allowedTabURL(details.url))throw Error('Unsupported tab URL.');const t=makeTab(details.url||'https://www.google.com/',details.active!==false,space==='private'?homeSpace():space);attach(t);return [t.view.webContents,win];},
-    selectTab:wc=>{const t=tabs.find(t=>t.view?.webContents===wc);if(t)selectTab(t.id);},
+    selectTab:wc=>{const t=tabs.find(t=>t.view?.webContents===wc);if(t&&t!==warming)selectTab(t.id);},
     removeTab:wc=>{const t=tabs.find(t=>t.view?.webContents===wc);if(t)return closeTab(t.id);},
     requestPermissions:async()=>false,
     // chrome.windows.create: extension pages (pop-out vaults, translators, sign-in helpers) get their own sized window
@@ -794,7 +807,7 @@ app.whenReady().then(async()=>{
   win.on('blur',()=>autofill.dismiss());
   const front=()=>tabs.find(t=>t.id===activeId);win.on('blur',()=>spectrum.focus(false,'',space));win.on('focus',()=>spectrum.focus(true,front()?.url,space));
   updater=localUpdater?.snapshot().configured?localUpdater:createUpdater({autoUpdater,app,config:require('./update-config.json'),onChange:emit});updater.schedule(settings.automaticUpdates);if(settings.automaticUpdates&&localUpdater?.snapshot().configured){localUpdater.watchFeed();app.on('did-become-active',()=>localUpdater.resumed());}checkWhatsNew();
-  memoryManager=require('./memory-manager.cjs').createMemoryManager({app,session:ses,settings,tabs:()=>tabs,activeId:()=>activeId,sleepTab});
+  {const mm=require('./memory-manager.cjs');memoryManager=mm.createMemoryManager({app,session:ses,settings,tabs:()=>tabs,activeId:()=>activeId,sleepTab,systemPressure:process.platform==='darwin'?()=>mm.readSystemPressure():undefined});}
   inspector=require('./inspector.cjs').createInspector({WebContentsView,parent:()=>win,changed:()=>{layout();emit();}});
   surfaces=require('./surfaces.cjs').createSurfaces(ipcMain);
   commandBar=require('./command-bar.cjs').createCommandBar({BrowserWindow,parent:()=>win,surfaces,entries:commandEntries,run:commandRun,look:()=>({dark:nativeTheme.shouldUseDarkColors,language:settings.language,reduceMotion:!!settings.reduceMotion||systemPreferences.getAnimationSettings().prefersReducedMotion})});

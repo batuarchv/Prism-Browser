@@ -1,5 +1,5 @@
 // 0.33 (PRISM_TEST_FLOW=pinned-flow.cjs): closing a pinned tab keeps it, unloaded and back at its pinned address; its
-// button then removes it and ⌘Z puts it back in place; a favorite's tab closes from its menu path and comes back too.
+// button then removes it and ⌘Z puts it back in place; ⌘Z also reopens a closed tab; pointing at a sleeping tab wakes it.
 const http=require('node:http'),assert=require('node:assert/strict');const wait=ms=>new Promise(r=>setTimeout(r,ms));
 async function eventually(check,message,ms=8000){const deadline=Date.now()+ms;while(!await check()){if(Date.now()>deadline)throw Error(message);await wait(100);}}
 exports.run=async({app,action,makeTab,selectTab,snapshot})=>{let server;const checks=[];try{
@@ -13,5 +13,7 @@ exports.run=async({app,action,makeTab,selectTab,snapshot})=>{let server;const ch
  await action('restore-closed');const back=snapshot().tabs.find(t=>t.url===base+'/home');assert.ok(back?.pinned,'restored as pinned');assert.equal(ids().indexOf(back.id),place,'restored in place');checks.push('removed pinned tab comes back in place with ⌘Z');
  selectTab(back.id);assert.equal(row(back.id).parked,false);
  await action('close',b.id);await action('restore-closed');assert.ok(snapshot().tabs.some(t=>t.url===base+'/other'),'closed tab restored');checks.push('⌘Z reopens the last closed tab');
+ // 0.33.2: pointing at a sleeping tab wakes it in the background, without switching to it.
+ const sleeper=makeTab(base+'/sleeper',false);assert.equal(row(sleeper.id).sleeping,true);const front=snapshot().activeId;await action('tab-warm',sleeper.id);assert.ok(sleeper.view,'woken');assert.equal(snapshot().activeId,front,'still on the same tab');await eventually(()=>!sleeper.view.webContents.isLoading(),'warm page loaded');checks.push('pointing at a sleeping tab wakes it in the background');
  console.log(JSON.stringify(checks));return checks;
 }finally{server?.close();if(process.env.PRISM_TEST_FLOW?.includes('pinned-flow'))app.exit(process.exitCode||0);}};
