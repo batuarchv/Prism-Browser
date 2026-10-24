@@ -1,0 +1,3 @@
+// Shared by Prism's native surfaces (Peek, command bar, picture-in-picture): theme, language and reduced motion.
+function applySurfaceTheme(s){const root=document.documentElement;if(typeof s?.dark==='boolean')root.dataset.theme=s.dark?'dark':'light';if(s?.reduceMotion!==undefined)root.dataset.motion=s.reduceMotion?'reduced':'normal';
+ if(s?.language&&globalThis.PrismLanguages){const t=k=>PrismLanguages.translate(s.language,k);for(const el of document.querySelectorAll('[data-i18n]'))el.textContent=t(el.dataset.i18n);for(const el of document.querySelectorAll('[title]')){el.dataset.i18nTitle??=el.title;el.title=t(el.dataset.i18nTitle);}}}

@@ -1,6 +1,7 @@
 const {ipcRenderer}=require('electron');
-// No bridge is exposed to websites. Only user-submitted, top-level HTTPS forms qualify.
-if(process.isMainFrame){addEventListener('submit',event=>{
+// No bridge is exposed to websites. Only user-submitted HTTPS forms qualify, on the page or in a sign-in frame (Apple
+// Account's form lives in a frame from idmsa.apple.com); the login is saved for that frame's own origin.
+{addEventListener('submit',event=>{
  if(!event.isTrusted||location.protocol!=='https:'||!(event.target instanceof HTMLFormElement))return;
  const form=event.target;const visible=el=>el.getClientRects().length&&!el.disabled;
  if(new URL(form.action||location.href,location.href).origin!==location.origin)return;
@@ -41,3 +42,43 @@ if(process.isMainFrame){
   const reply=ok=>dispatchEvent(new CustomEvent('prism-share-result',{detail:id+':'+(ok?1:0)}));
   if(!navigator.userActivation?.isActive)return reply(false);ipcRenderer.invoke('prism-share',data).then(reply,()=>reply(false));});
 }
+// Passkeys (src/passkeys.cjs): before a page's navigator.credentials.create/get for a passkey runs, Prism asks for
+// Touch ID and attaches its authenticator for that site. The main-world shim only asks; this isolated world checks a
+// recent user gesture (or, for autofill-style requests, focus on a "webauthn" field) before asking the browser.
+if(process.isMainFrame){
+ require('electron').webFrame.executeJavaScript(`(()=>{const c=navigator.credentials;if(!c||!window.PublicKeyCredential)return;let next=0;const pending=new Map();
+  addEventListener('prism-passkey-result',event=>{const [id,answer]=String(event.detail).split(':'),entry=pending.get(id);if(!entry)return;pending.delete(id);entry(answer);});
+  const ask=(kind,rpId,mediation)=>new Promise(resolve=>{const id=String(++next);pending.set(id,resolve);dispatchEvent(new CustomEvent('prism-passkey',{detail:id+'\\n'+JSON.stringify({kind,rpId,mediation})}));});
+  const denied=()=>new DOMException('The operation either timed out or was not allowed.','NotAllowedError');
+  for(const kind of ['create','get']){const original=c[kind].bind(c);
+   Object.defineProperty(c,kind,{configurable:true,writable:true,value:async function(options){
+    if(!options||!options.publicKey)return original(options);
+    const pk=options.publicKey,rpId=String((kind==='create'?pk.rp&&pk.rp.id:pk.rpId)||location.hostname),mediation=String(options.mediation||'');
+    const answer=await ask(kind,rpId,mediation);
+    if(answer==='ok'){const o={...options};if(mediation==='conditional')delete o.mediation;return original(o);}
+    throw denied();}});}})()`).catch(()=>{});
+ let lastGesture=0,conditional=null;const reply=(id,answer)=>dispatchEvent(new CustomEvent('prism-passkey-result',{detail:id+':'+answer}));
+ for(const type of ['pointerdown','keydown'])addEventListener(type,event=>{if(event.isTrusted)lastGesture=Date.now();},true);
+ addEventListener('prism-passkey',event=>{const raw=String(event.detail||''),cut=raw.indexOf('\n'),id=raw.slice(0,cut);let data;try{data=JSON.parse(raw.slice(cut+1));}catch{return;}
+  const ask=extra=>ipcRenderer.invoke('prism-passkey',{...data,...extra}).catch(()=>'denied');
+  if(data.kind==='get'&&data.mediation==='conditional'){ask({}).then(answer=>{if(answer==='conditional')conditional={id,data};else reply(id,'denied');});return;}
+  if(Date.now()-lastGesture>5000&&!navigator.userActivation?.isActive)return reply(id,'denied');
+  ask({}).then(answer=>reply(id,answer));});
+ // Autofill-style sign-in: focusing a field marked "webauthn" offers the saved passkey (with Touch ID).
+ addEventListener('focusin',event=>{const el=event.target;if(!conditional||!(el instanceof HTMLInputElement)||!/\bwebauthn\b/i.test(el.autocomplete)||Date.now()-lastGesture>2000)return;
+  const {id,data}=conditional;conditional=null;ipcRenderer.invoke('prism-passkey',{...data,activate:true}).catch(()=>'denied').then(answer=>{if(answer==='ok')reply(id,'ok');else conditional={id,data};});},true);
+}
+// Picture in Picture: a page entering it asks the browser first, so the site controls can show and block it.
+{require('electron').webFrame.executeJavaScript(`(()=>{const proto=window.HTMLVideoElement&&HTMLVideoElement.prototype,original=proto&&proto.requestPictureInPicture;if(!original)return;let next=0;const pending=new Map();
+  addEventListener('prism-pip-result',event=>{const [id,ok]=String(event.detail).split(':'),done=pending.get(id);if(done){pending.delete(id);done(ok==='1');}});
+  Object.defineProperty(proto,'requestPictureInPicture',{configurable:true,writable:true,value:async function requestPictureInPicture(){const id=String(++next);
+   const ok=await new Promise(resolve=>{pending.set(id,resolve);dispatchEvent(new CustomEvent('prism-pip',{detail:id}));});
+   if(!ok)throw new DOMException('Picture in Picture is turned off for this site.','NotAllowedError');return original.call(this);}});})()`).catch(()=>{});
+ addEventListener('prism-pip',event=>{const id=String(event.detail||'');ipcRenderer.invoke('prism-pip').catch(()=>true).then(ok=>dispatchEvent(new CustomEvent('prism-pip-result',{detail:id+':'+(ok?1:0)})));});}
+// Peek (0.32): Shift-click a link to open it in Peek; plain link clicks are reported so a pinned tab's link to another
+// site can open in Peek (main.cjs peekLink). Only the link's address is sent, and only after a real click.
+if(process.isMainFrame){addEventListener('click',event=>{
+ if(!event.isTrusted||event.button!==0)return;const a=event.composedPath().find(el=>el instanceof HTMLAnchorElement&&el.href);if(!a||a.hasAttribute('download'))return;
+ let url;try{url=new URL(a.href,location.href).href;}catch{return;}if(!/^https?:/.test(url))return;
+ if(event.shiftKey&&!event.metaKey&&!event.altKey&&!event.ctrlKey){event.preventDefault();ipcRenderer.send('prism-peek',url);return;}
+ if(!event.metaKey&&!event.altKey&&!event.ctrlKey&&!event.shiftKey)ipcRenderer.send('prism-link',url);},true);}

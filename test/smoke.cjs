@@ -1,9 +1,11 @@
 const reportDir=require('node:path').resolve(__dirname,'../reports');require('node:fs').mkdirSync(reportDir,{recursive:true});
 const assert=require('node:assert/strict');const http=require('node:http');const fs=require('node:fs');const path=require('node:path');
 const delay=ms=>new Promise(r=>setTimeout(r,ms));
+// A freshly shown tool view can miss its first compositor frame (UnknownVizError); one short retry covers it.
+async function captureView(wc){try{return await wc.capturePage();}catch{await delay(250);return wc.capturePage();}}
 async function eventually(check,message){const deadline=Date.now()+5000;while(!await check()){if(Date.now()>deadline)throw Error(message);await delay(100);}}
 async function loaded(t){const until=Date.now()+15000;while(t.loading||!t.view?.webContents.getURL()){if(Date.now()>until)throw Error('Page load timeout');await delay(100);}await delay(250);}
-exports.run=async({app,win,makeTab,selectTab,sleepTab,action,snapshot,tabs,settings,services,passwords,toolWindows,privateController})=>{
+exports.run=async({app,win,makeTab,selectTab,sleepTab,action,snapshot,tabs,settings,services,passwords,toolWindows,privateController,sidePanels,showWhatsNew,whatsNewWindow,checkWhatsNew,setUpdateOverride,passkeys})=>{
   // Settings renders in its own tool view, not in the main window.
   const settingsWC=()=>toolWindows.get()?.webContents;
   const openSettings=async section=>{await win.webContents.executeJavaScript(`openPanel('${section}')`);await eventually(async()=>toolWindows.visible()&&toolWindows.section()===section&&!settingsWC().isLoading()&&await settingsWC().executeJavaScript(`panel===${JSON.stringify(section)}`),'Settings opened: '+section);};
@@ -77,6 +79,11 @@ exports.run=async({app,win,makeTab,selectTab,sleepTab,action,snapshot,tabs,setti
   await services.extensionAction('popup',extension.id);services.close();
   await services.extensionAction('toggle',extension.id);assert.equal(snapshot().extensions[0].enabled,false);
   await services.extensionAction('toggle',extension.id);assert.equal(snapshot().extensions[0].loaded,true);
+  const sidePanelChecks=await require('./side-panel-flow.cjs').run({app,action,snapshot,services,sidePanels,makeTab,selectTab,tab:a,base,settings});selectTab(a.id);
+  const updateChecks=await require('./update-sequence-flow.cjs').run({win,settings,showWhatsNew,whatsNewWindow,checkWhatsNew,setUpdateOverride});
+  await require('./update-button-flow.cjs').check({win,action,setUpdateOverride,settings});
+  const signInChecks=await require('./passkey-flow.cjs').run({makeTab,selectTab,passkeys,app});updateChecks.push(...signInChecks);
+  updateChecks.push(...await require('./site-controls-flow.cjs').run({win,action,makeTab,selectTab,settings,toolWindows}));updateChecks.push('Restart control fits the footer in light, dark and narrow');
   settings.askDownloadLocation=false;settings.downloadDirectory=path.join(app.getPath('userData'),'test-downloads');
   const ses=a.view.webContents.session;ses.downloadURL(base+'/download.bin');
   let until=Date.now()+12000;while(!snapshot().downloads.length){if(Date.now()>until)throw Error('Download did not start');await delay(100);}
@@ -98,8 +105,8 @@ exports.run=async({app,win,makeTab,selectTab,sleepTab,action,snapshot,tabs,setti
   assert.ok((await passwords.saveCurrent(a)).error,'saving insecure HTTP forms is rejected');
   const privateChecks=await require('./private-flow.cjs').run({app,win,makeTab,selectTab,action,snapshot,base,a,privateController,toolWindows});
   selectTab(tabs[0].id);await delay(300);await openSettings('appearance');await delay(350);
-  fs.writeFileSync(path.join(reportDir,'settings-preview.png'),(await settingsWC().capturePage()).toPNG());
-  await action('set-setting',{key:'theme',value:'dark'});await delay(300);fs.writeFileSync(path.join(reportDir,'settings-dark-preview.png'),(await settingsWC().capturePage()).toPNG());
+  fs.writeFileSync(path.join(reportDir,'settings-preview.png'),(await captureView(settingsWC())).toPNG());
+  await action('set-setting',{key:'theme',value:'dark'});await delay(300);fs.writeFileSync(path.join(reportDir,'settings-dark-preview.png'),(await captureView(settingsWC())).toPNG());
   await action('set-setting',{key:'theme',value:'light'});await action('close-tools');await delay(200);
   const image=await win.webContents.capturePage();fs.writeFileSync(path.join(reportDir,'preview.png'),image.toPNG());
   const custom=structuredClone(snapshot().designTheme);custom.light.accent='#456789';await action('set-design-theme',custom);
@@ -115,6 +122,8 @@ exports.run=async({app,win,makeTab,selectTab,sleepTab,action,snapshot,tabs,setti
   await win.webContents.executeJavaScript("document.getElementById('setup-next').click()");assert.equal(await win.webContents.executeJavaScript("document.querySelectorAll('#setup-themes button').length"),6);
   await win.webContents.executeJavaScript("document.getElementById('setup-next').click();document.getElementById('setup-next').click()");assert.ok(await win.webContents.executeJavaScript("!!document.getElementById('setup-password-progress')"));
   await win.webContents.executeJavaScript("document.getElementById('setup-next').click();document.getElementById('setup-next').click()");assert.ok(await win.webContents.executeJavaScript("!!document.querySelector('#onboarding .setup-tips')"),'Sidebar and tabs step renders');await win.webContents.executeJavaScript("document.getElementById('setup-next').click()");assert.ok(await win.webContents.executeJavaScript("!!document.querySelector('#onboarding .setup-privacy')&&document.getElementById('setup-skip').hidden"),'Privacy is the last step');await win.webContents.executeJavaScript("document.getElementById('setup-next').click()");await delay(200);assert.equal(snapshot().settings.onboardingComplete,true);assert.equal(await win.webContents.executeJavaScript('onboardingOpen'),false);
-  const report={passed:true,privateChecks,checks:['HTTP navigation','remote Node isolation','no privileged bridge in pages','active tab protection','edited-form protection','keep-awake protection','renderer destruction on sleep','wake and reload','unsafe scheme rejection','popup routed to tab','bookmark creation and folders','light and dark themes','native glass material switching','hardware acceleration restart flag','sidebar size controls','unpacked extension content script','extension popup and enable/disable','download pause/resume/completion/cancel','bookmark movement','startup hardware acceleration state','local favorite screenshot capture','extension tabs query/create/remove','password exact-origin refusal','password and username-step fill without submission','insecure password saving blocked','password save consent and encrypted update'],chromium:process.versions.chrome,electron:process.versions.electron,glass:snapshot().glass,rendererPid:pid};
+  // Last: Close all tabs closes the tabs used above.
+  const gestureChecks=await require('./gesture-flow.cjs').run({win,action,snapshot,makeTab,selectTab,settings});
+  const report={passed:true,privateChecks,checks:['HTTP navigation','remote Node isolation','no privileged bridge in pages','active tab protection','edited-form protection','keep-awake protection','renderer destruction on sleep','wake and reload','unsafe scheme rejection','popup routed to tab','bookmark creation and folders','light and dark themes','native glass material switching','hardware acceleration restart flag','sidebar size controls','unpacked extension content script','extension popup and enable/disable','download pause/resume/completion/cancel','bookmark movement','startup hardware acceleration state','local favorite screenshot capture','extension tabs query/create/remove','password exact-origin refusal','password and username-step fill without submission','insecure password saving blocked','password save consent and encrypted update',...sidePanelChecks,...updateChecks,...gestureChecks],chromium:process.versions.chrome,electron:process.versions.electron,glass:snapshot().glass,rendererPid:pid};
   fs.writeFileSync(path.join(reportDir,'smoke-results.json'),JSON.stringify(report,null,2));console.log(JSON.stringify(report,null,2));server.close();app.exit(0);
 };

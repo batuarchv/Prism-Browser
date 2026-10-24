@@ -1,5 +1,5 @@
 /* Prism 0.6: one shell layout and semantic palette. */
-:root{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;font-size:calc(13px * var(--text-scale,1));color-scheme:light;--sidebar-width:260px;--panel-radius:16px;--text-scale:1;--glass-opacity:.36;--accent-tint:#627da4;--ink:var(--prism-text,#23252c);--muted:var(--prism-textSecondary,#626875);--surface:var(--prism-canvas,#f4f5f7);--raised:var(--prism-surface,#fff);--line:color-mix(in srgb,var(--prism-border,#ccd2dc) 62%,transparent);--accent:var(--prism-accent,#507fad);--hover:color-mix(in srgb,var(--ink) 6%,transparent);--selected:color-mix(in srgb,var(--accent) 12%,var(--raised));--chrome:color-mix(in srgb,var(--prism-sidebar,#e9ecf0) calc(48% + var(--glass-opacity)*52%),transparent);--row:var(--prism-row-height,36px)}
+:root{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;font-size:calc(13px * var(--text-scale,1));color-scheme:light;--sidebar-width:260px;--panel-radius:16px;--text-scale:1;--glass-opacity:.36;--accent-tint:#627da4;--ink:var(--prism-text,#23252c);--muted:var(--prism-textSecondary,#626875);--surface:var(--prism-canvas,#f4f5f7);--raised:var(--prism-surface,#fff);--line:color-mix(in srgb,var(--prism-border,#ccd2dc) 62%,transparent);--accent:var(--space-accent,var(--prism-accent,#507fad));--hover:color-mix(in srgb,var(--ink) 6%,transparent);--selected:color-mix(in srgb,var(--accent) 12%,var(--raised));--chrome:color-mix(in srgb,var(--prism-sidebar,#e9ecf0) calc(48% + var(--glass-opacity)*52%),transparent);--row:var(--prism-row-height,36px)}
 :root[data-theme=dark]{color-scheme:dark}*{box-sizing:border-box}[hidden]{display:none!important}
 html,body{width:100%;height:100%}
 body{margin:0;overflow:hidden;color:var(--ink);background:transparent;font-size:1rem}
@@ -8,8 +8,8 @@ button:focus-visible,input:focus-visible,select:focus-visible,summary:focus-visi
 input{min-width:0}.icon{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.65;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0;pointer-events:none}
 kbd{font:11px -apple-system,sans-serif;color:var(--muted);white-space:nowrap;opacity:.7}
 #sidebar{position:absolute;inset:0 auto 0 0;width:min(var(--sidebar-width),calc(100vw - 400px));display:flex;flex-direction:column;gap:4px;padding:0 12px 10px;background:var(--chrome)}
-.window-drag{height:62px;flex-shrink:0;-webkit-app-region:drag}.brand{display:none}
-.space-switcher{display:flex;align-items:center;gap:8px;min-height:40px;padding:0 6px;margin-bottom:8px}.space-logo{width:26px;height:26px;object-fit:contain;flex-shrink:0}
+.window-drag{height:44px;flex-shrink:0;-webkit-app-region:drag}.brand{display:none}
+.space-switcher{display:flex;align-items:center;gap:9px;min-height:36px;padding:0 10px;margin-bottom:4px}.space-logo{width:22px;height:22px;object-fit:contain;flex-shrink:0}
 #space-picker{flex:1;min-width:0;width:0;border:0;background:transparent;padding:6px 0;font-weight:600;cursor:pointer}
 #end-private{padding:5px 7px;color:var(--muted);font-size:.77rem;white-space:nowrap}
 .new{display:flex;align-items:center;gap:9px;text-align:left;min-height:37px;padding:8px 10px;color:var(--muted);font-size:.94rem}.new kbd{margin-left:auto}
@@ -30,14 +30,14 @@ summary{list-style:none;cursor:pointer;color:var(--ink);padding-left:6px}summary
 .sidebar-bottom{flex-shrink:0;padding-top:7px}.memory,.sleep,.footnote,.profile,#theme,#import-arc{display:none}.utilities{display:flex;align-items:center;gap:4px}.utilities button{display:grid;place-items:center;width:32px;height:32px;color:var(--muted)}.utilities #downloads{margin-left:auto}
 #sidebar-resize{position:absolute;left:calc(min(var(--sidebar-width),calc(100vw - 400px)) - 3px);top:52px;bottom:0;width:6px;z-index:20;cursor:col-resize;touch-action:none}#sidebar-resize:hover,#sidebar-resize:focus-visible{background:color-mix(in srgb,var(--accent) 35%,transparent)}.resizing,.resizing *{cursor:col-resize!important;user-select:none!important}
 main{position:absolute;inset:0 0 0 min(var(--sidebar-width),calc(100vw - 400px));background:var(--chrome);min-width:0}
-header{height:44px;display:flex;align-items:center;gap:5px;padding:0 17px 0 12px;-webkit-app-region:drag}header button,header input,header form,header browser-action-list{-webkit-app-region:no-drag}
+header{height:44px;display:flex;align-items:center;gap:5px;padding:0 17px 0 12px;-webkit-app-region:drag}:is(header,:where(.toolbar-dock)) button,:is(header,:where(.toolbar-dock)) input,:is(header,:where(.toolbar-dock)) form,:is(header,:where(.toolbar-dock)) browser-action-list{-webkit-app-region:no-drag}
 .nav{display:flex;gap:1px}.nav button,.protect,.icon-button{display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;width:31px;height:32px;color:var(--muted)}.nav .icon,.protect .icon{width:17px;height:17px}
 #address-form{display:flex;align-items:center;gap:9px;flex:1;min-width:80px;height:36px;padding:0 12px;margin:0 5px;background:color-mix(in srgb,var(--raised) 72%,transparent);border:1px solid var(--line);border-radius:10px}#address-form:focus-within{border-color:var(--accent);box-shadow:0 0 0 2px color-mix(in srgb,var(--accent) 12%,transparent)}
 #address{width:100%;border:0;outline:0;background:transparent;font-size:.92rem}#protocol{display:flex;color:var(--muted)}#protocol .icon{width:15px;height:15px}input::placeholder{color:var(--muted);opacity:.9}
 .protect.on,.protect.is-bookmarked{color:var(--accent);background:var(--selected)}#browser-actions{flex-shrink:0;max-width:144px}
 #welcome,#preferences{position:absolute;inset:44px 6px 6px 0;border:1px solid var(--line);border-radius:var(--panel-radius);background:var(--surface);overflow:hidden}
 #welcome{display:flex;align-items:center;justify-content:center;padding:36px;overflow-y:auto;scrollbar-width:thin;scrollbar-color:var(--line) transparent}
-.welcome-content{width:100%;max-width:700px;max-height:100%;margin:auto;text-align:center}.welcome-logo{width:62px;height:62px;object-fit:contain;margin:0 auto 20px;display:block}.welcome-wordmark{width:150px;height:36px;object-fit:contain;display:block;margin:0 auto 26px}
+.welcome-content{width:100%;max-width:700px;max-height:100%;margin:auto;text-align:center}.welcome-logo{width:104px;height:104px;object-fit:contain;margin:0 auto 10px;display:block}.welcome-wordmark{width:132px;height:32px;object-fit:contain;display:block;margin:0 auto 30px}
 .welcome-content h1,.ambient,.eyebrow,.welcome-content>p,.welcome-footer,.shortcuts{display:none}
 .search{display:flex;align-items:center;gap:12px;height:48px;width:100%;max-width:540px;margin:0 auto 32px;padding:0 10px 0 17px;text-align:left;background:var(--raised);border:1px solid var(--line);border-radius:12px;box-shadow:0 4px 18px #00000004}
 .search>span{display:flex;color:var(--muted)}.search input{border:0;background:transparent;flex:1;outline:none}.search:focus-within{border-color:var(--accent)}.search button{width:30px;height:30px;display:grid;place-items:center;color:var(--muted)}
@@ -146,8 +146,8 @@ header{padding-right:8px}
 
 /* Lightweight panels rendered in the existing browser interface. */
 header{gap:3px;padding-left:8px}
-header .icon,header button svg{width:16px;height:16px;flex-shrink:0;fill:none;stroke:currentColor;stroke-width:1.65}
-header .nav button,header .protect,header .icon-button{width:28px;height:28px}
+:is(header,:where(.toolbar-dock)) .icon,:is(header,:where(.toolbar-dock)) button svg{width:16px;height:16px;flex-shrink:0;fill:none;stroke:currentColor;stroke-width:1.65}
+:is(header,:where(.toolbar-dock)) .nav button,:is(header,:where(.toolbar-dock)) .protect,:is(header,:where(.toolbar-dock)) .icon-button{width:28px;height:28px}
 #address-form{height:30px;margin:0 3px;padding:0 9px;gap:6px}
 #address{font-size:12px}
 #browser-actions{display:none!important}
@@ -193,7 +193,7 @@ header .nav button,header .protect,header .icon-button{width:28px;height:28px}
 #prefs-nav button.selected {box-shadow:inset 0 0 0 .5px var(--line)}
 #prefs-content h2 {letter-spacing:-.022em;font-weight:550}
 .section-description {line-height:1.65}
-header .icon {stroke-width:1.65}
+:is(header,:where(.toolbar-dock)) .icon {stroke-width:1.65}
 #address-form {border-radius:10px;box-shadow:0 1px 2px #00000003}
 #sidebar-toggle {flex-shrink:0}
 @media(max-width:850px){#prefs-nav .icon{display:block;flex-shrink:0}#prefs-nav button{font-size:11px;gap:7px}}
@@ -255,11 +255,11 @@ header .icon {stroke-width:1.65}
 
 .pa-label{display:grid;gap:8px;margin:16px 0}#pa-text{width:100%;box-sizing:border-box;resize:vertical;min-height:100px;max-height:220px;padding:12px;color:inherit;background:var(--surface);border:1px solid var(--line);border-radius:12px;font:inherit;line-height:1.5}#pa-result{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit;line-height:1.65;max-height:280px;overflow:auto;user-select:text}
 
-header #workspace-tools{width:auto;gap:5px;padding:0 8px;font-size:11px;border:1px solid var(--line);border-radius:8px}header #workspace-tools:hover{background:var(--selected);color:var(--ink)}
+:is(header,:where(.toolbar-dock)) #workspace-tools{width:auto;gap:5px;padding:0 8px;font-size:11px;border:1px solid var(--line);border-radius:8px}:is(header,:where(.toolbar-dock)) #workspace-tools:hover{background:var(--selected);color:var(--ink)}
 .split-controls button{width:auto;display:inline-flex;align-items:center;gap:4px;padding:4px 7px;font-size:10px;color:var(--ink);border:1px solid var(--line)}.split-controls button:hover{background:var(--selected)}
 #split-divider:before{background:color-mix(in srgb,var(--muted) 18%,transparent)}#split-divider:hover:before,#split-divider:focus-visible:before{background:var(--accent)}
 .identity-card{box-sizing:border-box;width:min(100%,360px);min-height:112px;padding:20px;gap:12px;border-color:color-mix(in srgb,var(--card-accent) 38%,var(--card-bg));box-shadow:0 4px 16px #00000008}.identity-card strong{font-size:17px;line-height:1.3}.identity-card small{font-size:12px;line-height:1.4}.identity-mark{opacity:.75}.identity-card>span:first-child{border-radius:13px;background:color-mix(in srgb,var(--card-accent) 10%,var(--card-bg))}
-@media(max-width:900px){header #workspace-tools span{display:none}.split-controls button span{display:none}.split-controls button{padding:5px}}
+@media(max-width:900px){:is(header,:where(.toolbar-dock)) #workspace-tools span{display:none}.split-controls button span{display:none}.split-controls button{padding:5px}}
 
 .selection-translation>.settings-group>.setting-row:nth-child(-n+2){display:none}.selection-translation #pa-text{min-height:68px;max-height:140px}.selection-translation>.section-description{font-size:12px}.selection-translation .pa-label{margin:10px 0}
 
@@ -560,3 +560,424 @@ header #workspace-tools{width:auto;gap:5px;padding:0 8px;font-size:11px;border:1
 #preferences #prefs-content .credential-toolbar{align-items:stretch}
 #preferences #prefs-content .credential-toolbar button{display:grid;place-items:center;height:auto;min-height:37px;padding:0 14px}
 #preferences #prefs-content .download-list-head button{border:0;background:transparent;padding:3px 8px}
+/* Toolbar Extensions popover: a grid of extension panel icons */
+#preferences #prefs-content #extension-list.extension-panels{display:grid;grid-template-columns:repeat(auto-fill,minmax(52px,1fr));gap:6px;border:0;background:none;border-radius:0;overflow:visible}
+#preferences #prefs-content #extension-list.extension-panels:has(.empty-state){display:block}
+#preferences #prefs-content .extension-panel-button{display:grid;place-items:center;width:52px;height:52px;min-height:52px;padding:0;border:1px solid transparent;border-radius:14px;background:transparent}
+#preferences #prefs-content .extension-panel-button img{width:28px;height:28px;object-fit:contain}
+#preferences #prefs-content .extension-panel-button .icon{width:22px;height:22px;color:var(--muted)}
+/* Theme-aware favorite icons (toneOf in renderer.js) */
+:root[data-theme=dark] img.site-icon[data-tone=dark-mono],:root[data-theme=light] img.site-icon[data-tone=light-mono]{filter:invert(1) hue-rotate(180deg)}
+
+/* 0.25 — Native-feeling micro-interactions.
+   Shared tokens: every hover, press, drag and toggle uses the same short timings; Reduce Motion turns them off
+   (the global [data-motion=reduced] rule and the media query below). */
+:root{--motion-fast:120ms;--motion:180ms;--motion-slow:240ms;--ease-out:cubic-bezier(.2,.7,.2,1);--ease-spring:cubic-bezier(.34,1.45,.55,1);}
+
+/* Toolbar icons, favorite tiles and sidebar footer buttons: plain icons at rest, like macOS toolbar and sidebar items.
+   A soft rounded highlight fades in only on hover, press, keyboard focus or when the item is open/selected. */
+:is(main>header,:where(.toolbar-dock)) .nav button,:is(main>header,:where(.toolbar-dock)) .protect,:is(main>header,:where(.toolbar-dock)) #extensions,:is(main>header,:where(.toolbar-dock)) #workspace-tools,.utilities button,#favorites .favorite{border:0;border-radius:7px;background:transparent;box-shadow:none;-webkit-backdrop-filter:none;backdrop-filter:none;transition:background-color var(--motion-fast) var(--ease-out),color var(--motion-fast) var(--ease-out),transform var(--motion-fast) var(--ease-out)}
+#favorites .favorite{border-radius:9px}
+:is(main>header,:where(.toolbar-dock)) .nav button:hover:not(:disabled),:is(main>header,:where(.toolbar-dock)) .protect:hover:not(:disabled),:is(main>header,:where(.toolbar-dock)) #extensions:hover:not(:disabled),:is(main>header,:where(.toolbar-dock)) #workspace-tools:hover:not(:disabled),.utilities button:hover:not(:disabled),#favorites .favorite:hover:not(:disabled),:is(main>header,:where(.toolbar-dock)) .nav button:focus-visible,:is(main>header,:where(.toolbar-dock)) .protect:focus-visible,:is(main>header,:where(.toolbar-dock)) #extensions:focus-visible,:is(main>header,:where(.toolbar-dock)) #workspace-tools:focus-visible,.utilities button:focus-visible,#favorites .favorite:focus-visible{background:color-mix(in srgb,var(--ink) 8%,transparent);color:var(--ink)}
+:is(main>header,:where(.toolbar-dock)) .nav button:active:not(:disabled),:is(main>header,:where(.toolbar-dock)) .protect:active:not(:disabled),:is(main>header,:where(.toolbar-dock)) #extensions:active:not(:disabled),:is(main>header,:where(.toolbar-dock)) #workspace-tools:active:not(:disabled),.utilities button:active:not(:disabled),#favorites .favorite:active:not(:disabled){background:color-mix(in srgb,var(--ink) 13%,transparent);transform:scale(.97)}
+:is(main>header,:where(.toolbar-dock)) .nav button.selected,:is(main>header,:where(.toolbar-dock)) .protect.selected,:is(main>header,:where(.toolbar-dock)) #extensions.selected,:is(main>header,:where(.toolbar-dock)) #workspace-tools.selected,.utilities button.selected,#favorites .favorite.selected,:is(main>header,:where(.toolbar-dock)) .nav button[aria-pressed=true],:is(main>header,:where(.toolbar-dock)) .protect[aria-pressed=true],:is(main>header,:where(.toolbar-dock)) #extensions[aria-pressed=true],:is(main>header,:where(.toolbar-dock)) #workspace-tools[aria-pressed=true],.utilities button[aria-pressed=true],#favorites .favorite[aria-pressed=true],:is(main>header,:where(.toolbar-dock)) #extensions[aria-expanded=true]{background:color-mix(in srgb,var(--ink) 10%,transparent)}
+:is(main>header,:where(.toolbar-dock)) .nav button:disabled{opacity:.4}
+/* Hover, press and focus on every control */
+button,summary,[role=button],.tab,.bookmark,.favorite,.list-row,.download-row,.login-row,.extension-row,select,a{transition:background-color var(--motion) var(--ease-out),color var(--motion) var(--ease-out),border-color var(--motion) var(--ease-out),box-shadow var(--motion) var(--ease-out),opacity var(--motion) var(--ease-out),transform var(--motion-fast) var(--ease-out),filter var(--motion) var(--ease-out)}
+button:active:not(:disabled),summary:active,[role=button]:active{transform:scale(.96);transition-duration:60ms}
+.tab:active,.bookmark:active,.list-text.openable:active,.download-info.openable:active{transform:scale(.985);transition-duration:60ms}
+
+/* Dragging: the item lifts and the drop spot glows; uiMotion animates the reorder */
+.dragging,.bookmark.dragging{opacity:.92;transform:scale(1.03);box-shadow:0 14px 30px -14px color-mix(in srgb,#000 55%,transparent);cursor:grabbing;z-index:5}
+.drop-target{outline:none;background:var(--selected);box-shadow:inset 0 0 0 1.5px color-mix(in srgb,var(--accent) 70%,transparent);transition:box-shadow var(--motion-fast) var(--ease-out),background-color var(--motion-fast) var(--ease-out)}
+
+/* Resize lines and split divider light up on hover and while dragging */
+#sidebar-resize{transition:background-color var(--motion) var(--ease-out),box-shadow var(--motion) var(--ease-out)}
+#sidebar-resize:hover,#sidebar-resize:active,body.resizing #sidebar-resize{background:linear-gradient(90deg,transparent 2px,color-mix(in srgb,var(--accent) 70%,transparent) 2px 4px,transparent 4px)}
+#split-divider:before{transition:background-color var(--motion) var(--ease-out),transform var(--motion) var(--ease-out)}
+#split-divider:active:before{background:var(--accent);transform:scaleX(1.6)}
+
+/* Switches and sliders move instead of jumping */
+input[role=switch]{transition:background-color var(--motion) var(--ease-out),box-shadow var(--motion) var(--ease-out)}
+input[role=switch]::before,input[role=switch]::after{transition:transform var(--motion) var(--ease-spring),background-color var(--motion) var(--ease-out)}
+input[type=range]::-webkit-slider-thumb{transition:transform var(--motion-fast) var(--ease-out),box-shadow var(--motion) var(--ease-out)}
+input[type=range]:active::-webkit-slider-thumb{transform:scale(1.15)}
+
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{transition-duration:0s!important;animation:none!important}button:active,summary:active,[role=button]:active,.tab:active,.bookmark:active,#favorites .favorite:active,.dragging{transform:none!important}}
+[data-motion=reduced] button:active,[data-motion=reduced] .tab:active,[data-motion=reduced] .bookmark:active,[data-motion=reduced] #favorites .favorite:active,[data-motion=reduced] .dragging,[data-motion=reduced] :is(main>header,:where(.toolbar-dock)) button:hover{transform:none!important}
+#preferences #prefs-content .extension-panel-button{border:0;background:transparent;box-shadow:none}
+#preferences #prefs-content .extension-panel-button:hover,#preferences #prefs-content .extension-panel-button:focus-visible{background:color-mix(in srgb,var(--ink) 8%,transparent)}
+/* Favorites drag (sidebar-ui.js): lifted tile follows the pointer; the others slide to show the slot. */
+#favorites.reordering .favorite{transition:transform 200ms var(--ease-out)}
+#favorites.reordering .favorite.lifted{transition:none;z-index:10;box-shadow:0 12px 28px -12px color-mix(in srgb,#000 55%,transparent);background:color-mix(in srgb,var(--ink) 10%,transparent);cursor:grabbing}
+#favorites .favorite.settling{transition:transform 200ms var(--ease-spring);z-index:10}
+#favorites .favorite{touch-action:none}
+/* 0.25.2 — docked extension side panel (chrome.sidePanel). The page view sits under .side-panel-body; the header
+   shares the window's glass like the toolbar, and the left edge is the resize handle. */
+#side-panel{position:absolute;right:6px;top:var(--side-panel-top,44px);bottom:6px;width:var(--side-panel-width,360px);display:flex;flex-direction:column;z-index:15}
+#side-panel[hidden]{display:none}
+.side-panel-head{height:var(--side-panel-header,34px);display:flex;align-items:center;gap:8px;padding:0 2px 0 10px;color:var(--ink);min-width:0}
+.side-panel-art{width:16px;height:16px;flex:none;display:grid;place-items:center}.side-panel-art img{width:16px;height:16px;object-fit:contain}.side-panel-art .icon{width:15px;height:15px}
+.side-panel-title{flex:1;min-width:0;font-size:.92rem;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#side-panel-close{width:26px;height:26px;border:0;border-radius:7px;background:transparent;color:var(--muted);display:grid;place-items:center;transition:background-color var(--motion-fast) var(--ease-out),color var(--motion-fast) var(--ease-out),transform var(--motion-fast) var(--ease-out)}
+#side-panel-close .icon{width:14px;height:14px}#side-panel-close:hover,#side-panel-close:focus-visible{background:color-mix(in srgb,var(--ink) 8%,transparent);color:var(--ink)}#side-panel-close:active{background:color-mix(in srgb,var(--ink) 13%,transparent);transform:scale(.94)}
+.side-panel-body{flex:1;border-radius:10px;background:color-mix(in srgb,var(--raised) 55%,transparent)}
+#side-panel-resize{position:absolute;left:-6px;top:var(--side-panel-header,34px);bottom:0;width:6px;cursor:col-resize;touch-action:none;transition:background-color var(--motion) var(--ease-out)}
+#side-panel-resize:hover,#side-panel-resize:focus-visible,body.side-panel-resizing #side-panel-resize{background:linear-gradient(90deg,transparent 2px,color-mix(in srgb,var(--accent) 70%,transparent) 2px 4px,transparent 4px)}
+:root[data-tool] #side-panel{display:none!important}
+/* 0.25.2 — Settings, closer to macOS System Settings and still minimal: small coloured symbol tiles in the sidebar,
+   a filled selected pill, quiet group labels, a modest title, inset grouped sections with hairline separators,
+   label-left/control-right rows, native-sized popups and switches, and smaller grey descriptions. */
+:root #preferences{--set-fill:color-mix(in srgb,var(--ink) 4%,var(--raised));--set-hair:color-mix(in srgb,var(--ink) 9%,transparent);--set-pill:color-mix(in srgb,var(--ink) 9%,transparent)}
+:root #preferences .prefs-heading{min-height:52px;padding-block:0;border-bottom:1px solid var(--set-hair);box-shadow:none}
+:root #preferences .prefs-heading h1{font-size:15px;font-weight:600;letter-spacing:0}
+:root #preferences .prefs-heading .settings-logo{width:20px;height:20px}
+:root #preferences #close-settings{width:28px;height:28px;border:0;border-radius:7px;box-shadow:none;background:transparent;color:var(--muted);outline:none}
+:root #preferences #close-settings:hover{background:var(--set-pill);color:var(--ink)}
+:root #preferences #close-settings:focus-visible{outline:2px solid color-mix(in srgb,var(--accent) 55%,transparent);outline-offset:1px}
+/* Sidebar */
+:root #preferences #prefs-nav{border-right:1px solid var(--set-hair);gap:0}
+:root #preferences .prefs-search{height:28px;border-radius:7px;border:0;background:var(--set-pill);box-shadow:none;margin-bottom:6px}
+:root #preferences .prefs-search input{font-size:13px}
+:root #preferences .prefs-nav-group{margin-top:10px}
+:root #preferences .prefs-nav-heading{font-size:11px;font-weight:600;letter-spacing:0;text-transform:none;color:var(--muted);padding:4px 10px 3px;opacity:.85}
+:root #preferences #prefs-nav button[data-section]{min-height:30px;height:30px;padding:0 8px;gap:8px;border:0;border-radius:7px;box-shadow:none;background:transparent;font-size:13px;font-weight:400;color:var(--ink);transition:background-color var(--motion-fast) var(--ease-out)}
+:root #preferences #prefs-nav button[data-section]:hover{background:color-mix(in srgb,var(--ink) 5%,transparent)}
+:root #preferences #prefs-nav button[data-section].selected,:root #preferences #prefs-nav button[data-section][aria-current=page]{background:var(--set-pill);font-weight:500;border:0;box-shadow:none}
+:root #preferences #prefs-nav button[data-section].selected::before,:root #preferences #prefs-nav button[data-section][aria-current=page]::before{display:none}
+:root #preferences #prefs-nav button[data-section] svg{width:20px;height:20px;min-width:20px;padding:3.5px;box-sizing:border-box;border-radius:5px;color:#fff;background:var(--tile,#8e8e93);stroke-width:2.1}
+:root #preferences #prefs-nav button[data-section="profile"]{--tile:#8e8e93}
+:root #preferences #prefs-nav button[data-section="appearance"]{--tile:#1c1c1e}
+:root[data-theme=dark] #preferences #prefs-nav button[data-section="appearance"]{--tile:#48484a}
+:root #preferences #prefs-nav button[data-section="design"]{--tile:#ff2d55}
+:root #preferences #prefs-nav button[data-section="workspace"]{--tile:#5856d6}
+:root #preferences #prefs-nav button[data-section="accessibility"]{--tile:#0a84ff}
+:root #preferences #prefs-nav button[data-section="downloads"]{--tile:#0a84ff}
+:root #preferences #prefs-nav button[data-section="extensions"]{--tile:#8e8e93}
+:root #preferences #prefs-nav button[data-section="history"]{--tile:#636366}
+:root #preferences #prefs-nav button[data-section="passwords"]{--tile:#8e8e93}
+:root #preferences #prefs-nav button[data-section="permissions"]{--tile:#0a84ff}
+:root #preferences #prefs-nav button[data-section="blocking"]{--tile:#34c759}
+:root #preferences #prefs-nav button[data-section="private"]{--tile:#5856d6}
+:root #preferences #prefs-nav button[data-section="imports"]{--tile:#ff9f0a}
+:root #preferences #prefs-nav button[data-section="ai"]{--tile:#af52de}
+:root #preferences #prefs-nav button[data-section="page-assistant"]{--tile:#af52de}
+:root #preferences #prefs-nav button[data-section="performance"]{--tile:#ff9500}
+:root #preferences #prefs-nav button[data-section="updates"]{--tile:#8e8e93}
+/* Content */
+:root #preferences #prefs-content section[data-pane]>h2{font-size:20px;font-weight:600;letter-spacing:0;margin:0 0 2px}
+:root #preferences #prefs-content .section-description{font-size:12px;color:var(--muted);margin:0 0 14px}
+:root #preferences #prefs-content .settings-group{border:0;border-radius:10px;background:var(--set-fill);box-shadow:none;overflow:hidden}
+:root #preferences #prefs-content .settings-group+.settings-group,:root #preferences #prefs-content .settings-group+.setting-row,:root #preferences #prefs-content .setting-row+.settings-group{margin-top:14px}
+:root #preferences #prefs-content .setting-row{min-height:44px;padding:7px 12px;gap:16px;border:0;font-size:13px;background:transparent;box-shadow:none}
+:root #preferences #prefs-content .settings-group>.setting-row{position:relative;border:0}
+:root #preferences #prefs-content .settings-group>.setting-row+.setting-row{border-top:1px solid var(--set-hair)}
+:root #preferences #prefs-content section[data-pane]>.setting-row{border-radius:10px;background:var(--set-fill)}
+:root #preferences #prefs-content .setting-row>span{font-size:13px;font-weight:400;line-height:1.3}
+:root #preferences #prefs-content .setting-row small{font-size:11px;line-height:1.35;color:var(--muted);margin-top:1px}
+:root #preferences #prefs-content .setting-row select{height:24px;min-height:24px;padding:0 24px 0 9px;font-size:13px;border:0;border-radius:6px;background-color:var(--set-pill);box-shadow:none;background-position:right 7px center}
+:root #preferences #prefs-content .setting-row a{text-decoration:none;color:var(--accent);font-size:13px}
+:root #preferences #prefs-content .setting-row a:hover{text-decoration:underline}
+:root #preferences #prefs-content .setting-row button:not([role=switch]):not(.icon-button){min-height:24px;height:24px;padding:0 11px;font-size:13px;border:0;border-radius:6px;background:var(--set-pill);box-shadow:none}
+:root #preferences #prefs-content input[role=switch]{transform:scale(.82);transform-origin:right center}
+:root #preferences{--set-fill:color-mix(in srgb,var(--raised) 82%,transparent)}
+:root[data-theme=dark] #preferences{--set-fill:color-mix(in srgb,var(--ink) 5%,transparent)}
+:root #preferences #prefs-content section[data-pane] h2{font-size:20px;font-weight:600;letter-spacing:0}
+:root #preferences #prefs-content .section-toolbar{align-items:center;gap:8px}
+:root #preferences #prefs-content .section-toolbar>button,:root #preferences #prefs-content section[data-pane]>button{display:inline-flex;align-items:center;gap:6px;min-height:26px;height:26px;padding:0 12px;font-size:13px;font-weight:500;border:0;border-radius:7px;box-shadow:none;background:var(--set-pill);color:var(--ink)}
+:root #preferences #prefs-content section[data-pane]>button svg{width:14px;height:14px;margin:0}
+:root #preferences #prefs-content section[data-pane]>button{margin-top:10px}
+:root #preferences #prefs-content details>summary{font-size:13px;font-weight:500;color:var(--muted)}
+/* Sub-headings, secondary text, inline controls and cards across the other panes */
+:root #preferences #prefs-content section[data-pane] h3{font-size:13px;font-weight:600;letter-spacing:0;margin:14px 0 4px}
+:root #preferences #prefs-content .empty-state h3{font-size:14px}
+:root #preferences #prefs-content .settings-group>h3,:root #preferences #prefs-content .settings-group>p,:root #preferences #prefs-content .settings-group>small,:root #preferences #prefs-content .settings-group>.manager-actions,:root #preferences #prefs-content .settings-group>#resource-processes{padding-inline:12px}
+:root #preferences #prefs-content .settings-group>p,:root #preferences #prefs-content .settings-group>small,:root #preferences #prefs-content section[data-pane]>p:not(.section-description){font-size:12px;color:var(--muted)}
+:root #preferences #prefs-content .settings-group>.manager-actions,:root #preferences #prefs-content .settings-group>#resource-processes:last-child{padding-bottom:12px}
+:root #preferences #prefs-content .settings-group.resource-card{padding:0}
+:root #preferences #prefs-content .manager-actions{gap:6px}
+:root #preferences #prefs-content .manager-actions>button,:root #preferences #prefs-content .credential-toolbar>button,:root #preferences #prefs-content .setting-row>button,:root #preferences #prefs-content .info-card button,:root #preferences #prefs-content .settings-card button,:root #preferences #prefs-content #wallet-form button{display:inline-flex;align-items:center;justify-content:center;min-height:26px;height:26px;padding:0 12px;font-size:13px;font-weight:500;border:0;border-radius:7px;box-shadow:none;outline-offset:1px;background:var(--set-pill);color:var(--ink)}
+:root #preferences #prefs-content .manager-actions>button[aria-pressed=true]{background:var(--raised);color:var(--ink);box-shadow:0 0 0 .5px color-mix(in srgb,var(--ink) 14%,transparent),0 1px 2px color-mix(in srgb,#000 12%,transparent);border:0}
+:root[data-theme=dark] #preferences #prefs-content .manager-actions>button[aria-pressed=true]{background:color-mix(in srgb,var(--ink) 22%,transparent)}
+:root #preferences #prefs-content .setting-row>button.primary,:root #preferences #prefs-content .section-toolbar>button.primary{background:var(--accent);color:#fff;border:0;box-shadow:none}
+:root[data-theme=dark] #preferences #prefs-content .setting-row>button.primary,:root[data-theme=dark] #preferences #prefs-content .section-toolbar>button.primary{color:#0d1b2a}
+:root #preferences #prefs-content .manager-actions>button:focus:not(:focus-visible){outline:none}
+:root #preferences #prefs-content .credential-toolbar{gap:8px;align-items:center}
+:root #preferences #prefs-content .credential-toolbar input,:root #preferences #prefs-content #extension-search,:root #preferences #prefs-content #wallet-form input{height:28px;min-height:28px;padding:0 10px;font-size:13px;border:0;border-radius:7px;background:var(--set-pill);box-shadow:none}
+:root #preferences #prefs-content details,:root #preferences #prefs-content .info-card,:root #preferences #prefs-content .settings-card{border:0;border-radius:10px;background:var(--set-fill);box-shadow:none}
+:root #preferences #prefs-content details>summary{min-height:36px;padding-block:0;display:flex;align-items:center}
+:root #preferences #prefs-content .resource-row{font-size:13px;padding-block:7px;border-color:var(--set-hair)}
+:root #preferences #prefs-content .resource-row strong{font-weight:500;color:var(--muted)}
+:root #preferences #prefs-content .manager-actions>button[aria-pressed]{outline:0}
+:root #preferences #prefs-content .manager-actions>button[aria-pressed]:focus-visible{outline:2px solid color-mix(in srgb,var(--accent) 55%,transparent)}
+:root #preferences #prefs-content .settings-group>button{display:inline-flex;align-items:center;min-height:26px;height:26px;margin:4px 12px 12px;padding:0 12px;font-size:13px;font-weight:500;border:0;border-radius:7px;box-shadow:none;background:var(--set-pill);color:var(--ink)}
+/* Glass logo: the rendered-frame canvas takes the image’s place; the image stays as the fallback. */
+img.glass-fallback{visibility:hidden!important}
+/* The live logo draws its own light; the CSS spectrum behind the welcome mark steps aside. */
+#onboarding .art-welcome:has(>canvas.glass-logo) .art-spectrum{visibility:hidden}
+/* 0.26 — update states in the sidebar footer */
+/* 0.27.3 update control: as tall as the footer icons, centred with them, a soft accent tint that follows light/dark. */
+#sidebar .sidebar-bottom .utilities #update-indicator{display:inline-flex;align-items:center;justify-content:center;gap:5px;flex:none;width:auto;min-width:32px;height:32px;margin:0 auto;padding:0 8px;border:0;border-radius:8px;background:transparent;color:var(--muted);font:500 12px/1 -apple-system,BlinkMacSystemFont,sans-serif;white-space:nowrap;place-items:center;transition:background-color var(--motion-fast) var(--ease-out),color var(--motion-fast) var(--ease-out),transform var(--motion-fast) var(--ease-out)}
+#sidebar .sidebar-bottom .utilities #update-indicator[hidden]{display:none}
+#update-indicator .update-label{display:block;line-height:16px;height:16px;overflow:hidden;text-overflow:ellipsis;max-width:90px}
+#update-indicator .update-glyph{width:14px;height:14px;flex:none;display:none}
+#update-indicator .update-ring{width:13px;height:13px;border-radius:50%;border:1.6px solid color-mix(in srgb,var(--muted) 35%,transparent);border-top-color:var(--accent);animation:update-spin 900ms linear infinite}
+#update-indicator:hover{background:color-mix(in srgb,var(--ink) 8%,transparent);color:var(--ink)}
+#update-indicator:active{transform:scale(.97)}
+#sidebar .sidebar-bottom .utilities #update-indicator[data-kind=ready]{height:26px;padding:0 10px 0 8px;border-radius:13px;background:color-mix(in srgb,var(--accent) 18%,transparent);color:color-mix(in srgb,var(--accent) 70%,var(--ink));box-shadow:inset 0 0 0 .5px color-mix(in srgb,var(--accent) 35%,transparent);animation:update-arrive 420ms var(--ease-spring)}
+#sidebar .sidebar-bottom .utilities #update-indicator[data-kind=ready]:hover{background:color-mix(in srgb,var(--accent) 28%,transparent)}
+#update-indicator[data-kind=ready] .update-ring{display:none}#update-indicator[data-kind=ready] .update-glyph{display:block}
+:root[data-motion=reduced] #update-indicator .update-ring{animation-duration:2.4s}
+:root[data-motion=reduced] #sidebar .sidebar-bottom .utilities #update-indicator[data-kind=ready]{animation:none}
+@keyframes update-spin{to{transform:rotate(360deg)}}
+@keyframes update-arrive{from{opacity:0;transform:scale(.85)}to{opacity:1;transform:none}}
+/* 0.27.1 new tab: recently closed tabs along the bottom, quiet until hovered. */
+.home-closed{position:absolute;left:36px;right:36px;bottom:20px;display:flex;flex-wrap:wrap;justify-content:center;gap:6px}
+.home-closed button{display:flex;align-items:center;gap:7px;max-width:220px;height:28px;padding:0 11px 0 8px;border-radius:14px;background:color-mix(in srgb,var(--ink) 4%,transparent);color:var(--muted);font-size:12px}
+.home-closed button:hover{background:color-mix(in srgb,var(--ink) 8%,transparent);color:var(--ink)}
+.home-closed button span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.home-closed .site-icon,.home-closed button>span:first-child:not(:last-child){width:14px;height:14px;flex:none;border-radius:3px;font-size:9px}
+.passkey-list{list-style:none;margin:0;padding:0}.passkey-list .setting-row{border-top:.5px solid var(--line)}.passkey-empty{padding:10px 14px;color:var(--muted);font-size:12px}
+/* 0.28 site controls (site-controls-ui.js): compact rows in soft groups, native-sized controls. */
+#protocol{border:0;background:transparent;padding:2px;border-radius:6px;cursor:default;align-items:center;justify-content:center}#protocol:not(:disabled):hover{background:color-mix(in srgb,var(--ink) 8%,transparent);color:var(--ink)}
+[data-pane=site]{display:flex;flex-direction:column;gap:10px;padding-bottom:4px}[data-pane=site][hidden]{display:none}
+.site-group{border-radius:10px;background:color-mix(in srgb,var(--ink) 4%,transparent)}
+.site-row{display:flex;align-items:center;gap:8px;min-height:36px;padding:4px 10px;font-size:13px}.site-row+.site-row{border-top:.5px solid var(--line)}
+.site-label{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.site-count{color:var(--muted);font-variant-numeric:tabular-nums;font-size:12px}
+.site-row select{font-size:12px;height:24px;border-radius:6px}.site-row button,.site-zoom button{height:24px;padding:0 10px;border-radius:6px;font-size:12px}
+.site-zoom{display:flex;align-items:center;gap:2px}.site-zoom button{min-width:28px;padding:0 6px}.site-zoom-value{min-width:52px!important;font-variant-numeric:tabular-nums}
+.site-erase{height:32px;border-radius:9px;font-size:13px;justify-content:center;text-align:center}.site-reset{align-self:center;background:transparent!important;border:0!important;box-shadow:none!important;color:var(--muted)!important;font-size:12px}.site-reset:hover{color:var(--ink)}
+.site-empty{color:var(--muted);font-size:12px;margin:6px 0}
+
+/* 0.29 spaces (spaces-ui.js): the switcher button, the spaces popover, and the space colour on the accent and sidebar. */
+.space-native{position:absolute;width:1px;height:1px;opacity:0;pointer-events:none;overflow:hidden}
+.space-button{flex:1;min-width:0;display:flex;align-items:center;justify-content:flex-start;gap:7px;height:30px;padding:0 8px 0 4px;margin-left:-4px;border-radius:9px;color:inherit;font-weight:600;text-align:left}
+.space-button:hover{background:var(--hover)}.space-button:active{background:color-mix(in srgb,var(--ink) 9%,transparent)}
+.space-name{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.space-button .space-chevron{width:12px;height:12px;transform:rotate(90deg);color:var(--muted);opacity:.75}
+.space-chip{--chip:var(--prism-accent,#507fad);display:grid;place-items:center;width:20px;height:20px;border-radius:6px;flex:none;color:var(--chip);background:color-mix(in srgb,var(--chip) 15%,transparent)}
+.space-chip .icon{width:13px;height:13px;color:inherit;stroke-width:1.9}
+:root[data-space-color]:not([data-tool]) #sidebar{background:linear-gradient(180deg,color-mix(in srgb,var(--space-accent) 10%,transparent),color-mix(in srgb,var(--space-accent) 4%,transparent) 55%,transparent),var(--chrome)}
+[data-contrast=high] #sidebar{background:var(--chrome)!important}
+[data-pane=spaces]{display:flex;flex-direction:column;gap:6px;padding-bottom:2px}[data-pane=spaces][hidden]{display:none}
+:root #preferences #prefs-content section[data-pane=spaces] button{min-height:0;padding:0;margin:0;border:0;background:transparent;box-shadow:none;font-weight:inherit;color:inherit;cursor:default}
+:root #preferences #prefs-content section[data-pane=spaces] button:focus-visible{outline:2px solid var(--accent);outline-offset:-2px}
+:root #preferences #prefs-content [data-pane=spaces] .space-search-box{display:flex;align-items:center;gap:7px;height:32px;padding:0 10px;margin-bottom:2px;border-radius:9px;background:color-mix(in srgb,var(--ink) 5%,transparent);color:var(--muted)}
+:root #preferences #prefs-content [data-pane=spaces] .space-search-box:focus-within{background:color-mix(in srgb,var(--ink) 3%,transparent);box-shadow:0 0 0 1px color-mix(in srgb,var(--accent) 55%,transparent),0 0 0 4px color-mix(in srgb,var(--accent) 13%,transparent)}
+:root #preferences #prefs-content [data-pane=spaces] .space-search-box .icon{width:14px;height:14px;flex:none;color:inherit}
+:root #preferences #prefs-content [data-pane=spaces] .space-search{flex:1;min-width:0;height:100%;padding:0;border:0;background:transparent;color:var(--ink);font:inherit;font-size:13px;outline:none}
+:root #preferences #prefs-content [data-pane=spaces] .space-search::-webkit-search-cancel-button{display:none}
+:root #preferences #prefs-content [data-pane=spaces] .space-list{display:flex;flex-direction:column;gap:2px;max-height:404px;margin:0 -4px;padding:0 4px;overflow-y:auto;scrollbar-width:thin;overscroll-behavior:contain}
+:root #preferences #prefs-content [data-pane=spaces] .space-row{--row:var(--prism-accent,#507fad);position:relative;display:flex;align-items:center;flex:none;border-radius:10px;transition:background .12s}
+:root #preferences #prefs-content [data-pane=spaces] .space-row:hover{background:var(--hover)}
+:root #preferences #prefs-content [data-pane=spaces] .space-row.current{background:color-mix(in srgb,var(--row) 13%,transparent)}
+:root #preferences #prefs-content [data-pane=spaces] .space-row.current:hover{background:color-mix(in srgb,var(--row) 18%,transparent)}
+:root #preferences #prefs-content [data-pane=spaces] .space-row.dragging{opacity:.35}
+:root #preferences #prefs-content [data-pane=spaces] .space-row.drop-before:before,.space-row.drop-after:after{content:'';position:absolute;left:8px;right:8px;height:2px;border-radius:1px;background:var(--accent);pointer-events:none}
+:root #preferences #prefs-content [data-pane=spaces] .space-row.drop-before:before{top:-2px}.space-row.drop-after:after{bottom:-2px}
+:root #preferences #prefs-content [data-pane=spaces] .space-pick{flex:1;min-width:0;display:flex;align-items:center;justify-content:flex-start;gap:10px;height:44px;padding:0 10px 0 7px!important;border-radius:10px!important;text-align:left;color:var(--ink)!important}
+:root #preferences #prefs-content [data-pane=spaces] .space-pick .space-chip{width:30px;height:30px;border-radius:9px}
+:root #preferences #prefs-content [data-pane=spaces] .space-pick .space-chip .icon{width:16px;height:16px}
+:root #preferences #prefs-content [data-pane=spaces] .space-row.current .space-pick .space-chip{background:var(--chip);color:var(--on-chip,#fff)}
+:root #preferences #prefs-content [data-pane=spaces] .space-text{flex:1;min-width:0;display:flex;flex-direction:column;gap:1px}
+:root #preferences #prefs-content [data-pane=spaces] .space-label{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:13px;line-height:17px}
+:root #preferences #prefs-content [data-pane=spaces] .space-row.current .space-label{font-weight:600}
+:root #preferences #prefs-content [data-pane=spaces] .space-meta{color:var(--muted);font-size:11px;line-height:14px;font-variant-numeric:tabular-nums}
+:root #preferences #prefs-content [data-pane=spaces] .space-pick .space-check{width:15px;height:15px;flex:none;color:var(--row)}
+:root #preferences #prefs-content [data-pane=spaces] .space-tail{position:relative;display:grid;place-items:center;width:34px;height:34px;margin-right:5px;flex:none}
+:root #preferences #prefs-content [data-pane=spaces] .space-key{grid-area:1/1;font:11px -apple-system,BlinkMacSystemFont,sans-serif;color:var(--muted);opacity:.7;font-variant-numeric:tabular-nums;transition:opacity .12s}
+:root #preferences #prefs-content [data-pane=spaces] .space-edit{grid-area:1/1;display:grid;place-items:center;width:28px;height:28px;border-radius:8px!important;color:var(--muted)!important;opacity:0;transition:opacity .12s,background .12s}
+:root #preferences #prefs-content [data-pane=spaces] .space-row:hover .space-key,.space-row:focus-within .space-key{opacity:0}
+:root #preferences #prefs-content [data-pane=spaces] .space-row:hover .space-edit,.space-row:focus-within .space-edit{opacity:1}
+:root #preferences #prefs-content [data-pane=spaces] .space-edit:hover{background:color-mix(in srgb,var(--ink) 8%,transparent)!important;color:var(--ink)!important}
+:root #preferences #prefs-content [data-pane=spaces] .space-edit .icon{width:14px;height:14px;color:inherit}
+:root #preferences #prefs-content [data-pane=spaces] .space-empty{margin:6px 0;padding:14px 8px;text-align:center;color:var(--muted);font-size:12px}
+:root #preferences #prefs-content [data-pane=spaces] .space-private{margin-top:4px}
+:root #preferences #prefs-content [data-pane=spaces] .space-private:before{content:'';position:absolute;left:10px;right:10px;top:-4px;border-top:.5px solid var(--line)}
+:root #preferences #prefs-content [data-pane=spaces] .space-private .space-pick{padding-right:12px!important}
+:root #preferences #prefs-content [data-pane=spaces] .filtering .space-private:before{display:none}
+:root #preferences #prefs-content [data-pane=spaces] .space-foot{display:flex;align-items:center;justify-content:space-between;gap:8px;padding-top:6px;margin-top:2px;border-top:.5px solid var(--line)}
+:root #preferences #prefs-content [data-pane=spaces] .space-new{display:flex;align-items:center;gap:10px;height:40px;padding:0 12px 0 7px!important;border-radius:10px!important;font-size:13px;color:var(--ink)!important}
+:root #preferences #prefs-content [data-pane=spaces] .space-new:hover:not(:disabled){background:var(--hover)!important}
+:root #preferences #prefs-content [data-pane=spaces] .space-new:disabled{opacity:.45}
+:root #preferences #prefs-content [data-pane=spaces] .space-new-chip{display:grid;place-items:center;width:30px;height:30px;border-radius:9px;border:1px dashed color-mix(in srgb,var(--ink) 25%,transparent);color:var(--muted)}
+:root #preferences #prefs-content [data-pane=spaces] .space-new-chip .icon{width:15px;height:15px;color:inherit}
+:root #preferences #prefs-content [data-pane=spaces] .space-count{padding-right:8px;color:var(--muted);font-size:11px;font-variant-numeric:tabular-nums}
+:root #preferences #prefs-content [data-pane=spaces] .space-back{align-self:flex-start;display:flex;align-items:center;gap:3px;height:26px;padding:0 8px 0 3px!important;margin:-2px 0 2px -3px!important;color:var(--muted)!important;font-size:12px;border-radius:7px!important}
+:root #preferences #prefs-content [data-pane=spaces] .space-back:hover{color:var(--ink)!important;background:var(--hover)!important}
+:root #preferences #prefs-content [data-pane=spaces] .space-back .icon{width:14px;height:14px;color:inherit}
+:root #preferences #prefs-content [data-pane=spaces] .space-hero{display:flex;align-items:center;gap:12px;padding:12px;border-radius:14px;background:linear-gradient(135deg,color-mix(in srgb,var(--chip) 16%,transparent),color-mix(in srgb,var(--chip) 5%,transparent))}
+:root #preferences #prefs-content [data-pane=spaces] .space-preview{display:grid;place-items:center;width:46px;height:46px;flex:none;border-radius:13px;background:var(--chip);color:var(--on-chip,#fff);box-shadow:0 4px 12px color-mix(in srgb,var(--chip) 35%,transparent),inset 0 1px 0 #ffffff40;transition:background .15s,box-shadow .15s}
+:root #preferences #prefs-content [data-pane=spaces] .space-preview .icon{width:23px;height:23px;color:inherit;stroke-width:1.9}
+:root #preferences #prefs-content [data-pane=spaces] .space-name-input{flex:1;min-width:0;height:36px;padding:0 11px;border:1px solid var(--line);border-radius:9px;background:var(--surface);color:var(--ink);font:inherit;font-size:14px;font-weight:600}
+:root #preferences #prefs-content [data-pane=spaces] .space-name-input:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 15%,transparent)}
+:root #preferences #prefs-content [data-pane=spaces] .space-section{display:flex;flex-direction:column;gap:7px;margin-top:6px}
+:root #preferences #prefs-content [data-pane=spaces] .space-section h3{margin:0 2px;font-size:11px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;color:var(--muted)}
+:root #preferences #prefs-content [data-pane=spaces] .space-icons{display:grid;grid-template-columns:repeat(8,minmax(0,1fr));gap:2px;padding:4px;border-radius:12px;background:color-mix(in srgb,var(--ink) 4%,transparent)}
+:root #preferences #prefs-content [data-pane=spaces] .space-icon{aspect-ratio:1;width:auto;height:auto;min-width:0;display:grid;place-items:center;border-radius:8px!important;color:var(--muted)!important;transition:background .1s,color .1s}
+:root #preferences #prefs-content [data-pane=spaces] .space-icon .icon{width:17px;height:17px;color:inherit}
+:root #preferences #prefs-content [data-pane=spaces] .space-icon:hover{background:var(--hover)!important;color:var(--ink)!important}
+:root #preferences #prefs-content [data-pane=spaces] .space-icon[aria-checked=true]{background:var(--surface)!important;color:var(--chip,var(--accent))!important;box-shadow:0 1px 3px #0000001f,0 0 0 1px color-mix(in srgb,var(--chip,var(--accent)) 50%,transparent)!important}
+:root #preferences #prefs-content [data-pane=spaces] .space-colors{display:flex;align-items:center;justify-content:space-between;gap:6px;padding:2px 4px}
+:root #preferences #prefs-content [data-pane=spaces] .space-swatch{--swatch:var(--accent);position:relative;display:block;width:24px!important;height:24px;flex:none;border-radius:50%!important;background:var(--swatch)!important;box-shadow:inset 0 0 0 .5px color-mix(in srgb,#000 22%,transparent)!important;transition:box-shadow .12s,transform .12s}
+:root #preferences #prefs-content [data-pane=spaces] .space-swatch:hover{transform:scale(1.1)}
+:root #preferences #prefs-content [data-pane=spaces] .space-swatch[aria-checked=true]{box-shadow:0 0 0 2px var(--surface),0 0 0 4px var(--swatch)!important}
+:root #preferences #prefs-content [data-pane=spaces] .space-swatch.theme:after{content:'';position:absolute;inset:8px;border-radius:50%;background:var(--surface)}
+:root #preferences #prefs-content [data-pane=spaces] .space-swatch.custom{background:conic-gradient(#ff5f6d,#ffc371,#f4e66b,#5fd38d,#4fb3ff,#8f6bff,#ff5fb7,#ff5f6d)!important;cursor:pointer}
+:root #preferences #prefs-content [data-pane=spaces] .space-swatch.custom.checked{background:var(--swatch)!important}
+:root #preferences #prefs-content [data-pane=spaces] .space-swatch.custom input{position:absolute;inset:0;width:100%;height:100%;margin:0;padding:0;border:0;opacity:0;cursor:pointer}
+:root #preferences #prefs-content [data-pane=spaces] .space-swatch:has(input:focus-visible){outline:2px solid var(--accent);outline-offset:4px}
+:root #preferences #prefs-content [data-pane=spaces] .space-swatch:focus-visible{outline:2px solid var(--accent)!important;outline-offset:4px!important}
+:root #preferences #prefs-content [data-pane=spaces] .space-hex-box{display:flex;align-items:center;gap:8px;height:30px;padding:0 9px;border:1px solid var(--line);border-radius:8px;background:var(--surface)}
+:root #preferences #prefs-content [data-pane=spaces] .space-hex-box:focus-within{border-color:var(--accent);box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 15%,transparent)}
+:root #preferences #prefs-content [data-pane=spaces] .space-hex-box.invalid{border-color:#c94848}
+:root #preferences #prefs-content [data-pane=spaces] .space-hex-dot{--swatch:var(--accent);width:14px;height:14px;flex:none;border-radius:4px;background:var(--swatch);box-shadow:inset 0 0 0 .5px #00000038}
+:root #preferences #prefs-content [data-pane=spaces] .space-hex{flex:1;min-width:0;height:100%;padding:0;border:0;background:transparent;color:var(--ink);font:12px ui-monospace,SFMono-Regular,Menlo,monospace;text-transform:uppercase;outline:none}
+:root #preferences #prefs-content [data-pane=spaces] .space-editor-foot{display:flex;align-items:center;justify-content:flex-end;gap:8px;min-height:34px;padding-top:10px;margin-top:6px;border-top:.5px solid var(--line)}
+:root #preferences #prefs-content [data-pane=spaces] .space-delete{display:flex;align-items:center;gap:6px;margin-right:auto!important;height:30px;padding:0 9px 0 7px!important;border-radius:8px!important;color:#c94848!important;font-size:12px}
+:root #preferences #prefs-content [data-pane=spaces] .space-delete .icon{width:14px;height:14px;color:inherit}
+:root #preferences #prefs-content [data-pane=spaces] .space-delete:hover{background:color-mix(in srgb,#c94848 10%,transparent)!important}
+:root #preferences #prefs-content [data-pane=spaces] .space-done,.space-confirm-delete,.space-cancel{height:30px;padding:0 15px!important;border-radius:8px!important;font-size:13px;font-weight:600!important}
+:root #preferences #prefs-content [data-pane=spaces] .space-done{background:var(--accent)!important;color:var(--on-accent,#fff)!important}
+:root #preferences #prefs-content [data-pane=spaces] .space-done:hover{background:color-mix(in srgb,var(--accent) 86%,#000)!important}
+:root #preferences #prefs-content [data-pane=spaces] .space-confirm-delete{background:#c94848!important;color:#fff!important}
+:root #preferences #prefs-content [data-pane=spaces] .space-confirm-delete:hover{background:#b13b3b!important}
+:root #preferences #prefs-content [data-pane=spaces] .space-cancel{background:color-mix(in srgb,var(--ink) 7%,transparent)!important}
+:root #preferences #prefs-content [data-pane=spaces] .space-cancel:hover{background:color-mix(in srgb,var(--ink) 11%,transparent)!important}
+:root #preferences #prefs-content [data-pane=spaces] .space-editor-foot.confirm{justify-content:space-between;gap:10px}
+:root #preferences #prefs-content [data-pane=spaces] .space-confirm-text{display:flex;flex-direction:column;gap:1px;min-width:0;font-size:12px}
+:root #preferences #prefs-content [data-pane=spaces] .space-confirm-text strong{font-size:13px}
+:root #preferences #prefs-content [data-pane=spaces] .space-confirm-text span{color:var(--muted);font-size:11px}
+:root #preferences #prefs-content [data-pane=spaces] .space-confirm-buttons{display:flex;gap:6px;flex:none}
+:root #preferences #prefs-content [data-pane=spaces] [hidden]{display:none!important}
+@media (prefers-reduced-motion:reduce){:root #preferences #prefs-content [data-pane=spaces] *{transition:none!important}}
+
+/* 0.31.0 — The space icon next to the logo is drawn without its tinted square. */
+.space-button .space-chip{width:16px;background:none}
+.space-button .space-chip .icon{width:15px;height:15px}
+/* Tabs drag to reorder like favorites: the row lifts and follows the pointer, the others slide aside. */
+#tabs .tab{touch-action:none}
+#tabs.reordering .tab{transition:transform 180ms var(--ease-out)}
+#tabs.reordering .tab.lifted{position:relative;z-index:10;transition:none;transform:var(--lift)!important;background:var(--raised);box-shadow:0 10px 24px -12px color-mix(in srgb,#000 55%,transparent);cursor:grabbing}
+#tabs .tab.settling{position:relative;z-index:10;transition:transform 180ms var(--ease-spring);transform:var(--lift)!important}
+#tabs.reordering .tab.lifted.to-split{opacity:.9}
+#favorites.reordering .favorite.lifted,#favorites .favorite.settling{transform:var(--lift)!important}
+/* Split view drop zones over a picture of the page while a tab is dragged there. */
+#split-drop{position:fixed;z-index:60;overflow:hidden;border-radius:var(--panel-radius,10px);pointer-events:none}
+#split-drop img{position:absolute;inset:0;width:100%;height:100%;object-fit:fill}
+#split-drop::before{content:'';position:absolute;inset:0;z-index:1;background:color-mix(in srgb,var(--ink) 10%,transparent)}
+.split-drop-zone{position:absolute;z-index:2;inset:8px;display:grid;place-items:center;border:2px solid var(--accent);border-radius:12px;background:color-mix(in srgb,var(--accent) 22%,transparent);opacity:0;transition:inset 160ms var(--ease-out),opacity 120ms var(--ease-out)}
+.split-drop-zone[data-side=left]{inset:8px calc(50% + 4px) 8px 8px;opacity:1}
+.split-drop-zone[data-side=right]{inset:8px 8px 8px calc(50% + 4px);opacity:1}
+.split-drop-zone[data-side=top]{inset:8px 8px calc(50% + 4px) 8px;opacity:1}
+.split-drop-zone[data-side=bottom]{inset:calc(50% + 4px) 8px 8px 8px;opacity:1}
+.split-drop-zone[data-side=center]{inset:18%;opacity:1;background:color-mix(in srgb,var(--accent) 12%,transparent);border-style:dashed}
+.split-drop-zone span{padding:6px 12px;border-radius:999px;background:var(--surface);color:var(--ink);font-size:12px;font-weight:600;box-shadow:0 4px 14px #00000026}
+.split-drop-zone span:empty{display:none}
+[data-motion=reduced] .split-drop-zone,[data-motion=reduced] #tabs.reordering .tab,[data-motion=reduced] #tabs .tab.settling{transition:none}
+/* Spaces popover: the edit button is always shown next to the shortcut, with a bigger target. */
+:root #preferences #prefs-content [data-pane=spaces] .space-tail{display:flex;align-items:center;gap:2px;width:auto;height:36px;margin-right:4px}
+:root #preferences #prefs-content [data-pane=spaces] .space-tail .space-key,:root #preferences #prefs-content [data-pane=spaces] .space-row:hover .space-key,:root #preferences #prefs-content [data-pane=spaces] .space-row:focus-within .space-key{opacity:.7}
+:root #preferences #prefs-content [data-pane=spaces] .space-edit{grid-area:auto;width:32px;height:32px;opacity:.7}
+:root #preferences #prefs-content [data-pane=spaces] .space-row:hover .space-edit,:root #preferences #prefs-content [data-pane=spaces] .space-edit:focus-visible{opacity:1}
+:root #preferences #prefs-content [data-pane=spaces] .space-edit .icon{width:15px;height:15px}
+.space-button[aria-expanded=true]{background:var(--hover)}
+/* The site settings button in the address bar gets a full-size target. */
+#protocol{min-width:24px;min-height:24px}
+/* 0.32 · Address bar in the sidebar (address-dock.js). The toolbar is gone, the page reaches the top of the window, and
+   the sidebar holds navigation beside the window buttons, the address field where New tab was, and the page tools. */
+:root[data-address=sidebar] main>header,:root[data-address=sidebar] #new{display:none}
+:root[data-address=sidebar] .window-drag{position:relative}
+.dock-nav{position:absolute;top:8px;right:-4px;height:28px;display:flex;align-items:center;gap:1px;-webkit-app-region:no-drag}
+.dock-nav .nav{display:flex;gap:1px}
+.dock-address{display:flex;align-items:center;gap:4px;margin:2px 0 0}
+.dock-address #address-form{margin:0;height:34px;padding:0 10px;border-radius:11px;gap:7px;background:color-mix(in srgb,var(--ink) 5%,transparent);border-color:transparent;box-shadow:none}
+.dock-address #address-form:hover{background:color-mix(in srgb,var(--ink) 8%,transparent)}
+.dock-address #address-form:focus-within{background:var(--raised);border-color:color-mix(in srgb,var(--accent) 60%,transparent)}
+.dock-address #address{font-size:12.5px}
+.dock-address #address-form kbd{display:none}
+.dock-address #dock-new{width:30px;height:30px;flex-shrink:0;color:var(--muted)}
+.dock-tools{display:flex;align-items:center;gap:1px;min-height:30px;margin:0 -4px 2px;color:var(--muted)}
+.dock-tools #workspace-tools{margin-left:auto;border:0}
+.dock-tools #workspace-tools span{display:none}
+.dock-tools #browser-actions{max-width:96px;overflow:hidden}
+.dock-tools button{width:28px;height:28px}
+:root[data-address=sidebar] #welcome,:root[data-address=sidebar] #preferences:not([data-mode]),:root[data-address=sidebar] #resize-preview,:root[data-address=sidebar] #panel-preview{top:6px}
+:root[data-address=sidebar] #resize-preview,:root[data-address=sidebar] #panel-preview{height:calc(100% - 12px)}
+:root[data-address=sidebar] #workspace-bar,:root[data-address=sidebar] #page-find{top:6px}
+:root[data-address=sidebar] #suggestion-layer{top:0}
+:root[data-address=sidebar] #sidebar-resize{top:0}
+/* 0.32 · Archive (archive-ui.js): a quiet row under the open tabs; rows reuse the tab look. */
+#archive{margin:6px 0 2px}
+.archive-toggle{display:flex;align-items:center;gap:9px;width:100%;min-height:30px;padding:5px 10px;border-radius:8px;color:var(--muted);font-size:.86rem;text-align:left;background:transparent}
+.archive-toggle:hover{background:color-mix(in srgb,var(--ink) 6%,transparent);color:var(--ink)}
+.archive-toggle .icon{width:15px;height:15px;stroke-width:1.6}
+.archive-count{margin-left:auto;font-variant-numeric:tabular-nums;font-size:.76rem;opacity:.8}
+.archive-chevron{width:12px!important;height:12px!important;transition:transform .18s var(--ease-out,ease)}
+#archive.open .archive-chevron{transform:rotate(90deg)}
+.archive-list{max-height:40vh;overflow:auto;scrollbar-width:thin;padding-top:2px}
+.tab.archived{opacity:.82}.tab.archived:hover{opacity:1}
+.archive-when{margin-left:auto;padding-left:8px;color:var(--muted);font-size:.72rem;white-space:nowrap}
+.tab.archived:hover .archive-when{display:none}
+.archive-clear{display:block;margin:4px 0 0 auto;padding:4px 10px;border-radius:7px;color:var(--muted);font-size:.76rem;background:transparent}
+.archive-clear:hover{background:color-mix(in srgb,var(--ink) 6%,transparent);color:var(--ink)}
+/* 0.32 · Spectrum (spectrum-ui.js): today as a band of light. Stripes are soft, saturated light; a sheen on top makes
+   the band read as glass. It grows a little on hover so it can be read and scrubbed. */
+#spectrum{position:relative;margin:2px 4px 8px}
+.spectrum-band{position:relative;height:14px;display:flex;align-items:center;cursor:pointer;outline:none;-webkit-app-region:no-drag}
+.spectrum-track{position:relative;flex:1;height:4px;border-radius:3px;overflow:hidden;background:color-mix(in srgb,var(--ink) 7%,transparent);box-shadow:inset 0 0 0 .5px color-mix(in srgb,var(--ink) 8%,transparent);transition:height .2s var(--ease-out,ease),border-radius .2s}
+.spectrum-track:after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,#ffffff70,#ffffff00 55%,#00000010);mix-blend-mode:soft-light;pointer-events:none}
+.spectrum-stripe{position:absolute;top:0;bottom:0;background:linear-gradient(90deg,hsl(var(--h) 78% 64%),hsl(calc(var(--h) + 18) 82% 66%));box-shadow:0 0 6px hsl(var(--h) 90% 60% / .55)}
+:root[data-theme=dark] .spectrum-stripe{background:hsl(var(--h) 70% 62%)}
+#spectrum.hover .spectrum-track,#spectrum.open .spectrum-track,.spectrum-band:focus-visible .spectrum-track{height:10px;border-radius:5px}
+.spectrum-band:focus-visible .spectrum-track{box-shadow:0 0 0 2px color-mix(in srgb,var(--accent) 45%,transparent)}
+.spectrum-cursor{position:absolute;top:0;bottom:0;width:2px;margin-left:-1px;border-radius:1px;background:var(--ink);opacity:0;box-shadow:0 0 0 1px color-mix(in srgb,var(--chrome) 70%,transparent);transition:opacity .15s;pointer-events:none}
+#spectrum.hover .spectrum-cursor,#spectrum.open .spectrum-cursor{opacity:.85}
+.spectrum-label{position:absolute;bottom:100%;left:var(--x,50%);transform:translate(-50%,-4px);display:flex;gap:6px;padding:3px 8px;border-radius:7px;white-space:nowrap;font-size:11px;color:var(--ink);background:color-mix(in srgb,var(--raised) 88%,transparent);box-shadow:0 4px 14px #0000001f,inset 0 0 0 .5px var(--line);opacity:0;pointer-events:none;transition:opacity .15s;-webkit-backdrop-filter:blur(18px);backdrop-filter:blur(18px)}
+.spectrum-host{color:var(--muted)}
+#spectrum.hover .spectrum-label{opacity:1}#spectrum.open .spectrum-label{opacity:0}
+.spectrum-card{position:absolute;left:0;right:0;bottom:calc(100% + 10px);z-index:30;padding:12px;border-radius:14px;background:color-mix(in srgb,var(--raised) 92%,transparent);box-shadow:0 18px 44px #00000033,inset 0 0 0 .5px var(--line);-webkit-backdrop-filter:blur(24px) saturate(1.4);backdrop-filter:blur(24px) saturate(1.4);animation:spectrumIn .18s var(--ease-out,ease)}
+@keyframes spectrumIn{from{opacity:0;transform:translateY(4px) scale(.98)}to{opacity:1;transform:none}}
+.spectrum-card-head{display:flex;align-items:baseline;justify-content:space-between;gap:8px;margin:0 2px 8px}
+.spectrum-card-head strong{font-size:12.5px;font-weight:600}.spectrum-card-head small{font-size:11px;color:var(--muted)}
+.spectrum-row{display:flex;align-items:center;gap:8px;height:26px;padding:0 2px;font-size:12px;overflow:hidden}
+.spectrum-row>span:last-child{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.spectrum-row .tab-icon{transform:scale(.85)}
+.spectrum-more{display:block;margin:2px 2px 0;color:var(--muted);font-size:11px}
+.spectrum-card-actions{display:flex;justify-content:flex-end;margin-top:10px}
+.spectrum-restore{height:28px;padding:0 12px;border-radius:999px;font-size:12px;font-weight:500;color:#fff;background:color-mix(in srgb,var(--accent) 78%,#000);box-shadow:0 1px 2px #0002}
+.spectrum-restore:hover{filter:brightness(1.06)}.spectrum-restore:active{transform:scale(.97)}
+[data-motion=reduced] .spectrum-card,[data-motion=reduced] .spectrum-track{animation:none;transition:none}
+/* 0.32 · Media row (media-ui.js): what a tab you left is playing, in a soft glass card above the footer. */
+#media-row{display:flex;align-items:center;gap:2px;margin:0 0 8px;padding:5px 5px 5px 6px;border-radius:12px;background:color-mix(in srgb,var(--ink) 5%,transparent);box-shadow:inset 0 0 0 .5px color-mix(in srgb,var(--ink) 8%,transparent);animation:mediaIn .22s var(--ease-out,ease)}
+@keyframes mediaIn{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+.media-main{flex:1;min-width:0;display:flex;align-items:center;gap:9px;padding:0;background:transparent;text-align:left;border-radius:8px}
+.media-art{display:grid;place-items:center;width:30px;height:30px;flex-shrink:0;border-radius:7px;overflow:hidden;background:color-mix(in srgb,var(--ink) 7%,transparent)}
+.media-art img{width:100%;height:100%;object-fit:cover}.media-art .site-icon{width:16px;height:16px;object-fit:contain}
+.media-text{display:flex;flex-direction:column;min-width:0;gap:1px}
+.media-text strong{font-size:12px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.media-text small{font-size:10.5px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.media-controls{display:flex;align-items:center;flex-shrink:0}
+.media-controls button{display:grid;place-items:center;width:24px;height:26px;border-radius:7px;color:var(--muted);background:transparent}
+.media-controls button:hover{color:var(--ink);background:color-mix(in srgb,var(--ink) 8%,transparent)}
+.media-controls button:active{transform:scale(.94)}
+.media-controls .icon{width:14px;height:14px;stroke-width:1.8}
+.media-controls .media-play{color:var(--ink)}.media-controls .media-play .icon{width:15px;height:15px}
+#media-row.playing .media-art{box-shadow:0 0 0 1.5px color-mix(in srgb,var(--accent) 55%,transparent)}
+[data-motion=reduced] #media-row{animation:none}
+/* Picture in picture placeholder: shown where the page was while its video floats. */
+#pip-placeholder{position:absolute;inset:44px 6px 6px 0;display:grid;place-items:center;border-radius:10px;background:color-mix(in srgb,var(--surface) 70%,transparent);z-index:2}
+:root[data-address=sidebar] #pip-placeholder{top:6px}
+.pip-holder-card{display:flex;flex-direction:column;align-items:center;gap:6px;text-align:center;max-width:320px}
+.pip-holder-icon{display:grid;place-items:center;width:56px;height:56px;margin-bottom:6px;border-radius:16px;color:var(--muted);background:color-mix(in srgb,var(--ink) 6%,transparent)}
+.pip-holder-icon .icon{width:28px;height:28px;stroke-width:1.5}
+.pip-holder-card strong{font-size:14px;font-weight:600}.pip-holder-card small{color:var(--muted);font-size:12px}
+.pip-holder-card button{margin-top:10px;height:30px;padding:0 14px;border-radius:999px;font-size:12px;font-weight:500;background:color-mix(in srgb,var(--ink) 8%,transparent)}
+.pip-holder-card button:hover{background:color-mix(in srgb,var(--ink) 12%,transparent)}
+/* 0.32 · Compact mode (compact-ui.js): the page fills the window; the sidebar returns from the left edge. */
+#compact-edge{position:fixed;left:0;top:0;bottom:0;width:7px;z-index:60;-webkit-app-region:no-drag}
+#compact-edge[hidden]{display:none}
+:root[data-compact=hidden] #sidebar,:root[data-compact=hidden] #sidebar-resize{display:none}
+:root[data-compact=hidden] main{left:6px}
+:root[data-compact=revealed] #sidebar{animation:compactIn .2s var(--ease-out,cubic-bezier(.2,.7,.2,1))}
+@keyframes compactIn{from{opacity:.4;transform:translateX(-14px)}to{opacity:1;transform:none}}
+[data-motion=reduced] #sidebar{animation:none!important}

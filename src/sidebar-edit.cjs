@@ -5,7 +5,7 @@ function visibleTabs(tabs,space,favoriteIds=new Set()){return tabs.filter(t=>t.s
 
 // "Close other tabs" and "Close tabs below" never close pinned tabs, the chosen tab, or tabs in another space.
 function closeTargets(tabs,id,mode,space,favoriteIds){
- const list=visibleTabs(tabs,space,favoriteIds),index=list.findIndex(t=>t.id===id);if(index<0)return [];
+ const list=visibleTabs(tabs,space,favoriteIds),index=list.findIndex(t=>t.id===id);if(mode==='all')return list.filter(t=>!t.pinned).map(t=>t.id);if(index<0)return [];
  const pool=mode==='others'?list.filter(t=>t.id!==id):mode==='below'?list.slice(index+1):[];
  return pool.filter(t=>!t.pinned).map(t=>t.id);
 }

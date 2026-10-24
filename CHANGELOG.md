@@ -2,6 +2,23 @@
 
 All notable changes to Prism, newest first. Downloads are on the [Releases page](https://github.com/batuarchv/Prism-Browser/releases).
 
+## 0.32.0 — Arc's best ideas, made for Prism
+
+### New
+- **Address bar in the sidebar.** Settings → Appearance → Address bar → In the sidebar puts the address field where New tab was, with back, forward and reload beside the window buttons, so the page reaches the top of the window.
+- **Peek.** Shift-click a link to open it in a floating glass window over the page. Links to other sites from pinned tabs and favorites open there too. Press Esc to close it, or ⌘Return to keep it as a tab.
+- **Command bar.** Press ⌘K to find any open tab, favorite, bookmark, archived tab or page from your history, or to run an action like Split view, Compact mode or switching spaces.
+- **Spectrum.** Today shows as a thin band of light at the foot of the sidebar, with one colour for each site you were on. Hover it to see the time, or click it to bring back the tabs you had open then.
+- **Picture in Picture, like Safari.** A video floats in a small rounded window above every app, snaps to a corner and shows its controls when you hover. It starts on its own when you leave a playing video's tab and returns when you come back.
+- **Media in the sidebar.** When a tab you left is playing, play/pause, ±10 seconds and Picture in Picture wait above the footer.
+
+### Also new
+- **Archive.** Sleeping tabs you haven't opened for a day move to Archived under your tabs; one click brings one back. Pinned tabs and favorites always stay (Settings → Performance).
+- **Compact mode.** ⌥⌘S hides the sidebar and toolbar; move to the left edge of the window to bring them back.
+
+### Install notes
+This beta is **ad-hoc signed and not notarized by Apple**. The first time you open it, macOS may say it can't verify the developer: right-click (or Control-click) Prism in Applications and choose **Open**, then **Open** again. Apple Silicon (arm64) only.
+
 ## 0.24.1 — extension windows, aligned buttons, Extensions popover under its icon
 
 ### New in 0.24.1

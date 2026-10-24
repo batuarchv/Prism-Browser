@@ -12,6 +12,8 @@ require('./prepare-extensions.cjs');
     for(const dep of Object.keys(pkg.dependencies||{}))copyDependency(dep,local);
   }
   for(const name of Object.keys(manifest.dependencies))copyDependency(name);
+  // The current release notes feed the What’s New window (src/update-flow.js).
+  {const notes='RELEASE-'+require(path.join(root,'package.json')).version+'.md';if(fs.existsSync(path.join(root,notes)))fs.copyFileSync(path.join(root,notes),path.join(stage,notes));}
   for(const name of ['src','assets','LICENSE','THIRD-PARTY-NOTICES.md'])fs.cpSync(path.join(root,name),path.join(stage,name),{recursive:true,filter:p=>!p.includes('Prism.iconset')&&!/assets\/blocker\/.*\.txt$/.test(p)});
   delete manifest.devDependencies;fs.writeFileSync(path.join(stage,'package.json'),JSON.stringify(manifest,null,2));
   const {packager}=await import('@electron/packager');

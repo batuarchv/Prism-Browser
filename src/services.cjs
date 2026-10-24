@@ -18,7 +18,7 @@ const popupWindows=new Set();let lastEmit=0;
    const file=entries[0]&&path.resolve(loaded.path,entries[0][1].replace(/^\/+/,''));const type=file&&{'.png':'image/png','.svg':'image/svg+xml','.jpg':'image/jpeg','.jpeg':'image/jpeg','.webp':'image/webp'}[path.extname(file).toLowerCase()];
    if(type&&file.startsWith(path.resolve(loaded.path)+path.sep)&&fs.statSync(file).size<262144)icon='data:'+type+';base64,'+fs.readFileSync(file).toString('base64');}catch{}
   extensionIcons.set(key,icon);return icon;}
- function extensionRows(){return settings.extensions.map(e=>{const loaded=ses.extensions.getExtension(e.id);const m=loaded?.manifest;return {...e,loaded:!!loaded,hasPopup:!!(m?.action?.default_popup||m?.browser_action?.default_popup),hasOptions:!!(m?.options_page||m?.options_ui?.page),icon:extensionIcon(loaded),description:typeof m?.description==='string'&&!m.description.startsWith('__MSG_')?m.description.slice(0,200):''};});}
+ function extensionRows(){return settings.extensions.map(e=>{const loaded=ses.extensions.getExtension(e.id);const m=loaded?.manifest;return {...e,loaded:!!loaded,hasPopup:!!(m?.action?.default_popup||m?.browser_action?.default_popup),hasSidePanel:!!(m?.side_panel||m?.permissions?.includes('sidePanel')),hasOptions:!!(m?.options_page||m?.options_ui?.page),icon:extensionIcon(loaded),description:typeof m?.description==='string'&&!m.description.startsWith('__MSG_')?m.description.slice(0,200):''};});}
  async function loadExtension(record){try{const extension=await ses.extensions.loadExtension(record.path,{allowFileAccess:false});record.id=extension.id;record.name=extension.name;record.version=extension.version;record.error='';record.enabled=true;return extension;}catch(error){record.error=error.message;return null;}}
  async function restoreExtensions(){for(const record of settings.extensions)if(record.enabled)await loadExtension(record);saveSettings();emit();}
  async function reviewExtension(manifest,name=manifest.name){
@@ -37,16 +37,26 @@ const popupWindows=new Set();let lastEmit=0;
   const record={id:randomUUID(),path:target,source:directory,name:manifest.name,version:manifest.version,enabled:true,error:''};
   const extension=await loadExtension(record);settings.extensions.push(record);saveSettings();emit();if(!extension)throw Error(record.error);return extension;
  }
- async function extensionAction(command,id){
+ // The extension's own popup or options page, resolved inside the extension and nowhere else.
+ function extensionPage(id,command){
+  const e=ses.extensions.getExtension(id);if(!e)throw Error('Enable the extension first.');const m=e.manifest;const resource=command==='options'?(m.options_page||m.options_ui?.page):(m.action?.default_popup||m.browser_action?.default_popup);if(!resource)throw Error('This extension has no '+command+' page.');
+  const url=new URL(resource,e.url.endsWith('/')?e.url:e.url+'/');if(url.protocol!=='chrome-extension:'||url.hostname!==id)throw Error('Invalid extension page.');return url.href;
+ }
+ async function extensionAction(command,id,anchor){
   if(command==='add'){const result=await dialog.showOpenDialog(window(),{title:'Choose an unpacked Chrome extension',properties:['openDirectory']});if(!result.canceled)await installExtension(result.filePaths[0]);return;}
   const record=settings.extensions.find(e=>e.id===id);if(!record)return;
   if(command==='remove'){if(ses.extensions.getExtension(id))ses.extensions.removeExtension(id);if(record.source==='Chrome Web Store'&&/^[a-p]{32}$/.test(id)){const dir=path.join(app.getPath('userData'),'store-extensions',id);if(fs.existsSync(dir)){const archive=path.join(app.getPath('userData'),'removed-extensions');fs.mkdirSync(archive,{recursive:true});fs.renameSync(dir,path.join(archive,id+'-'+Date.now()));}}settings.extensions=settings.extensions.filter(e=>e!==record);saveSettings();emit();return;}
   if(command==='toggle'){if(record.enabled){ses.extensions.removeExtension(id);record.enabled=false;}else await loadExtension(record);saveSettings();emit();return;}
   if(command==='reload'){if(ses.extensions.getExtension(id))ses.extensions.removeExtension(id);await loadExtension(record);saveSettings();emit();return;}
   if(command==='popup'||command==='options'){
-   const e=ses.extensions.getExtension(id);if(!e)throw Error('Enable the extension first.');const m=e.manifest;const resource=command==='options'?(m.options_page||m.options_ui?.page):(m.action?.default_popup||m.browser_action?.default_popup);if(!resource)throw Error('This extension has no '+command+' page.');
-   const url=new URL(resource,e.url.endsWith('/')?e.url:e.url+'/');if(url.protocol!=='chrome-extension:'||url.hostname!==id)throw Error('Invalid extension page.');
-   const popup=new BrowserWindow({parent:window(),width:command==='options'?800:440,height:command==='options'?650:580,title:e.name,show:false,webPreferences:{session:ses,nodeIntegration:false,contextIsolation:true,sandbox:true}});popupWindows.add(popup);popup.on('closed',()=>popupWindows.delete(popup));popup.webContents.setWindowOpenHandler(()=>({action:'deny'}));popup.webContents.on('will-navigate',(event,destination)=>{if(!destination.startsWith('chrome-extension://'+id+'/'))event.preventDefault();});await popup.loadURL(url.href);popup.show();
+   const e=ses.extensions.getExtension(id),url=new URL(extensionPage(id,command));
+   // From the toolbar, an extension's panel opens frameless right under the Extensions button (anchor = button in screen
+   // points), sized to its content and closed when it loses focus, as in Chrome. Otherwise it opens as a regular window.
+   const panel=command==='popup'&&anchor&&[anchor.right,anchor.bottom].every(Number.isFinite);
+   const popup=new BrowserWindow({parent:window(),width:command==='options'?800:panel?360:440,height:command==='options'?650:panel?420:580,title:e.name,show:false,...(panel?{frame:false,roundedCorners:true,resizable:false,minimizable:false,maximizable:false,fullscreenable:false,skipTaskbar:true,hasShadow:true,x:Math.round(anchor.right-360),y:Math.round(anchor.bottom+6)}:{}),webPreferences:{session:ses,nodeIntegration:false,contextIsolation:true,sandbox:true,...(panel?{enablePreferredSizeMode:true}:{})}});
+   if(panel){for(const old of popupWindows)if(old!==popup&&old.prismPanel&&!old.isDestroyed())old.close();popup.prismPanel=true;
+    popup.webContents.on('preferred-size-changed',(_event,size)=>{if(popup.isDestroyed())return;const width=Math.max(160,Math.min(800,Math.ceil(size.width))),height=Math.max(60,Math.min(600,Math.ceil(size.height)));popup.setBounds({x:Math.round(anchor.right-width),y:Math.round(anchor.bottom+6),width,height});});
+    popup.on('blur',()=>{setTimeout(()=>{if(!popup.isDestroyed()&&!popup.isFocused()&&!popup.webContents.isDevToolsOpened())popup.close();},120);});}popupWindows.add(popup);popup.on('closed',()=>popupWindows.delete(popup));popup.webContents.setWindowOpenHandler(()=>({action:'deny'}));popup.webContents.on('will-navigate',(event,destination)=>{if(!destination.startsWith('chrome-extension://'+id+'/'))event.preventDefault();});await popup.loadURL(url.href);popup.show();
   }
  }
  ses.on('will-download',(_event,item,source)=>{
@@ -89,6 +99,6 @@ const popupWindows=new Set();let lastEmit=0;
  thumbnailTimes.delete(url);thumbnailTimes.set(url,Date.now());while(thumbnailTimes.size>200)thumbnailTimes.delete(thumbnailTimes.keys().next().value);changedImages();emit();}catch{}finally{pendingThumbnails.delete(url);}})();pendingThumbnails.set(url,job);return job;}
 
  function clearImages(){imageGeneration++;images={};thumbnailTimes.clear();changedImages();emit();}
- return {persistDownloads,reviewExtension,extensionRows,restoreExtensions,installExtension,extensionAction,downloadAction,chooseDownloadDirectory,downloads:()=>downloads,images:()=>images,imageRevision:()=>imageRevision,importArcIcons,favicon,thumbnail,clearImages,close:()=>{if(privateMode){for(const item of live.values())item.cancel();downloads=[];live.clear();}persistDownloads();for(const w of popupWindows)w.close();},hasActiveDownloads:()=>live.size>0};
+ return {persistDownloads,reviewExtension,extensionRows,extensionPage,restoreExtensions,installExtension,extensionAction,downloadAction,chooseDownloadDirectory,downloads:()=>downloads,images:()=>images,imageRevision:()=>imageRevision,importArcIcons,favicon,thumbnail,clearImages,close:()=>{if(privateMode){for(const item of live.values())item.cancel();downloads=[];live.clear();}persistDownloads();for(const w of popupWindows)w.close();},hasActiveDownloads:()=>live.size>0};
 }
 module.exports={createServices,uniqueFile};
