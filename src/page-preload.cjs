@@ -75,3 +75,10 @@ if(process.isMainFrame){
    const ok=await new Promise(resolve=>{pending.set(id,resolve);dispatchEvent(new CustomEvent('prism-pip',{detail:id}));});
    if(!ok)throw new DOMException('Picture in Picture is turned off for this site.','NotAllowedError');return original.call(this);}});})()`).catch(()=>{});
  addEventListener('prism-pip',event=>{const id=String(event.detail||'');ipcRenderer.invoke('prism-pip').catch(()=>true).then(ok=>dispatchEvent(new CustomEvent('prism-pip-result',{detail:id+':'+(ok?1:0)})));});}
+// Peek (0.32): Shift-click a link to open it in Peek; plain link clicks are reported so a pinned tab's link to another
+// site can open in Peek (main.cjs peekLink). Only the link's address is sent, and only after a real click.
+if(process.isMainFrame){addEventListener('click',event=>{
+ if(!event.isTrusted||event.button!==0)return;const a=event.composedPath().find(el=>el instanceof HTMLAnchorElement&&el.href);if(!a||a.hasAttribute('download'))return;
+ let url;try{url=new URL(a.href,location.href).href;}catch{return;}if(!/^https?:/.test(url))return;
+ if(event.shiftKey&&!event.metaKey&&!event.altKey&&!event.ctrlKey){event.preventDefault();ipcRenderer.send('prism-peek',url);return;}
+ if(!event.metaKey&&!event.altKey&&!event.ctrlKey&&!event.shiftKey)ipcRenderer.send('prism-link',url);},true);}

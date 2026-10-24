@@ -56,7 +56,7 @@ let extensionApi,sidePanels,passwords,ai,autofill,wallet,pageAssistant;
 let space=fallbackSpace(settings.spaces),privateSession,privateNetwork,privateServices;
 const homeSpace=()=>fallbackSpace(settings.spaces);
 const selectedInSpace={};
-let toolWindows,inspector,passkeys,siteControls;const passkeyFile=path.join(app.getPath('userData'),'passkeys.enc');
+let toolWindows,inspector,passkeys,siteControls,surfaces,peek;const passkeyFile=path.join(app.getPath('userData'),'passkeys.enc');
 function readPasskeys(){try{return fs.existsSync(passkeyFile)?JSON.parse(safeStorage.decryptString(fs.readFileSync(passkeyFile))):[];}catch{return [];}}let split=null;let tidyUndo=null;
 const profileFile=path.join(app.getPath('userData'),'profile.json');let profileExists=!smoke&&fs.existsSync(profileFile);let profile={name:'',email:'',theme:'Glacier',createdAt:null};if(!smoke)try{profile=normalizeProfile(JSON.parse(fs.readFileSync(profileFile,'utf8')));}catch{}
 const accounts=require('./accounts.cjs').createAccounts({file:path.join(app.getPath('userData'),'account-session.enc'),safeStorage});
@@ -146,7 +146,7 @@ function layout() {
  const pair=split?splitBounds(area,split.mode,split.ratio):null;
  const buttonY=15;if(win._prismButtonY!==buttonY){win.setWindowButtonPosition?.({x:22,y:buttonY});win._prismButtonY=buttonY;}
  for(const t of tabs)if(t.view){const full=htmlFullscreen===t.view.webContents;const visible=!overlay&&(htmlFullscreen?full:split?split.ids.includes(t.id):t.id===activeId);const bounds=full?{x:0,y:0,width:w,height:h}:pair&&split.ids.includes(t.id)?pair[split.ids.indexOf(t.id)]:area;const radius=full?0:10;if(t.view._prismRadius!==radius){t.view.setBorderRadius(radius);t.view._prismRadius=radius;}const key=JSON.stringify(bounds);if(visible&&t.view._prismBounds!==key){t.view.setBounds(bounds);t.view._prismBounds=key;}if(t.view._prismVisible!==visible){t.view.setVisible(visible);t.view._prismVisible=visible;}}
- sidePanels?.place(area,!overlay&&!htmlFullscreen&&space!=='private');
+ sidePanels?.place(area,!overlay&&!htmlFullscreen&&space!=='private');peek?.follow();
  inspector?.layout({x:w-inspectorWidth-6,y:top+bar,width:Math.max(1,inspectorWidth),height:Math.max(1,h-top-6-bar)},!overlay&&!htmlFullscreen);
 }
 
@@ -202,6 +202,11 @@ function guardPopup(child,t){const wc=child.webContents,isPrivate=t.space==='pri
 // the consent; denying it made upload buttons on sites using the File System Access API do nothing.
 const openWithoutPrompt=new Set(['clipboard-sanitized-write','pointerLock','fileSystem']);
 function allowedTabURL(url){try{const parsed=new URL(url);return ['http:','https:'].includes(parsed.protocol)||(parsed.protocol==='chrome-extension:'&&!!session.fromPartition(browserPartition).extensions.getExtension(parsed.hostname))||url==='about:blank';}catch{return false;}}
+function pageWebPreferences(isPrivate){return {session:isPrivate?privateSession:session.fromPartition(browserPartition),disableDialogs:smoke,safeDialogs:true,...(!isPrivate?{preload:path.join(__dirname,'page-preload.cjs')}:{ }),nodeIntegration:false,contextIsolation:true,sandbox:true,webSecurity:true,allowRunningInsecureContent:false};}
+// Peek (0.32, peek.cjs): a link to another site clicked in a pinned tab or favorite opens over the page instead of
+// taking the tab away from its site. The click is reported by page-preload.cjs, so redirects and scripts never peek.
+const siteOf=url=>{try{return new URL(url).hostname.split('.').slice(-2).join('.');}catch{return '';}};
+function peekLink(t,url){const click=t.linkClick;if(!peek||!(t.pinned||t.favoriteId)||!click||click.url!==url||Date.now()-click.at>2000||!/^https?:/.test(url))return false;if(siteOf(url)===siteOf(t.view?.webContents.getURL()||t.url))return false;t.linkClick=null;return peek.open(url,t.space);}
 function makeTab(url = '', activate = true,tabSpace=space) {
   const t = {id:nextId++, space:tabSpace,pinned:false,navigationVersion:0,url, title:url ? new URL(url).hostname : 'New tab', view:null,lastUsed:Date.now(),keepAwake:false,audible:false,loading:false,dirty:false,error:''};
   tabs.push(t); if (activate) selectTab(t.id); else emit(); return t;
@@ -209,18 +214,18 @@ function makeTab(url = '', activate = true,tabSpace=space) {
 function attach(t) {
   if (t.view || !t.url) return;
   const isPrivate=t.space==='private';
-  const view = new WebContentsView({webPreferences:{session:isPrivate?privateSession:session.fromPartition(browserPartition),disableDialogs:smoke,safeDialogs:true,...(!isPrivate?{preload:path.join(__dirname,'page-preload.cjs')}:{ }),nodeIntegration:false,contextIsolation:true,sandbox:true,webSecurity:true,allowRunningInsecureContent:false}});
+  const view = new WebContentsView({webPreferences:pageWebPreferences(isPrivate)});
   view.setBorderRadius(10);t.view = view; win.contentView.addChildView(view); layout();
   const wc = view.webContents;blocker?.attach(wc,isPrivate);if(!isPrivate)extensionApi?.addTab(wc,win);wc.setZoomFactor(settings.pageZoom);applyPinch(wc);
   if(isPrivate)wc.setWebRTCIPHandlingPolicy('disable_non_proxied_udp');
-  wc.setWindowOpenHandler(({url,disposition}) => {if(disposition==='new-window'&&(/^https?:\/\//i.test(url)||url==='about:blank'||url===''))return {action:'allow',overrideBrowserWindowOptions:{autoHideMenuBar:true,backgroundColor:'#ffffff',fullscreenable:false,webPreferences:{sandbox:true,contextIsolation:true,nodeIntegration:false,webSecurity:true,allowRunningInsecureContent:false}}};if (/^https?:\/\//i.test(url)) makeTab(url,true,t.space); else openExternalLink(wc,url,isPrivate); return {action:'deny'};});
+  wc.setWindowOpenHandler(({url,disposition}) => {if(disposition==='new-window'&&(/^https?:\/\//i.test(url)||url==='about:blank'||url===''))return {action:'allow',overrideBrowserWindowOptions:{autoHideMenuBar:true,backgroundColor:'#ffffff',fullscreenable:false,webPreferences:{sandbox:true,contextIsolation:true,nodeIntegration:false,webSecurity:true,allowRunningInsecureContent:false}}};if(peekLink(t,url))return {action:'deny'};if (/^https?:\/\//i.test(url)) makeTab(url,true,t.space); else openExternalLink(wc,url,isPrivate); return {action:'deny'};});
   wc.on('did-create-window',child=>guardPopup(child,t));
   wc.on('enter-html-full-screen',()=>{if(!allowFullscreen(wc)){wc.executeJavaScript('document.exitFullscreen()').catch(()=>{});return;}autofill?.dismiss();htmlFullscreen=wc;layout();});
   wc.on('leave-html-full-screen',()=>{if(htmlFullscreen===wc){htmlFullscreen=null;layout();}});
-  wc.on('will-navigate', (event,url) => {if (!allowedTabURL(url)) {event.preventDefault();openExternalLink(wc,url,isPrivate);}});
+  wc.on('will-navigate', (event,url) => {if (!allowedTabURL(url)) {event.preventDefault();openExternalLink(wc,url,isPrivate);}else if(peekLink(t,url))event.preventDefault();});
   wc.on('will-redirect', (event,url,_inPlace,main) => {if (!allowedTabURL(url)) {event.preventDefault();if(main)openExternalLink(wc,url,isPrivate);}});
   wc.on('focus',()=>{if(split?.ids.includes(t.id)&&t.id!==activeId)selectTab(t.id);});
-  wc.on('context-menu',(_event,params)=>{if(t.view!==view||t.id!==activeId)return;const items=pageMenu({wc,params,clipboard,inspect:()=>inspector.open(wc,params),pip:()=>togglePiP(t,params.frame),translate:isPrivate?null:()=>action('page-ai-open-selection'),openTab:(url,activate=true)=>makeTab(url,activate,t.space),bookmark:isPrivate?null:()=>{if(t.id===activeId)action('bookmark-current');},extensions:isPrivate?[]:extensionApi?.getContextMenuItems(wc,params)||[]});Menu.buildFromTemplate(items).popup({window:win});});
+  wc.on('context-menu',(_event,params)=>{if(t.view!==view||t.id!==activeId)return;const items=pageMenu({wc,params,clipboard,inspect:()=>inspector.open(wc,params),pip:()=>togglePiP(t,params.frame),peek:link=>peek?.open(link,t.space),translate:isPrivate?null:()=>action('page-ai-open-selection'),openTab:(url,activate=true)=>makeTab(url,activate,t.space),bookmark:isPrivate?null:()=>{if(t.id===activeId)action('bookmark-current');},extensions:isPrivate?[]:extensionApi?.getContextMenuItems(wc,params)||[]});Menu.buildFromTemplate(items).popup({window:win});});
   wc.on('page-title-updated', (_e,title) => {t.title=title;if(!isPrivate){const row=library.history.find(x=>x.url===cleanURL(wc.getURL()));if(row){row.title=String(title).slice(0,500);saveLibrary();}}emitLazy();});
   wc.on('did-start-loading', () => {t.loading=true; t.error=''; emit();});
   wc.on('did-start-navigation',(_event,_url,inPlace,main)=>{if(main){if(t.id===activeId){pageAssistant?.cancel();if(toolWindows?.section()==='page-assistant')toolWindows.closeAll();}if(htmlFullscreen===wc)exitPageFullscreen();if(t.id===activeId){passwords?.cancelPicker();autofill?.dismiss();}if(!inPlace)t.navigationVersion++;}});
@@ -259,7 +264,7 @@ function dispose(t) {
   if (!view.webContents.isDestroyed()) {if(t.space!=='private'){sidePanels?.forgetTab(view.webContents.id);extensionApi?.removeTab(view.webContents);}view.webContents.close();}
 }
 function selectTab(id) {
-  if(id!==activeId){inspector?.close();if(split){const target=tabs.find(t=>t.id===id);if(!target?.url||!inSpace(target,space))split=null;else if(!split.ids.includes(id)){split.ids[split.ids.indexOf(activeId)===1?1:0]=id;}}gmailGeneration++;toolWindows?.closeAll();if(htmlFullscreen)exitPageFullscreen();}
+  if(id!==activeId){inspector?.close();peek?.close();if(split){const target=tabs.find(t=>t.id===id);if(!target?.url||!inSpace(target,space))split=null;else if(!split.ids.includes(id)){split.ids[split.ids.indexOf(activeId)===1?1:0]=id;}}gmailGeneration++;toolWindows?.closeAll();if(htmlFullscreen)exitPageFullscreen();}
   autofill?.dismiss();
   const t=tabs.find(t=>t.id===id); if (!t) return;
   const old=tabs.find(t=>t.id===activeId); if (old){old.lastUsed=Date.now();captureScroll(old);}
@@ -648,7 +653,11 @@ app.whenReady().then(async()=>{
   ipcMain.handle('prism-passkey',(event,value)=>passkeys.request(event,value));
   // Picture in Picture from a page (any frame): allowed unless the user blocked it for the tab's site.
   ipcMain.handle('prism-pip',event=>{const t=tabs.find(t=>t.view?.webContents===event.sender);if(!t||t.space==='private')return true;const site=require('./site-permissions.cjs').origin(event.sender.getURL());return site?permissions.noted(site,'pip'):true;});
-  ipcMain.handle('prism-swipe',swipeRequest);readSystemSwipe();app.on('did-become-active',readSystemSwipe);
+  ipcMain.handle('prism-swipe',swipeRequest);
+  // Link clicks (for Peek from pinned tabs) and Shift-click to Peek, reported by page-preload.cjs from a tab's top frame.
+  const linkSender=(event,url)=>{const t=tabs.find(t=>t.view?.webContents===event.sender);return t&&event.senderFrame===event.sender.mainFrame&&typeof url==='string'&&/^https?:\/\//i.test(url)&&url.length<8192?t:null;};
+  ipcMain.on('prism-link',(event,url)=>{const t=linkSender(event,url);if(t)t.linkClick={url,at:Date.now()};});
+  ipcMain.on('prism-peek',(event,url)=>{const t=linkSender(event,url);if(t&&(t.id===activeId||split?.ids.includes(t.id)))peek?.open(url,t.space);});readSystemSwipe();app.on('did-become-active',readSystemSwipe);
   ipcMain.handle('prism-share',(event,value)=>{const t=tabs.find(t=>t.view?.webContents===event.sender);if(!t||t.id!==activeId||event.senderFrame!==event.sender.mainFrame||!value||typeof value!=='object')return false;
    const text=v=>typeof v==='string'?v.slice(0,5000):'';let url='';try{if(value.url){const u=new URL(value.url);if(!['http:','https:','mailto:'].includes(u.protocol))return false;url=u.href;}}catch{return false;}
    const texts=[text(value.title),text(value.text)].filter(Boolean);if(!url&&!texts.length)return false;
@@ -672,6 +681,10 @@ app.whenReady().then(async()=>{
   updater=localUpdater?.snapshot().configured?localUpdater:createUpdater({autoUpdater,app,config:require('./update-config.json'),onChange:emit});updater.schedule(settings.automaticUpdates);if(settings.automaticUpdates&&localUpdater?.snapshot().configured){localUpdater.watchFeed();app.on('did-become-active',()=>localUpdater.resumed());}checkWhatsNew();
   memoryManager=require('./memory-manager.cjs').createMemoryManager({app,session:ses,settings,tabs:()=>tabs,activeId:()=>activeId,sleepTab});
   inspector=require('./inspector.cjs').createInspector({WebContentsView,parent:()=>win,changed:()=>{layout();emit();}});
+  surfaces=require('./surfaces.cjs').createSurfaces(ipcMain);
+  peek=require('./peek.cjs').createPeek({BrowserWindow,WebContentsView,parent:()=>win,pageArea:()=>pageArea,webPreferences:tabSpace=>pageWebPreferences(tabSpace==='private'),surfaces,openTab:(url,tabSpace)=>makeTab(url,true,tabSpace),
+   configure:(wc,tabSpace)=>{const isPrivate=tabSpace==='private';blocker?.attach(wc,isPrivate);wc.setZoomFactor(settings.pageZoom);applyPinch(wc);if(isPrivate)wc.setWebRTCIPHandlingPolicy('disable_non_proxied_udp');},
+   reduceMotion:()=>!!settings.reduceMotion||systemPreferences.getAnimationSettings().prefersReducedMotion,dark:()=>nativeTheme.shouldUseDarkColors});
   setupMenu(); await win.loadFile(path.join(__dirname,'index.html'));
   applyAppearance();
   nativeTheme.on('updated',()=>{applyAppearance();emit();});
