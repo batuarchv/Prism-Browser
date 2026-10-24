@@ -12,7 +12,7 @@
  const hue=host=>{let h=2166136261;for(const c of host){h^=c.charCodeAt(0);h=Math.imul(h,16777619);}return (h>>>0)%360;};
  const clock=time=>new Intl.DateTimeFormat(language,{hour:'numeric',minute:'2-digit'}).format(time);
  const span=()=>{const s=view.segments,m=view.moments;const start=Math.min(...s.map(x=>x.from),...m.map(x=>x.at),view.now-15*60000);return {start,end:view.now};};
- function draw(){if(!view)return;const has=view.segments.length||view.moments.length;root.hidden=!has;if(!has)return;const {start,end}=span(),total=Math.max(1,end-start);
+ function draw(){if(!view)return;const has=view.segments.length>0;root.hidden=!has;if(!has)return;const {start,end}=span(),total=Math.max(1,end-start);
   track.replaceChildren(...view.segments.map(s=>{const el=document.createElement('span');el.className='spectrum-stripe';el.style.left=((s.from-start)/total*100)+'%';el.style.width=Math.max(.35,(s.to-s.from)/total*100)+'%';el.style.setProperty('--h',hue(s.host));return el;}));}
  async function refresh(){if(fetching||document.hidden||state?.space==='private')return;fetching=true;try{const next=await window.prism.action('spectrum-view');if(next){view=next;draw();}}finally{fetching=false;}}
  function timeAt(x){const r=band.getBoundingClientRect(),{start,end}=span();return start+Math.max(0,Math.min(1,(x-r.left)/r.width))*(end-start);}

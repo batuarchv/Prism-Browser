@@ -17,6 +17,6 @@
  function show(){const input=$('address');if(!placed||document.activeElement===input)return;input.value=host(activeURL());input.title=activeURL();}
  $('address').addEventListener('focus',()=>{const url=activeURL();if(placed&&url&&$('address').value===host(url)){$('address').value=url;requestAnimationFrame(()=>$('address').select());}});
  $('address').addEventListener('blur',()=>setTimeout(show,0));
- window.prism.onState(s=>{const want=s.settings.addressBar==='sidebar'&&!s.settings.sidebarCollapsed;if(want!==placed){if(suggestionsOpen)dismissSuggestions();if(want)toSidebar();else toToolbar();}root.dataset.address=placed?'sidebar':'top';show();});
+ window.prism.onState(s=>{const want=s.settings.compactMode||s.settings.addressBar==='sidebar'&&!s.settings.sidebarCollapsed;if(want!==placed){if(suggestionsOpen)dismissSuggestions();if(want)toSidebar();else toToolbar();}root.dataset.address=placed?'sidebar':'top';show();});
  window.addressInSidebar=()=>placed;
 })();

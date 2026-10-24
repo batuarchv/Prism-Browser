@@ -973,3 +973,11 @@ img.glass-fallback{visibility:hidden!important}
 .pip-holder-card strong{font-size:14px;font-weight:600}.pip-holder-card small{color:var(--muted);font-size:12px}
 .pip-holder-card button{margin-top:10px;height:30px;padding:0 14px;border-radius:999px;font-size:12px;font-weight:500;background:color-mix(in srgb,var(--ink) 8%,transparent)}
 .pip-holder-card button:hover{background:color-mix(in srgb,var(--ink) 12%,transparent)}
+/* 0.32 · Compact mode (compact-ui.js): the page fills the window; the sidebar returns from the left edge. */
+#compact-edge{position:fixed;left:0;top:0;bottom:0;width:7px;z-index:60;-webkit-app-region:no-drag}
+#compact-edge[hidden]{display:none}
+:root[data-compact=hidden] #sidebar,:root[data-compact=hidden] #sidebar-resize{display:none}
+:root[data-compact=hidden] main{left:6px}
+:root[data-compact=revealed] #sidebar{animation:compactIn .2s var(--ease-out,cubic-bezier(.2,.7,.2,1))}
+@keyframes compactIn{from{opacity:.4;transform:translateX(-14px)}to{opacity:1;transform:none}}
+[data-motion=reduced] #sidebar{animation:none!important}
