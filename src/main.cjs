@@ -134,18 +134,20 @@ function restoreSession(saved){
 }
 const preconnected=new Map();function preconnect(url){try{const {protocol,origin}=new URL(url);if(!/^https?:$/.test(protocol)||Date.now()-(preconnected.get(origin)||0)<30000)return;preconnected.set(origin,Date.now());session.fromPartition(browserPartition).preconnect({url:origin,numSockets:1});}catch{}}
 let pageArea=null,popoverReturn=null,popoverSeq=0;
+// With the address bar in the sidebar (0.32) there is no toolbar above the page; a collapsed sidebar brings the toolbar back.
+function toolbarTop(){return settings.addressBar==='sidebar'&&!settings.sidebarCollapsed?6:44;}
 function layout() {
  if(!win||win.isDestroyed())return;
  const [w,h]=win.getContentSize(),left=settings.sidebarCollapsed?6:Math.min(resizeWidth??settings.sidebarWidth,w-400);
  if(split&&!split.ids.every(id=>tabs.some(t=>t.id===id&&inSpace(t,space))))split=null;
- const bar=split||inspector?.isOpen()?34:0,extra=find.open?42:0,inspectorWidth=0;
+ const bar=split||inspector?.isOpen()?34:0,extra=find.open?42:0,inspectorWidth=0,top=toolbarTop();
  const panelWidth=space==='private'?0:sidePanels?.reserve()||0;
- const area={x:left,y:44+bar+extra,width:Math.max(1,w-left-6-panelWidth-(inspectorWidth?inspectorWidth+8:0)),height:Math.max(1,h-50-bar-extra)};pageArea=area;
+ const area={x:left,y:top+bar+extra,width:Math.max(1,w-left-6-panelWidth-(inspectorWidth?inspectorWidth+8:0)),height:Math.max(1,h-top-6-bar-extra)};pageArea=area;
  const pair=split?splitBounds(area,split.mode,split.ratio):null;
  const buttonY=15;if(win._prismButtonY!==buttonY){win.setWindowButtonPosition?.({x:22,y:buttonY});win._prismButtonY=buttonY;}
  for(const t of tabs)if(t.view){const full=htmlFullscreen===t.view.webContents;const visible=!overlay&&(htmlFullscreen?full:split?split.ids.includes(t.id):t.id===activeId);const bounds=full?{x:0,y:0,width:w,height:h}:pair&&split.ids.includes(t.id)?pair[split.ids.indexOf(t.id)]:area;const radius=full?0:10;if(t.view._prismRadius!==radius){t.view.setBorderRadius(radius);t.view._prismRadius=radius;}const key=JSON.stringify(bounds);if(visible&&t.view._prismBounds!==key){t.view.setBounds(bounds);t.view._prismBounds=key;}if(t.view._prismVisible!==visible){t.view.setVisible(visible);t.view._prismVisible=visible;}}
  sidePanels?.place(area,!overlay&&!htmlFullscreen&&space!=='private');
- inspector?.layout({x:w-inspectorWidth-6,y:44+bar,width:Math.max(1,inspectorWidth),height:Math.max(1,h-50-bar)},!overlay&&!htmlFullscreen);
+ inspector?.layout({x:w-inspectorWidth-6,y:top+bar,width:Math.max(1,inspectorWidth),height:Math.max(1,h-top-6-bar)},!overlay&&!htmlFullscreen);
 }
 
 // Toolbar click on an extension without a popup, as in Chrome: openPanelOnActionClick toggles its side panel, otherwise

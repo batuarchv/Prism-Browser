@@ -30,7 +30,7 @@ summary{list-style:none;cursor:pointer;color:var(--ink);padding-left:6px}summary
 .sidebar-bottom{flex-shrink:0;padding-top:7px}.memory,.sleep,.footnote,.profile,#theme,#import-arc{display:none}.utilities{display:flex;align-items:center;gap:4px}.utilities button{display:grid;place-items:center;width:32px;height:32px;color:var(--muted)}.utilities #downloads{margin-left:auto}
 #sidebar-resize{position:absolute;left:calc(min(var(--sidebar-width),calc(100vw - 400px)) - 3px);top:52px;bottom:0;width:6px;z-index:20;cursor:col-resize;touch-action:none}#sidebar-resize:hover,#sidebar-resize:focus-visible{background:color-mix(in srgb,var(--accent) 35%,transparent)}.resizing,.resizing *{cursor:col-resize!important;user-select:none!important}
 main{position:absolute;inset:0 0 0 min(var(--sidebar-width),calc(100vw - 400px));background:var(--chrome);min-width:0}
-header{height:44px;display:flex;align-items:center;gap:5px;padding:0 17px 0 12px;-webkit-app-region:drag}header button,header input,header form,header browser-action-list{-webkit-app-region:no-drag}
+header{height:44px;display:flex;align-items:center;gap:5px;padding:0 17px 0 12px;-webkit-app-region:drag}:is(header,:where(.toolbar-dock)) button,:is(header,:where(.toolbar-dock)) input,:is(header,:where(.toolbar-dock)) form,:is(header,:where(.toolbar-dock)) browser-action-list{-webkit-app-region:no-drag}
 .nav{display:flex;gap:1px}.nav button,.protect,.icon-button{display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;width:31px;height:32px;color:var(--muted)}.nav .icon,.protect .icon{width:17px;height:17px}
 #address-form{display:flex;align-items:center;gap:9px;flex:1;min-width:80px;height:36px;padding:0 12px;margin:0 5px;background:color-mix(in srgb,var(--raised) 72%,transparent);border:1px solid var(--line);border-radius:10px}#address-form:focus-within{border-color:var(--accent);box-shadow:0 0 0 2px color-mix(in srgb,var(--accent) 12%,transparent)}
 #address{width:100%;border:0;outline:0;background:transparent;font-size:.92rem}#protocol{display:flex;color:var(--muted)}#protocol .icon{width:15px;height:15px}input::placeholder{color:var(--muted);opacity:.9}
@@ -146,8 +146,8 @@ header{padding-right:8px}
 
 /* Lightweight panels rendered in the existing browser interface. */
 header{gap:3px;padding-left:8px}
-header .icon,header button svg{width:16px;height:16px;flex-shrink:0;fill:none;stroke:currentColor;stroke-width:1.65}
-header .nav button,header .protect,header .icon-button{width:28px;height:28px}
+:is(header,:where(.toolbar-dock)) .icon,:is(header,:where(.toolbar-dock)) button svg{width:16px;height:16px;flex-shrink:0;fill:none;stroke:currentColor;stroke-width:1.65}
+:is(header,:where(.toolbar-dock)) .nav button,:is(header,:where(.toolbar-dock)) .protect,:is(header,:where(.toolbar-dock)) .icon-button{width:28px;height:28px}
 #address-form{height:30px;margin:0 3px;padding:0 9px;gap:6px}
 #address{font-size:12px}
 #browser-actions{display:none!important}
@@ -193,7 +193,7 @@ header .nav button,header .protect,header .icon-button{width:28px;height:28px}
 #prefs-nav button.selected {box-shadow:inset 0 0 0 .5px var(--line)}
 #prefs-content h2 {letter-spacing:-.022em;font-weight:550}
 .section-description {line-height:1.65}
-header .icon {stroke-width:1.65}
+:is(header,:where(.toolbar-dock)) .icon {stroke-width:1.65}
 #address-form {border-radius:10px;box-shadow:0 1px 2px #00000003}
 #sidebar-toggle {flex-shrink:0}
 @media(max-width:850px){#prefs-nav .icon{display:block;flex-shrink:0}#prefs-nav button{font-size:11px;gap:7px}}
@@ -255,11 +255,11 @@ header .icon {stroke-width:1.65}
 
 .pa-label{display:grid;gap:8px;margin:16px 0}#pa-text{width:100%;box-sizing:border-box;resize:vertical;min-height:100px;max-height:220px;padding:12px;color:inherit;background:var(--surface);border:1px solid var(--line);border-radius:12px;font:inherit;line-height:1.5}#pa-result{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit;line-height:1.65;max-height:280px;overflow:auto;user-select:text}
 
-header #workspace-tools{width:auto;gap:5px;padding:0 8px;font-size:11px;border:1px solid var(--line);border-radius:8px}header #workspace-tools:hover{background:var(--selected);color:var(--ink)}
+:is(header,:where(.toolbar-dock)) #workspace-tools{width:auto;gap:5px;padding:0 8px;font-size:11px;border:1px solid var(--line);border-radius:8px}:is(header,:where(.toolbar-dock)) #workspace-tools:hover{background:var(--selected);color:var(--ink)}
 .split-controls button{width:auto;display:inline-flex;align-items:center;gap:4px;padding:4px 7px;font-size:10px;color:var(--ink);border:1px solid var(--line)}.split-controls button:hover{background:var(--selected)}
 #split-divider:before{background:color-mix(in srgb,var(--muted) 18%,transparent)}#split-divider:hover:before,#split-divider:focus-visible:before{background:var(--accent)}
 .identity-card{box-sizing:border-box;width:min(100%,360px);min-height:112px;padding:20px;gap:12px;border-color:color-mix(in srgb,var(--card-accent) 38%,var(--card-bg));box-shadow:0 4px 16px #00000008}.identity-card strong{font-size:17px;line-height:1.3}.identity-card small{font-size:12px;line-height:1.4}.identity-mark{opacity:.75}.identity-card>span:first-child{border-radius:13px;background:color-mix(in srgb,var(--card-accent) 10%,var(--card-bg))}
-@media(max-width:900px){header #workspace-tools span{display:none}.split-controls button span{display:none}.split-controls button{padding:5px}}
+@media(max-width:900px){:is(header,:where(.toolbar-dock)) #workspace-tools span{display:none}.split-controls button span{display:none}.split-controls button{padding:5px}}
 
 .selection-translation>.settings-group>.setting-row:nth-child(-n+2){display:none}.selection-translation #pa-text{min-height:68px;max-height:140px}.selection-translation>.section-description{font-size:12px}.selection-translation .pa-label{margin:10px 0}
 
@@ -576,12 +576,12 @@ header #workspace-tools{width:auto;gap:5px;padding:0 8px;font-size:11px;border:1
 
 /* Toolbar icons, favorite tiles and sidebar footer buttons: plain icons at rest, like macOS toolbar and sidebar items.
    A soft rounded highlight fades in only on hover, press, keyboard focus or when the item is open/selected. */
-main>header .nav button,main>header .protect,main>header #extensions,main>header #workspace-tools,.utilities button,#favorites .favorite{border:0;border-radius:7px;background:transparent;box-shadow:none;-webkit-backdrop-filter:none;backdrop-filter:none;transition:background-color var(--motion-fast) var(--ease-out),color var(--motion-fast) var(--ease-out),transform var(--motion-fast) var(--ease-out)}
+:is(main>header,:where(.toolbar-dock)) .nav button,:is(main>header,:where(.toolbar-dock)) .protect,:is(main>header,:where(.toolbar-dock)) #extensions,:is(main>header,:where(.toolbar-dock)) #workspace-tools,.utilities button,#favorites .favorite{border:0;border-radius:7px;background:transparent;box-shadow:none;-webkit-backdrop-filter:none;backdrop-filter:none;transition:background-color var(--motion-fast) var(--ease-out),color var(--motion-fast) var(--ease-out),transform var(--motion-fast) var(--ease-out)}
 #favorites .favorite{border-radius:9px}
-main>header .nav button:hover:not(:disabled),main>header .protect:hover:not(:disabled),main>header #extensions:hover:not(:disabled),main>header #workspace-tools:hover:not(:disabled),.utilities button:hover:not(:disabled),#favorites .favorite:hover:not(:disabled),main>header .nav button:focus-visible,main>header .protect:focus-visible,main>header #extensions:focus-visible,main>header #workspace-tools:focus-visible,.utilities button:focus-visible,#favorites .favorite:focus-visible{background:color-mix(in srgb,var(--ink) 8%,transparent);color:var(--ink)}
-main>header .nav button:active:not(:disabled),main>header .protect:active:not(:disabled),main>header #extensions:active:not(:disabled),main>header #workspace-tools:active:not(:disabled),.utilities button:active:not(:disabled),#favorites .favorite:active:not(:disabled){background:color-mix(in srgb,var(--ink) 13%,transparent);transform:scale(.97)}
-main>header .nav button.selected,main>header .protect.selected,main>header #extensions.selected,main>header #workspace-tools.selected,.utilities button.selected,#favorites .favorite.selected,main>header .nav button[aria-pressed=true],main>header .protect[aria-pressed=true],main>header #extensions[aria-pressed=true],main>header #workspace-tools[aria-pressed=true],.utilities button[aria-pressed=true],#favorites .favorite[aria-pressed=true],main>header #extensions[aria-expanded=true]{background:color-mix(in srgb,var(--ink) 10%,transparent)}
-main>header .nav button:disabled{opacity:.4}
+:is(main>header,:where(.toolbar-dock)) .nav button:hover:not(:disabled),:is(main>header,:where(.toolbar-dock)) .protect:hover:not(:disabled),:is(main>header,:where(.toolbar-dock)) #extensions:hover:not(:disabled),:is(main>header,:where(.toolbar-dock)) #workspace-tools:hover:not(:disabled),.utilities button:hover:not(:disabled),#favorites .favorite:hover:not(:disabled),:is(main>header,:where(.toolbar-dock)) .nav button:focus-visible,:is(main>header,:where(.toolbar-dock)) .protect:focus-visible,:is(main>header,:where(.toolbar-dock)) #extensions:focus-visible,:is(main>header,:where(.toolbar-dock)) #workspace-tools:focus-visible,.utilities button:focus-visible,#favorites .favorite:focus-visible{background:color-mix(in srgb,var(--ink) 8%,transparent);color:var(--ink)}
+:is(main>header,:where(.toolbar-dock)) .nav button:active:not(:disabled),:is(main>header,:where(.toolbar-dock)) .protect:active:not(:disabled),:is(main>header,:where(.toolbar-dock)) #extensions:active:not(:disabled),:is(main>header,:where(.toolbar-dock)) #workspace-tools:active:not(:disabled),.utilities button:active:not(:disabled),#favorites .favorite:active:not(:disabled){background:color-mix(in srgb,var(--ink) 13%,transparent);transform:scale(.97)}
+:is(main>header,:where(.toolbar-dock)) .nav button.selected,:is(main>header,:where(.toolbar-dock)) .protect.selected,:is(main>header,:where(.toolbar-dock)) #extensions.selected,:is(main>header,:where(.toolbar-dock)) #workspace-tools.selected,.utilities button.selected,#favorites .favorite.selected,:is(main>header,:where(.toolbar-dock)) .nav button[aria-pressed=true],:is(main>header,:where(.toolbar-dock)) .protect[aria-pressed=true],:is(main>header,:where(.toolbar-dock)) #extensions[aria-pressed=true],:is(main>header,:where(.toolbar-dock)) #workspace-tools[aria-pressed=true],.utilities button[aria-pressed=true],#favorites .favorite[aria-pressed=true],:is(main>header,:where(.toolbar-dock)) #extensions[aria-expanded=true]{background:color-mix(in srgb,var(--ink) 10%,transparent)}
+:is(main>header,:where(.toolbar-dock)) .nav button:disabled{opacity:.4}
 /* Hover, press and focus on every control */
 button,summary,[role=button],.tab,.bookmark,.favorite,.list-row,.download-row,.login-row,.extension-row,select,a{transition:background-color var(--motion) var(--ease-out),color var(--motion) var(--ease-out),border-color var(--motion) var(--ease-out),box-shadow var(--motion) var(--ease-out),opacity var(--motion) var(--ease-out),transform var(--motion-fast) var(--ease-out),filter var(--motion) var(--ease-out)}
 button:active:not(:disabled),summary:active,[role=button]:active{transform:scale(.96);transition-duration:60ms}
@@ -604,7 +604,7 @@ input[type=range]::-webkit-slider-thumb{transition:transform var(--motion-fast) 
 input[type=range]:active::-webkit-slider-thumb{transform:scale(1.15)}
 
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{transition-duration:0s!important;animation:none!important}button:active,summary:active,[role=button]:active,.tab:active,.bookmark:active,#favorites .favorite:active,.dragging{transform:none!important}}
-[data-motion=reduced] button:active,[data-motion=reduced] .tab:active,[data-motion=reduced] .bookmark:active,[data-motion=reduced] #favorites .favorite:active,[data-motion=reduced] .dragging,[data-motion=reduced] main>header button:hover{transform:none!important}
+[data-motion=reduced] button:active,[data-motion=reduced] .tab:active,[data-motion=reduced] .bookmark:active,[data-motion=reduced] #favorites .favorite:active,[data-motion=reduced] .dragging,[data-motion=reduced] :is(main>header,:where(.toolbar-dock)) button:hover{transform:none!important}
 #preferences #prefs-content .extension-panel-button{border:0;background:transparent;box-shadow:none}
 #preferences #prefs-content .extension-panel-button:hover,#preferences #prefs-content .extension-panel-button:focus-visible{background:color-mix(in srgb,var(--ink) 8%,transparent)}
 /* Favorites drag (sidebar-ui.js): lifted tile follows the pointer; the others slide to show the slot. */
@@ -883,3 +883,26 @@ img.glass-fallback{visibility:hidden!important}
 .space-button[aria-expanded=true]{background:var(--hover)}
 /* The site settings button in the address bar gets a full-size target. */
 #protocol{min-width:24px;min-height:24px}
+/* 0.32 · Address bar in the sidebar (address-dock.js). The toolbar is gone, the page reaches the top of the window, and
+   the sidebar holds navigation beside the window buttons, the address field where New tab was, and the page tools. */
+:root[data-address=sidebar] main>header,:root[data-address=sidebar] #new{display:none}
+:root[data-address=sidebar] .window-drag{position:relative}
+.dock-nav{position:absolute;top:8px;right:-4px;height:28px;display:flex;align-items:center;gap:1px;-webkit-app-region:no-drag}
+.dock-nav .nav{display:flex;gap:1px}
+.dock-address{display:flex;align-items:center;gap:4px;margin:2px 0 0}
+.dock-address #address-form{margin:0;height:34px;padding:0 10px;border-radius:11px;gap:7px;background:color-mix(in srgb,var(--ink) 5%,transparent);border-color:transparent;box-shadow:none}
+.dock-address #address-form:hover{background:color-mix(in srgb,var(--ink) 8%,transparent)}
+.dock-address #address-form:focus-within{background:var(--raised);border-color:color-mix(in srgb,var(--accent) 60%,transparent)}
+.dock-address #address{font-size:12.5px}
+.dock-address #address-form kbd{display:none}
+.dock-address #dock-new{width:30px;height:30px;flex-shrink:0;color:var(--muted)}
+.dock-tools{display:flex;align-items:center;gap:1px;min-height:30px;margin:0 -4px 2px;color:var(--muted)}
+.dock-tools #workspace-tools{margin-left:auto;border:0}
+.dock-tools #workspace-tools span{display:none}
+.dock-tools #browser-actions{max-width:96px;overflow:hidden}
+.dock-tools button{width:28px;height:28px}
+:root[data-address=sidebar] #welcome,:root[data-address=sidebar] #preferences:not([data-mode]),:root[data-address=sidebar] #resize-preview,:root[data-address=sidebar] #panel-preview{top:6px}
+:root[data-address=sidebar] #resize-preview,:root[data-address=sidebar] #panel-preview{height:calc(100% - 12px)}
+:root[data-address=sidebar] #workspace-bar,:root[data-address=sidebar] #page-find{top:6px}
+:root[data-address=sidebar] #suggestion-layer{top:0}
+:root[data-address=sidebar] #sidebar-resize{top:0}
