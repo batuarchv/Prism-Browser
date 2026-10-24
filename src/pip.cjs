@@ -17,7 +17,7 @@ const CONTROL=(command,value)=>`(()=>{const v=document.querySelector('video[data
 function snapCorner(bounds,area,margin=MARGIN){const cx=bounds.x+bounds.width/2,cy=bounds.y+bounds.height/2;
  return {x:Math.round(cx<area.x+area.width/2?area.x+margin:area.x+area.width-bounds.width-margin),y:Math.round(cy<area.y+area.height/2?area.y+margin:area.y+area.height-bounds.height-margin),width:bounds.width,height:bounds.height};}
 function startBounds(ratio,area){const width=Math.round(Math.max(260,Math.min(480,area.width*.26))),height=Math.round(width/ratio);return {x:area.x+area.width-width-MARGIN,y:area.y+area.height-height-MARGIN,width,height};}
-function createPip({BrowserWindow,WebContentsView,screen,parent,surfaces,detach,attachBack,onChange,reduceMotion}){
+function createPip({BrowserWindow,WebContentsView,screen,parent,surfaces,detach,attachBack,onChange,reduceMotion,language=()=>'en'}){
  let current=null;
  function send(){if(current&&!current.controls.webContents.isDestroyed())surfaces.send(current.controls.webContents,current.status);}
  async function poll(){const c=current;if(!c)return;const wc=c.tab.view?.webContents;if(!wc||wc.isDestroyed())return;try{const s=await wc.executeJavaScriptInIsolatedWorld(999,[{code:STATUS}]);if(current!==c)return;if(!s){end('return');return;}c.status={...c.status,...s,title:c.tab.customTitle||c.tab.title||''};send();}catch{}}
@@ -33,7 +33,7 @@ function createPip({BrowserWindow,WebContentsView,screen,parent,surfaces,detach,
   win.setAlwaysOnTop(true,'floating');win.setVisibleOnAllWorkspaces?.(true,{visibleOnFullScreen:true});win.setAspectRatio(ratio);
   const controls=new WebContentsView({webPreferences:{preload:surfaces.preload,sandbox:true,contextIsolation:true,nodeIntegration:false}});controls.setBackgroundColor('#00000000');controls.setBorderRadius(12);
   detach(tab);tab.pip=true;tab.view.setBorderRadius(12);win.contentView.addChildView(tab.view);win.contentView.addChildView(controls);
-  const c={tab,win,controls,cssKey,timer:null,status:{playing:video.playing,time:0,duration:0,title:tab.customTitle||tab.title||'',reduceMotion:reduceMotion()},drag:null};current=c;place();
+  const c={tab,win,controls,cssKey,timer:null,status:{playing:video.playing,time:0,duration:0,title:tab.customTitle||tab.title||'',reduceMotion:reduceMotion(),language:language()},drag:null};current=c;place();
   surfaces.register(controls.webContents,{command:(name,value)=>{if(current!==c)return;
    if(name==='return'||name==='close')end(name);
    else if(['toggle','mute','skip','seek'].includes(name)){wc.executeJavaScriptInIsolatedWorld(999,[{code:CONTROL(name,value)}],true).catch(()=>{});setTimeout(poll,120);}

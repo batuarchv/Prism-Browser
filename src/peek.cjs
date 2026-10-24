@@ -7,10 +7,10 @@ function peekBounds(content,area){
  const width=Math.round(Math.max(Math.min(area.width-48,1100),Math.min(area.width-16,480))),height=Math.round(Math.max(Math.min(area.height-40,area.height*.92),Math.min(area.height-16,360)));
  return {x:Math.round(content.x+area.x+(area.width-width)/2),y:Math.round(content.y+area.y+Math.max(8,(area.height-height)/2)),width,height};
 }
-function createPeek({BrowserWindow,WebContentsView,parent,pageArea,webPreferences,configure,openTab,surfaces,reduceMotion,dark}){
+function createPeek({BrowserWindow,WebContentsView,parent,pageArea,webPreferences,configure,openTab,surfaces,reduceMotion,dark,language=()=>'en'}){
  let current=null;
  function state(){if(!current)return;const wc=current.view.webContents;if(wc.isDestroyed())return;let host='';try{host=new URL(wc.getURL()).hostname.replace(/^www\./,'');}catch{}
-  surfaces.send(current.win.webContents,{title:wc.getTitle()||host,host,icon:current.icon||'',loading:wc.isLoading(),canBack:wc.navigationHistory.canGoBack(),secure:wc.getURL().startsWith('https:'),dark:dark()});}
+  surfaces.send(current.win.webContents,{title:wc.getTitle()||host,host,icon:current.icon||'',loading:wc.isLoading(),canBack:wc.navigationHistory.canGoBack(),secure:wc.getURL().startsWith('https:'),dark:dark(),language:language()});}
  function place(){if(!current||current.win.isDestroyed())return;const [w,h]=current.win.getContentSize();current.view.setBounds({x:INSET,y:HEADER,width:Math.max(1,w-INSET*2),height:Math.max(1,h-HEADER-INSET)});}
  function close(){const c=current;current=null;if(!c)return;if(!c.win.isDestroyed())c.win.destroy();if(!c.view.webContents.isDestroyed())c.view.webContents.close();}
  function promote(){if(!current)return;const url=current.view.webContents.getURL(),space=current.space;close();if(/^https?:/.test(url))openTab(url,space);}

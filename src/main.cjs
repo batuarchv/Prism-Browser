@@ -761,12 +761,12 @@ app.whenReady().then(async()=>{
   surfaces=require('./surfaces.cjs').createSurfaces(ipcMain);
   commandBar=require('./command-bar.cjs').createCommandBar({BrowserWindow,parent:()=>win,surfaces,entries:commandEntries,run:commandRun,look:()=>({dark:nativeTheme.shouldUseDarkColors,language:settings.language,reduceMotion:!!settings.reduceMotion||systemPreferences.getAnimationSettings().prefersReducedMotion})});
   media=require('./media.cjs').createMedia({tabs:()=>tabs,visibleIds:()=>split?split.ids:[activeId],emit});
-  pip=require('./pip.cjs').createPip({BrowserWindow,WebContentsView,screen,parent:()=>win,surfaces,onChange:()=>{layout();emit();},reduceMotion:()=>!!settings.reduceMotion||systemPreferences.getAnimationSettings().prefersReducedMotion,
+  pip=require('./pip.cjs').createPip({BrowserWindow,WebContentsView,screen,parent:()=>win,surfaces,language:()=>settings.language,onChange:()=>{layout();emit();},reduceMotion:()=>!!settings.reduceMotion||systemPreferences.getAnimationSettings().prefersReducedMotion,
    detach:t=>{win.contentView.removeChildView(t.view);t.view.setVisible(true);t.view._prismVisible=null;t.view._prismBounds=null;t.view._prismRadius=null;},
    attachBack:(t,show)=>{if(!win||win.isDestroyed()||!t.view)return;win.contentView.addChildView(t.view);t.view._prismVisible=null;t.view._prismBounds=null;t.view._prismRadius=null;if(show&&tabs.includes(t))selectTab(t.id);else layout();}});
   peek=require('./peek.cjs').createPeek({BrowserWindow,WebContentsView,parent:()=>win,pageArea:()=>pageArea,webPreferences:tabSpace=>pageWebPreferences(tabSpace==='private'),surfaces,openTab:(url,tabSpace)=>makeTab(url,true,tabSpace),
    configure:(wc,tabSpace)=>{const isPrivate=tabSpace==='private';blocker?.attach(wc,isPrivate);wc.setZoomFactor(settings.pageZoom);applyPinch(wc);if(isPrivate)wc.setWebRTCIPHandlingPolicy('disable_non_proxied_udp');},
-   reduceMotion:()=>!!settings.reduceMotion||systemPreferences.getAnimationSettings().prefersReducedMotion,dark:()=>nativeTheme.shouldUseDarkColors});
+   reduceMotion:()=>!!settings.reduceMotion||systemPreferences.getAnimationSettings().prefersReducedMotion,dark:()=>nativeTheme.shouldUseDarkColors,language:()=>settings.language});
   setupMenu(); await win.loadFile(path.join(__dirname,'index.html'));
   applyAppearance();
   nativeTheme.on('updated',()=>{applyAppearance();emit();});
