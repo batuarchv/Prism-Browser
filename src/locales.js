@@ -1,5 +1,89 @@
 (function(root){
 const catalog={
+ "What’s New": {
+  "tr": "Yenilikler",
+  "es": "Novedades",
+  "pt": "Novidades",
+  "fr": "Nouveautés",
+  "uk": "Що нового"
+ },
+ "Restart": {
+  "tr": "Yeniden başlat",
+  "es": "Reiniciar",
+  "pt": "Reiniciar",
+  "fr": "Redémarrer",
+  "uk": "Перезапустити"
+ },
+ "Restart to Update": {
+  "tr": "Güncellemek için yeniden başlat",
+  "es": "Reiniciar para actualizar",
+  "pt": "Reiniciar para atualizar",
+  "fr": "Redémarrer pour mettre à jour",
+  "uk": "Перезапустити для оновлення"
+ },
+ "Downloading update": {
+  "tr": "Güncelleme indiriliyor",
+  "es": "Descargando actualización",
+  "pt": "A transferir atualização",
+  "fr": "Téléchargement de la mise à jour",
+  "uk": "Завантаження оновлення"
+ },
+ "Updated to Prism {version}": {
+  "tr": "Prism {version} sürümüne güncellendi",
+  "es": "Actualizado a Prism {version}",
+  "pt": "Atualizado para Prism {version}",
+  "fr": "Mis à jour vers Prism {version}",
+  "uk": "Оновлено до Prism {version}"
+ },
+ "Open side panel": {
+  "tr": "Yan paneli aç",
+  "es": "Abrir panel lateral",
+  "pt": "Abrir painel lateral",
+  "fr": "Ouvrir le panneau latéral",
+  "uk": "Відкрити бічну панель"
+ },
+ "Close side panel": {
+  "tr": "Yan paneli kapat",
+  "es": "Cerrar panel lateral",
+  "pt": "Fechar painel lateral",
+  "fr": "Fermer le panneau latéral",
+  "uk": "Закрити бічну панель"
+ },
+ "Extension side panel": {
+  "tr": "Uzantı yan paneli",
+  "es": "Panel lateral de la extensión",
+  "pt": "Painel lateral da extensão",
+  "fr": "Panneau latéral de l’extension",
+  "uk": "Бічна панель розширення"
+ },
+ "Resize side panel": {
+  "tr": "Yan paneli yeniden boyutlandır",
+  "es": "Cambiar tamaño del panel lateral",
+  "pt": "Redimensionar painel lateral",
+  "fr": "Redimensionner le panneau latéral",
+  "uk": "Змінити розмір бічної панелі"
+ },
+ "This extension has no side panel.": {
+  "tr": "Bu uzantının yan paneli yok.",
+  "es": "Esta extensión no tiene panel lateral.",
+  "pt": "Esta extensão não tem painel lateral.",
+  "fr": "Cette extension n’a pas de panneau latéral.",
+  "uk": "Це розширення не має бічної панелі."
+ },
+ "Open a page first.": {
+  "tr": "Önce bir sayfa açın.",
+  "es": "Abre primero una página.",
+  "pt": "Abra primeiro uma página.",
+  "fr": "Ouvrez d’abord une page.",
+  "uk": "Спершу відкрийте сторінку."
+ },
+ "Extension": {
+  "tr": "Uzantı",
+  "es": "Extensión",
+  "pt": "Extensão",
+  "fr": "Extension",
+  "uk": "Розширення"
+ },
  "Settings": {
   "tr": "Ayarlar",
   "es": "Ajustes",
@@ -2576,6 +2660,188 @@ const catalog={
   "fr": "Supprimer le signet",
   "uk": "Видалити закладку"
  },
+ "Close all tabs": {
+  "tr": "Tüm sekmeleri kapat",
+  "es": "Cerrar todas las pestañas",
+  "pt": "Fechar todos os separadores",
+  "fr": "Fermer tous les onglets",
+  "uk": "Закрити всі вкладки"
+ },
+ "Trackpad gestures": {
+  "tr": "Trackpad hareketleri",
+  "es": "Gestos del trackpad",
+  "pt": "Gestos do trackpad",
+  "fr": "Gestes du trackpad",
+  "uk": "Жести трекпада"
+ },
+ "Swipe between pages and spaces. Pinch to zoom.": {
+  "tr": "Sayfalar ve alanlar arasında kaydırın. Yakınlaştırmak için kıstırın.",
+  "es": "Desliza entre páginas y espacios. Pellizca para ampliar.",
+  "pt": "Deslize entre páginas e espaços. Junte os dedos para ampliar.",
+  "fr": "Balayez entre les pages et les espaces. Pincez pour zoomer.",
+  "uk": "Гортайте між сторінками й просторами. Зведіть пальці, щоб масштабувати."
+ },
+ "Passkeys": {
+  "tr": "Geçiş anahtarları",
+  "es": "Llaves de acceso",
+  "pt": "Chaves-senha",
+  "fr": "Clés d’accès",
+  "uk": "Ключі доступу"
+ },
+ "Saved in Prism and unlocked with Touch ID.": {
+  "tr": "Prism’de saklanır, Touch ID ile açılır.",
+  "es": "Guardadas en Prism y desbloqueadas con Touch ID.",
+  "pt": "Guardadas no Prism e desbloqueadas com Touch ID.",
+  "fr": "Enregistrées dans Prism et déverrouillées avec Touch ID.",
+  "uk": "Зберігаються в Prism і відкриваються через Touch ID."
+ },
+ "No passkeys yet.": {
+  "tr": "Henüz geçiş anahtarı yok.",
+  "es": "Aún no hay llaves de acceso.",
+  "pt": "Ainda não há chaves-senha.",
+  "fr": "Aucune clé d’accès pour l’instant.",
+  "uk": "Ключів доступу ще немає."
+ },
+ "Remove this passkey?": {
+  "tr": "Bu geçiş anahtarı kaldırılsın mı?",
+  "es": "¿Quitar esta llave de acceso?",
+  "pt": "Remover esta chave-senha?",
+  "fr": "Supprimer cette clé d’accès ?",
+  "uk": "Видалити цей ключ доступу?"
+ },
+ "Site settings": {
+  "tr": "Site ayarları",
+  "es": "Ajustes del sitio",
+  "pt": "Definições do site",
+  "fr": "Réglages du site",
+  "uk": "Налаштування сайту"
+ },
+ "Site settings are unavailable here.": {
+  "tr": "Site ayarları burada kullanılamaz.",
+  "es": "Los ajustes del sitio no están disponibles aquí.",
+  "pt": "As definições do site não estão disponíveis aqui.",
+  "fr": "Réglages du site indisponibles ici.",
+  "uk": "Налаштування сайту тут недоступні."
+ },
+ "Allow": {
+  "tr": "İzin ver",
+  "es": "Permitir",
+  "pt": "Permitir",
+  "fr": "Autoriser",
+  "uk": "Дозволити"
+ },
+ "Ask": {
+  "tr": "Sor",
+  "es": "Preguntar",
+  "pt": "Perguntar",
+  "fr": "Demander",
+  "uk": "Питати"
+ },
+ "Block": {
+  "tr": "Engelle",
+  "es": "Bloquear",
+  "pt": "Bloquear",
+  "fr": "Bloquer",
+  "uk": "Блокувати"
+ },
+ "Zoom": {
+  "tr": "Yakınlaştırma",
+  "es": "Zoom",
+  "pt": "Zoom",
+  "fr": "Zoom",
+  "uk": "Масштаб"
+ },
+ "Reset zoom": {
+  "tr": "Yakınlaştırmayı sıfırla",
+  "es": "Restablecer zoom",
+  "pt": "Repor zoom",
+  "fr": "Réinitialiser le zoom",
+  "uk": "Скинути масштаб"
+ },
+ "Cookies and site data": {
+  "tr": "Çerezler ve site verileri",
+  "es": "Cookies y datos del sitio",
+  "pt": "Cookies e dados do site",
+  "fr": "Cookies et données du site",
+  "uk": "Cookie та дані сайту"
+ },
+ "Cache": {
+  "tr": "Önbellek",
+  "es": "Caché",
+  "pt": "Cache",
+  "fr": "Cache",
+  "uk": "Кеш"
+ },
+ "Hidden elements": {
+  "tr": "Gizlenen öğeler",
+  "es": "Elementos ocultos",
+  "pt": "Elementos ocultos",
+  "fr": "Éléments masqués",
+  "uk": "Приховані елементи"
+ },
+ "Restore": {
+  "tr": "Geri yükle",
+  "es": "Restaurar",
+  "pt": "Repor",
+  "fr": "Restaurer",
+  "uk": "Відновити"
+ },
+ "Erase elements": {
+  "tr": "Öğeleri sil",
+  "es": "Borrar elementos",
+  "pt": "Apagar elementos",
+  "fr": "Effacer des éléments",
+  "uk": "Стерти елементи"
+ },
+ "Reset permissions": {
+  "tr": "İzinleri sıfırla",
+  "es": "Restablecer permisos",
+  "pt": "Repor permissões",
+  "fr": "Réinitialiser les autorisations",
+  "uk": "Скинути дозволи"
+ },
+ "Clear cookies and data for {site}?": {
+  "tr": "{site} için çerezler ve veriler temizlensin mi?",
+  "es": "¿Borrar cookies y datos de {site}?",
+  "pt": "Limpar cookies e dados de {site}?",
+  "fr": "Effacer les cookies et données de {site} ?",
+  "uk": "Очистити cookie та дані для {site}?"
+ },
+ "Cache cleared": {
+  "tr": "Önbellek temizlendi",
+  "es": "Caché borrada",
+  "pt": "Cache limpa",
+  "fr": "Cache effacé",
+  "uk": "Кеш очищено"
+ },
+ "Click to hide · ⌥-click hides all similar · Esc when done": {
+  "tr": "Gizlemek için tıkla · benzerlerin hepsi için ⌥-tıkla · bitince Esc",
+  "es": "Clic para ocultar · ⌥-clic oculta los similares · Esc al terminar",
+  "pt": "Clique para ocultar · ⌥-clique oculta os semelhantes · Esc para terminar",
+  "fr": "Clic pour masquer · ⌥-clic masque les similaires · Échap pour finir",
+  "uk": "Клацніть, щоб приховати · ⌥-клацання ховає подібні · Esc — готово"
+ },
+ "{n} similar": {
+  "tr": "{n} benzer",
+  "es": "{n} similares",
+  "pt": "{n} semelhantes",
+  "fr": "{n} similaires",
+  "uk": "{n} подібних"
+ },
+ "hide all {n}": {
+  "tr": "{n} öğenin hepsini gizle",
+  "es": "ocultar los {n}",
+  "pt": "ocultar os {n}",
+  "fr": "tout masquer ({n})",
+  "uk": "приховати всі {n}"
+ },
+ "Picture in Picture": {
+  "tr": "Resim İçinde Resim",
+  "es": "Imagen dentro de imagen",
+  "pt": "Imagem na imagem",
+  "fr": "Image dans l’image",
+  "uk": "Картинка в картинці"
+ },
  "Organize tabs by site": {
   "tr": "Sekmeleri siteye göre düzenle",
   "es": "Organizar pestañas por sitio",
@@ -2953,6 +3219,188 @@ const catalog={
   "pt": "Bloqueado",
   "fr": "Bloqué",
   "uk": "Заблоковано"
+ },
+ "No extension panels": {
+  "tr": "Uzantı paneli yok",
+  "es": "No hay paneles de extensiones",
+  "pt": "Sem painéis de extensões",
+  "fr": "Aucun panneau d’extension",
+  "uk": "Немає панелей розширень"
+ },
+ "Extensions with their own panel appear here.": {
+  "tr": "Kendi paneli olan uzantılar burada görünür.",
+  "es": "Aquí aparecen las extensiones con panel propio.",
+  "pt": "As extensões com painel próprio aparecem aqui.",
+  "fr": "Les extensions avec leur propre panneau apparaissent ici.",
+  "uk": "Тут з’являються розширення з власною панеллю."
+ },
+ "Spaces": {
+  "tr": "Alanlar",
+  "es": "Espacios",
+  "pt": "Espaços",
+  "fr": "Espaces",
+  "uk": "Простори"
+ },
+ "Customize space": {
+  "tr": "Alanı özelleştir",
+  "es": "Personalizar espacio",
+  "pt": "Personalizar espaço",
+  "fr": "Personnaliser l’espace",
+  "uk": "Налаштувати простір"
+ },
+ "New space": {
+  "tr": "Yeni alan",
+  "es": "Nuevo espacio",
+  "pt": "Novo espaço",
+  "fr": "Nouvel espace",
+  "uk": "Новий простір"
+ },
+ "{count} of 40 spaces": {
+  "tr": "{count}/40 alan",
+  "es": "{count} de 40 espacios",
+  "pt": "{count} de 40 espaços",
+  "fr": "{count} sur 40 espaces",
+  "uk": "{count} з 40 просторів"
+ },
+ "Space name": {
+  "tr": "Alan adı",
+  "es": "Nombre del espacio",
+  "pt": "Nome do espaço",
+  "fr": "Nom de l’espace",
+  "uk": "Назва простору"
+ },
+ "Icon": {
+  "tr": "Simge",
+  "es": "Icono",
+  "pt": "Ícone",
+  "fr": "Icône",
+  "uk": "Значок"
+ },
+ "Color": {
+  "tr": "Renk",
+  "es": "Color",
+  "pt": "Cor",
+  "fr": "Couleur",
+  "uk": "Колір"
+ },
+ "Theme": {
+  "tr": "Tema",
+  "es": "Tema",
+  "pt": "Tema",
+  "fr": "Thème",
+  "uk": "Тема"
+ },
+ "Custom": {
+  "tr": "Özel",
+  "es": "Personalizado",
+  "pt": "Personalizado",
+  "fr": "Personnalisé",
+  "uk": "Власний"
+ },
+ "Custom color": {
+  "tr": "Özel renk",
+  "es": "Color personalizado",
+  "pt": "Cor personalizada",
+  "fr": "Couleur personnalisée",
+  "uk": "Власний колір"
+ },
+ "Hex color": {
+  "tr": "Hex renk",
+  "es": "Color hex",
+  "pt": "Cor hex",
+  "fr": "Couleur hex",
+  "uk": "Колір hex"
+ },
+ "Delete space": {
+  "tr": "Alanı sil",
+  "es": "Eliminar espacio",
+  "pt": "Eliminar espaço",
+  "fr": "Supprimer l’espace",
+  "uk": "Видалити простір"
+ },
+ "Create space": {
+  "tr": "Alan oluştur",
+  "es": "Crear espacio",
+  "pt": "Criar espaço",
+  "fr": "Créer l’espace",
+  "uk": "Створити простір"
+ },
+ "Delete this space?": {
+  "tr": "Bu alan silinsin mi?",
+  "es": "¿Eliminar este espacio?",
+  "pt": "Eliminar este espaço?",
+  "fr": "Supprimer cet espace ?",
+  "uk": "Видалити цей простір?"
+ },
+ "Its open tabs will close.": {
+  "tr": "Açık sekmeleri kapanacak.",
+  "es": "Sus pestañas abiertas se cerrarán.",
+  "pt": "Os separadores abertos serão fechados.",
+  "fr": "Ses onglets ouverts seront fermés.",
+  "uk": "Його відкриті вкладки закриються."
+ },
+ "Keep at least one space.": {
+  "tr": "En az bir alan kalmalı.",
+  "es": "Debe quedar al menos un espacio.",
+  "pt": "Mantenha pelo menos um espaço.",
+  "fr": "Gardez au moins un espace.",
+  "uk": "Залиште принаймні один простір."
+ },
+ "Find a space": {
+  "tr": "Alan bul",
+  "es": "Buscar un espacio",
+  "pt": "Procurar um espaço",
+  "fr": "Rechercher un espace",
+  "uk": "Знайти простір"
+ },
+ "No matching spaces": {
+  "tr": "Eşleşen alan yok",
+  "es": "No hay espacios que coincidan",
+  "pt": "Nenhum espaço corresponde",
+  "fr": "Aucun espace correspondant",
+  "uk": "Немає відповідних просторів"
+ },
+ "No tabs": {
+  "tr": "Sekme yok",
+  "es": "Sin pestañas",
+  "pt": "Sem separadores",
+  "fr": "Aucun onglet",
+  "uk": "Немає вкладок"
+ },
+ "1 tab": {
+  "tr": "1 sekme",
+  "es": "1 pestaña",
+  "pt": "1 separador",
+  "fr": "1 onglet",
+  "uk": "1 вкладка"
+ },
+ "{count} tabs": {
+  "tr": "{count} sekme",
+  "es": "{count} pestañas",
+  "pt": "{count} separadores",
+  "fr": "{count} onglets",
+  "uk": "Вкладок: {count}"
+ },
+ "It has no open tabs.": {
+  "tr": "Açık sekmesi yok.",
+  "es": "No tiene pestañas abiertas.",
+  "pt": "Não tem separadores abertos.",
+  "fr": "Il n’a aucun onglet ouvert.",
+  "uk": "У ньому немає відкритих вкладок."
+ },
+ "Show all spaces": {
+  "tr": "Tüm alanları göster",
+  "es": "Mostrar todos los espacios",
+  "pt": "Mostrar todos os espaços",
+  "fr": "Afficher tous les espaces",
+  "uk": "Показати всі простори"
+ },
+ "You can have up to 40 spaces.": {
+  "tr": "En fazla 40 alanınız olabilir.",
+  "es": "Puedes tener hasta 40 espacios.",
+  "pt": "Pode ter até 40 espaços.",
+  "fr": "Vous pouvez avoir jusqu’à 40 espaces.",
+  "uk": "Можна мати до 40 просторів."
  }
 };
 const languages=["en","tr","es","pt","fr","uk"];
