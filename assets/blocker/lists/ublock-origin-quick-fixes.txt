@@ -1,0 +1,497 @@
+! Title: uBlock₀ filters – Quick fixes
+! Last modified: %timestamp%
+! Expires: 8 hours
+! Description: Immediate, temporary filters to fix websites
+! License: https://github.com/uBlockOrigin/uAssets/blob/master/LICENSE
+! Homepage: https://github.com/uBlockOrigin/uAssets
+! Forums: https://github.com/uBlockOrigin/uAssets/issues
+! aternos anti adb
+@@||hb.vntsm.com/v4/live/vms/sites/aternos.org/index.js$script,domain=aternos.org
+aternos.org##.header-center:style(margin-top:-5000px !important;)
+aternos.org##.sidebar:style(width: 1.745px !important; padding: 1px !important)
+aternos.org##.ad-dfp:style(min-height: 0.1485mm !important; height: 0.1485mm !important;)
+aternos.org###placement-takeover
+! https://www.reddit.com/r/uBlockOrigin/comments/16lmeri/youtube_antiadblock_and_ads_september_18_2023/k1wl8df/
+!#if !env_mv3
+!#if !cap_html_filtering
+!#if env_firefox
+youtube.com##+js(json-prune, playerResponse.adPlacements%20playerResponse.playerAds%20playerResponse.adSlots%20adPlacements%20playerAds%20adSlots%20legacyImportant)
+!#endif
+!#endif
+!#endif
+www.youtube.com##+js(trusted-rpnt, script, (function%20serverContract(), (()%3D%3E%7Bif(%22YOUTUBE_PREMIUM_LOGO%22%3D%3D%3DytInitialData%3F.topbar%3F.desktopTopbarRenderer%3F.logo%3F.topbarLogoRenderer%3F.iconImage%3F.iconType%7C%7Clocation.href.startsWith(%22https%3A%2F%2Fwww.youtube.com%2Ftv%23%2F%22)%7C%7Clocation.href.startsWith(%22https%3A%2F%2Fwww.youtube.com%2Fembed%2F%22))return%3Bconst%20e%3Dytcfg.data_.INNERTUBE_CONTEXT.client.userAgent%2Ct%3Dt%3D%3E%7Bytcfg.data_.INNERTUBE_CONTEXT.client.userAgent%3Dt%3Fe.replace%3F.(%2F(Mozilla%5C%2F5%5C.0%20%5C(%5B%5E)%5D%2B)%2F%2C%22%241%3B%20%22%2Bt)%3Ae%7D%2Co%3D%5B%22channel%22%2C%22lactmilli%22%5D%3Blet%20r%3D!1%2Cn%3Do%3Bdocument.addEventListener(%22DOMContentLoaded%22%2C(function()%7Bconst%20e%3D()%3D%3E%7Bconst%20e%3Ddocument.getElementById(%22movie_player%22)%3Bif(!e%7C%7C!window.location.href.includes(%22%2Fwatch%3F%22))return%20void(n%3Do)%3Bconst%20a%3De.getPlayerResponse%3F.()%2Cs%3De.getProgressState%3F.()%2Ci%3De.getStatsForNerds%3F.()%3Bif(s%26%26s.duration%3E0%26%26(s.loaded%3Cs.duration%7C%7Cs.duration-s.current%3E1)%7C%7Ca%3F.videoDetails%3F.isLive)%7Bif(!i%3F.debug_info%3F.startsWith%3F.(%22SSAP%2C%20AD%22))%7Bconst%20o%3Da.videoDetails%3F.videoId%2Cs%3Da.playerConfig%3F.playbackStartConfig%3F.startSeconds%3F%3F0%2Cl%3De.getPlayerStateObject%3F.()%3F.isBuffering%2Cd%3Da.playabilityStatus%3F.errorScreen%2Cc%3DJSON.stringify(d%3F.playerErrorMessageRenderer%3F.subreason%3F.runs%7C%7Cd%3F.playerInterstitialRenderer%3F.content%3F.interstitialViewModel%3F.description%3F.commandRuns)%3Breturn%20void(%22UNPLAYABLE%22%3D%3D%3Da%3F.playabilityStatus%3F.status%26%26!d%3F.playerErrorMessageRenderer%3F.playerCaptchaViewModel%26%26c%3F.includes%3F.(%22WEB_PAGE_TYPE_UNKNOWN%22)%26%26c%3F.includes%3F.(%22https%3A%2F%2Fsupport.google.com%2Fyoutube%2Fanswer%2F3037019%22)%3F(n%3Dn.slice(1)%2Cn.length%3E0%3Ft(n%5B0%5D)%3At(%22%22)%2Cr%3D!1%2Ce.loadVideoById(o%2Cs))%3A0%3D%3D%3Dn.length%3F(r%3D!1%2Ct(%22%22))%3Al%26%26%220.00%20s%22%3D%3D%3Di%3F.buffer_health_seconds%26%26%220x0%22%3D%3D%3Di%3F.resolution%26%26r%26%26(t(n%5B0%5D)%2Cr%3D!1%2Ce.loadVideoById(o%2Cs)))%7Ds.duration%3E0%26%26e.seekTo%3F.(s.duration)%7D%7D%3Be()%2Cnew%20MutationObserver((()%3D%3E%7Be()%7D)).observe(document%2C%7BchildList%3A!0%2Csubtree%3A!0%7D)%7D))%2Cwindow.Map.prototype.has%3Dnew%20Proxy(window.Map.prototype.has%2C%7Bapply%3A(e%2Ct%2Co)%3D%3E%7Bif(%22onSnackbarMessage%22%3D%3D%3Do%3F.%5B0%5D%26%26!r)%7Bconst%20e%3Ddocument.getElementById(%22movie_player%22)%3Bif(!e)return%3Bconst%20t%3De.getStatsForNerds%3F.()%2Co%3De.getPlayerStateObject%3F.()%3F.isBuffering%2Ca%3De.getPlayerResponse%3F.()%3F.playbackTracking%3F.videostatsPlaybackUrl%3F.baseUrl%3Bo%26%26%220.00%20s%22%3D%3D%3Dt%3F.buffer_health_seconds%26%26%220x0%22%3D%3D%3Dt%3F.resolution%26%26n.length%3E0%26%26(a.includes(%22reloadxhr%22)%26%26(n%3Dn.slice(1))%2Cr%3D!0)%7Dreturn%20Reflect.apply(e%2Ct%2Co)%7D%7D)%3Bconst%20a%3D%7Bapply%3A(e%2Ct%2Co)%3D%3E%7Bconst%20r%3Do%5B0%5D%3Breturn%22function%22%3D%3Dtypeof%20r%26%26r.toString().includes(%22onAbnormalityDetected%22)%26%26(o%5B0%5D%3Dfunction()%7B%7D)%2CReflect.apply(e%2Ct%2Co)%7D%7D%3Bwindow.Promise.prototype.then%3Dnew%20Proxy(window.Promise.prototype.then%2Ca)%7D)()%3B(function%20serverContract(), sedCount, 1)
+www.youtube.com##+js(trusted-json-edit-xhr-request, %5B%3F..userAgent*%3D%22channel%22%5D..client%5B%3F.clientName%3D%3D%22WEB%22%5D%2B%3D%7B%22clientScreen%22%3A%22CHANNEL%22%7D, propsToMatch, %2Fplayer%3F)
+www.youtube.com##+js(trusted-json-edit-xhr-request, %5B%3F..userAgent*%3D%22lactmilli%22%5D%2B%3D%7B%22params%22%3A%228AUB%22%7D, propsToMatch, %2Fplayer%3F)
+www.youtube.com##+js(trusted-json-edit-xhr-request, %5B%3F..userAgent*%3D%22lactmilli%22%5D..playbackContext.contentPlaybackContext.lactMilliseconds%3D%22%24%7Bnow%7D%22, propsToMatch, %2Fplayer%3F)
+www.youtube.com##+js(trusted-json-edit-xhr-request, %5B%3F..userAgent%3D%2Fadunit%7Cchannel%7Clactmilli%7Cinstream%7Ceafg%2F%5D..referer%3Drepl(%7B%22regex%22%3A%22(%3F%3A%23reloadxhr)%3F%24%22%2C%22replacement%22%3A%22%23reloadxhr%22%7D), propsToMatch, %2Fplayer%3F)
+! https://github.com/uBlockOrigin/uAssets/issues/30157#issuecomment-5206026055
+www.youtube.com##+js(set, ytcfg.data_.EXPERIMENT_FLAGS.all_web_enable_network_machine, false)
+www.youtube.com##+js(set, ytcfg.data_.EXPERIMENT_FLAGS.all_web_network_machine_raw_request, false)
+! old
+! www.youtube.com##+js(trusted-rpnt, script, (function%20serverContract(), (()%3D%3E%7Bif(%22YOUTUBE_PREMIUM_LOGO%22%3D%3D%3DytInitialData%3F.topbar%3F.desktopTopbarRenderer%3F.logo%3F.topbarLogoRenderer%3F.iconImage%3F.iconType)return%20void(ytcfg.data_.INNERTUBE_CONTEXT.client.userAgent%3Dytcfg.data_.INNERTUBE_CONTEXT.client.userAgent.replace%3F.(%2F(Mozilla%5C%2F5%5C.0%20%5C(%5B%5E)%5D%2B)%2F%2C%22%241%3B%20premium%22))%3Bif(location.href.startsWith(%22https%3A%2F%2Fwww.youtube.com%2Ftv%23%2F%22)%7C%7Clocation.href.startsWith(%22https%3A%2F%2Fwww.youtube.com%2Fembed%2F%22))return%3Bdocument.addEventListener(%22DOMContentLoaded%22%2C(function()%7Bconst%20e%3D()%3D%3E%7Bconst%20e%3Ddocument.getElementById(%22movie_player%22)%3Bif(!e)return%3Bconst%20t%3De.getProgressState%3F.()%2Co%3De.getPlayerResponse%3F.()%3Bif(t%26%26t.duration%3E0%26%26(t.loaded%3Ct.duration%7C%7Ct.duration-t.current%3E1)%7C%7Co%3F.videoDetails%3F.isLive)%7Bif(!e.getStatsForNerds%3F.()%3F.debug_info%3F.startsWith%3F.(%22SSAP%2C%20AD%22))%7Bconst%20t%3Do.videoDetails%3F.videoId%3Breturn%20void(%22UNPLAYABLE%22!%3D%3Do%3F.playabilityStatus%3F.status%7C%7Co%3F.playabilityStatus%3F.errorScreen%3F.playerErrorMessageRenderer%3F.playerCaptchaViewModel%7C%7C%22WEB_PAGE_TYPE_UNKNOWN%22!%3D%3Do%3F.playabilityStatus%3F.errorScreen%3F.playerErrorMessageRenderer%3F.subreason%3F.runs%3F.%5B0%5D%3F.navigationEndpoint%3F.commandMetadata%3F.webCommandMetadata%3F.webPageType%7C%7C%22https%3A%2F%2Fsupport.google.com%2Fyoutube%2Fanswer%2F3037019%22!%3D%3Do%3F.playabilityStatus%3F.errorScreen%3F.playerErrorMessageRenderer%3F.subreason%3F.runs%3F.%5B0%5D%3F.navigationEndpoint%3F.commandMetadata%3F.webCommandMetadata%3F.url%7C%7Ce.loadVideoById(t%2Co.playerConfig%3F.playbackStartConfig%3F.startSeconds%3F%3F0))%7Dt.duration%3E0%26%26e.seekTo%3F.(t.duration)%7D%7D%3Be()%2Cnew%20MutationObserver((()%3D%3E%7Be()%7D)).observe(document%2C%7BchildList%3A!0%2Csubtree%3A!0%7D)%7D))%3Bconst%20e%3D%7Bapply%3A(e%2Ct%2Co)%3D%3E%7Bconst%20r%3Do%5B0%5D%3Breturn%22function%22%3D%3Dtypeof%20r%26%26r.toString().includes(%22onAbnormalityDetected%22)%26%26(o%5B0%5D%3Dfunction()%7B%7D)%2CReflect.apply(e%2Ct%2Co)%7D%7D%3Bwindow.Promise.prototype.then%3Dnew%20Proxy(window.Promise.prototype.then%2Ce)%7D)()%3B(function%20serverContract(), sedCount, 1)
+! www.youtube.com##+js(trusted-edit-inbound-object, JSON.stringify, 0, %5B%3F..playbackContext.contentPlaybackContext%5D%5B%3F!.attestationRequest%5D%5B%3F!.captionsRequested%5D%5B%3F!.settingItemIds%5D%5B%3F!.params%5E%3D%22YAHIAQ%22%5D%5B%3F!..mainAppWebInfo.graftUrl*%3D%22%26list%3D%22%5D%5B%3F!..mainAppWebInfo.graftUrl*%3D%22%2Fshorts%2F%22%5D%5B%3F!..userAgent*%3D%22premium%22%5D..client%5B%3F.clientName%3D%3D%22WEB%22%5D%2B%3D%7B%22clientScreen%22%3A%22CHANNEL%22%7D)
+! www.youtube.com##+js(set, ytcfg.data_.EXPERIMENT_FLAGS.web_streaming_watch, false)
+! !#if env_firefox
+! www.youtube.com###page-manager:has(#player-error-message-container #subreason a.yt-simple-endpoint[href="https://support.google.com/youtube/answer/3037019"]) ytd-watch-flexy[player-unavailable]:remove-attr(player-unavailable)
+! !#else
+! www.youtube.com##+js(ra, player-unavailable, %23page-manager%3Ahas(%23player-error-message-container%20%23subreason%20a.yt-simple-endpoint%5Bhref%3D%22https%3A%2F%2Fsupport.google.com%2Fyoutube%2Fanswer%2F3037019%22%5D)%20ytd-watch-flexy%5Bplayer-unavailable%5D, asap%20stay)
+! !#endif
+! www.youtube.com###page-manager:has(#player-error-message-container #subreason a.yt-simple-endpoint[href="https://support.google.com/youtube/answer/3037019"]) ytd-watch-flexy[player-unavailable] :is(#player-container-outer, #cinematics-container, #ytd-player > #container):style(visibility: visible !important;)
+! www.youtube.com###page-manager:has(#player-error-message-container #subreason a.yt-simple-endpoint[href="https://support.google.com/youtube/answer/3037019"]) yt-playability-error-supported-renderers#error-screen
+! ! https://github.com/uBlockOrigin/uAssets/issues/30157#issuecomment-3905489913
+! www.youtube.com##.ytdMiniplayerPlayerContainerHost .ytdMiniplayerPlayerContainerPlayabilityError
+! ! https://github.com/uBlockOrigin/uAssets/issues/30157#issuecomment-3901136578
+! www.youtube.com##+js(nostif, ()%2Ca%2Cb)%3B, 5000)
+www.youtube.com##+js(nano-stb, %5Bnative%20code%5D, 17000, 0.001)
+!!#if cap_html_filtering
+!||www.youtube.com/s/_/ytmainappweb/_/js/$script,xhr,replace=/onAbnormalityDetected"\,function\(\)[\S\s]+?playabilityStatus\)\}/onAbnormalityDetected"\,function(){}/
+!!#endif
+! https://www.reddit.com/r/uBlockOrigin/comments/1ebwr6c/is_ublock_broken_again_or_am_i_doing_something/
+!www.youtube.com##+js(json-prune-fetch-response, playerAds%20adPlacements%20adSlots%20no_ads%20playerResponse.playerAds%20playerResponse.adPlacements%20playerResponse.adSlots%20playerResponse.no_ads%20%5B%5D.playerResponse.adPlacements%20%5B%5D.playerResponse.playerAds%20%5B%5D.playerResponse.adSlots%20%5B%5D.playerResponse.no_ads, , propsToMatch, %2Fplayer%5C%3F%7Cget_watch%7C%5E%5CW%2B%24%2F)
+www.youtube.com##+js(json-prune-fetch-response, adPlacements%20adSlots%20playerResponse.adPlacements%20playerResponse.adSlots%20%5B%5D.playerResponse.adPlacements%20%5B%5D.playerResponse.adSlots, , propsToMatch, %2Fplayer%3F)
+! https://github.com/uBlockOrigin/uAssets/issues/20586#issuecomment-2144781835
+www.youtube.com##+js(json-prune-fetch-response, adPlacements%20adSlots%20playerResponse.adPlacements%20playerResponse.adSlots, , propsToMatch, %2Fplaylist%3F)
+! https://github.com/uBlockOrigin/uAssets/issues/20586#issuecomment-2271325338
+! https://github.com/uBlockOrigin/uAssets/issues/20586#issuecomment-2308486423
+! https://github.com/AdguardTeam/AdguardFilters/commit/61d89cebe154ca17932bedf61df5e2c7bd75bd7d
+www.youtube.com##+js(json-prune-xhr-response, adPlacements%20adSlots%20playerResponse.adPlacements%20playerResponse.adSlots%20%5B%5D.playerResponse.adPlacements%20%5B%5D.playerResponse.adSlots, , propsToMatch, %2F%5C%2Fplayer(%3F%3A%5C%3F.%2B)%3F%24%2F)
+tv.youtube.com##+js(trusted-replace-xhr-response, %22adPlacements%22, %22no_ads%22, %2Fplaylist%5C%3Flist%3D%7C%5C%2Fplayer(%3F%3A%5C%3F.%2B)%3F%24%7Cwatch%5C%3F%5Btv%5D%3D%2F)
+!#if !cap_html_filtering
+www.youtube.com##+js(trusted-replace-xhr-response, %2F%22adPlacements.*%3F(%5BA-Z%5D%22%5C%7D%7C%22%5C%7D%7B2%2C4%7D)%5C%7D%5C%5D%2C%2F, , %2Fplaylist%5C%3Flist%3D%7C%5C%2Fplayer(%3F%3A%5C%3F.%2B)%3F%24%7Cwatch%5C%3F%5Btv%5D%3D%2F)
+www.youtube.com##+js(trusted-replace-xhr-response, %2F%22adPlacements.*%3F(%22adSlots%22%7C%22adBreakHeartbeatParams%22)%2Fgms, %241, %2F%5C%2Fplayer(%3F%3A%5C%3F.%2B)%3F%24%2F)
+www.youtube.com##+js(trusted-replace-fetch-response, %22adPlacements%22, %22no_ads%22, player%3F)
+www.youtube.com##+js(trusted-replace-fetch-response, %22adSlots%22, %22no_ads%22, player%3F)
+www.youtube.com##+js(trusted-replace-fetch-response, %22adSlots%22, %22no_ads%22, %2F%5E%5CW%2B%24%2F)
+www.youtube.com##+js(rmnt, script, window%2C%22fetch%22)
+!#else
+||www.youtube.com/playlist?list=$xhr,1p,replace=/"adPlacements"/"no_ads"/
+||www.youtube.com/playlist?list=$xhr,1p,replace=/"adSlots"/"no_ads"/
+||www.youtube.com/watch?$xhr,1p,replace=/"adPlacements"/"no_ads"/
+||www.youtube.com/watch?$xhr,1p,replace=/"adSlots"/"no_ads"/
+||www.youtube.com/youtubei/v1/player?$xhr,1p,replace=/"adPlacements"/"no_ads"/
+||www.youtube.com/youtubei/v1/player?$xhr,1p,replace=/"adSlots"/"no_ads"/
+||youtube.com/youtubei/v1/get_watch?$xhr,1p,replace=/"adPlacements"/"no_ads"/
+||youtube.com/youtubei/v1/get_watch?$xhr,1p,replace=/"adSlots"/"no_ads"/
+www.youtube.com##^script[id]:has-text(window,"fetch")
+!#endif
+www.youtube.com##+js(trusted-prevent-dom-bypass, Node.prototype.appendChild, fetch)
+www.youtube.com##+js(trusted-prevent-dom-bypass, Node.prototype.appendChild, Request)
+www.youtube.com##+js(trusted-prevent-dom-bypass, Node.prototype.appendChild, JSON.parse)
+! https://github.com/AdguardTeam/AdguardFilters/issues/172033#issuecomment-1991263854
+youtube.com##+js(json-prune, entries.%5B-%5D.command.reelWatchEndpoint.adClientParams.isAd)
+! https://github.com/uBlockOrigin/uAssets/issues/27415#issuecomment-2945534175
+youtube.com#@##player-ads
+! https://github.com/uBlockOrigin/uAssets/issues/27415#issuecomment-2964564722
+!www.youtube.com##+js(trusted-replace-outbound-text, JSON.stringify, contentPlaybackContext%22%3A%7B, contentPlaybackContext%22%3A%7B%22isInlinePlaybackNoAd%22%3Atrue%2C, condition, contentPlaybackContext)
+! https://github.com/uBlockOrigin/uAssets/issues/27415#issuecomment-2998301771
+! www.youtube.com##+js(trusted-replace-outbound-text, JSON.stringify, %22clientScreen%22%3A%22WATCH%22, %22clientScreen%22%3A%22ADUNIT%22, condition, contentPlaybackContext)
+! https://github.com/uBlockOrigin/uAssets/issues/27415#issuecomment-3124430383
+www.youtube.com##+js(trusted-replace-fetch-response, %22adSlots%22, %22no_ads%22, %2Fget_watch%3F)
+! www.youtube.com##+js(trusted-json-edit-fetch-request, .context.client%2B%3D%7B%22clientScreen%22%3A%22ADUNIT%22%7D, %2Fget_watch%3F)
+! https://github.com/uBlockOrigin/uAssets/issues/27415#issuecomment-3167545931
+! www.youtube.com##+js(trusted-replace-outbound-text, JSON.stringify, %22params%22%3A%22, %22params%22%3A%22yAEB, condition, %2F(%22contentPlaybackContext%22%3A%7B%22.*%2C%22params%22%3A%22%7C%22params%22%3A%22.*%22contentPlaybackContext%22%3A%7B%22)%2F)
+! www.youtube.com##+js(trusted-replace-outbound-text, JSON.stringify, %22contentCheckOk%22%3Afalse, %22params%22%3A%22yAEB%22%2C%22contentCheckOk%22%3Afalse, condition, %2F%5E(%3F%3D.*%22contentPlaybackContext%22%3A%7B%22)(%3F!.*%22params%22%3A%22).*%24%2F)
+! https://github.com/uBlockOrigin/uBOL-home/discussions/153#discussioncomment-14056823
+/\.googlevideo\.com\/videoplayback\?expire=(?:[02-9]\d+|1[1-68-9]\d+|17[1-7]\d+)&/$xhr,3p,method=get,domain=www.youtube.com
+! https://github.com/uBlockOrigin/uAssets/issues/27415#issuecomment-3276882899
+||youtube.com/api/stats/atr?ns=*&ver=2&cmt=1.*&fs=0&*&euri&lact=$xhr,method=post,badfilter
+! https://github.com/uBlockOrigin/uAssets/issues/3367
+! web.facebook.com,www.facebook.com##+js(json-prune, require.0.3.0.__bbox.require.%5B%5D.3.1.__bbox.result.data.viewer.sideFeed.nodes.0.%7B-%7D.nodes.0.rhc_ad)
+! web.facebook.com,www.facebook.com##+js(json-prune-xhr-response, data.viewer.sideFeed.nodes.0.%7B-%7D.nodes.0.rhc_ad, , propsToMatch, %2Fapi%2Fgraphql)
+web.facebook.com,www.facebook.com##+js(json-prune, require.0.3.0.__bbox.require.%5B%5D.3.1.__bbox.result.data.viewer.sideFeedUnit.nodes.%5B%5D.new_adverts.nodes.%5B-%5D.sponsored_data)
+web.facebook.com,www.facebook.com##+js(json-prune-xhr-response, data.viewer.sideFeedUnit.nodes.%5B%5D.new_adverts.nodes.%5B-%5D.sponsored_data, , propsToMatch, %2Fgraphql)
+web.facebook.com,www.facebook.com##+js(json-edit, ..data.viewer..nodes.*%5B%3F.__typename%3D%3D%22AdsSideFeedUnit%22%5D)
+! https://github.com/uBlockOrigin/uAssets/issues/3367#issuecomment-3060431385
+web.facebook.com,www.facebook.com##div[role="complementary"] a[rel="nofollow noreferrer external"][attributionsrc^="/privacy_sandbox/comet/register/"][attributionsrc*="?eid="]
+web.facebook.com,www.facebook.com##div[role="complementary"] div[data-visualcompletion="ignore-dynamic"] a[href*="fbclid"][href*="utm_medium"][href*="utm_source"][href*="utm_id"][href*="utm_content"][href*="utm_term"][href*="utm_campaign"]
+web.facebook.com,www.facebook.com##div[role="complementary"] div[data-visualcompletion="ignore-dynamic"] a[rel="nofollow noreferrer noopener"][target="rhcad2"]
+web.facebook.com,www.facebook.com##div[role="complementary"] div[data-visualcompletion="ignore-dynamic"] a[rel="nofollow noreferrer tag"][aria-labelledby^="_R_"]
+web.facebook.com,www.facebook.com##div[role="complementary"] a[attributionsrc][href^="http"][target="_blank"][role="link"][rel*="noreferrer"]:has(img[src])
+web.facebook.com,www.facebook.com##div[role="complementary"] h3 span[style^="-webkit-box-orient:vertical"]:has-text(/^Sponsored$/)
+! web.facebook.com,www.facebook.com##+js(rpnt, script, %22x3m9kf2n%22%3Atrue%2C, , condition, compat_iframe_token)
+web.facebook.com,www.facebook.com##+js(json-prune, require.0.3.0.__bbox.require.%5B%5D.3.1.__bbox.result.data.serpResponse.results.edges.%5B-%5D.rendering_strategy.view_model.story.sponsored_data.ad_id)
+web.facebook.com,www.facebook.com##+js(json-edit, ..node%5B%3F.*.__typename%3D%3D%22SponsoredData%22%5D)
+web.facebook.com,www.facebook.com##+js(json-edit, ..nodes.*%5B%3F.sponsored_data%5D)
+web.facebook.com,www.facebook.com##+js(jsonl-edit-xhr-response, .data%5B%3F.category%3D%3D%22SPONSORED%22%5D.node, propsToMatch, %2Fgraphql)
+web.facebook.com,www.facebook.com##+js(jsonl-edit-xhr-response, ..node%5B%3F.*.__typename%3D%3D%22SponsoredData%22%5D, propsToMatch, %2Fgraphql)
+web.facebook.com,www.facebook.com##+js(jsonl-edit-xhr-response, .data.viewer.news_feed.edges.*%5B%3F.category%3D%3D%22SPONSORED%22%5D.node, propsToMatch, %2Fgraphql)
+web.facebook.com,www.facebook.com##+js(trusted-prevent-dom-bypass, Node.prototype.appendChild, JSON.parse)
+web.facebook.com,www.facebook.com##+js(trusted-prevent-dom-bypass, Node.prototype.appendChild, Function.prototype.toString)
+web.facebook.com,www.facebook.com##+js(trusted-prevent-dom-bypass, Node.prototype.insertBefore, JSON.parse)
+web.facebook.com,www.facebook.com##+js(trusted-prevent-dom-bypass, Node.prototype.insertBefore, Function.prototype.toString)
+web.facebook.com,www.facebook.com##+js(trusted-prevent-dom-bypass, Element.prototype.insertAdjacentElement, JSON.parse)
+web.facebook.com,www.facebook.com##+js(trusted-prevent-dom-bypass, Element.prototype.insertAdjacentElement, Function.prototype.toString)
+web.facebook.com,www.facebook.com##+js(trusted-prevent-dom-bypass, Element.prototype.append, JSON.parse)
+web.facebook.com,www.facebook.com##+js(trusted-prevent-dom-bypass, Element.prototype.append, Function.prototype.toString)
+web.facebook.com,www.facebook.com##+js(trusted-prevent-dom-bypass, Element.prototype.prepend, JSON.parse)
+web.facebook.com,www.facebook.com##+js(trusted-prevent-dom-bypass, Element.prototype.prepend, Function.prototype.toString)
+web.facebook.com,www.facebook.com##+js(trusted-prevent-dom-bypass, Element.prototype.before, JSON.parse)
+web.facebook.com,www.facebook.com##+js(trusted-prevent-dom-bypass, Element.prototype.before, Function.prototype.toString)
+web.facebook.com,www.facebook.com##+js(trusted-prevent-dom-bypass, Element.prototype.after, JSON.parse)
+web.facebook.com,www.facebook.com##+js(trusted-prevent-dom-bypass, Element.prototype.after, Function.prototype.toString)
+web.facebook.com,www.facebook.com##+js(trusted-prevent-dom-bypass, Node.prototype.appendChild, Object.getOwnPropertyDescriptor)
+web.facebook.com,www.facebook.com##+js(trusted-prevent-dom-bypass, Node.prototype.appendChild, XMLHttpRequest.prototype)
+web.facebook.com,www.facebook.com##+js(trusted-prevent-dom-bypass, Node.prototype.insertBefore, Object.getOwnPropertyDescriptor)
+web.facebook.com,www.facebook.com##+js(trusted-prevent-dom-bypass, Node.prototype.insertBefore, XMLHttpRequest.prototype)
+web.facebook.com,www.facebook.com##+js(trusted-prevent-dom-bypass, Element.prototype.after, Object.getOwnPropertyDescriptor)
+web.facebook.com,www.facebook.com##+js(trusted-prevent-dom-bypass, Element.prototype.after, XMLHttpRequest.prototype)
+web.facebook.com,www.facebook.com##+js(trusted-prevent-dom-bypass, Element.prototype.append, Object.getOwnPropertyDescriptor)
+web.facebook.com,www.facebook.com##+js(trusted-prevent-dom-bypass, Element.prototype.append, XMLHttpRequest.prototype)
+web.facebook.com,www.facebook.com##+js(trusted-prevent-dom-bypass, Element.prototype.before, Object.getOwnPropertyDescriptor)
+web.facebook.com,www.facebook.com##+js(trusted-prevent-dom-bypass, Element.prototype.before, XMLHttpRequest.prototype)
+web.facebook.com,www.facebook.com##+js(trusted-prevent-dom-bypass, Element.prototype.insertAdjacentElement, Object.getOwnPropertyDescriptor)
+web.facebook.com,www.facebook.com##+js(trusted-prevent-dom-bypass, Element.prototype.insertAdjacentElement, XMLHttpRequest.prototype)
+web.facebook.com,www.facebook.com##+js(trusted-prevent-dom-bypass, Element.prototype.prepend, Object.getOwnPropertyDescriptor)
+web.facebook.com,www.facebook.com##+js(trusted-prevent-dom-bypass, Element.prototype.prepend, XMLHttpRequest.prototype)
+! https://github.com/uBlockOrigin/uAssets/issues/3367#issuecomment-4635090748
+||static.xx.fbcdn.net/rsrc.php/$script,domain=web.facebook.com|www.facebook.com,replace=/return r instanceof ArrayBuffer/return r.constructor.name==="ArrayBuffer"/
+! https://github.com/uBlockOrigin/uAssets/issues/24745 - https://voe.sx/e/2z9smej3tebe
+! VOE sites
+||imasdk.googleapis.com/js/sdkloader/ima3.js$script,3p,redirect=google-ima.js,domain=nicolehappyoutside.com,important
+nicolehappyoutside.com##+js(nowoif)
+nicolehappyoutside.com##+js(set, console.clear, undefined)
+nicolehappyoutside.com##+js(acs, globalThis, break%3Bcase)
+nicolehappyoutside.com##+js(acs, WebAssembly, atob)
+! [badfilter] ||nicolehappyoutside.com^$badfilter
+! next-episode .net
+!next-episode.net##+js(rmnt, script, %2F%5B%5Cs%5CS%5D%7B0%2C%7Dhead%5B%5Cs%5CS%5D%7B1900%2C%7D%2F)
+!next-episode.net##+js(rpnt, script, %2F.then%5B%5Cs%5CS%5D%7B0%2C%7D%3F%3B%2Fg)
+!next-episode.net##+js(rmnt, script, %2F%5Cd%2B%5C%2B%5Cd%7C64%7C%5C%2B%5C%2B%7C%5C%2B1%7Cadbl%7Cablk%7C%5B%5Cs%5CS%5D%7B0%2C%7D(%5C.%5C.%7Cfunction)%5B%5Cs%5CS%5D%7B1800%2C%7D%7Cdocument%5C%5B%2Fi)
+@@||pagead2.googlesyndication.com^$script,domain=next-episode.net
+! https://github.com/uBlockOrigin/uAssets/issues/23806
+!#if ext_ubol
+@@*$image,xhr,script,domain=japscan.foo|japscan.lol|japscan.si|japscan.vip
+*$script,xhr,3p,denyallow=acscdn.com|ansuksar.com|aozoiekopoaka.shop|base64easy.com|base64hub.com|challenges.cloudflare.com|cdn.cloudflare.net|cdn.jsdelivr.net|cdnjs.cloudflare.com|code.jquery.com|coutaricho.shop|curltophp.com|ebooksmangaia.com|faireundon.vip|fkourazirop.shop|fourino.shop|frjelsoieapoas.shop|hakoroubita.shop|mamamiaroubita.shop|morinavotarius.top|platform.pubadx.one|regexgenius.com|reoiamlsa.shop|routinato.shop|smaltourinto.shop|static.cloudflareinsights.com|toueapo.shop|tourpowouro.shop,domain=japscan.foo|japscan.lol|japscan.si|japscan.vip,important
+/^https?:\/\/(?:[a-z]{2}\.)?[a-z]{7,14}\.[a-z]{3,7}\/[a-z][0-9A-Za-z]{10,}\/\d{4,6}$/$script,3p,match-case,redirect=noop.js,important,domain=japscan.foo|japscan.lol|japscan.si|japscan.vip
+/^https:\/\/acscdn\.com\/script\/(?:aclib|atg|compatibility|ippg|suv4|ut)\.js\??(?:cb=\d{13})?$/$script,3p,match-case,important,domain=japscan.foo|japscan.lol|japscan.si|japscan.vip
+||platform.pubadx.one/pubadx-ad.js$script,redirect=noop.js,domain=japscan.foo|japscan.lol|japscan.si|japscan.vip,important
+||static.cloudflareinsights.com/beacon.min.js/$script,redirect=noop.js,domain=japscan.foo|japscan.lol|japscan.si|japscan.vip,important
+||network-loop.com/campaigns/banners/$domain=japscan.foo|japscan.lol|japscan.si|japscan.vip,important
+!#else
+*$image,redirect-rule=1x1.gif,domain=japscan.*
+*$script,redirect-rule=noop.js,domain=japscan.*
+@@*$image,xhr,script,domain=japscan.*
+*$script,xhr,3p,denyallow=acscdn.com|ansuksar.com|aozoiekopoaka.shop|base64easy.com|base64hub.com|challenges.cloudflare.com|cdn.cloudflare.net|cdn.jsdelivr.net|cdnjs.cloudflare.com|code.jquery.com|coutaricho.shop|curltophp.com|ebooksmangaia.com|faireundon.vip|fkourazirop.shop|fourino.shop|frjelsoieapoas.shop|hakoroubita.shop|jsdelivr.map.fastly.net|mamamiaroubita.shop|morinavotarius.top|platform.pubadx.one|regexgenius.com|reoiamlsa.shop|routinato.shop|smaltourinto.shop|static.cloudflareinsights.com|toueapo.shop|tourpowouro.shop,domain=japscan.*,important
+/^https?:\/\/(?:[a-z]{2}\.)?[0-9a-z]{5,16}\.[a-z]{3,7}\/[a-z](?=[a-z]{0,25}[0-9A-Z])[0-9a-zA-Z]{3,26}\/\d{4,6}(?:\?[_a-z]=[-0-9a-z]+)?$/$script,3p,match-case,redirect=noop.js,important,domain=japscan.*
+/^https:\/\/acscdn\.com\/script\/(?:aclib|atg|compatibility|ippg|suv4|ut)\.js(\?cb=\d{13})?$/$script,3p,match-case,important,domain=japscan.*
+||platform.pubadx.one/pubadx-ad.js$script,domain=japscan.*,important
+||static.cloudflareinsights.com/beacon.min.js/$script,domain=japscan.*,important
+||network-loop.com/campaigns/banners/$domain=japscan.*,important
+!#endif
+!japscan.*##body > div.full-container > div.full-container.text-center > div.mt-2[style="margin: 0px auto; display: block;"] > a.Aikoi.donate[target="_blank"][rel][href^="https://www.longosto.shop/?utm_source="] > img.img-fluid:style(visibility: hidden !important;)
+japscan.*#@#.navbar-nav > li.nav-item > a.text-truncate.nav-link.font-weight-bold[href*="?"]
+japscan.*#@#body > div.full-container > div.full-container.text-center > div.mt-2[style="margin: 0px auto; display: block;"] > a.Aikoi.donate[target="_blank"][rel][href^="https://www.longosto.shop/?utm_source="] > img.img-fluid
+!japscan.*##+js(spoof-css, body%20%3E%20div.full-container%20%3E%20div.full-container.text-center%20%3E%20div.mt-2%5Bstyle%3D%22margin%3A%200px%20auto%3B%20display%3A%20block%3B%22%5D%20%3E%20a.Aikoi.donate%5Btarget%3D%22_blank%22%5D%5Brel%5D%5Bhref%5E%3D%22https%3A%2F%2Fwww.longosto.shop%2F%3Futm_source%3D%22%5D%20%3E%20img.img-fluid, visibility, visible)
+japscan.*##+js(trusted-suppress-native-method, Array.from, %22%2FNodeList%2F%22, prevent, inlineScript)
+japscan.*##+js(trusted-suppress-native-method, Document.prototype.querySelectorAll, %22%2F%5E%5C%5Bd%5Ba-z%5Dt%5Ba-z%5D%3F-%5B0-9a-z%5D%7B2%2C4%7D%5C%5D%24%2F%22)
+japscan.*##+js(trusted-suppress-native-method, HTMLElement.prototype.querySelectorAll, %22%2F.*%5C%5B%5B%5Eimns%5D.%2B%5C%5D.*%2F%22)
+japscan.*##+js(trusted-suppress-native-method, Element.prototype.hasAttribute, %22%2F%5B%5CS%5Cs%5D%2B%2F%22, prevent, inlineScript)
+japscan.*,~japscan.vip##body *:not(a,br,button,canvas,canvas ~ *,cn-vvv,code,div,footer,form,h1,h2,h3,h4,h5,h6,hr,i,iframe,img,input,label,li,meta,nav,noscript,ol,option,p,script,select,small,span,strong,style,ul,[data-x],body > *)
+japscan.*##+js(trusted-suppress-native-method, Document.prototype.evaluate, %22%2F.*%2F%22, prevent, inlineScript)
+japscan.*##+js(trusted-suppress-native-method, Document.prototype.createTreeWalker, %22%2F.*%2F%22, prevent, inlineScript)
+japscan.*##div[id]:not(#TogglerNav,#bds,#best-value,#blare-inter,#blir-nter,#block-left,#block-right,#bookmarks,#chapters,#challenge-success-text,#content,#footer-text,#full-reader,#gnt_xmst,#https\:\/\/www\.japscan\.foo,#list_chapters,#main,#mangas,#minimize,#move,#nav_Header,#notice-message,#noticeMessage,#quit,#reader,#report-modal,#report-success,#results,#searchForm,#sidebar,#tns-inner,#toolbar,#verifying-msg,#windowbar,.cb-container,.loading-verifying,.main-content > div, body > div,[id^="collapse-"],[id^="d-img"],[id^="jc-"],[id^="single-reader"],[id^="tab"],[id^="tns1"],[id^="top"])
+japscan.*##+js(aost, aclib, %2FstackDepth%3A3%5Cs%2Bget%20injectedScript.%2BinlineScript%2F)
+japscan.*##+js(aost, setTimeout, %2FstackDepth%3A3.%2BinlineScript%3A%5Cd%7B4%7D%3A1%2F)
+japscan.*##+js(norafif, Date)
+japscan.*##+js(aost, MessageChannel, %2FstackDepth%3A2.%2BinlineScript%2F)
+japscan.*##+js(prevent-innerHTML, , %2F%5C.(gif%7Cjpe%3Fg%7Cpng%7Cwebp)%2F)
+japscan.*##:matches-path(/^\/man(g|h.)a/) div div:matches-attr("/[-0-9A-Za-z]{6,}/"="/.+/"):matches-css(position:fixed)
+japscan.*##html > div[style="position: fixed; inset: 0px; z-index: 2147483647; pointer-events: auto;"]
+japscan.*##+js(norafif, requestAnimationFrame)
+japscan.*##+js(acs, Array.prototype.join, %2F%5E%5B%5CS%5Cs%5D%7B2000%2C6000%7D%24%2F)
+japscan.*##+js(acs, DOMTokenList.prototype.remove, %2F%5E%5B%5CS%5Cs%5D%7B3000%2C4000%7D%24%2F)
+japscan.*##+js(acs, Node.prototype.appendChild, %2FcssText'%7C%3A'style'%2F)
+japscan.*##+js(acs, Promise.resolve, %2Fjso%5C%24%7C%5C(_0x%7C(%5B'%22%60%5D%5Cs*%5B-0-9A-Z_a-z%5D%2B%5Cs*%5B'%22%60%5D%2C%5Cs*)%7B50%2C%7D%7CByDZ%2F)
+japscan.*##+js(trusted-set, aclib, json%3A%7B%22isShowingPop%22%3Afalse%7D)
+japscan.*##+js(set, aclib.runInterstitial, %7B%7D, as, function)
+japscan.*##+js(trusted-replace-outbound-text, Function.prototype.toString, (%20)%20%3D%3E%20value, runInterstitial(e)%7Bif(this.%23fe.interstitial)return%20void%20this.%23r.error(%22interstitial%20zone%20already%20loaded%20on%20page%22)%3Bthis.%23fe.interstitial%3D!0%3Bconst%7BzoneId%3At%2Csub1%3Ar%2CisAutoTag%3An%2CcollectiveZoneId%3Ai%2ClinkedZoneId%3Ao%2Caggressivity%3As%2CrecordPageView%3Aa%2CabTest%3Ac%2CtagVersionSuffix%3Au%7D%3De%3Bif(!t)throw%20new%20Error(%22mandatory%20zoneId%20is%20not%20provided!%22)%3Bif(!we(t))throw%20new%20Error(%22zoneId%20is%20not%20a%20string!%22)%3Bthis.%23r.debug(%22loading%20interstitial%20on%20page%22)%3Bconst%20l%3D%7BzoneId%3At%2Csub1%3Ar%2CisAutoTag%3An%2CcollectiveZoneId%3Ai%2ClinkedZoneId%3Ao%2Caggressivity%3As%2CrecordPageView%3Aa%2CabTest%3Ac%2CtagVersionSuffix%3Au%2CadcashGlobalName%3Athis.%23xe%2CadserverDomain%3Athis.%23v%2CadblockSettings%3Athis.%23s%2CuniqueFingerprint%3Athis.%23C%2CisLoadedAsPartOfLibrary%3A!1%7D%3Bif(this.%23pe.add(t)%2Cthis.%23Ce.Interstitial)return%20l.isLoadedAsPartOfLibrary%3D!0%2Cvoid%20new%20this.%23Ce.Interstitial(l)%3Bif(window.Interstitial)new%20Interstitial(l)%3Belse%7Bconst%20e%3Ddocument.createElement(%22script%22)%3Be.type%3D%22text%2Fjavascript%22%2Ce.src%3D%60%24%7Blocation.protocol%7D%2F%2F%24%7Bthis.%23he%7D%2Fscript%2Finterstitial.js%60%2Ce.setAttribute(%22a-lib%22%2C%221%22)%2Ce.onload%3D()%3D%3E%7Bnew%20Interstitial(l)%7D%2Ce.onerror%3D()%3D%3E%7Bthis.%23r.error(%60failed%20loading%20%24%7Be.src%7D%60)%7D%2Cdocument.head.appendChild(e)%7D%7D)
+japscan.*##+js(trusted-replace-argument, Element.prototype.getAttribute, 0, json%3A%22class%22, condition, d-z)
+! https://github.com/uBlockOrigin/uAssets/issues/21064
+! https://github.com/uBlockOrigin/uAssets/issues/24220
+! https://github.com/uBlockOrigin/uAssets/issues/25121#issuecomment-2325357098
+poophq.com,veev.to,doods.to##+js(nowoif)
+poophq.com,veev.to,doods.to##+js(no-xhr-if, %2Fvast.php%3F)
+poophq.com,veev.to,doods.to##+js(no-xhr-if, %2Fclick%5C.com%7Cpreroll%7Cnative_render%5C.js%7Cacscdn%2F, length%3A10001)
+poophq.com,veev.to##+js(nostif, %5D()%3B%7D, 500)
+poophq.com,veev.to##+js(rmnt, script, offsetParent)
+!#if cap_html_filtering
+||static.veevcdn.co/assets/videoplayer/$script,3p,replace=/\'adblockEnabled\':[a-zA-Z]{2}/'adblockEnabled':false/g,domain=poophq.com|veev.to|doods.to
+||static.veevcdn.co/assets/videoplayer/$script,3p,replace=/return new Promise\(function\(.{100,550}?\]\[\'on\'\].*?[a-zA-Z]\;\}\)\[/[/,domain=poophq.com|veev.to|doods.to
+||static.veevcdn.co/assets/videoplayer/$script,3p,replace=/\'vavl\':\!0x0/'vavl':false/g,domain=poophq.com|veev.to|doods.to
+||adsco.re^$xhr,important,domain=poophq.com|veev.to|doods.to
+||pagead2.googlesyndication.com/pagead/js/adsbygoogle.js$xhr,important,domain=poophq.com|veev.to|doods.to
+/dl?op=aa&cmd=ga&_a=$xhr,1p,important,domain=poophq.com|veev.to|doods.to
+!#else
+!#if ext_ubol
+@@||c.adsco.re/|$script,domain=poophq.com|veev.to|doods.to
+poophq.com,veev.to,doods.to##+js(no-xhr-if, 162.252.214.4, true)
+poophq.com,veev.to,doods.to##+js(no-xhr-if, c.adsco.re)
+poophq.com,veev.to,doods.to##+js(no-xhr-if, adsco.re%3A2087)
+!#else
+/dl?op=player_api&cmd=*adb=$xhr,1p,important,domain=poophq.com|veev.to|doods.to
+||adsco.re^$script,redirect=none:5,domain=poophq.com|veev.to|doods.to
+poophq.com,veev.to,doods.to##+js(nostif, %2F%5E%5Cs*function%5Cs*%5C(%5Cs*%5C)%5Cs*%7B%5Cs*%5Ba-zA-Z%5D%7B1%2C2%7D%5Cs*%5C(.%7B1%2C10%7D%24%2F)
+poophq.com,veev.to,doods.to##+js(nostif, %2Fbjwywsj%7Cbhhsywi%7Ccaoampzpue%7C2147%7C00z0oq%7Cqrqwrruqwwtz%7CkA_z3az21%7Ctrwqqkzka1c2%7Coon%5C%3D%5C%22cy%7Czaz%2Cee%2F)
+poophq.com,veev.to,doods.to##+js(nostif, %2Ffunction%5C(%5C)%5Cs*%5C%7B%5Cs*var%20.%7B70%2C300%7D%5Cs*%5C)%5Cs*%5C%7D%5Cs*%24%2F, 4000-6000)
+poophq.com,veev.to,doods.to##+js(nostif, console%5B)
+!#endif
+!#endif
+*$script,3p,domain=poophq.com|veev.to|doods.to,redirect-rule=noopjs
+*$frame,redirect-rule=noopframe,3p,domain=poophq.com|veev.to
+poophq.com,veev.to##style:has-text(veevad-):remove()
+*$other,3p,denyallow=veevcdn.co,domain=poophq.com|veev.to|doods.to
+@@*$ghide,xhr,domain=poophq.com|veev.to|doods.to
+veev.to#@#.avb-active
+! https://github.com/uBlockOrigin/uAssets/issues/2320
+panel.freemcserver.net#@#+js(rpnt, script, 'G-1B4LC0KT6C')%3B, 'G-1B4LC0KT6C')%3B%20window.setTimeout(function()%7BblockPing()%7D%2C200)%3B)
+panel.freemcserver.net##+js(rpnt, script, 'G-1B4LC0KT6C')%3B, 'G-1B4LC0KT6C')%3B%20localStorage.setItem(%22tuna%22%2C%20%22dW5kZWZpbmVk%22)%3B%20localStorage.setItem(%22sausage%22%2C%20%22ZmFsc2U%3D%22)%3B%20window.setTimeout(function()%7BfuckYouUblockAndJobcenterTycoon(false)%7D%2C200)%3B)
+! filemoon
+! https://github.com/AdguardTeam/AdguardFilters/issues/190044
+! https://www.reddit.com/r/uBlockOrigin/comments/1fuaaw5/asblock_detected_in_ask4porncc
+! https://github.com/uBlockOrigin/uAssets/issues/27173
+! https://github.com/AdguardTeam/AdguardFilters/issues/202301
+0deh.com,26efp.com,2glho.org,58n1.com,5mgz1.com,6jlvu.com,c1z39.com,djx10.org,fu-4u3omzw0.nl,guum5.com,hmt6u.com,imdpu9eq.com,kzjou.com,l455o.com,l8e8.com,l99j.com,mee-cccdoz45.com,my4w.com,qa2h.com,qvzidojm.com,tpz6t.com,tz7z9z0h.com,v1kkm.com,xcoic.com,xo7c.com,z4h4.com,/^moon(?:-[a-z0-9]+)?-embed\.com$/,/^moonfile-[a-z0-9-]+\.com$/,/^[0-9a-z]{5,8}\.(art|cfd|fun|icu|info|live|pro|sbs|world)$/,/^moo-[a-z0-9]+(-[a-z0-9]+)*-mkay\.com$/,/^file-[a-z0-9]+(-[a-z0-9]+)*-(moon|embed)\.com$/,/^fle-[a-z0-9]+(-[a-z0-9]+)*-moo\.com$/,/^filemoon-[a-z0-9]+(?:-[a-z0-9]+)*\.(?:com|xyz)$/##+js(nowoif, %2F%5E%20%5B-%5Cd%5D%2F)
+0deh.com,26efp.com,2glho.org,58n1.com,5mgz1.com,6jlvu.com,c1z39.com,djx10.org,fu-4u3omzw0.nl,guum5.com,hmt6u.com,imdpu9eq.com,kzjou.com,l455o.com,l8e8.com,l99j.com,mee-cccdoz45.com,my4w.com,qa2h.com,qvzidojm.com,tpz6t.com,tz7z9z0h.com,v1kkm.com,xcoic.com,xo7c.com,z4h4.com,/^moon(?:-[a-z0-9]+)?-embed\.com$/,/^moonfile-[a-z0-9-]+\.com$/,/^[0-9a-z]{5,8}\.(art|cfd|fun|icu|info|live|pro|sbs|world)$/,/^moo-[a-z0-9]+(-[a-z0-9]+)*-mkay\.com$/,/^file-[a-z0-9]+(-[a-z0-9]+)*-(moon|embed)\.com$/,/^fle-[a-z0-9]+(-[a-z0-9]+)*-moo\.com$/,/^filemoon-[a-z0-9]+(?:-[a-z0-9]+)*\.(?:com|xyz)$/##+js(acs, Math.random, parseInt(localStorage%5B'%5Cx)
+f51rm.com>>##+js(nowoif, %2F%5E%20%5B-%5Cd%5D%2F)
+u26bekrb.fun##+js(set, adBlockDetected, undefined)
+!#if cap_html_filtering
+$frame,3p,domain=8rm3l0i9.fun|iqksisgw.xyz|u6lyxl0w.skin|l1afav.net,replace='/^/<script>(()=>{window.open=new Proxy(window.open,{apply:(e,t,r)=>{}});const e=new WeakMap,t=(e,t)=>{try{e.dispatchEvent(new Event(t))}catch{}};XMLHttpRequest.prototype;self.XMLHttpRequest=class extends self.XMLHttpRequest{open(t,r,...n){if(e.delete(this),new URL(r).hostname.endsWith(".cdn255.com"))return super.open(t,r,...n);const s={method:t,url:r},a=Object.assign(s,{xhr:this,headers:{date:"","content-type":"","content-length":""},url:s.url,props:{response:{value:""},responseText:{value:""},responseXML:{value:null}}});return e.set(this,a),super.open(t,r,...n)}send(...r){const n=e.get(this);return void 0===n?super.send(...r):!1===n.defer?(n.headers["content-length"]=`${n.props.response.value}`.length,Object.defineProperties(n.xhr,{readyState:{value:4},responseURL:{value:n.url},status:{value:200},statusText:{value:"OK"}}),void Object.defineProperties(n.xhr,n.props)):void Promise.resolve("").then((()=>n)).then((e=>(Object.defineProperties(e.xhr,{readyState:{value:1,configurable:!0},responseURL:{value:n.url}}),t(e.xhr,"readystatechange"),e))).then((e=>(n.headers["content-length"]=`${e.props.response.value}`.length,Object.defineProperties(e.xhr,{readyState:{value:2,configurable:!0},status:{value:200},statusText:{value:"OK"}}),t(e.xhr,"readystatechange"),e))).then((e=>(Object.defineProperties(e.xhr,{readyState:{value:3,configurable:!0}}),Object.defineProperties(e.xhr,e.props),t(e.xhr,"readystatechange"),e))).then((e=>{Object.defineProperties(e.xhr,{readyState:{value:4}}),t(e.xhr,"readystatechange"),t(e.xhr,"load"),t(e.xhr,"loadend")}))}};let r=document.querySelector("script");r.innerHTML.includes("window.open")&&r.parentElement.removeChild(r)})();<\/script>/'
+/^https:\/\/[a-z0-9]{2,}-[a-z0-9]{8}\.(?:com|nl)\/[a-z0-9-]+/[a-z0-9]{12}\b/$frame,3p,match-case,to=com|nl,ipaddress=/^(1(72\.67\.\d{3}|04\.21\.\d+)\.\d+|188\.114\.9[67]\.[08]|64:ff9b::[a-f0-9]{4}:[a-f0-9]{1,4})$/,replace='/^/<script>(()=>{window.open=new Proxy(window.open,{apply:(n,o,w)=>{}});let e=document.querySelector("script");e.innerHTML.includes("window.open")&&e.parentElement.removeChild(e)})();<\/script>/i'
+/^https:\/\/[a-z0-9]{8}\.com\/[a-z0-9-]+\/[a-zA-Z0-9]{12,50}\b/$frame,1p,strict1p,match-case,to=com,ipaddress=/^(1(72\.67\.\d{3}|04\.21\.\d+)\.\d+|188\.114\.9[67]\.[08]|64:ff9b::[a-f0-9]{4}:[a-f0-9]{1,4})$/,replace='/^/<script>(()=>{window.open=new Proxy(window.open,{apply:(n,o,w)=>{}});let e=document.querySelector("script");e.innerHTML.includes("window.open")&&e.parentElement.removeChild(e)})();<\/script>/i'
+/^https:\/\/[a-z0-9]{4,8}\.[a-z]{2,5}\/[a-z0-9-]+\/[a-zA-Z0-9]{12,50}\b/$frame,3p,match-case,to=~net|~org|~gov|~edu|~br|~jp|~ir|~it|~ru,ipaddress=/^(1(72\.67\.\d{3}|04\.21\.\d+)\.\d+|188\.114\.9[67]\.[08]|64:ff9b::[a-f0-9]{4}:[a-f0-9]{1,4})$/,replace='/^/<script>(()=>{window.open=new Proxy(window.open,{apply:(n,o,w)=>{}});let e=document.querySelector("script");e.innerHTML.includes("window.open")&&e.parentElement.removeChild(e)})();<\/script>/i'
+*$frame,3p,replace=/adBlockDetected//,from=filemoon.*
+!#endif
+! https://github.com/uBlockOrigin/uAssets/issues/25538
+0cbcq8mu.com,2cf0xzdu.com,4k2h4w04.xyz,a6iqb4m8.xyz,afl3ua5u.xyz,jmzkzesy.xyz##+js(nowoif)
+0cbcq8mu.com,2cf0xzdu.com,4k2h4w04.xyz,a6iqb4m8.xyz,afl3ua5u.xyz,jmzkzesy.xyz##+js(acs, Math, localStorage%5B'%5Cx)
+0cbcq8mu.com,2cf0xzdu.com,4k2h4w04.xyz,a6iqb4m8.xyz,afl3ua5u.xyz,jmzkzesy.xyz##^script:has-text(/popunder|\(\)\{try\{localStorage\[/)
+||droci.buzz^$popup,doc
+||qsiyfgazubcu.top^$popup,doc
+||sez88e.fun^$popup,doc
+||vrkonefd.buzz^$popup,doc
+||xpobbwxzhe-l.site^$popup,doc
+! Ad-Shield
+dogdrip.net##html[lang="ko"] [id^="img_"][style]:has(iframe[frameborder="0"][style]):style(clip-path: circle(0) !important;)
+smsonline.cloud##html[data-theme][lang] [id^="img_"][style]:has(iframe[frameborder="0"][style]):style(clip-path: circle(0) !important;)
+! https://github.com/uBlockOrigin/uAssets/issues/32413
+~bing.com,~dogdrip.net,~smsonline.cloud##div[style^="height:    250px; width:    300px;"]
+~bing.com,~dogdrip.net,~smsonline.cloud##div[style^="width:    160px; height:    600px; margin: 0px auto; min-width: 160px; min-height: 600px;"]
+~bing.com,~dogdrip.net,~smsonline.cloud##div[style^="width:    300px; height:    250px;"]
+~bing.com,~dogdrip.net,~smsonline.cloud##img[height="   250"][width="   300"]
+~bing.com,~dogdrip.net,~smsonline.cloud##img[height="   90"][width="   728"]
+~bing.com,~dogdrip.net,~smsonline.cloud##ins[style$="height:    90px; width:    728px;"]
+~bing.com,~dogdrip.net,~smsonline.cloud##amp-img[height="   120"]
+~bing.com,~dogdrip.net,~smsonline.cloud##amp-img[width="   300"]
+~bing.com,~dogdrip.net,~smsonline.cloud##amp-img[width="   336"]
+~bing.com,~dogdrip.net,~smsonline.cloud##div[id][class][style^="display"][style*="hidden"][style*="width:   "]
+~bing.com,~dogdrip.net,~smsonline.cloud##ins[id][style*="--gn-ov-ad-height"]
+content-loader.com,css-load.com,html-load.com,img-load.com##html:not(:has(> head > style:only-child:has-text(width:399px;height:411px))):style(filter: opacity(0) !important; pointer-events: none !important;)
+~bing.com,~dogdrip.net,~smsonline.cloud,*##iframe[id][height^="  "]:style(visibility: hidden !important;)
+/^https:\/\/(?:[a-z]{3,4}\.)?[0-9a-z-]{6,}\.(?:com|xyz)\/script\/(?:[-.0-9A-Za-z]+\.)?[-0-9A-Za-z]{2,30}\.js$/$script,3p,match-case,header=x-length
+||html-load.com^$image,1p
+||html-load.com/l/$xhr
+/^https:\/\/(?:as(?:loader)?|(?:shield)?load(?:er)?)\.([-0-9A-Za-z]+\.[-A-Za-z]{2,16})\/(?:loader\.min|script\/(?:www\.)?\1)\.js$/$script,1p,strict3p,match-case,domain=~edu|~gov
+/^https:\/\/[a-z]{3,4}\.[a-z]{8,16}\.com\/loader\.min\.js$/$script,3p,match-case,header=etag:/^W\/"[0-9a-f]{32}-\d{13}"$/
+/^https:\/\/d[0-9a-z]{12,13}\.cloudfront\.net\/loader\.min\.js$/$script,3p,match-case,header=etag:/^W\/"[0-9a-f]{32}"$/
+!#if ext_ubol
+/^https:\/\/loader\.[-0-9a-z]+\.[a-z][a-z][a-z]?\/loader\.min\.js$/$script,1p,match-case,domain=~edu|~gov
+/^https:\/\/loader\.[-0-9a-z]+\.[a-z][a-z][a-z]?\/script\/www\.[-0-9a-z]+\.js$/$script,1p,match-case,domain=~edu|~gov
+!#endif
+! https://github.com/uBlockOrigin/uAssets/issues/26487
+dogdrip.net,smsonline.cloud##+js(no-fetch-if, -load.com%2Fscript%2F, length%3A101)
+dogdrip.net,smsonline.cloud##+js(nostif, )%5D(this%2C..., 3000-6000)
+-load.com/script/$xhr,domain=smsonline.cloud
+smsonline.cloud##+js(nostif, (new%20Error(, 3000-6000)
+smsonline.cloud##aside[class^="css-"]:has(> p:has-text(Advertisement) + ins.adsbygoogle)
+||loader.nyitvatartas24.hu^
+! https://github.com/uBlockOrigin/uAssets/issues/25344
+! https://github.com/uBlockOrigin/uAssets/pull/26342
+! https://github.com/uBlockOrigin/uAssets/issues/26393
+! https://github.com/uBlockOrigin/uAssets/issues/26623
+bing.com##+js(no-xhr-if, %2Ffd%2Fls%2Flsp.aspx)
+bing.com##+js(trusted-replace-node-text, script, function%20processEmbImg, location.pathname.startsWith(%22%2Fsearch%22)%26%26(document.querySelector(%22ol%23b_results%20%3E%20li.b_algo%20%3E%20.b_title%20%3E%20h2%20%3E%20a%5Bid%5D%5Bads%5D%22)%7C%7Cwindow.addEventListener(%22scroll%22%2C(()%3D%3E%7Bfor(const%20t%20of%20Object.keys(window).sort())%22function%22%3D%3Dtypeof%20window%5Bt%5D%26%26%2F%5E%5Ba-z%5D%2B%24%2F.test(t)%26%26document.querySelector(%22ol%23b_results%20%3E%20li.b_algo%20%3E%20.b_title%20%3E%20h2%20%3E%20a%23%22%2Bt)%3F.setAttribute%3F.(%22ads%22%2C%22%22)%7D)))%3Bfunction%20processEmbImg, sedCount, 1)
+bing.com##ol#b_results > li.b_algo:has(> .b_title > h2 > a[id][ads])
+bing.com##ol#b_results > li:has(> :is(.b_tpcn, .b_title, h2) a[href^="https://www.bing.com/aclk?"])
+bing.com##ol#b_results > li.b_algo:has(.b_lineclamp3:matches-css-before(content:/^url\(\Sdata:image\/png;base64,iVBORw0KGgoAAAANSUhEUgAAAD.AAAA/))
+! https://www.reddit.com/r/uBlockOrigin/comments/1j76tpa/adblock_detected_site_gledaitvlive/
+! https://www.reddit.com/r/uBlockOrigin/comments/197760n/adblock_detected_httpswwwbggledailive/
+! https://github.com/uBlockOrigin/uAssets/issues/29059#issuecomment-3322889596
+! https://github.com/uBlockOrigin/uAssets/issues/29059#issuecomment-3327077921
+@@*$image,xhr,domain=bg-gledai.*|gledaitv.*|bg-gledai.video|gledaitv.fan|gledaitv.live
+@@*$ghide,domain=bg-gledai.*|gledaitv.*|bg-gledai.video|gledaitv.fan|gledaitv.live
+@@||pagead2.googlesyndication.com^$script,domain=bg-gledai.*|gledaitv.*|bg-gledai.video|gledaitv.fan|gledaitv.live
+gledaitv.*###ad-overlay:remove()
+gledaitv.*##+js(trusted-replace-argument, document.getElementById, 0, json%3A%22body%22, condition, ad-detection-bait)
+gledaitv.*##+js(trusted-replace-argument, document.querySelector, 0, json%3A%22body%22, condition, -id-)
+gledaitv.*##+js(set, scriptBlocked, false)
+gledaitv.*##+js(set, blocked, false)
+gledaitv.*##+js(set, testUrls, %5B%5D)
+||imasdk.googleapis.com/js/sdkloader/ima3.js$script,domain=bg-gledai.video,redirect=google-ima.js
+||viads.com^$script,domain=bg-gledai.video,redirect=noopjs
+! https://github.com/uBlockOrigin/uAssets/issues/1093
+@@||ads.*.js|$script,3p,domain=seirsanduk.*|seir-sanduk.com|seirsanduk.com|seirsanduk.net|seirsanduk.online
+@@||ads.*.js?$script,3p,domain=seirsanduk.*|seir-sanduk.com|seirsanduk.com|seirsanduk.net|seirsanduk.online
+@@||seir-sanduk.com^$script,1p
+! https://github.com/uBlockOrigin/uAssets/issues/28024
+! https://www.reddit.com/r/uBlockOrigin/comments/1jef4qb/having_adblock_issues_with_faqwikius/
+faqwiki.us##+js(nostif, .offsetHeight%3E0)
+faqwiki.*##+js(rmnt, script, %2Fadblock%2Fi)
+! https://github.com/AdguardTeam/AdguardFilters/issues/199124
+@@||pvpoke-re.com^$ghide
+pvpoke-re.com##+js(no-xhr-if, %2F%5Ehttps%3A%5C%2F%5C%2Fpagead2%5C.googlesyndication%5C.com%5C%2Fpagead%5C%2Fjs%5C%2Fadsbygoogle%5C.js%5C%3Fclient%3Dca-pub-3497863494706299%24%2F)
+||g.doubleclick.net/pagead/ads?client=ca-pub-3497863494706299$frame,redirect=noop.html,domain=pvpoke-re.com
+pvpoke-re.com##+js(trusted-create-html, .adsbygoogle.nitro-body%3Anot(%3Ahas(%23aswift_1_host)), %3Cdiv%20id%3D%22aswift_4_host%22%20style%3D%22height%3A%20250px%3B%20width%3A%20300px%3B%22%3E%3Ciframe%20allow%3D%22attribution-reporting%3B%20run-ad-auction%22%20src%3D%22https%3A%2F%2Fgoogleads.g.doubleclick.net%2Fpagead%2Fads%3Fclient%3Dca-pub-3497863494706299%26output%3Dhtml%26h%3D250%26slotname%3D4977442009%26adk%3D2039331362%26adf%3D1059123170%26pi%3Dt.ma~as.4977442009%26w%3D300%26fwrn%3D1%26fwrnh%3D100%26lmt%3D1770030787%26rafmt%3D1%26format%3D300x250%26url%3Dhttps%253A%252F%252Fpvpoke-re.com%252F%26fwr%3D0%26fwrattr%3Dfalse%26rpe%3D1%26resp_fmts%3D3%26wgl%3D1%26aieuf%3D1%26uach%3DWyJXaW5kb3dzIiwiMTkuMC4wIiwieDg2IiwiIiwiMTQwLjAuNzMzOS4xMjciLG51bGwsMCxudWxsLCI2NCIsW1siQ2hyb21pdW0iLCIxNDAuMC43MzM5LjEyNyJdLFsiTm90PUE_QnJhbmQiLCIyNC4wLjAuMCJdLFsiR29vZ2xlIENocm9tZSIsIjE0MC4wLjczMzkuMTI3Il1dLDBd%26abgtt%3D6%26dt%3D1770030787823%26bpp%3D1%26bdt%3D400%26idt%3D228%26shv%3Dr20250910%26mjsv%3Dm202509090101%26ptt%3D9%26saldr%3Daa%26abxe%3D1%26cookie_enabled%3D1%26eoidce%3D1%26prev_fmts%3D0x0%252C780x280%26nras%3D1%26correlator%3D3696633791444%26frm%3D20%26pv%3D1%26u_tz%3D540%26u_his%3D2%26u_h%3D1080%26u_w%3D1920%26u_ah%3D1032%26u_aw%3D1920%26u_cd%3D24%26u_sd%3D1%26dmc%3D8%26adx%3D5%26ady%3D95%26biw%3D1600%26bih%3D900%26scr_x%3D0%26scr_y%3D0%26eid%3D31993849%252C31094918%252C42531705%252C95367554%252C95370628%252C95372358%252C31095029%252C95340252%252C95340254%26oid%3D2%26pvsid%3D6315203302152904%26tmod%3D72059292%26uas%3D0%26nvt%3D1%26fc%3D1920%26brdim%3D135%252C40%252C235%252C40%252C1920%252C0%252C1611%252C908%252C1595%252C740%26vis%3D1%26rsz%3D%257C%257CfoeE%257C%26abl%3DCF%26pfx%3D0%26fu%3D128%26bc%3D31%26bz%3D1.01%26td%3D1%26tdf%3D2%26psd%3DW251bGwsbnVsbCxudWxsLDNd%26nt%3D1%26ifi%3D3%26uci%3Da!3%26fsb%3D1%26dtd%3D231%22%20style%3D%22width%3A300px%3Bheight%3A250px%3B%22%20width%3D%22300%22%20height%3D%22250%22%20data-google-container-id%3D%22a!3%22%20data-google-query-id%3D%22CMiylL-r1pEDFYBewgUd-C8e3w%22%20data-load-complete%3D%22true%22%3E%3C%2Fiframe%3E%3C%2Fdiv%3E, runAt, complete)
+pvpoke-re.com##+js(trusted-create-html, .adsbygoogle.nitro-side%3Anot(%3Ahas(%3E%20%23aswift_3_host)), %3Cdiv%20id%3D%22aswift_2_host%22%20style%3D%22height%3A%20250px%3B%20width%3A%20300px%3B%22%3E%3Ciframe%20allow%3D%22attribution-reporting%3B%20run-ad-auction%22%20src%3D%22https%3A%2F%2Fgoogleads.g.doubleclick.net%2Fpagead%2Fads%3Fclient%3Dca-pub-3497863494706299%26output%3Dhtml%26h%3D250%26slotname%3D6641328723%26adk%3D3449722971%26adf%3D1807356644%26pi%3Dt.ma~as.6641328723%26w%3D311%26fwrn%3D1%26fwrnh%3D100%26lmt%3D1770030787%26rafmt%3D1%26format%3D311x250%26url%3Dhttps%253A%252F%252Fpvpoke-re.com%252F%26fwr%3D0%26fwrattr%3Dfalse%26rpe%3D1%26resp_fmts%3D3%26wgl%3D1%26aieuf%3D1%26uach%3DWyJXaW5kb3dzIiwiMTkuMC4wIiwieDg2IiwiIiwiMTQwLjAuNzMzOS4xMjciLG51bGwsMCxudWxsLCI2NCIsW1siQ2hyb21pdW0iLCIxNDAuMC43MzM5LjEyNyJdLFsiTm90PUE_QnJhbmQiLCIyNC4wLjAuMCJdLFsiR29vZ2xlIENocm9tZSIsIjE0MC4wLjczMzkuMTI3Il1dLDBd%26abgtt%3D6%26dt%3D1770030787824%26bpp%3D1%26bdt%3D48%26idt%3D39%26shv%3Dr20250910%26mjsv%3Dm202509090101%26ptt%3D9%26saldr%3Daa%26abxe%3D1%26cookie%3DID%253Df9ff9d85de22864a%253AT%253D1759485678%253ART%253D1759468123%253AS%253DALNI_MbxpFMHXxNUuCyWH6v9bG0HYb9CAA%26gpic%3DUID%253D0000119ee4397d0e%253AT%253D1759485653%253ART%253D1759486123%253AS%253DALNI_MaM7_XK5d3ZNzHUSRiSxebpYHHkqQ%26eo_id_str%3DID%253Dc5c3b54a79c7654a%253AT%253D1579486234%253ART%253D1579468123%253AS%253DAA-AfjaTNZ7cvD7GU7Ldz2zVXaRx%26prev_fmts%3D0x0%252C780x280%252C311x250%26nras%3D1%26correlator%3D5800016212302%26frm%3D20%26pv%3D1%26u_tz%3D540%26u_his%3D2%26u_h%3D1080%26u_w%3D1920%26u_ah%3D1032%26u_aw%3D1920%26u_cd%3D24%26u_sd%3D1%26dmc%3D8%26adx%3D1156%26ady%3D1073%26biw%3D1400%26bih%3D900%26scr_x%3D0%26scr_y%3D978%26eid%3D31993849%252C31094918%252C42531705%252C95367554%252C95370628%252C95372358%252C31095029%252C95340252%252C95340254%26oid%3D2%26pvsid%3D6315203302152904%26tmod%3D72059292%26uas%3D0%26nvt%3D2%26fc%3D1920%26brdim%3D135%252C40%252C235%252C20%252C1920%252C0%252C1503%252C908%252C1487%252C519%26vis%3D1%26rsz%3D%257C%257CfoeE%257C%26abl%3DCF%26pfx%3D0%26fu%3D128%26bc%3D31%26bz%3D1.01%26td%3D1%26tdf%3D2%26psd%3DW251bGwsbnVsbCxudWxsLDNd%26nt%3D1%26ifi%3D4%26uci%3Da!4%26fsb%3D1%26dtd%3D42%22%20style%3D%22width%3A300px%3Bheight%3A250px%3B%22%20width%3D%22300%22%20height%3D%22250%22%20data-google-container-id%3D%22a!4%22%20data-google-query-id%3D%22CN6mlL-r1pEDFXVIwgUdYkMTag%22%20data-load-complete%3D%22true%22%3E%3C%2Fiframe%3E%3C%2Fdiv%3E)
+pvpoke-re.com##+js(trusted-create-html, .adsbygoogle.nitro-side%3Anot(%3Ahas(%3E%20%23aswift_2_host)), %3Cdiv%20id%3D%22aswift_3_host%22%20style%3D%22height%3A%20280px%3B%20width%3A%20336px%3B%22%3E%3Ciframe%20allow%3D%22attribution-reporting%3B%20run-ad-auction%22%20src%3D%22https%3A%2F%2Fgoogleads.g.doubleclick.net%2Fpagead%2Fads%3Fclient%3Dca-pub-3497863494706299%26output%3Dhtml%26h%3D280%26slotname%3D4977442009%26adk%3D2039331362%26adf%3D1059123170%26pi%3Dt.ma~as.4977442009%26w%3D336%26fwrn%3D1%26fwrnh%3D100%26lmt%3D1770031522%26rafmt%3D1%26format%3D336x280%26url%3Dhttps%253A%252F%252Fpvpoke-re.com%252F%26fwr%3D0%26fwrattr%3Dfalse%26rpe%3D1%26resp_fmts%3D3%26wgl%3D1%26aieuf%3D1%26uach%3DWWyJXaW5kb3dzIiwiMTkuMC4wIiwieDg2IiwiIiwiMTQwLjAuNzMzOS4xMjciLG51bGwsMCxudWxsLCI2NCIsW1siQ2hyb21pdW0iLCIxNDAuMC43MzM5LjEyNyJdLFsiTm90PUE_QnJhbmQiLCIyNC4wLjAuMCJdLFsiR29vZ2xlIENocm9tZSIsIjE0MC4wLjczMzkuMTI3Il1dLDBd%26abgtt%3D6%26dt%3D1770031522085%26bpp%3D1%26bdt%3D38%26idt%3D27%26shv%3Dr20250910%26mjsv%3Dm202509160101%26ptt%3D9%26saldr%3Daa%26abxe%3D1%26cookie%3DID%253Df9ff9d85de22864a%253AT%253D1759485678%253ART%253D1759468123%253AS%253DALNI_MbxpFMHXxNUuCyWH6v9bG0HYb9CAA%26gpic%3DUID%253D0000119ee4397d0e%253AT%253D1759485653%253ART%253D1759486123%253AS%253DALNI_MaM7_XK5d3ZNzHUSRiSxebpYHHkqQ%26eo_id_str%3DID%253Dc5c3b54a79c7654a%253AT%253D1579486234%253ART%253D1579468123%253AS%253DAA-AfjaTNZ7cvD7GU7Ldz2zVXaRx%26prev_fmts%3D0x0%252C780x280%26nras%3D1%26correlator%3D4062124963340%26frm%3D20%26pv%3D1%26u_tz%3D540%26u_his%3D2%26u_h%3D1080%26u_w%3D1920%26u_ah%3D1032%26u_aw%3D1920%26u_cd%3D24%26u_sd%3D1%26dmc%3D8%26adx%3D5%26ady%3D1073%26biw%3D1500%26bih%3D900%26scr_x%3D0%26scr_y%3D978%26eid%3D31993849%252C31094918%252C42531705%252C95367554%252C95370628%252C95372358%252C31095029%252C95340252%252C95340254%26oid%3D2%26pvsid%3D4281178270640280%26tmod%3D72059292%26uas%3D0%26nvt%3D2%26fc%3D1920%26brdim%3D135%252C40%252C235%252C40%252C1920%252C0%252C1553%252C908%252C1537%252C519%26vis%3D1%26rsz%3D%257C%257CfoeE%257C%26abl%3DCF%26pfx%3D0%26fu%3D128%26bc%3D31%26bz%3D1.01%26td%3D1%26tdf%3D2%26psd%3DW251bGwsbnVsbCxudWxsLDNd%26nt%3D1%26ifi%3D2%26uci%3Da!3%26fsb%3D1%26dtd%3D30%22%20style%3D%22width%3A336px%3Bheight%3A280px%3B%22%20width%3D%22336%22%20height%3D%22280%22%20data-google-container-id%3D%22a!3%22%20data-google-query-id%3D%22CN6mlL-r1pEDFXVIwgUdYkMTag%22%20data-load-complete%3D%22true%22%3E%3C%2Fiframe%3E%3C%2Fdiv%3E)
+pvpoke-re.com##+js(trusted-create-html, body, %3Cins%20class%3D%22adsbygoogle%20adsbygoogle-noablate%22%20style%3D%22display%3A%20none%20!important%3B%22%20data-adsbygoogle-status%3D%22done%22%20data-ad-status%3D%22unfilled%22%3E%3Cdiv%20id%3D%22aswift_0_host%22%20style%3D%22border%3A%20none%3B%20height%3A%200px%3B%20width%3A%200px%3B%20margin%3A%200px%3B%20padding%3A%200px%3B%20position%3A%20relative%3B%20visibility%3A%20visible%3B%20background-color%3A%20transparent%3B%20display%3A%20inline-block%3B%22%3E%3Ciframe%20allow%3D%22attribution-reporting%3B%20run-ad-auction%22%20src%3D%22https%3A%2F%2Fgoogleads.g.doubleclick.net%2Fpagead%2Fads%3Fclient%3Dca-pub-3497863494706299%26output%3Dhtml%26adk%3D1812271804%26adf%3D3025194257%26lmt%3D1770030787%26plaf%3D1%253A1%252C2%253A2%252C7%253A2%26plat%3D1%253A16777716%252C2%253A16777716%252C3%253A128%252C4%253A128%252C8%253A128%252C9%253A32776%252C16%253A8388608%252C17%253A32%252C24%253A32%252C25%253A32%252C30%253A34635776%252C32%253A32%252C41%253A32%252C42%253A32%26fba%3D1%26format%3D0x0%26url%3Dhttps%253A%252F%252Fpvpoke-re.com%252F%26pra%3D5%26wgl%3D1%26aihb%3D0%26asro%3D0%26aifxl%3D29_18~30_19%26aiapm%3D0.1542%26aiapmd%3D0.1423%26aiapmi%3D0.16%26aiapmid%3D1%26aiact%3D0.5423%26aiactd%3D0.7%26aicct%3D0.7%26aicctd%3D0.5799%26ailct%3D0.5849%26ailctd%3D0.65%26aimart%3D4%26aimartd%3D4%26uach%3DWyJXaW5kb3dzIiwiMTkuMC4wIiwieDg2IiwiIiwiMTQwLjAuNzMzOS4xMjciLG51bGwsMCxudWxsLCI2NCIsW1siQ2hyb21pdW0iLCIxNDAuMC43MzM5LjEyNyJdLFsiTm90PUE_QnJhbmQiLCIyNC4wLjAuMCJdLFsiR29vZ2xlIENocm9tZSIsIjE0MC4wLjczMzkuMTI3Il1dLDBd%26abgtt%3D6%26dt%3D1770030787821%26bpp%3D2%26bdt%3D617%26idt%3D12%26shv%3Dr20250910%26mjsv%3Dm202509090101%26ptt%3D9%26saldr%3Daa%26abxe%3D1%26cookie%3DID%253Df9ff9d85de22864a%253AT%253D1759485678%253ART%253D1759468123%253AS%253DALNI_MbxpFMHXxNUuCyWH6v9bG0HYb9CAA%26gpic%3DUID%253D0000119ee4397d0e%253AT%253D1759485653%253ART%253D1759486123%253AS%253DALNI_MaM7_XK5d3ZNzHUSRiSxebpYHHkqQ%26eo_id_str%3DID%253Dc5c3b54a79c7654a%253AT%253D1579486234%253ART%253D1579468123%253AS%253DAA-AfjaTNZ7cvD7GU7Ldz2zVXaRx%26nras%3D1%26correlator%3D5800016212302%26frm%3D20%26pv%3D2%26u_tz%3D540%26u_his%3D2%26u_h%3D1080%26u_w%3D1920%26u_ah%3D1032%26u_aw%3D1920%26u_cd%3D24%26u_sd%3D1%26dmc%3D8%26adx%3D-12245933%26ady%3D-12245933%26biw%3D1600%26bih%3D900%26scr_x%3D0%26scr_y%3D0%26eid%3D31993849%252C31094918%252C42531705%252C95367554%252C95370628%252C95372358%252C31095029%252C95340252%252C95340254%26oid%3D2%26pvsid%3D6315203302152904%26tmod%3D72059292%26uas%3D0%26nvt%3D1%26fsapi%3D1%26fc%3D1920%26brdim%3D135%252C20%252C235%252C20%252C1920%252C0%252C1553%252C992%252C1537%252C687%26vis%3D1%26rsz%3D%257C%257Cs%257C%26abl%3DNS%26fu%3D32768%26bc%3D31%26bz%3D1.01%26td%3D1%26tdf%3D2%26psd%3DW251bGwsbnVsbCxudWxsLDNd%26nt%3D1%26ifi%3D1%26uci%3Da!1%26fsb%3D1%26dtd%3D18%22%20style%3D%22left%3A0%3Bposition%3Aabsolute%3Btop%3A0%3Bborder%3A0%3Bwidth%3Aundefinedpx%3Bheight%3Aundefinedpx%3Bmin-height%3Aauto%3Bmax-height%3Anone%3Bmin-width%3Aauto%3Bmax-width%3Anone%3B%22%20data-google-container-id%3D%22a!1%22%20data-load-complete%3D%22true%22%3E%3C%2Fiframe%3E%3C%2Fdiv%3E%3C%2Fins%3E, runAt, complete)
+pvpoke-re.com##+js(trusted-create-html, body%3Anot(%3Ahas(.nitro-side))%20.adsbygoogle.nitro-banner, %3Cdiv%20id%3D%22aswift_2_host%22%20style%3D%22height%3A%20200px%3B%20width%3A%20375px%3B%22%3E%3Ciframe%20allow%3D%22attribution-reporting%3B%20run-ad-auction%22%20src%3D%22https%3A%2F%2Fgoogleads.g.doubleclick.net%2Fpagead%2Fads%3Fclient%3Dca-pub-3497863494706299%26output%3Dhtml%26h%3D200%26slotname%3D6680952607%26adk%3D4248706971%26adf%3D1899679831%26pi%3Dt.ma~as.6680952607%26w%3D375%26fwrn%3D1%26fwrnh%3D100%26lmt%3D1774683138%26rafmt%3D1%26format%3D375x200%26url%3Dhttps%253A%252F%252Fpvpoke-re.com%252F%26fwr%3D0%26fwrattr%3Dfalse%26rpe%3D1%26resp_fmts%3D3%26wgl%3D1%26aieuf%3D1%26uach%3DWyJXaW5kb3dzIiwiMTkuMC4wIiwieDg2IiwiIiwiMTQwLjAuNzMzOS4xMjciLG51bGwsMCxudWxsLCI2NCIsW1siQ2hyb21pdW0iLCIxNDAuMC43MzM5LjEyNyJdLFsiTm90PUE_QnJhbmQiLCIyNC4wLjAuMCJdLFsiR29vZ2xlIENocm9tZSIsIjE0MC4wLjczMzkuMTI3Il1dLDBd%26abgtt%3D6%26dt%3D1774683138242%26bpp%3D5%26bdt%3D33%26idt%3D72%26shv%3Dr20250910%26mjsv%3Dm202509090101%26ptt%3D9%26saldr%3Daa%26abxe%3D1%26cookie%3DID%253D35db51e402241c7b%253AT%253D1774686653%253ART%253D1774682653%253AS%253DALNI_MbnVRGWXkXajb5S2bXCJFc9D5-xTA%26gpic%3DUID%253D000112318401a2df%253AT%253D1774682653%253ART%253D1774682653%253AS%253DALNI_MaHxVE8eSgg6mpAF-VzNxnGNjlDdg%26eo_id_str%3DID%253D7f635cbbed20cef5%253AT%253D1774682653%253ART%253D1774682653%253AS%253DAA-AfjZk7cao5-CMkZvxpVuwrueY%26prev_fmts%3D0x0%26nras%3D1%26correlator%3D8081864070759%26frm%3D20%26pv%3D1%26u_tz%3D540%26u_his%3D3%26u_h%3D1080%26u_w%3D1920%26u_ah%3D1032%26u_aw%3D1920%26u_cd%3D32%26u_sd%3D1%26dmc%3D8%26adx%3D20%26ady%3D309%26biw%3D1400%26bih%3D900%26scr_x%3D0%26scr_y%3D0%26eid%3D95386758%252C31057438%252C95383642%252C95386038%26oid%3D2%26pvsid%3D8223397316868168%26tmod%3D1250968401%26uas%3D0%26nvt%3D2%26ref%3Dhttps%253A%252F%252Fpvpoke-re.com%252F%26fc%3D1920%26brdim%3D254%252C10%252C254%252C10%252C1920%252C0%252C1456%252C1020%252C1400%252C900%26vis%3D1%26rsz%3D%257C%257CpoeE%257C%26abl%3DCS%26pfx%3D0%26fu%3D128%26bc%3D31%26bz%3D3.39%26ifi%3D2%26uci%3Da!2%26fsb%3D1%26dtd%3D81%22%20style%3D%22width%3A375px%3Bheight%3A200px%3B%22%20width%3D%22375%22%20height%3D%22200%22%20data-google-container-id%3D%22a!2%22%20data-google-query-id%3D%22COXkpfCJwpMDFaxFwwYd6qEE4Q%22%20data-load-complete%3D%22true%22%3E%3C%2Fiframe%3E%3C%2Fdiv%3E)
+pvpoke-re.com##+js(trusted-create-html, .adsbygoogle.nitro-body, %3Cdiv%20id%3D%22aswift_1_host%22%20style%3D%22height%3A%20280px%3B%20width%3A%20800px%3B%20margin%3A%200px%3B%20padding%3A%200px%3B%20position%3A%20relative%3B%22%3E%3Cdiv%20data-google-ad-efd%3D%22true%22%20class%3D%22google-aiuf%22%20style%3D%22width%3A%20800px%20!important%3B%20display%3A%20flex%20!important%3B%20flex-wrap%3A%20wrap%20!important%3B%20place-content%3A%20center%20!important%3B%20align-items%3A%20center%20!important%3B%20gap%3A%2010px%20!important%3B%20font-size%3A%20initial%20!important%3B%20height%3A%20auto%20!important%3B%20max-height%3A%20280px%20!important%3B%22%3E%3Cdiv%20class%3D%22goog-rentries%22%20style%3D%22display%3A%20flex%20!important%3B%20width%3A%20100%25%20!important%3B%22%3E%3Cdiv%20class%3D%22google-anno-skip%20goog-rentry%22%20tabindex%3D%220%22%20role%3D%22link%22%20aria-label%3D%22Pokemon%22%20data-google-vignette%3D%22false%22%20data-google-interstitial%3D%22false%22%20style%3D'color-scheme%3A%20initial%20!important%3B%20forced-color-adjust%3A%20initial%20!important%3B%20math-depth%3A%20initial%20!important%3B%20position%3A%20initial%20!important%3B%20position-anchor%3A%20initial%20!important%3B%20text-size-adjust%3A%20initial%20!important%3B%20appearance%3A%20initial%20!important%3B%20color%3A%20rgb(60%2C%2064%2C%2067)%20!important%3B%20direction%3A%20inherit%20!important%3B%20font-family%3A%20%22Google%20Sans%22%2C%20Roboto%2C%20Arial%2C%20sans-serif%20!important%3B%20font-feature-settings%3A%20initial%20!important%3B%20font-kerning%3A%20initial%20!important%3B%20font-language-override%3A%20initial%20!important%3B%20font-optical-sizing%3A%20initial%20!important%3B%20font-palette%3A%20initial%20!important%3B%20font-size%3A%2018px%20!important%3B%20font-size-adjust%3A%20initial%20!important%3B%20font-stretch%3A%20initial%20!important%3B%20font-style%3A%20normal%20!important%3B%20font-synthesis%3A%20initial%20!important%3B%20font-variant%3A%20initial%20!important%3B%20font-variation-settings%3A%20initial%20!important%3B%20font-weight%3A%20400%20!important%3B%20text-orientation%3A%20inherit%20!important%3B%20writing-mode%3A%20inherit%20!important%3B%20background%3A%20rgb(255%2C%20255%2C%20255)%20!important%3B%20align-items%3A%20center%20!important%3B%20cursor%3A%20pointer%20!important%3B%20display%3A%20flex%20!important%3B%20flex-direction%3A%20row%20!important%3B%20justify-content%3A%20flex-start%20!important%3B%20height%3A%2058px%20!important%3B%20min-width%3A%200%20!important%3B%20width%3A%20100%25%20!important%3B%20padding-inline%3A%2016px%20!important%3B%20margin-bottom%3A%200%20!important%3B%20box-sizing%3A%20border-box%20!important%3B%20text-align%3A%20inherit%20!important%3B%20visibility%3A%20inherit%20!important%3B%20overflow%3A%20hidden%20!important%3B%20user-select%3A%20none%20!important%3B%20white-space-collapse%3A%20initial%20!important%3B%20word-break%3A%20initial%20!important%3B%20line-height%3A%20initial%20!important%3B%20letter-spacing%3A%20initial%20!important%3B%20transition%3A%20initial%20!important%3B%20transform%3A%20initial%20!important%3B%20opacity%3A%20initial%20!important%3B%20z-index%3A%20initial%20!important%3B%20border%3A%20initial%20!important%3B%20border-radius%3A%20initial%20!important%3B%20border-collapse%3A%20initial%20!important%3B%20inset%3A%20initial%20!important%3B%20box-shadow%3A%20initial%20!important%3B%20filter%3A%20initial%20!important%3B%20flex-wrap%3A%20initial%20!important%3B%20float%3A%20initial%20!important%3B%20grid%3A%20initial%20!important%3B%20max-width%3A%20initial%20!important%3B%20min-height%3A%20initial%20!important%3B%20outline%3A%20initial%20!important%3B%20overflow-wrap%3A%20initial%20!important%3B%20overscroll-behavior%3A%20initial%20!important%3B%20padding%3A%20initial%20!important%3B%20pointer-events%3A%20initial%20!important%3B%20resize%3A%20initial%20!important%3B%20rotate%3A%20initial%20!important%3B%20scale%3A%20initial%20!important%3B%20scroll-behavior%3A%20initial%20!important%3B%20scroll-snap-type%3A%20initial%20!important%3B%20shape-rendering%3A%20initial%20!important%3B%20stroke%3A%20initial%20!important%3B%20table-layout%3A%20initial%20!important%3B%20text-decoration%3A%20initial%20!important%3B%20text-overflow%3A%20initial%20!important%3B%20text-shadow%3A%20initial%20!important%3B%20text-transform%3A%20initial%20!important%3B%20transform-style%3A%20initial%20!important%3B%20translate%3A%20initial%20!important%3B%20vertical-align%3A%20initial%20!important%3B%20will-change%3A%20initial%20!important%3B%20word-spacing%3A%20initial%20!important%3B'%3E%3Cspan%20title%3D%22Pokemon%22%20style%3D%22color-scheme%3A%20initial%20!important%3B%20forced-color-adjust%3A%20initial%20!important%3B%20color%3A%20rgb(74%20%2C%2074%20%2C%2074)%20!important%3B%20font-family%3A%20inherit%20!important%3B%20font-size%3A%2018px%20!important%3B%20direction%3A%20inherit%20!important%3B%20writing-mode%3A%20inherit%20!important%3B%20display%3A%20initial%20!important%3B%20position%3A%20initial%20!important%3B%20inset%3A%20initial%20!important%3B%20z-index%3A%20initial%20!important%3B%20box-sizing%3A%20initial%20!important%3B%20overflow%3A%20hidden%20!important%3B%20width%3A%20auto%20!important%3B%20min-width%3A%200%20!important%3B%20height%3A%20initial%20!important%3B%20margin%3A%20initial%20!important%3B%20padding%3A%2014px%2010px%20!important%3B%20text-align%3A%20inherit%20!important%3B%20text-overflow%3A%20ellipsis%20!important%3B%20text-wrap%3A%20nowrap%20!important%3B%20white-space-collapse%3A%20collapse%20!important%3B%20line-height%3A%20initial%20!important%3B%20letter-spacing%3A%20initial%20!important%3B%20background%3A%20initial%20!important%3B%20border%3A%20initial%20!important%3B%20border-radius%3A%20initial%20!important%3B%20box-shadow%3A%20initial%20!important%3B%20opacity%3A%20initial%20!important%3B%20flex-grow%3A%201%20!important%3B%20flex-shrink%3A%201%20!important%3B%20flex-basis%3A%20initial%20!important%3B%20grid%3A%20initial%20!important%3B%20fill%3A%20initial%20!important%3B%20stroke%3A%20initial%20!important%3B%20filter%3A%20initial%20!important%3B%20animation%3A%20initial%20!important%3B%20transition%3A%20initial%20!important%3B%20cursor%3A%20inherit%20!important%3B%20user-select%3A%20initial%20!important%3B%20pointer-events%3A%20initial%20!important%3B%20touch-action%3A%20initial%20!important%3B%20appearance%3A%20initial%20!important%3B%20object-fit%3A%20initial%20!important%3B%20object-position%3A%20initial%20!important%3B%20visibility%3A%20inherit%20!important%3B%22%3EPokemon%3C%2Fspan%3E%3Cspan%20aria-hidden%3D%22true%22%20tabindex%3D%22-1%22%3E%3Csvg%20viewBox%3D%220%200%2024%2024%22%20width%3D%2224px%22%20height%3D%2224px%22%3E%3Cpath%20d%3D%22M7.59009%2018.59L9.00009%2020L17.0001%2012L9.00009%204L7.59009%205.41L14.1701%2012%22%3E%3C%2Fpath%3E%3C%2Fsvg%3E%3C%2Fspan%3E%3C%2Fdiv%3E%3Cdiv%20class%3D%22google-anno-skip%20goog-rentry%22%20tabindex%3D%220%22%20role%3D%22link%22%20aria-label%3D%22Pok%C3%A9mon%20GO%22%20data-google-vignette%3D%22false%22%20data-google-interstitial%3D%22false%22%20style%3D'color-scheme%3A%20initial%20!important%3B%20forced-color-adjust%3A%20initial%20!important%3B%20math-depth%3A%20initial%20!important%3B%20position%3A%20initial%20!important%3B%20position-anchor%3A%20initial%20!important%3B%20text-size-adjust%3A%20initial%20!important%3B%20appearance%3A%20initial%20!important%3B%20color%3A%20rgb(60%2C%2064%2C%2067)%20!important%3B%20direction%3A%20inherit%20!important%3B%20font-family%3A%20%22Google%20Sans%22%2C%20Roboto%2C%20Arial%2C%20sans-serif%20!important%3B%20font-feature-settings%3A%20initial%20!important%3B%20font-kerning%3A%20initial%20!important%3B%20font-language-override%3A%20initial%20!important%3B%20font-optical-sizing%3A%20initial%20!important%3B%20font-palette%3A%20initial%20!important%3B%20font-size%3A%2018px%20!important%3B%20font-size-adjust%3A%20initial%20!important%3B%20font-stretch%3A%20initial%20!important%3B%20font-style%3A%20normal%20!important%3B%20font-synthesis%3A%20initial%20!important%3B%20font-variant%3A%20initial%20!important%3B%20font-variation-settings%3A%20initial%20!important%3B%20font-weight%3A%20400%20!important%3B%20text-orientation%3A%20inherit%20!important%3B%20writing-mode%3A%20inherit%20!important%3B%20background%3A%20rgb(255%2C%20255%2C%20255)%20!important%3B%20align-items%3A%20center%20!important%3B%20cursor%3A%20pointer%20!important%3B%20display%3A%20flex%20!important%3B%20flex-direction%3A%20row%20!important%3B%20justify-content%3A%20flex-start%20!important%3B%20height%3A%2058px%20!important%3B%20min-width%3A%200%20!important%3B%20width%3A%20100%25%20!important%3B%20padding-inline%3A%2016px%20!important%3B%20margin-bottom%3A%200%20!important%3B%20box-sizing%3A%20border-box%20!important%3B%20text-align%3A%20inherit%20!important%3B%20visibility%3A%20inherit%20!important%3B%20overflow%3A%20hidden%20!important%3B%20user-select%3A%20none%20!important%3B%20white-space-collapse%3A%20initial%20!important%3B%20word-break%3A%20initial%20!important%3B%20line-height%3A%20initial%20!important%3B%20letter-spacing%3A%20initial%20!important%3B%20transition%3A%20initial%20!important%3B%20transform%3A%20initial%20!important%3B%20opacity%3A%20initial%20!important%3B%20z-index%3A%20initial%20!important%3B%20border%3A%20initial%20!important%3B%20border-radius%3A%20initial%20!important%3B%20border-collapse%3A%20initial%20!important%3B%20inset%3A%20initial%20!important%3B%20box-shadow%3A%20initial%20!important%3B%20filter%3A%20initial%20!important%3B%20flex-wrap%3A%20initial%20!important%3B%20float%3A%20initial%20!important%3B%20grid%3A%20initial%20!important%3B%20max-width%3A%20initial%20!important%3B%20min-height%3A%20initial%20!important%3B%20outline%3A%20initial%20!important%3B%20overflow-wrap%3A%20initial%20!important%3B%20overscroll-behavior%3A%20initial%20!important%3B%20padding%3A%20initial%20!important%3B%20pointer-events%3A%20initial%20!important%3B%20resize%3A%20initial%20!important%3B%20rotate%3A%20initial%20!important%3B%20scale%3A%20initial%20!important%3B%20scroll-behavior%3A%20initial%20!important%3B%20scroll-snap-type%3A%20initial%20!important%3B%20shape-rendering%3A%20initial%20!important%3B%20stroke%3A%20initial%20!important%3B%20table-layout%3A%20initial%20!important%3B%20text-decoration%3A%20initial%20!important%3B%20text-overflow%3A%20initial%20!important%3B%20text-shadow%3A%20initial%20!important%3B%20text-transform%3A%20initial%20!important%3B%20transform-style%3A%20initial%20!important%3B%20translate%3A%20initial%20!important%3B%20vertical-align%3A%20initial%20!important%3B%20will-change%3A%20initial%20!important%3B%20word-spacing%3A%20initial%20!important%3B'%3E%3Cspan%20title%3D%22Pok%C3%A9mon%20GO%22%20style%3D%22color-scheme%3A%20initial%20!important%3B%20forced-color-adjust%3A%20initial%20!important%3B%20color%3A%20rgb(74%20%2C%2074%20%2C%2074)%20!important%3B%20font-family%3A%20inherit%20!important%3B%20font-size%3A%2018px%20!important%3B%20direction%3A%20inherit%20!important%3B%20writing-mode%3A%20inherit%20!important%3B%20display%3A%20initial%20!important%3B%20position%3A%20initial%20!important%3B%20inset%3A%20initial%20!important%3B%20z-index%3A%20initial%20!important%3B%20box-sizing%3A%20initial%20!important%3B%20overflow%3A%20hidden%20!important%3B%20width%3A%20auto%20!important%3B%20min-width%3A%200%20!important%3B%20height%3A%20initial%20!important%3B%20margin%3A%20initial%20!important%3B%20padding%3A%2014px%2010px%20!important%3B%20text-align%3A%20inherit%20!important%3B%20text-overflow%3A%20ellipsis%20!important%3B%20text-wrap%3A%20nowrap%20!important%3B%20white-space-collapse%3A%20collapse%20!important%3B%20line-height%3A%20initial%20!important%3B%20letter-spacing%3A%20initial%20!important%3B%20background%3A%20initial%20!important%3B%20border%3A%20initial%20!important%3B%20border-radius%3A%20initial%20!important%3B%20box-shadow%3A%20initial%20!important%3B%20opacity%3A%20initial%20!important%3B%20flex-grow%3A%201%20!important%3B%20flex-shrink%3A%201%20!important%3B%20flex-basis%3A%20initial%20!important%3B%20grid%3A%20initial%20!important%3B%20fill%3A%20initial%20!important%3B%20stroke%3A%20initial%20!important%3B%20filter%3A%20initial%20!important%3B%20animation%3A%20initial%20!important%3B%20transition%3A%20initial%20!important%3B%20cursor%3A%20inherit%20!important%3B%20user-select%3A%20initial%20!important%3B%20pointer-events%3A%20initial%20!important%3B%20touch-action%3A%20initial%20!important%3B%20appearance%3A%20initial%20!important%3B%20object-fit%3A%20initial%20!important%3B%20object-position%3A%20initial%20!important%3B%20visibility%3A%20inherit%20!important%3B%22%3EPok%C3%A9mon%20GO%3C%2Fspan%3E%3Cspan%20aria-hidden%3D%22true%22%20tabindex%3D%22-1%22%3E%3Csvg%20viewBox%3D%220%200%2024%2024%22%20width%3D%2224px%22%20height%3D%2224px%22%3E%3Cpath%20d%3D%22M7.59009%2018.59L9.00009%2020L17.0001%2012L9.00009%204L7.59009%205.41L14.1701%2012%22%3E%3C%2Fpath%3E%3C%2Fsvg%3E%3C%2Fspan%3E%3C%2Fdiv%3E%3C%2Fdiv%3E%3C%2Fdiv%3E%3C%2Fdiv%3E)
+pvpoke-re.com##+js(trusted-set-attr, ins.adsbygoogle%3Ahas(%3E%20%23aswift_0_host), data-ad-status, unfilled)
+pvpoke-re.com##+js(trusted-set-attr, ins.adsbygoogle.nitro-body, data-ad-status, unfill-optimized)
+pvpoke-re.com##+js(ra, data-instype, ins.adsbygoogle%3Ahas(%3E%20div%23aswift_0_host), stay)
+pvpoke-re.com##+js(trusted-set-attr, ins.adsbygoogle.nitro-side%2Cins.adsbygoogle.nitro-banner, data-ad-status, filled)
+pvpoke-re.com##+js(no-fetch-if, url%3Ahttps%3A%2F%2Fgoogleads.g.doubleclick.net%2Fpagead%2Fads%3Fclient%3Dca-pub-3497863494706299%20method%3AHEAD%20mode%3Ano-cors, , , throttle, 121)
+pvpoke-re.com##+js(trusted-replace-argument, String.prototype.indexOf, 0, json%3A%22%2F%22, condition, %2Fpremium)
+pvpoke-re.com##+js(trusted-rpnt, script, var%20menuSlideProtection, %2F*start*%2F!function()%7B%22use%20strict%22%3Bconst%20t%3DFunction.prototype.toString%2Ce%3Dnew%20WeakMap%3Blet%20n%3D0%3Bconst%20o%3D(t%2Cn)%3D%3E%7Bif(%22function%22%3D%3Dtypeof%20t%26%26(e.set(t%2C%60function%20%24%7Bn%7D()%20%7B%20%5Bnative%20code%5D%20%7D%60)%2Cn))try%7BObject.defineProperty(t%2C%22name%22%2C%7Bvalue%3An%2Cconfigurable%3A!0%7D)%7Dcatch(t)%7B%7Dreturn%20t%7D%2Cr%3Dwindow.MessageChannel%3Bwindow.MessageChannel%3Do((function()%7Breturn%20new%20r%7D)%2C%22MessageChannel%22)%3B%5B%22A1%22%2C%22A6%22%5D.forEach((t%3D%3E%7Btry%7BObject.defineProperty(window%2Ct%2C%7Bget%3A()%3D%3E!1%2Cset%3A()%3D%3E%7B%7D%2Cconfigurable%3A!0%7D)%7Dcatch(t)%7B%7D%7D))%3Bconst%20i%3Dwindow.Date%2Cc%3Di.now%2Cs%3Dwindow.performance.now.bind(window.performance)%3Bwindow.Date%3Do(class%20extends%20i%7Bconstructor(...t)%7Breturn%20super(...t)%7Dstatic%20now()%7Breturn%20c()%7D%7D%2C%22Date%22)%2Cwindow.performance.now%3Do((()%3D%3Es()%2Bn)%2C%22now%22)%3Bconst%20p%3Dt%3D%3E%7Btry%7Bconst%20e%3DObject.getOwnPropertyDescriptor(HTMLIFrameElement.prototype%2C%22contentWindow%22).get%3BObject.defineProperty(t%2C%22contentWindow%22%2C%7Bget%3Afunction()%7Bconst%20t%3De.apply(this)%3Breturn%20t%26%26t.Function%26%26t.Function.prototype.toString!%3D%3Dwindow.Function.prototype.toString%26%26(t.Function.prototype.toString%3Dwindow.Function.prototype.toString)%2Ct%7D%2Cconfigurable%3A!0%7D)%7Dcatch(t)%7B%7D%7D%2Ca%3Ddocument.createElement%3Bdocument.createElement%3Do((function(t)%7Bconst%20e%3Da.apply(this%2Carguments)%3Breturn%20t%26%26%22iframe%22%3D%3D%3Dt.toLowerCase()%26%26p(e)%2Ce%7D)%2C%22createElement%22)%3Bconst%20u%3DElement.prototype.appendChild%3BElement.prototype.appendChild%3Do((function(t)%7Breturn%20t%26%26%22IFRAME%22%3D%3D%3Dt.tagName%26%26p(t)%2Cu.apply(this%2Carguments)%7D)%2C%22appendChild%22)%2Cwindow.addEventListener(%22load%22%2C(()%3D%3E%7Bconst%20t%3D()%3D%3Edocument.querySelectorAll(%22iframe%22).forEach((t%3D%3E%7Bconst%20e%3Dt.getAttribute(%22src%22)%3Bif(e%26%26e.includes(%22lmt%3D%22))%7Bconst%20n%3De.replace(%2F(%5B%3F%26%5Dlmt%3D)%5Cd%2B%2F%2C%60%241%24%7BMath.floor(Date.now()%2F1e3)%7D%60)%3Be!%3D%3Dn%26%26t.setAttribute(%22src%22%2Cn)%7D%7D))%3BsetTimeout(t%2C150)%2CsetTimeout(t%2C1e3)%7D))%3Bconst%20l%3Dwindow.performance%2Cw%3Dl.getEntriesByType%2Cd%3Do((function(t)%7Btry%7Breturn%20w.call(l%2Ct)%7Dcatch(t)%7Breturn%5B%5D%7D%7D)%2C%22getEntriesByType%22)%3Btry%7BObject.defineProperty(l%2C%22getEntriesByType%22%2C%7Bvalue%3Ad%2Cconfigurable%3A!0%7D)%7Dcatch(t)%7Bl.getEntriesByType%3Dd%7Dconst%20y%3DArray.prototype.push%3BArray.prototype.push%3Do((function(...t)%7Bif((t%3D%3E%7Bif(!t)return!1%3Bconst%20e%3Dt.split(%22%5Cn%22).length-1%3Breturn%20e%3E%3D4%26%26e%3C%3D6%26%26(t.includes(%22_executeCallback%22)%7C%7C%2Fat%5Cs%2B(%5B0-9A-Z_a-z%5D%7B1%2C3%7D%7C%3Canonymous%3E)%5Cs%2B%5C(%2F.test(t))%7D)((new%20Error).stack))%7Bconst%20e%3Dt.filter((t%3D%3E!%5B%22fetch%22%2C%22XMLHttpRequest%22%5D.includes(t)))%3Breturn%200%3D%3D%3De.length%26%26t.length%3E0%3Fthis.length%3Ay.apply(this%2Ce)%7Dreturn%20y.apply(this%2Ct)%7D)%2C%22push%22)%3Bconst%20f%3Dwindow.XMLHttpRequest%3Bwindow.XMLHttpRequest%3Do((function()%7Breturn%20new%20f(...arguments)%7D)%2C%22XMLHttpRequest%22)%2Cwindow.XMLHttpRequest.prototype%3Df.prototype%2CObject.setPrototypeOf(window.XMLHttpRequest%2Cf)%2CFunction.prototype.toString%3Do((function()%7Bif(e.has(this))return%20e.get(this)%3Breturn%5B%22XMLHttpRequest%22%2C%22fetch%22%2C%22querySelectorAll%22%2C%22bind%22%2C%22push%22%2C%22toString%22%2C%22addEventListener%22%2C%22now%22%2C%22Date%22%2C%22match%22%2C%22createElement%22%2C%22getEntriesByType%22%2C%22setTimeout%22%2C%22MessageChannel%22%2C%22postMessage%22%5D.includes(this.name)%3F%60function%20%24%7Bthis.name%7D()%20%7B%20%5Bnative%20code%5D%20%7D%60%3At.apply(this%2Carguments)%7D)%2C%22toString%22)%3Bconst%20h%3Dwindow.fetch%3Bwindow.fetch%3Do((function(t)%7Breturn%22string%22%3D%3Dtypeof%20t%26%26t.includes(%22googleads%22)%3Fh.apply(this%2Carguments).then((t%3D%3E(n%2B%3D40%2Ct)))%3Ah.apply(this%2Carguments)%7D)%2C%22fetch%22)%3Bconst%20g%3Dwindow.setTimeout%3Bwindow.setTimeout%3Do((function(t%2Ce)%7Bif(%22function%22%3D%3Dtypeof%20t)%7Bconst%20e%3Dt.toString().replace(%2F%5Cs%2B%2Fg%2C%22%22)%3Bif(e.length%3C50%26%26%2F%5B%240-9A-Z_a-z%5D%2B%26%26%5B%240-9A-Z_a-z%5D%2B%5C(%5C)%2Fi.test(e))return%7Dreturn%20g.apply(this%2Carguments)%7D)%2C%22setTimeout%22)%7D()%3Bdocument.currentScript.textContent%3Ddocument.currentScript.textContent.replace(%2F%5C%2F%5C*start%5C*%5C%2F(.*)%5C%2F%5C*end%5C*%5C%2F%2F%2C%22%22)%3B%2F*end*%2Fvar%20menuSlideProtection, sedCount, 1)
+pvpoke-re.com##+js(trusted-set-attr, ins.adsbygoogle, data-adsbygoogle-status, done)
+||pvpoke-re.com/*.js?v=$replace=/try\{GameMaster/try{return;GameMaster/
+pvpoke-re.com##+js(trusted-override-element-method, HTMLIFrameElement.prototype.remove, iframe%5Bsrc%5E%3D%22https%3A%2F%2Fgoogleads.g.doubleclick.net%2Fpagead%2Fads%3Fclient%3Dca-pub-3497863494706299%22%5D)
+pvpoke-re.com##+js(aopr, Worker.prototype.postMessage)
+! https://github.com/uBlockOrigin/uAssets/issues/27884
+! https://github.com/uBlockOrigin/uAssets/issues/27886
+! royalroad.com##+js(trusted-set, nitroAds, json%3A%7B%22version%22%3A%2220250402%20de32690%22%2C%22createAd%22%3A%22placement%20generation%22%7D)
+! royalroad.com##+js(nostif, _0x)
+royalroad.com##.dKKumhSnWiFq75vPUVtmTanQ:has(a[href^="https://www.royalroad.com/a/r?campaign="]:not([href*="&url=https%3A%2F%2Fwww.royalroad.com"]))
+! ||royalroad.com/bd/cr?$xhr,method=get,1p,strict1p
+! https://github.com/uBlockOrigin/uAssets/issues/17012
+mail.yahoo.com##+js(nostif, adblock)
+! https://github.com/uBlockOrigin/uAssets/issues/25421
+!gecmisi.com.tr##+js(trusted-replace-argument, String.prototype.includes, 0, json%3A%22gecmisi%22, condition, googleads)
+!gecmisi.com.tr##+js(trusted-replace-argument, String.prototype.includes, 0, json%3A%22googleads%22, condition, gecmisi)
+gecmisi.com.tr##+js(nostif, , 4000-)
+gecmisi.com.tr##.ad-container
+! https://github.com/AdguardTeam/AdguardFilters/issues/205907
+vook.vc#@#[class*="-spnsr"]
+vook.vc##.note-main-spnsr a:not([href*="vook.vc"])
+vook.vc##.note-right-spnsr
+!#if env_mobile
+vook.vc##.note-sp-spnsr
+!#endif
+! FP by Phishing URL Blocklist
+! [badfilter] ||sbisec.co.jp/etgate/^$all,badfilter
+! [badfilter] ||banei-keiba.or.jp^$badfilter
+! [badfilter] ||preview.studio.site^$badfilter
+! https://github.com/uBlockOrigin/uAssets/issues/28776
+nontonx.com##+js(rpnt, script, %2F%2Ftele()%3B, telek3()%3B)
+nontonx.com##+js(rpnt, script, %2F!%5C(Object%5C.values.*%3Freturn%20false%3B%2Fg)
+nontonx.com##+js(rpnt, script, %2F%5Ba-z%5D%2B%5C(%5C)%20%26%26%2F, !0%26%26)
+nontonx.com##+js(rmnt, script, location.reload)
+nontonx.com###rules-nontonx
+||raw.githubusercontent.com^$domain=nontonx.com
+! https://github.com/uBlockOrigin/uAssets/issues/29349
+@@||embed.wcostream.com^$script,1p
+!#if cap_html_filtering
+embed.wcostream.com##^script:has-text(/google_jobrunner|AdBlock|pubadx|embed\.html/i)
+!#else
+embed.wcostream.com##+js(rmnt, script, %2Fgoogle_jobrunner%7CAdBlock%7Cpubadx%7Cembed%5C.html%2Fi)
+!#endif
+! https://github.com/uBlockOrigin/uAssets/issues/18260
+!#if ext_ubol
+@@||cdn.snigelweb.com/adengine/falixnodes.net/loader.js$script,domain=client.falixnodes.net
+@@||adengine.snigelweb.com/falixnodes.net/$script,domain=client.falixnodes.net
+@@||c.amazon-adsystem.com/aax2/apstag.js$script,domain=client.falixnodes.net
+@@||c.amazon-adsystem.com/bao-csm/aps-comm/aps_csm.js$xhr,domain=client.falixnodes.net
+!#else
+client.falixnodes.net##+js(rpnt, script, %2Fwindow%5C.googletag.*%3FenableServices%5C(%5C)%5C%3B%2Fs)
+client.falixnodes.net##+js(rpnt, script, %2Fgoogletag%5C.pubads%5C(%5C)%5C.addEventListener.*rewardedSlot%5C)%5C%3B%5Cs%2B%5C%7D%5C)%3B%5Cs%2B%5C%7D%2Fs)
+client.falixnodes.net##+js(nosiif, %2Flovelylovely%7Cveryveryplease%7Cclick%5C(%5C)%7CMouseEvent%7CdispatchEvent%2F)
+client.falixnodes.net##+js(nostif, %2Flovelylovely%7Cveryveryplease%7Cclick%5C(%5C)%7CMouseEvent%7CdispatchEvent%2F)
+client.falixnodes.net##^script:has-text(/\=\(\[\]\+\[\]\)\[\(/)
+client.falixnodes.net##+js(rmnt, script, %2F%5C%3D%5C(%5C%5B%5C%5D%5C%2B%5C%5B%5C%5D%5C)%5C%5B%5C(%2F)
+!#endif
+! https://www.reddit.com/r/uBlockOrigin/comments/1mehur0/ad_block_detection_globalnovelpiacom/
+||global.novelpia.com/_nuxt/*.js|$script,replace=/if\(\w\.check_is_ad_free\(\)\)/if(true)/
+@@||global.novelpia.com^$ghide
+global.novelpia.com##+js(no-fetch-if, g.doubleclick.net, length%3A100000)
+global.novelpia.com##+js(trusted-replace-argument, String.prototype.includes, 0, , condition, %2FCopyright%7Cdoubleclick%24%2F)
+global.novelpia.com##+js(no-fetch-if, favicon, length%3A252)
+global.novelpia.com##div[id^="novelpia_"]:remove()
+! https://github.com/uBlockOrigin/uAssets/issues/27593
+! https://github.com/uBlockOrigin/uAssets/issues/30488
+omuzaani.me##+js(rmnt, script, adserverDomain, excludes, debugger)
+omuzaani.me##+js(trusted-replace-outbound-text, Headers.prototype.get, %2F.%2B%2F, image%2Fpng., condition, %2F%5Etext%5C%2Fplain%3Bcharset%3DUTF-8%24%2F)
+omuzaani.me##+js(trusted-replace-argument, Headers.prototype.get, 0, json%3A%22content-type%22, condition, cache-control)
+omuzaani.me##+js(trusted-replace-argument, Headers.prototype.has, 0, json%3A%22content-type%22, condition, cache-control)
+omuzaani.me##+js(rpnt, script, %2Fwindow.navigator.brave.%2B%3B%2F, false%3B)
+omuzaani.me##+js(no-fetch-if, summerday, length%3A10, %7B%22type%22%3A%22cors%22%7D)
+! https://github.com/uBlockOrigin/uAssets/issues/24063
+th.gl##+js(trusted-set-local-storage-item, account-storage, %7B%22state%22%3A%7B%22_hasHydrated%22%3Atrue, %22userId%22%3Anull, %22decryptedUserId%22%3Anull, %22email%22%3Anull, %22perks%22%3A%7B%22adRemoval%22%3Atrue, %22comments%22%3Afalse, %22premiumFeatures%22%3Atrue, %22previewReleaseAccess%22%3Atrue%7D, %22showUserDialog%22%3Afalse%7D, %22version%22%3A2%7D)
+th.gl##body:style(overflow:auto !important; pointer-events:auto !important)
+! https://github.com/uBlockOrigin/uAssets/issues/30529
+tvtropes.org##+js(nostif, %2FoffsetHeight%7Cloaded%2F)
+tvtropes.org##+js(set, HTMLScriptElement.prototype.onerror, undefined)
+! https://gall.dcinside.com/mgallery/board/view/?id=adguard&no=6798&page=1
+chzzkban.xyz##+js(no-fetch-if, pagead2.googlesyndication.com%2Fpagead%2Fjs%2Fadsbygoogle.js%20method%3AHEAD, emptyStr)
+chzzkban.xyz##+js(trusted-suppress-native-method, Node.prototype.contains, %7B%22className%22%3A%22adsbygoogle%22%7D, abort)
+! https://github.com/uBlockOrigin/uAssets/issues/26527
+historicaerials.com##+js(aeld, load, showFallbackModal)
+historicaerials.com##+js(trusted-create-html, %23historicaerials_g_728x90_ATF, %3Cdiv%20id%3D%22google_ads_iframe_%2F22597447651%2Fhistoricaerials_g_728x90_ATF_0__container__%22%3E%3Ciframe%20id%3D%22google_ads_iframe_%2F22597447651%2Fhistoricaerials_g_728x90_ATF_0%22%20width%3D%221%22%20height%3D%221%22%20data-load-complete%3D%22true%22%3E%3C%2Fiframe%3E%3C%2Fdiv%3E)
+historicaerials.com##+js(trusted-create-html, %23historicaerials_g_160x600_Left, %3Cdiv%20id%3D%22google_ads_iframe_%2F22597447651%2Fhistoricaerials_g_160x600_Left_0__container__%22%3E%3Ciframe%20id%3D%22google_ads_iframe_%2F22597447651%2Fhistoricaerials_g_160x600_Left_0%22%20width%3D%221%22%20height%3D%221%22%20data-load-complete%3D%22true%22%3E%3C%2Fiframe%3E%3C%2Fdiv%3E)
+historicaerials.com##+js(trusted-create-html, %23historicaerials_g_160x600_Right, %3Cdiv%20id%3D%22google_ads_iframe_%2F22597447651%2Fhistoricaerials_g_160x600_Right_0__container__%22%3E%3Ciframe%20id%3D%22google_ads_iframe_%2F22597447651%2Fhistoricaerials_g_160x600_Right_0%22%20width%3D%221%22%20height%3D%221%22%20data-load-complete%3D%22true%22%3E%3C%2Fiframe%3E%3C%2Fdiv%3E)
+@@||historicaerials.com^$ghide
+! https://github.com/uBlockOrigin/uAssets/issues/31585
+magma.com##+js(set, Object.prototype.hasRightPartnership, falseFunc)
+magma.com##+js(set, Object.prototype.hasLeftPartnership, falseFunc)
+magma.com##+js(set, Object.prototype.hasTopPartnership, falseFunc)
+magma.com##+js(set, Object.prototype.hasBottomPartnership, falseFunc)
+! https://github.com/uBlockOrigin/uAssets/issues/31775
+embedtv.best##+js(rpnt, script, (popupLoaded), (true))
+! https://www.reddit.com/r/uBlockOrigin/comments/1sgy34h/ads_showing_on_myanimelist/
+! https://github.com/uBlockOrigin/uAssets/issues/17018#issuecomment-4226692901
+myanimelist.net##a.ga-click[data-ga-click-type="hia"]
+myanimelist.net##div[id$="_NXU_wrap"], div[id$="_NXU_TITLE_wrap"]
+! https://github.com/uBlockOrigin/uAssets/issues/32865
+gumtree.com#@#+js(trusted-set, experimentOverrides, json%3A%22%255B%257B%2520defaultValue%253A%2520%2522OFF%2522%257D%255D%22)
+! https://github.com/uBlockOrigin/uAssets/issues/31664
+bus-location.1507t.xyz#@#.ad-area:not(.text-ad)
+bus-location.1507t.xyz##div[id]:empty:style(height: 1px !important; width 1px !important; position: fixed !important; z-index: 2147483647 !important;)
+bus-location.1507t.xyz##div[id]:has(> script[src^="https://adm.shinobi.jp"]):style(height: 1px !important; width 1px !important; position: fixed !important; z-index: 2147483647 !important;)
+||adm.shinobi.jp^$script,redirect=noop.js,domain=bus-location.1507t.xyz
+! https://github.com/uBlockOrigin/uAssets/issues/33097
+||cloudfront.net/?$script,redirect=noopjs,domain=meuplayeronlinehd.com|multicanaistt.space
+meuplayeronlinehd.com###player:style(display: block !important;)
+! https://github.com/uBlockOrigin/uAssets/issues/33144
+@@/jsi18n/|$script,1p
+! https://github.com/uBlockOrigin/uAssets/issues/22295#issuecomment-4603289429
+tek.no,e24.no,minmote.no,vg.no#@#div[id^="sp_message_container_"]
+cmp.tek.no,cmp.e24.no,minmote.no,cmp.vg.no#@#+js(trusted-click-element, .message-row%20%3E%20button%5Btitle%3D%22Avvis%20alle%22%5D, , 2000)
+! https://openchat-review.me/ anti-adb
+openchat-review.me##+js(set-local-storage-item, BLOCKED_FLAG_KEY, %24remove%24)
+openchat-review.me##+js(aost, document.querySelectorAll, security.js)
+! https://github.com/uBlockOrigin/uAssets/issues/33280
+streamcash.to##+js(rmnt, script, %2F%5C%24%7B''%7D%7Cbody%3AJSON%5C.stringify%2F)
+streamcash.to##div[id]:has(button[onclick*="location.reload()"])
+! https://github.com/uBlockOrigin/uAssets/issues/33449
+akirabox.com,akirabox.to,bowfile.com,buzzheavier.com,bzzhr.co,bzzhr.to,datavaults.co,fuckingfast.*,multiup.io,rootz.so,usersdrive.com,vik1ngfile.site,zpaste.net#@#+js(set, Document.prototype.createElement.call, noopFunc)
+! https://github.com/uBlockOrigin/uAssets/issues/33490
+zeilink.net#@#+js(remove-node-text, script, %2F%22%5C%5C%7C%5C%5C%5Bux%5D%7C%5C%2B%5C%5B%5C%5D%2F)
+! https://github.com/uBlockOrigin/uAssets/issues/24714
+decompiler.com##+js(set, OffscreenCanvas.prototype.getContext, undefined)
+decompiler.com##+js(nosiif, %3D%3D%3D%20false)
+decompiler.com##+js(aost, Element.prototype.removeChild, %2Fblocked%7Ctick%2F)
+! https://github.com/uBlockOrigin/uAssets/issues/5184
+twitch.tv##.stream-display-ad__wrapper + div > div[style^="position:"] > div[class^="Layout-sc-"]:has(video[src^="https://m.media-amazon.com"])
+twitch.tv##.chat-shell > div[class^="Layout-sc-"]  > div[style^="transition:"]:has(video[src^="https://m.media-amazon.com"])
+! https://github.com/AdguardTeam/AdguardFilters/issues/233737
+fo76db.com#@#+js(aeld, DOMContentLoaded, %2Fads%7CAmazonCarousel%2F)
+fo76db.com###fo-ad-modal
+fo76db.com##body.swiper:style(overflow: auto !important; position: static !important;)
+fo76db.com##+js(trusted-rpnt, script, %2F%20ads%5C.map%5B%5CS%5Cs%5Cn%5D%2B%3Fjoin%5C(''%5C)%2F)
+! https://github.com/uBlockOrigin/uAssets/issues/33996
+flipkart.com#@#div[data-id][style]:has([width][height][fill])
+! https://github.com/uBlockOrigin/uAssets/issues/34009
+pdftoshokan.com##+js(aeld, %2Fclick%7Cload%2F, %2Fdocument%5C.location%7Cpop%5C.%7Cexo%7Ccookie%7C%5C.php%2F)
+pdftoshokan.com##+js(nowoif, ok_)
+!#if cap_html_filtering
+pdftoshokan.com##^script:has-text(/ad.?Config|prepare.?Pop|\/popunder|ads_host/)
+!#endif

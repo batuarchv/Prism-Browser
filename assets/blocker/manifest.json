@@ -1,18 +1,89 @@
 {
-  "built": "2026-10-07T14:50:42.083Z",
+  "built": "2026-10-24T17:44:31.015Z",
   "engine": "2.18.2",
-  "bytes": 4172729,
-  "sha256": "8c863aec654e018361a7a27413999def7db076c8fb6f3438fbf6cd9d95fd97fe",
+  "bytes": 6837217,
+  "sha256": "e1aacc1b7c5f05bcd8cba3827a6ae39196c53e5916161b4211f316d9ac1c18bc",
+  "scriptlets": true,
   "sources": [
     {
-      "name": "easylist",
-      "url": "https://easylist.to/easylist/easylist.txt",
-      "sha256": "8c7a5a43ba896523c9c2509b7b4a0d792a367d1159667d9e5ae2b7cbd2944389"
+      "name": "easylist/easylist",
+      "url": "https://raw.githubusercontent.com/ghostery/adblocker/master/packages/adblocker/assets/easylist/easylist.txt",
+      "sha256": "318f849794a94697a04d470f6162523befd43ce58d2477d4e321f727cbbb0ccd"
     },
     {
-      "name": "easyprivacy",
-      "url": "https://easylist.to/easylist/easyprivacy.txt",
-      "sha256": "5417dcbc9295c037ac1319f9025136aed76ef0e04038f3b4a555693e5f39dce3"
+      "name": "easylist/easyprivacy",
+      "url": "https://raw.githubusercontent.com/ghostery/adblocker/master/packages/adblocker/assets/easylist/easyprivacy.txt",
+      "sha256": "d0b04edb90a4e9ef6f3a371d08a9afd90057a22abe843586409fe08edfa89262"
+    },
+    {
+      "name": "easylist/easylist-cookie",
+      "url": "https://raw.githubusercontent.com/ghostery/adblocker/master/packages/adblocker/assets/easylist/easylist-cookie.txt",
+      "sha256": "03053470785e40aabdb90d9c9cfd95bc44d68653332bd9b24adbfef138e5f18f"
+    },
+    {
+      "name": "peter-lowe/serverlist",
+      "url": "https://raw.githubusercontent.com/ghostery/adblocker/master/packages/adblocker/assets/peter-lowe/serverlist.txt",
+      "sha256": "13e5ecddc163997c41cea134e96e2328e1489d435ff757f87a737b4a7d141d8d"
+    },
+    {
+      "name": "ublock-origin/filters",
+      "url": "https://raw.githubusercontent.com/ghostery/adblocker/master/packages/adblocker/assets/ublock-origin/filters.txt",
+      "sha256": "f64eb22a4421a0813adcb04afd8739cdc0ad9de9842dc0178feb05d917becf14"
+    },
+    {
+      "name": "ublock-origin/filters-2020",
+      "url": "https://raw.githubusercontent.com/ghostery/adblocker/master/packages/adblocker/assets/ublock-origin/filters-2020.txt",
+      "sha256": "589dba6de1d45f9be4f96f8dc5a5520d93bb7209dbd88c172622328627da1473"
+    },
+    {
+      "name": "ublock-origin/filters-2021",
+      "url": "https://raw.githubusercontent.com/ghostery/adblocker/master/packages/adblocker/assets/ublock-origin/filters-2021.txt",
+      "sha256": "95178374dc83e09cf3b8b75aeaf100c225beb6717cd079dd33014b1bc42ff9cd"
+    },
+    {
+      "name": "ublock-origin/filters-2022",
+      "url": "https://raw.githubusercontent.com/ghostery/adblocker/master/packages/adblocker/assets/ublock-origin/filters-2022.txt",
+      "sha256": "2d04863c46844e34c8e77c3193718d65c237560ebfbb97d6ea55a20e81d6a855"
+    },
+    {
+      "name": "ublock-origin/filters-2023",
+      "url": "https://raw.githubusercontent.com/ghostery/adblocker/master/packages/adblocker/assets/ublock-origin/filters-2023.txt",
+      "sha256": "e57280ddc43de90fd798712c71ac10f1c10270b7815da17d26c9d8997737090a"
+    },
+    {
+      "name": "ublock-origin/filters-2024",
+      "url": "https://raw.githubusercontent.com/ghostery/adblocker/master/packages/adblocker/assets/ublock-origin/filters-2024.txt",
+      "sha256": "61c6370caf313fe15c1fba4a371ffd2b31c2255309052bbb1ccb4f41696434a4"
+    },
+    {
+      "name": "ublock-origin/badware",
+      "url": "https://raw.githubusercontent.com/ghostery/adblocker/master/packages/adblocker/assets/ublock-origin/badware.txt",
+      "sha256": "00b6e789c148541dfafab5f5a433fe83d2f3fd20e426eb5baf4c490afd325d1c"
+    },
+    {
+      "name": "ublock-origin/privacy",
+      "url": "https://raw.githubusercontent.com/ghostery/adblocker/master/packages/adblocker/assets/ublock-origin/privacy.txt",
+      "sha256": "62d173cbfa87251b305e4a695d0d5b8afefb96a2e32d3f70f21e2b422fae6dbe"
+    },
+    {
+      "name": "ublock-origin/quick-fixes",
+      "url": "https://raw.githubusercontent.com/ghostery/adblocker/master/packages/adblocker/assets/ublock-origin/quick-fixes.txt",
+      "sha256": "61d766e66cf971d417e105f0b0ad869f80ef28ed407028f9555332bdd3fc0822"
+    },
+    {
+      "name": "ublock-origin/resource-abuse",
+      "url": "https://raw.githubusercontent.com/ghostery/adblocker/master/packages/adblocker/assets/ublock-origin/resource-abuse.txt",
+      "sha256": "a7f06a353f79141a4c1eded476fc26409a76d8f02be1c2e7c225e96666fbe64d"
+    },
+    {
+      "name": "ublock-origin/unbreak",
+      "url": "https://raw.githubusercontent.com/ghostery/adblocker/master/packages/adblocker/assets/ublock-origin/unbreak.txt",
+      "sha256": "d06b9a46309f8d2555b69f9c2e789e61299ecec0f947c5cf13ce5e5febb5a22e"
+    },
+    {
+      "name": "ublock-origin/annoyances-cookies",
+      "url": "https://raw.githubusercontent.com/ghostery/adblocker/master/packages/adblocker/assets/ublock-origin/annoyances-cookies.txt",
+      "sha256": "d0bb345c4177aa9689692bda42be9beeb594a5fd99306a3b225a3f97c68ab51e"
     }
   ]
 }

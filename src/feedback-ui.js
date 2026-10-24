@@ -5,7 +5,7 @@
  const form=document.getElementById('address-form');if(!form||!window.prism?.onFeedback)return;
  const chip=document.createElement('span');chip.className='feedback-chip';chip.setAttribute('role','status');chip.setAttribute('aria-live','polite');chip.hidden=true;form.append(chip);
  const t=key=>window.prismLocale?.t?.(key)||key;
- const messages={'link-copied':['Link copied','check'],bookmarked:['Bookmarked','star'],'bookmark-removed':['Bookmark removed','star'],reload:['Reloaded','reload'],'hard-reload':['Reloaded without cache','reload'],pinned:['Pinned','check'],unpinned:['Unpinned','check'],reopened:['Tab reopened','history'],duplicated:['Tab duplicated','plus'],'password-copied':['Password copied','key'],'username-copied':['Username copied','copy'],'added-to-folder':['Added to {folder}','folder'],zoom:['Zoom {n}%','search']};
+ const messages={'link-copied':['Link copied','check'],bookmarked:['Bookmarked','star'],'bookmark-removed':['Bookmark removed','star'],reload:['Reloaded','reload'],'hard-reload':['Reloaded without cache','reload'],pinned:['Pinned','check'],unpinned:['Unpinned','check'],reopened:['Tab reopened','history'],'pinned-closed':['Closed · still pinned','check'],'pinned-removed':['Removed · ⌘Z brings it back','minus'],'nothing-to-restore':['Nothing to bring back','history'],duplicated:['Tab duplicated','plus'],'password-copied':['Password copied','key'],'username-copied':['Username copied','copy'],'added-to-folder':['Added to {folder}','folder'],zoom:['Zoom {n}%','search']};
  let timer;
  // Restarting a CSS animation needs the class removed and a reflow before it is added again.
  // Animation events bubble, so only the element's own animation (or its ::after) may end the cue.

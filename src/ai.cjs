@@ -4,7 +4,7 @@ function createAI({app,safeStorage,settings,emit,downloads,saveDownloads,isPriva
  const keyFile=path.join(app.getPath('userData'),'ai-provider.enc');let busy=false,pending=new Map(),availability=null;
  const helper=app.isPackaged?path.join(process.resourcesPath,'prism-ai'):path.join(__dirname,'native/prism-ai');
  function key(){try{return safeStorage.decryptString(fs.readFileSync(keyFile));}catch{return '';}}
- function runLocal(value,status=false){if(localRunner)return localRunner(value,status);return new Promise((resolve,reject)=>{const child=execFile(helper,status?['--status']:[],{timeout:30000,maxBuffer:16384},(error,out)=>{if(error)return reject(Error('Apple Intelligence is unavailable on this Mac.'));try{const result=JSON.parse(out);if(result.error&&!status)reject(Error(result.error));else resolve(result);}catch{reject(Error('Apple Intelligence returned an invalid response.'));}});child.stdin.on('error',()=>{});child.stdin.end(status?'':JSON.stringify(value));});}
+ function runLocal(value,status=false,args=[]){if(localRunner)return localRunner(value,status,args);return new Promise((resolve,reject)=>{const child=execFile(helper,status?['--status']:args,{timeout:30000,maxBuffer:16384},(error,out)=>{if(error)return reject(Error('Apple Intelligence is unavailable on this Mac.'));try{const result=JSON.parse(out);if(result.error&&!status)reject(Error(result.error));else resolve(result);}catch{reject(Error('Apple Intelligence returned an invalid response.'));}});child.stdin.on('error',()=>{});child.stdin.end(status?'':JSON.stringify(value));});}
  function available(){if(isPrivate())throw Error('AI features are disabled in Private.');}
  function snapshot(){return {provider:settings.aiProvider,configured:fs.existsSync(keyFile),busy,local:availability};}
  async function status(){available();availability=await runLocal({},true).catch(()=>({available:false,error:'Apple Intelligence is unavailable on this Mac.'}));emit();return snapshot();}
@@ -23,6 +23,9 @@ function createAI({app,safeStorage,settings,emit,downloads,saveDownloads,isPriva
  const automatic=[];let autoTimer,autoRunning=false;
  function enqueue(id){if(!settings.autoRenameDownloads||automatic.includes(id)||automatic.length>=50)return;automatic.push(id);drain();}
  async function drain(){if(autoRunning)return;clearTimeout(autoTimer);if(!automatic.length)return;if(busy||isPrivate()||[...pending.values()].some(p=>p.expires>Date.now())){autoTimer=setTimeout(drain,2000);autoTimer.unref?.();return;}const id=automatic.shift();autoRunning=true;try{if(settings.autoRenameDownloads){const proposal=await suggest(id);if(settings.autoRenameDownloads&&!isPrivate())await apply(proposal);}}catch{const d=downloads().find(x=>x.id===id);if(d){d.renameStatus='Original name kept';saveDownloads();emit();}}finally{autoRunning=false;if(automatic.length){autoTimer=setTimeout(drain,500);autoTimer.unref?.();}}}
- return {pageKey(){available();return key();},enqueue,snapshot,status,saveKey,suggest,apply,clearKey(){fs.rmSync(keyFile,{force:true});pending.clear();emit();}};
+ // Spectrum (0.33): chapter titles and a line about the day, from Apple Intelligence on this Mac only. Never a cloud
+ // provider: these are page titles from today's browsing.
+ async function describeDay(input){available();if(settings.spectrumInsights===false)throw Error('Spectrum insights are off.');if(availability&&availability.available===false)throw Error('Apple Intelligence is unavailable on this Mac.');const result=await runLocal(input,false,['--spectrum']);if(!Array.isArray(result?.titles))throw Error('No description.');return {titles:result.titles.map(x=>String(x||'').replace(/["“”]/g,'').trim().slice(0,40)),summary:String(result.summary||'').trim().slice(0,140)};}
+ return {describeDay,pageKey(){available();return key();},enqueue,snapshot,status,saveKey,suggest,apply,clearKey(){fs.rmSync(keyFile,{force:true});pending.clear();emit();}};
 }
 module.exports={createAI};

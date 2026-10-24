@@ -914,33 +914,67 @@ img.glass-fallback{visibility:hidden!important}
 .tab.archived:hover .archive-when{display:none}
 .archive-clear{display:block;margin:4px 0 0 auto;padding:4px 10px;border-radius:7px;color:var(--muted);font-size:.76rem;background:transparent}
 .archive-clear:hover{background:color-mix(in srgb,var(--ink) 6%,transparent);color:var(--ink)}
-/* 0.32 · Spectrum (spectrum-ui.js): today as a band of light. Stripes are soft, saturated light; a sheen on top makes
-   the band read as glass. It grows a little on hover so it can be read and scrubbed. */
+/* 0.33 · Spectrum (spectrum-ui.js): today as one band of light. Sites blend into each other like light through a prism,
+   a blurred copy glows underneath, and a spark marks now. The band grows on hover so it can be read and scrubbed; the
+   day opens as a glass card with its chapters. */
 #spectrum{position:relative;margin:2px 4px 8px}
-.spectrum-band{position:relative;height:14px;display:flex;align-items:center;cursor:pointer;outline:none;-webkit-app-region:no-drag}
-.spectrum-track{position:relative;flex:1;height:4px;border-radius:3px;overflow:hidden;background:color-mix(in srgb,var(--ink) 7%,transparent);box-shadow:inset 0 0 0 .5px color-mix(in srgb,var(--ink) 8%,transparent);transition:height .2s var(--ease-out,ease),border-radius .2s}
-.spectrum-track:after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,#ffffff70,#ffffff00 55%,#00000010);mix-blend-mode:soft-light;pointer-events:none}
-.spectrum-stripe{position:absolute;top:0;bottom:0;background:linear-gradient(90deg,hsl(var(--h) 78% 64%),hsl(calc(var(--h) + 18) 82% 66%));box-shadow:0 0 6px hsl(var(--h) 90% 60% / .55)}
-:root[data-theme=dark] .spectrum-stripe{background:hsl(var(--h) 70% 62%)}
+.spectrum-band{position:relative;height:16px;display:flex;align-items:center;cursor:pointer;outline:none;-webkit-app-region:no-drag}
+.spectrum-track{position:relative;flex:1;height:4px;border-radius:3px;overflow:hidden;background:color-mix(in srgb,var(--ink) 7%,transparent);box-shadow:inset 0 0 0 .5px color-mix(in srgb,var(--ink) 8%,transparent);transition:height .22s var(--ease-out,ease),border-radius .22s}
+.spectrum-light{position:absolute;inset:0;background-repeat:no-repeat;filter:saturate(1.08)}
+.spectrum-track:after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,#ffffff80,#ffffff00 55%,#00000012);mix-blend-mode:soft-light;pointer-events:none}
+.spectrum-glow{position:absolute;left:0;right:0;top:50%;height:8px;margin-top:-3px;background-repeat:no-repeat;filter:blur(7px) saturate(1.3);opacity:.45;pointer-events:none;transition:opacity .22s,height .22s}
+:root[data-theme=dark] .spectrum-glow{opacity:.6}
+.spectrum-now{position:absolute;right:-1px;top:50%;width:5px;height:5px;margin-top:-2.5px;border-radius:50%;background:#fff;box-shadow:0 0 0 1px color-mix(in srgb,var(--now,#fff) 70%,transparent),0 0 8px 2px var(--now,#fff);opacity:0;transition:opacity .3s;pointer-events:none}
+#spectrum.live .spectrum-now{opacity:.95;animation:spectrumSpark 2.6s ease-in-out infinite}
+@keyframes spectrumSpark{50%{box-shadow:0 0 0 1px color-mix(in srgb,var(--now,#fff) 70%,transparent),0 0 13px 4px var(--now,#fff)}}
 #spectrum.hover .spectrum-track,#spectrum.open .spectrum-track,.spectrum-band:focus-visible .spectrum-track{height:10px;border-radius:5px}
+#spectrum.hover .spectrum-glow,#spectrum.open .spectrum-glow{opacity:.75;height:14px;margin-top:-5px}
+#spectrum.hover .spectrum-now,#spectrum.open .spectrum-now{opacity:0;animation:none}
 .spectrum-band:focus-visible .spectrum-track{box-shadow:0 0 0 2px color-mix(in srgb,var(--accent) 45%,transparent)}
-.spectrum-cursor{position:absolute;top:0;bottom:0;width:2px;margin-left:-1px;border-radius:1px;background:var(--ink);opacity:0;box-shadow:0 0 0 1px color-mix(in srgb,var(--chrome) 70%,transparent);transition:opacity .15s;pointer-events:none}
-#spectrum.hover .spectrum-cursor,#spectrum.open .spectrum-cursor{opacity:.85}
-.spectrum-label{position:absolute;bottom:100%;left:var(--x,50%);transform:translate(-50%,-4px);display:flex;gap:6px;padding:3px 8px;border-radius:7px;white-space:nowrap;font-size:11px;color:var(--ink);background:color-mix(in srgb,var(--raised) 88%,transparent);box-shadow:0 4px 14px #0000001f,inset 0 0 0 .5px var(--line);opacity:0;pointer-events:none;transition:opacity .15s;-webkit-backdrop-filter:blur(18px);backdrop-filter:blur(18px)}
-.spectrum-host{color:var(--muted)}
-#spectrum.hover .spectrum-label{opacity:1}#spectrum.open .spectrum-label{opacity:0}
-.spectrum-card{position:absolute;left:0;right:0;bottom:calc(100% + 10px);z-index:30;padding:12px;border-radius:14px;background:color-mix(in srgb,var(--raised) 92%,transparent);box-shadow:0 18px 44px #00000033,inset 0 0 0 .5px var(--line);-webkit-backdrop-filter:blur(24px) saturate(1.4);backdrop-filter:blur(24px) saturate(1.4);animation:spectrumIn .18s var(--ease-out,ease)}
+.spectrum-cursor{position:absolute;top:1px;bottom:1px;width:3px;margin-left:-1.5px;border-radius:2px;background:#fff;opacity:0;box-shadow:0 0 0 .5px #0003,0 0 8px var(--c,#fff);transition:opacity .15s;pointer-events:none}
+#spectrum.hover .spectrum-cursor,#spectrum.open .spectrum-cursor{opacity:.95}
+.spectrum-label{position:absolute;bottom:100%;left:var(--x,50%);transform:translate(-50%,-4px);display:flex;gap:6px;max-width:calc(100% + 8px);padding:4px 9px;border-radius:8px;white-space:nowrap;font-size:11px;color:var(--ink);background:color-mix(in srgb,var(--raised) 88%,transparent);box-shadow:0 4px 14px #0000001f,inset 0 0 0 .5px var(--line);opacity:0;pointer-events:none;transition:opacity .15s;-webkit-backdrop-filter:blur(18px);backdrop-filter:blur(18px)}
+.spectrum-time{font-variant-numeric:tabular-nums;font-weight:500}
+.spectrum-host,.spectrum-chapter{color:var(--muted);overflow:hidden;text-overflow:ellipsis}
+.spectrum-chapter:not(:empty):before{content:'·';margin-right:6px}
+#spectrum.hover .spectrum-label{opacity:1}
+#spectrum.open .spectrum-label{opacity:0}
+.spectrum-card{position:absolute;left:-2px;right:-2px;bottom:calc(100% + 10px);z-index:30;display:flex;flex-direction:column;gap:8px;max-height:min(560px,calc(100vh - 140px));overflow:auto;padding:13px 12px 11px;border-radius:16px;background:color-mix(in srgb,var(--raised) 96%,transparent);box-shadow:0 18px 44px #00000033,inset 0 0 0 .5px var(--line);-webkit-backdrop-filter:blur(26px) saturate(1.5);backdrop-filter:blur(26px) saturate(1.5);animation:spectrumIn .2s var(--ease-out,ease)}
+.spectrum-card:before{content:'';position:absolute;left:14px;right:14px;top:0;height:1px;background:linear-gradient(90deg,#ff8a8a,#ffc36b,#f5ea7a,#86e3a4,#7cc0ff,#b49bff);opacity:.7;pointer-events:none}
 @keyframes spectrumIn{from{opacity:0;transform:translateY(4px) scale(.98)}to{opacity:1;transform:none}}
-.spectrum-card-head{display:flex;align-items:baseline;justify-content:space-between;gap:8px;margin:0 2px 8px}
-.spectrum-card-head strong{font-size:12.5px;font-weight:600}.spectrum-card-head small{font-size:11px;color:var(--muted)}
-.spectrum-row{display:flex;align-items:center;gap:8px;height:26px;padding:0 2px;font-size:12px;overflow:hidden}
+.spectrum-card-head{display:flex;align-items:baseline;justify-content:space-between;gap:8px;margin:0 2px}
+.spectrum-card-head strong{font-size:13px;font-weight:650}
+.spectrum-card-head small{font-size:11px;color:var(--muted);font-variant-numeric:tabular-nums}
+.spectrum-summary{margin:-4px 2px 0;font-size:11.5px;line-height:1.4;color:var(--muted)}
+.spectrum-summary:empty{display:none}
+.spectrum-summary.ai:before{content:'✦';margin-right:5px;background:linear-gradient(135deg,#ff8a8a,#7cc0ff,#b49bff);-webkit-background-clip:text;background-clip:text;color:transparent}
+.spectrum-chapters{display:flex;flex-direction:column;gap:1px}
+.spectrum-chapter-row{display:grid;grid-template-columns:22px 1fr;align-items:center;gap:9px;width:100%;min-height:38px;padding:4px 6px;border:0;border-radius:9px;background:transparent;color:var(--ink);text-align:left}
+.spectrum-chapter-row:hover{background:color-mix(in srgb,var(--ink) 6%,transparent)}
+.spectrum-chapter-row.chosen{background:color-mix(in srgb,var(--accent) 14%,transparent)}
+.spectrum-swatch{width:22px;height:22px;border-radius:7px;box-shadow:inset 0 0 0 .5px #0002,0 2px 6px #0000001a;background-size:100% 100%}
+.spectrum-chapter-text{display:flex;flex-direction:column;min-width:0}
+.spectrum-chapter-text strong{font-size:12px;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.spectrum-chapter-text small{font-size:10.5px;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-variant-numeric:tabular-nums}
+.spectrum-moment{padding:9px 8px 8px;border-radius:11px;background:color-mix(in srgb,var(--ink) 4%,transparent);box-shadow:inset 0 0 0 .5px color-mix(in srgb,var(--ink) 7%,transparent)}
+.spectrum-moment-head{display:flex;justify-content:space-between;gap:8px;margin:0 2px 4px;font-size:11.5px;font-weight:600}
+.spectrum-moment-head small{font-weight:400;color:var(--muted)}
+.spectrum-row{display:flex;align-items:center;gap:8px;height:25px;padding:0 2px;font-size:12px;overflow:hidden}
 .spectrum-row>span:last-child{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.spectrum-row .tab-icon{transform:scale(.85)}
+.spectrum-row .tab-icon,.spectrum-chip .tab-icon{transform:scale(.8)}
 .spectrum-more{display:block;margin:2px 2px 0;color:var(--muted);font-size:11px}
-.spectrum-card-actions{display:flex;justify-content:flex-end;margin-top:10px}
-.spectrum-restore{height:28px;padding:0 12px;border-radius:999px;font-size:12px;font-weight:500;color:#fff;background:color-mix(in srgb,var(--accent) 78%,#000);box-shadow:0 1px 2px #0002}
-.spectrum-restore:hover{filter:brightness(1.06)}.spectrum-restore:active{transform:scale(.97)}
-[data-motion=reduced] .spectrum-card,[data-motion=reduced] .spectrum-track{animation:none;transition:none}
+.spectrum-card-actions{display:flex;justify-content:flex-end;margin-top:8px}
+.spectrum-restore{height:28px;padding:0 13px;border-radius:999px;font-size:12px;font-weight:500;color:#fff;background:color-mix(in srgb,var(--accent) 78%,#000);box-shadow:0 1px 2px #0002}
+.spectrum-restore:hover{filter:brightness(1.06)}
+.spectrum-restore:active{transform:scale(.97)}
+.spectrum-usual>small{display:block;margin:0 2px 5px;font-size:10.5px;font-weight:600;letter-spacing:.02em;text-transform:uppercase;color:var(--muted)}
+.spectrum-chips{display:flex;flex-wrap:wrap;gap:5px}
+.spectrum-chip{display:inline-flex;align-items:center;gap:3px;max-width:100%;height:26px;padding:0 9px 0 3px;border:0;border-radius:999px;font-size:11.5px;color:var(--ink);background:color-mix(in srgb,var(--ink) 6%,transparent);box-shadow:inset 0 0 0 .5px color-mix(in srgb,var(--ink) 8%,transparent)}
+.spectrum-chip:hover{background:color-mix(in srgb,var(--accent) 16%,transparent)}
+.spectrum-chip>span:last-child{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.spectrum-private{margin:0 2px;font-size:10px;color:var(--muted);opacity:.8}
+[data-motion=reduced] .spectrum-card,[data-motion=reduced] .spectrum-track,[data-motion=reduced] #spectrum .spectrum-now{animation:none;transition:none}
+@media(prefers-reduced-motion:reduce){#spectrum .spectrum-now{animation:none}}
 /* 0.32 · Media row (media-ui.js): what a tab you left is playing, in a soft glass card above the footer. */
 #media-row{display:flex;align-items:center;gap:2px;margin:0 0 8px;padding:5px 5px 5px 6px;border-radius:12px;background:color-mix(in srgb,var(--ink) 5%,transparent);box-shadow:inset 0 0 0 .5px color-mix(in srgb,var(--ink) 8%,transparent);animation:mediaIn .22s var(--ease-out,ease)}
 @keyframes mediaIn{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
@@ -1008,3 +1042,12 @@ img.glass-fallback{visibility:hidden!important}
 #end-private.end-private-icon[hidden]{display:none}
 #end-private.end-private-icon:hover{color:var(--accent);background:color-mix(in srgb,var(--accent) 14%,transparent)}
 #end-private.end-private-icon .icon{width:14px;height:14px;stroke-width:1.9}
+/* 0.33: a closed pinned tab stays in the sidebar, quieter, and its button now removes it. */
+.tab.parked .tab-icon{opacity:.5;filter:saturate(.35)}
+.tab.parked .tab-title{color:var(--muted)}
+.tab.parked:hover .tab-icon{opacity:.8;filter:none}
+.tab .tab-close.remove .icon{width:12px;height:12px}
+.tab .tab-close.remove:hover{color:color-mix(in srgb,#e5484d 80%,var(--ink));background:color-mix(in srgb,#e5484d 12%,transparent)}
+/* 0.33: Restart to Update sits in the middle of the sidebar footer, whatever the buttons around it. */
+#sidebar .sidebar-bottom .utilities{position:relative}
+#sidebar .sidebar-bottom .utilities #update-indicator{position:absolute;left:50%;top:50%;margin:0;translate:-50% -50%}

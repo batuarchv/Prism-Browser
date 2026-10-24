@@ -2,6 +2,23 @@
 
 All notable changes to Prism, newest first. Downloads are on the [Releases page](https://github.com/batuarchv/Prism-Browser/releases).
 
+## 0.33.0 — A stronger Shield, a smarter Spectrum
+
+### New
+- **Prism Shield blocks YouTube ads.** Sixteen filter lists (EasyList, EasyPrivacy, uBlock Origin and more) with uBlock's page scripts, which remove the ads inside YouTube videos. Cookie banners are hidden too.
+- **More private links.** Shield strips tracking tags like utm_ and fbclid from links, tells sites not to sell your data (Global Privacy Control), and swaps blocked analytics scripts for harmless stand-ins so pages keep working.
+- **Spectrum tells the story of your day.** It splits today into chapters, names them with Apple Intelligence on this Mac, and suggests the sites you usually open at this hour. The band now glows like light through a prism.
+- **Pinned tabs stay put.** Closing a pinned tab unloads it and keeps it in the sidebar; its button then removes it.
+- **⌘Z brings it back.** Outside a text field, ⌘Z (or ⌃Z) restores the last tab, favorite or pinned tab you closed, in its old place.
+- **Close a favorite's tab.** Right-click a favorite and choose Close tab; the favorite stays.
+
+### Also new
+- **New names.** Ads & trackers is now Prism Shield, Peek is Lens, the command bar is Beam (⌘K) and compact mode is Clear view (⌥⌘S).
+- **Restart to Update** now sits in the middle of the sidebar footer.
+
+### Install notes
+This beta is **ad-hoc signed and not notarized by Apple**. The first time you open it, macOS may say it can't verify the developer: right-click (or Control-click) Prism in Applications and choose **Open**, then **Open** again. Apple Silicon (arm64) only.
+
 ## 0.32.1 — A tidier sidebar address bar
 
 ### New
