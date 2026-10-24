@@ -947,3 +947,29 @@ img.glass-fallback{visibility:hidden!important}
 .spectrum-restore{height:28px;padding:0 12px;border-radius:999px;font-size:12px;font-weight:500;color:#fff;background:color-mix(in srgb,var(--accent) 78%,#000);box-shadow:0 1px 2px #0002}
 .spectrum-restore:hover{filter:brightness(1.06)}.spectrum-restore:active{transform:scale(.97)}
 [data-motion=reduced] .spectrum-card,[data-motion=reduced] .spectrum-track{animation:none;transition:none}
+/* 0.32 · Media row (media-ui.js): what a tab you left is playing, in a soft glass card above the footer. */
+#media-row{display:flex;align-items:center;gap:2px;margin:0 0 8px;padding:5px 5px 5px 6px;border-radius:12px;background:color-mix(in srgb,var(--ink) 5%,transparent);box-shadow:inset 0 0 0 .5px color-mix(in srgb,var(--ink) 8%,transparent);animation:mediaIn .22s var(--ease-out,ease)}
+@keyframes mediaIn{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+.media-main{flex:1;min-width:0;display:flex;align-items:center;gap:9px;padding:0;background:transparent;text-align:left;border-radius:8px}
+.media-art{display:grid;place-items:center;width:30px;height:30px;flex-shrink:0;border-radius:7px;overflow:hidden;background:color-mix(in srgb,var(--ink) 7%,transparent)}
+.media-art img{width:100%;height:100%;object-fit:cover}.media-art .site-icon{width:16px;height:16px;object-fit:contain}
+.media-text{display:flex;flex-direction:column;min-width:0;gap:1px}
+.media-text strong{font-size:12px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.media-text small{font-size:10.5px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.media-controls{display:flex;align-items:center;flex-shrink:0}
+.media-controls button{display:grid;place-items:center;width:24px;height:26px;border-radius:7px;color:var(--muted);background:transparent}
+.media-controls button:hover{color:var(--ink);background:color-mix(in srgb,var(--ink) 8%,transparent)}
+.media-controls button:active{transform:scale(.94)}
+.media-controls .icon{width:14px;height:14px;stroke-width:1.8}
+.media-controls .media-play{color:var(--ink)}.media-controls .media-play .icon{width:15px;height:15px}
+#media-row.playing .media-art{box-shadow:0 0 0 1.5px color-mix(in srgb,var(--accent) 55%,transparent)}
+[data-motion=reduced] #media-row{animation:none}
+/* Picture in picture placeholder: shown where the page was while its video floats. */
+#pip-placeholder{position:absolute;inset:44px 6px 6px 0;display:grid;place-items:center;border-radius:10px;background:color-mix(in srgb,var(--surface) 70%,transparent);z-index:2}
+:root[data-address=sidebar] #pip-placeholder{top:6px}
+.pip-holder-card{display:flex;flex-direction:column;align-items:center;gap:6px;text-align:center;max-width:320px}
+.pip-holder-icon{display:grid;place-items:center;width:56px;height:56px;margin-bottom:6px;border-radius:16px;color:var(--muted);background:color-mix(in srgb,var(--ink) 6%,transparent)}
+.pip-holder-icon .icon{width:28px;height:28px;stroke-width:1.5}
+.pip-holder-card strong{font-size:14px;font-weight:600}.pip-holder-card small{color:var(--muted);font-size:12px}
+.pip-holder-card button{margin-top:10px;height:30px;padding:0 14px;border-radius:999px;font-size:12px;font-weight:500;background:color-mix(in srgb,var(--ink) 8%,transparent)}
+.pip-holder-card button:hover{background:color-mix(in srgb,var(--ink) 12%,transparent)}

@@ -43,3 +43,25 @@ body.loading #peek-icon{animation:peekPulse 1s ease-in-out infinite alternate}
 .command-hint{font-size:11.5px;color:var(--muted);white-space:nowrap}
 body.enter .command-field,body.enter #command-list{animation:commandIn .18s cubic-bezier(.2,.7,.2,1)}
 @keyframes commandIn{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:none}}
+/* Picture in picture controls: dark translucent circles over the video, as on iPhone and in Safari. */
+.pip{color:#fff;cursor:default}
+.pip>*{transition:opacity .22s ease}
+.pip .pip-scrim,.pip .pip-top,.pip .pip-center,.pip .pip-bottom{opacity:0}
+.pip.show .pip-scrim,.pip.show .pip-top,.pip.show .pip-center,.pip.show .pip-bottom{opacity:1}
+.pip-scrim{position:fixed;inset:0;background:linear-gradient(180deg,#0000008c,#00000014 34%,#00000014 62%,#0000009e);border-radius:12px}
+.pip-top{position:fixed;top:10px;left:10px;right:10px;display:flex;gap:6px}
+.pip-spacer{flex:1}
+.pip-center{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;gap:22px;pointer-events:none}
+.pip-center button{pointer-events:auto}
+.pip-button{position:relative;display:grid;place-items:center;width:38px;height:38px;border-radius:50%;color:#fff;background:#1e1e1e66;box-shadow:inset 0 0 0 .5px #ffffff2e;transition:background .15s,transform .1s}
+.pip-button:hover{background:#3a3a3a8c}.pip-button:active{transform:scale(.94)}
+.pip-button.small{width:28px;height:28px}.pip-button.small .icon{width:14px;height:14px;stroke-width:2}
+.pip-button.large{width:52px;height:52px}
+.pip-button .icon{width:20px;height:20px;stroke:#fff;stroke-width:1.8}
+.pip-button.filled .icon{fill:#fff;stroke:none;width:24px;height:24px}
+.pip-button b{position:absolute;font:600 7.5px/1 -apple-system,sans-serif;top:50%;left:50%;transform:translate(-50%,-30%)}
+.pip-bottom{position:fixed;left:12px;right:12px;bottom:10px;display:flex;align-items:center;gap:8px;font:500 10.5px/1 -apple-system,sans-serif;font-variant-numeric:tabular-nums;color:#ffffffd9}
+#pip-bar{flex:1;height:4px;border-radius:2px;background:#ffffff40;overflow:hidden;cursor:pointer;transition:height .15s}
+#pip-bar:hover{height:6px}
+#pip-fill{height:100%;width:0;background:#fff;border-radius:2px}
+.pip.live .pip-bottom{display:none}

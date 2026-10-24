@@ -5,7 +5,7 @@ const {visit,closedTabs,cleanURL}=require('./browsing.cjs');
 const {createPermissions}=require('./site-permissions.cjs');
 const recentlyClosed=closedTabs();let permissions;
 let find={open:false,query:'',matches:0,active:0,requestId:0};
-const {autoUpdater, app, BrowserWindow, WebContentsView, ipcMain, session, Menu, dialog, safeStorage, nativeTheme, systemPreferences, shell, clipboard} = require('electron');
+const {autoUpdater, app, BrowserWindow, WebContentsView, ipcMain, session, Menu, dialog, safeStorage, nativeTheme, systemPreferences, shell, clipboard, screen} = require('electron');
 const path = require('node:path');
 const fs = require('node:fs');
 const {normalizeAddress, canSleep} = require('./policy.cjs');
@@ -56,7 +56,7 @@ let extensionApi,sidePanels,passwords,ai,autofill,wallet,pageAssistant;
 let space=fallbackSpace(settings.spaces),privateSession,privateNetwork,privateServices;
 const homeSpace=()=>fallbackSpace(settings.spaces);
 const selectedInSpace={};
-let toolWindows,inspector,passkeys,siteControls,surfaces,peek,commandBar;
+let toolWindows,inspector,passkeys,siteControls,surfaces,peek,commandBar,media,pip;
 // Spectrum (0.32, spectrum.cjs): today's sites as a band of light in the sidebar; kept on this Mac, never for Private.
 const spectrumFile=path.join(app.getPath('userData'),'spectrum.json');
 const spectrum=require('./spectrum.cjs').createSpectrum({now:()=>Date.now(),load:()=>{if(smoke)return null;try{return JSON.parse(fs.readFileSync(spectrumFile,'utf8'));}catch{return null;}},save:data=>{if(smoke)return;try{fs.mkdirSync(path.dirname(spectrumFile),{recursive:true});fs.writeFileSync(spectrumFile+'.tmp',JSON.stringify(data),{mode:0o600});fs.renameSync(spectrumFile+'.tmp',spectrumFile);}catch{}}});
@@ -107,7 +107,7 @@ function snapshot() {
   const active = tabs.find(t => t.id === activeId);
   const privateMode=space==='private';
   return {popover:{open:toolWindows?.visible()?toolWindows.section():null,returnTo:popoverReturn},account:privateMode?null:accounts.snapshot(),profile:privateMode?null:profile,split,inspecting:!!inspector?.isOpen(),ai:privateMode?null:ai?.snapshot(),updates:updateOverride||updater?.snapshot(),version:require('../package.json').version,blocking:blocker?.snapshot(active?.url,privateMode,active?.view?.webContents.id),space,privateNetwork:privateNetwork?.snapshot(),tabs: tabs.filter(t=>inSpace(t,space)).map(({view,recovery,restoring,scrollCapturePending, ...t}) => ({...t,title:t.customTitle||t.title, sleeping: !view && !!t.url})), activeId, glass,settings:{...settings,extensions:undefined},system:{...accessibility(),dark:nativeTheme.shouldUseDarkColors,accent:privateMode?'#9275b5':accent(),hardwareAcceleration:launchHardwareAcceleration,gpu:app.getGPUFeatureStatus(),restartRequired:settings.hardwareAcceleration!==launchHardwareAcceleration||settings.leanMemory!==launchLeanMemory},extensions:privateMode?[]:services?.extensionRows()||[],sidePanel:privateMode?null:sidePanels?.snapshot()||null,downloads:(privateMode?privateServices:services)?.downloads()||[],imageRevision:privateMode?'private':'normal-'+(services?.imageRevision()||0),images:privateMode?{}:services?.images()||{},passwords:privateMode?{message:'Password vault is disabled in Private.'}:passwords?.status()||{},browserPartition:privateMode?'private-disabled':browserPartition,activeWebContentsId:privateMode?-1:active?.view?.webContents.id||-1,bookmarks:privateMode?[]:library.bookmarks,folders:privateMode?[]:library.folders,theme:library.theme,importReport:privateMode?null:library.importReport,importing,sessionRecovery:sessionStore.status(),recentlyClosed:privateMode?[]:recentlyClosed.list(space),spaceTabs:tabs.reduce((n,t)=>{const k=t.space||'personal';n[k]=(n[k]||0)+1;return n;},{}),
-    find,designTheme,chromium: process.versions.chrome, live: tabs.filter(t => t.view).length,archived:privateMode?0:(library.archive||[]).filter(e=>e.space===space).length,spectrum:privateMode?null:spectrum.revision(),
+    find,designTheme,chromium: process.versions.chrome, live: tabs.filter(t => t.view).length,archived:privateMode?0:(library.archive||[]).filter(e=>e.space===space).length,spectrum:privateMode?null:spectrum.revision(),media:privateMode?null:media?.snapshot()||null,pip:pip?.snapshot()||null,
 
     canBack: !!active?.view?.webContents.navigationHistory.canGoBack(), canForward: !!active?.view?.webContents.navigationHistory.canGoForward()};
 }
@@ -157,7 +157,7 @@ function layout() {
  const area={x:left,y:top+bar+extra,width:Math.max(1,w-left-6-panelWidth-(inspectorWidth?inspectorWidth+8:0)),height:Math.max(1,h-top-6-bar-extra)};pageArea=area;
  const pair=split?splitBounds(area,split.mode,split.ratio):null;
  const buttonY=15;if(win._prismButtonY!==buttonY){win.setWindowButtonPosition?.({x:22,y:buttonY});win._prismButtonY=buttonY;}
- for(const t of tabs)if(t.view){const full=htmlFullscreen===t.view.webContents;const visible=!overlay&&(htmlFullscreen?full:split?split.ids.includes(t.id):t.id===activeId);const bounds=full?{x:0,y:0,width:w,height:h}:pair&&split.ids.includes(t.id)?pair[split.ids.indexOf(t.id)]:area;const radius=full?0:10;if(t.view._prismRadius!==radius){t.view.setBorderRadius(radius);t.view._prismRadius=radius;}const key=JSON.stringify(bounds);if(visible&&t.view._prismBounds!==key){t.view.setBounds(bounds);t.view._prismBounds=key;}if(t.view._prismVisible!==visible){t.view.setVisible(visible);t.view._prismVisible=visible;}}
+ for(const t of tabs)if(t.view&&!t.pip){const full=htmlFullscreen===t.view.webContents;const visible=!overlay&&(htmlFullscreen?full:split?split.ids.includes(t.id):t.id===activeId);const bounds=full?{x:0,y:0,width:w,height:h}:pair&&split.ids.includes(t.id)?pair[split.ids.indexOf(t.id)]:area;const radius=full?0:10;if(t.view._prismRadius!==radius){t.view.setBorderRadius(radius);t.view._prismRadius=radius;}const key=JSON.stringify(bounds);if(visible&&t.view._prismBounds!==key){t.view.setBounds(bounds);t.view._prismBounds=key;}if(t.view._prismVisible!==visible){t.view.setVisible(visible);t.view._prismVisible=visible;}}
  sidePanels?.place(area,!overlay&&!htmlFullscreen&&space!=='private');peek?.follow();
  inspector?.layout({x:w-inspectorWidth-6,y:top+bar,width:Math.max(1,inspectorWidth),height:Math.max(1,h-top-6-bar)},!overlay&&!htmlFullscreen);
 }
@@ -237,7 +237,7 @@ function attach(t) {
   wc.on('will-navigate', (event,url) => {if (!allowedTabURL(url)) {event.preventDefault();openExternalLink(wc,url,isPrivate);}else if(peekLink(t,url))event.preventDefault();});
   wc.on('will-redirect', (event,url,_inPlace,main) => {if (!allowedTabURL(url)) {event.preventDefault();if(main)openExternalLink(wc,url,isPrivate);}});
   wc.on('focus',()=>{if(split?.ids.includes(t.id)&&t.id!==activeId)selectTab(t.id);});
-  wc.on('context-menu',(_event,params)=>{if(t.view!==view||t.id!==activeId)return;const items=pageMenu({wc,params,clipboard,inspect:()=>inspector.open(wc,params),pip:()=>togglePiP(t,params.frame),peek:link=>peek?.open(link,t.space),translate:isPrivate?null:()=>action('page-ai-open-selection'),openTab:(url,activate=true)=>makeTab(url,activate,t.space),bookmark:isPrivate?null:()=>{if(t.id===activeId)action('bookmark-current');},extensions:isPrivate?[]:extensionApi?.getContextMenuItems(wc,params)||[]});Menu.buildFromTemplate(items).popup({window:win});});
+  wc.on('context-menu',(_event,params)=>{if(t.view!==view||t.id!==activeId)return;const items=pageMenu({wc,params,clipboard,inspect:()=>inspector.open(wc,params),pip:()=>pictureInPicture(t,params.frame),peek:link=>peek?.open(link,t.space),translate:isPrivate?null:()=>action('page-ai-open-selection'),openTab:(url,activate=true)=>makeTab(url,activate,t.space),bookmark:isPrivate?null:()=>{if(t.id===activeId)action('bookmark-current');},extensions:isPrivate?[]:extensionApi?.getContextMenuItems(wc,params)||[]});Menu.buildFromTemplate(items).popup({window:win});});
   wc.on('page-title-updated', (_e,title) => {t.title=title;if(!isPrivate){const row=library.history.find(x=>x.url===cleanURL(wc.getURL()));if(row){row.title=String(title).slice(0,500);saveLibrary();}}emitLazy();});
   wc.on('did-start-loading', () => {t.loading=true; t.error=''; emit();});
   wc.on('did-start-navigation',(_event,_url,inPlace,main)=>{if(main){if(t.id===activeId){pageAssistant?.cancel();if(toolWindows?.section()==='page-assistant')toolWindows.closeAll();}if(htmlFullscreen===wc)exitPageFullscreen();if(t.id===activeId){passwords?.cancelPicker();autofill?.dismiss();}if(!inPlace)t.navigationVersion++;}});
@@ -247,8 +247,8 @@ function attach(t) {
   const navigated = (_event,_url,main=true) => {if(!main)return;t.url=wc.getURL();t.dirty=false;captureNavigation(t);if(t.id===activeId)spectrum.presence(t.url,t.space);if(!isPrivate){library.history=visit(library.history,t);saveLibrary();}if(t.id===activeId)closeFind(false);emit();persist();};
   wc.on('did-navigate',()=>navigated()); wc.on('did-navigate-in-page', navigated);
   wc.on('found-in-page',(_event,result)=>{if(t.id===activeId&&find.open&&result.requestId===find.requestId){find.matches=result.matches;find.active=result.activeMatchOrdinal;emit();}});
-  wc.on('media-started-playing', () => {t.audible=true; emit();});
-  wc.on('media-paused', () => {t.audible=wc.isCurrentlyAudible(); emit();});
+  wc.on('media-started-playing', () => {t.audible=true; emit();media?.update(t);});
+  wc.on('media-paused', () => {t.audible=wc.isCurrentlyAudible(); emit();media?.update(t);});
   wc.on('did-fail-load', (_e,code,description,_url,main) => {if (main && code!==-3) {t.error=description; emit();}});
   wc.on('render-process-gone', (_e,details) => {t.error='Page stopped: '+details.reason; dispose(t); emit();});
   wc.on('before-input-event', (event,input) => {
@@ -270,7 +270,7 @@ function dispose(t) {
   if(htmlFullscreen===t.view?.webContents)exitPageFullscreen();
   if(t.id===activeId)autofill?.dismiss();
   captureNavigation(t);if(t.id===activeId)passwords?.cancelPicker();
-  const view=t.view; if (!view) return;
+  const view=t.view; if (!view) return;media?.forget(t.id);
   t.view=null; t.loading=false; t.audible=false;
   win?.contentView.removeChildView(view);
   if (!view.webContents.isDestroyed()) {if(t.space!=='private'){sidePanels?.forgetTab(view.webContents.id);extensionApi?.removeTab(view.webContents);}view.webContents.close();}
@@ -280,11 +280,13 @@ function selectTab(id) {
   autofill?.dismiss();
   const t=tabs.find(t=>t.id===id); if (!t) return;
   const old=tabs.find(t=>t.id===activeId); if (old){old.lastUsed=Date.now();captureScroll(old);}
+  // Picture in picture (0.32): leaving a tab whose video is playing floats the video; coming back to it returns it.
+  if(t.pip)pip?.end('return');else if(old&&old.id!==id&&settings.autoPip&&old.view&&old.audible&&!old.pip&&!split?.ids.includes(old.id))pip?.enter(old,{auto:true});
   if(id!==activeId){closeFind(false);passwords?.closeManager();}
   space=t.space||'personal';tabSelection.select(t.id);selectedInSpace[space]=id;activeId=id; t.lastUsed=Date.now(); attach(t); if(t.view&&space!=='private')extensionApi?.selectTab(t.view.webContents);sidePanels?.sync();layout(); emit(); persist();queueFavoriteThumbnail(t);spectrum.presence(t.url,t.space);
 }
 async function sleepTab(t, manual=false) {
-  if (!t?.view||t.id===activeId||split?.ids.includes(t.id)||t.keepAwake||t.loading||t.audible) return false;
+  if (!t?.view||t.pip||t.id===activeId||split?.ids.includes(t.id)||t.keepAwake||t.loading||t.audible) return false;
   if(!manual&&Date.now()-t.lastUsed<settings.sleepMinutes*60000)return false;
   const view=t.view,wc=view.webContents,version=t.navigationVersion;
   try {const state=await wc.executeJavaScriptInIsolatedWorld(999,[{code:tracker}]); if(state.pip)return false;t.dirty=state.dirty;t.frames=state.frames&&await framesHoldState(wc.mainFrame);t.capturing=wc.isBeingCaptured(); t.audible=state.media || wc.isCurrentlyAudible();} catch {return false;}
@@ -353,6 +355,7 @@ async function closeTab(id) {
     } catch {}
   }
   if(!tabs.includes(t))return;
+  if(t.pip)await pip?.end('close');media?.forget(t.id);
   recentlyClosed.push(t);if(id===activeId)closeFind(false);
   if(split?.ids.includes(id))split=null;tabSelection.remove(id);const index=tabs.indexOf(t); dispose(t); tabs.splice(index,1);
   if(activeId===id){const remaining=tabs.filter(x=>inSpace(x,space));if(remaining.length)selectTab(tabSelection.previous(remaining).id);else makeTab();}
@@ -389,6 +392,8 @@ function command(key) {
   if (key==='r'){const wc=tabs.find(t=>t.id===activeId)?.view?.webContents;if(wc){wc.reload();feedback('reload');}}
   if (key==='R'){const wc=tabs.find(t=>t.id===activeId)?.view?.webContents;if(wc){wc.reloadIgnoringCache();feedback('hard-reload');}}
 }
+// Prism's own picture in picture (pip.cjs) for a video on the page; Chromium's for a video inside a frame.
+async function pictureInPicture(t,frame){if(!t?.view)return {error:'Open a video first.'};if(pip?.active()===t){await pip.end('return');return;}if(!frame||frame===t.view.webContents.mainFrame){if(await pip?.enter(t))return;}return togglePiP(t,frame);}
 async function togglePiP(t,frame){
  if(!t?.view)return {error:'Open a video first.'};try{return frame?await frame.executeJavaScript(pipScript,true):await t.view.webContents.executeJavaScriptInIsolatedWorld(999,[{code:pipScript}],true);}catch{return {error:'This video cannot enter picture-in-picture. Its site or player may restrict it.'};}
 }
@@ -469,7 +474,9 @@ async function action(name,value) {
  if(name==='split-swap'&&split){split.ids.reverse();layout();emit();return;}
  if(name==='inspect'){const tab=tabs.find(t=>t.id===activeId);if(!tab?.view)return {error:'Open a page first.'};toolWindows?.closeAll();inspector.open(tab.view.webContents);return;}
  if(name==='inspect-close'){inspector.close();return;}
- if(name==='pip')return togglePiP(tabs.find(t=>t.id===activeId));
+ if(name==='pip')return pictureInPicture(tabs.find(t=>t.id===activeId));
+ if(name==='media'&&typeof value==='string'){if(value==='show'){const id=media?.tabId();if(id!=null)selectTab(id);return;}if(value==='pip'){const tab=tabs.find(x=>x.id===media?.tabId());return tab?pictureInPicture(tab):undefined;}if(['toggle','back','forward','close'].includes(value))return media?.control(value);return;}
+ if(name==='pip-return'){const tab=pip?.active();if(tab)await pip.end('return');return;}
 
   if(name==='autofill-dismiss'){autofill?.dismiss();return;}
   if(name?.startsWith('wallet-')){if(space==='private')return {error:'Cards are disabled in Private.'};if(name==='wallet-list')return wallet.list();if(name==='wallet-save'){wallet.save(value);return {message:'Card saved encrypted on this Mac.'};}if(name==='wallet-remove'){wallet.remove(value);return;}}
@@ -748,6 +755,10 @@ app.whenReady().then(async()=>{
   inspector=require('./inspector.cjs').createInspector({WebContentsView,parent:()=>win,changed:()=>{layout();emit();}});
   surfaces=require('./surfaces.cjs').createSurfaces(ipcMain);
   commandBar=require('./command-bar.cjs').createCommandBar({BrowserWindow,parent:()=>win,surfaces,entries:commandEntries,run:commandRun,look:()=>({dark:nativeTheme.shouldUseDarkColors,language:settings.language,reduceMotion:!!settings.reduceMotion||systemPreferences.getAnimationSettings().prefersReducedMotion})});
+  media=require('./media.cjs').createMedia({tabs:()=>tabs,visibleIds:()=>split?split.ids:[activeId],emit});
+  pip=require('./pip.cjs').createPip({BrowserWindow,WebContentsView,screen,parent:()=>win,surfaces,onChange:()=>{layout();emit();},reduceMotion:()=>!!settings.reduceMotion||systemPreferences.getAnimationSettings().prefersReducedMotion,
+   detach:t=>{win.contentView.removeChildView(t.view);t.view.setVisible(true);t.view._prismVisible=null;t.view._prismBounds=null;t.view._prismRadius=null;},
+   attachBack:(t,show)=>{if(!win||win.isDestroyed()||!t.view)return;win.contentView.addChildView(t.view);t.view._prismVisible=null;t.view._prismBounds=null;t.view._prismRadius=null;if(show&&tabs.includes(t))selectTab(t.id);else layout();}});
   peek=require('./peek.cjs').createPeek({BrowserWindow,WebContentsView,parent:()=>win,pageArea:()=>pageArea,webPreferences:tabSpace=>pageWebPreferences(tabSpace==='private'),surfaces,openTab:(url,tabSpace)=>makeTab(url,true,tabSpace),
    configure:(wc,tabSpace)=>{const isPrivate=tabSpace==='private';blocker?.attach(wc,isPrivate);wc.setZoomFactor(settings.pageZoom);applyPinch(wc);if(isPrivate)wc.setWebRTCIPHandlingPolicy('disable_non_proxied_udp');},
    reduceMotion:()=>!!settings.reduceMotion||systemPreferences.getAnimationSettings().prefersReducedMotion,dark:()=>nativeTheme.shouldUseDarkColors});
@@ -769,14 +780,14 @@ app.whenReady().then(async()=>{
     if(dirty||services.hasActiveDownloads()||privateServices.hasActiveDownloads()){const answer=await dialog.showMessageBox(win,{type:'question',message:'Close Prism?',detail:dirty?'Some tabs contain unsaved input. Closing will discard it.':'Downloads are still running. Closing will interrupt them.',buttons:['Keep browsing','Close Prism'],defaultId:0,cancelId:0});if(answer.response!==1){restartRequested=false;installUpdateRequested=false;return;}}
     for(const t of tabs){captureNavigation(t);await captureScroll(t);}persist();sessionStore.flush();flushLibrary();if(installUpdateRequested&&localUpdater?.snapshot().configured){if(await localUpdater.install()){services.close();privateServices.close();await privateNetwork.close().catch(()=>{});app.exit(0);return;}installUpdateRequested=false;emit();return;}closingApproved=true;services.close();privateServices.close();await privateNetwork.close();if(installUpdateRequested){updater.install();return;}if(restartRequested)app.relaunch();win.close();
   });
-  win.on('closed',()=>{quitting=true;spectrum.flush();autofill?.destroy();updater?.close();toolWindows.destroy(); clearInterval(timer);clearInterval(scrollTimer);sessionStore.close();flushLibrary();for(const t of tabs)if(t.view&&!t.view.webContents.isDestroyed())t.view.webContents.close();win=null;app.quit();});
+  win.on('closed',()=>{quitting=true;spectrum.flush();pip?.end('close').catch(()=>{});autofill?.destroy();updater?.close();toolWindows.destroy(); clearInterval(timer);clearInterval(scrollTimer);sessionStore.close();flushLibrary();for(const t of tabs)if(t.view&&!t.view.webContents.isDestroyed())t.view.webContents.close();win=null;app.quit();});
   let sweeping=false;timer=setInterval(async()=>{if(sweeping)return;sweeping=true;try{for(const t of [...tabs]){if(quitting)break;await sleepTab(t);}if(!quitting){await enforceAwakeBudget();await memoryManager?.sweep();archiveIdle();}}finally{sweeping=false;}},30000);
   scrollTimer=setInterval(()=>{captureScroll(tabs.find(t=>t.id===activeId));},5000);
   win.webContents.on('did-finish-load',()=>{passwords?.closeManager();stateTransport.reset();emit();});
   win.show();localUpdater?.healthy(); emit();if(!smoke)setTimeout(()=>toolWindows?.prewarm(),4000).unref?.();externalReady=true;for(const url of pendingExternal.splice(0))receiveExternal(url);
   if(process.argv.includes('--import-arc')&&!smoke) importArc().then(result=>console.log('Arc import:',JSON.stringify(result)));
   // PRISM_TEST_FLOW=<name> runs one flow from test/ on its own (development; smoke profile only).
-  if(smoke) require(process.env.PRISM_TEST_FLOW?'../test/'+path.basename(process.env.PRISM_TEST_FLOW):process.env.PRISM_TEST_PRIVATE_PUBLIC==='1'?'../test/private-public-flow.cjs':restartTest?'../test/restart-flow.cjs':process.env.PRISM_TEST_COMPATIBILITY==='1'?'../test/compatibility-flow.cjs':process.env.PRISM_PERFORMANCE==='1'?'../test/performance-flow.cjs':process.env.PRISM_TEST_CREDENTIALS==='1'?'../test/credentials-flow.cjs':process.env.PRISM_TEST_RECOVERY==='1'?'../test/recovery-flow.cjs':process.env.PRISM_TEST_BASICS==='1'?'../test/basics-flow.cjs':process.env.PRISM_BENCHMARK==='1'?'../test/benchmark.cjs':process.env.PRISM_TEST_STORE==='1'?'../test/store.cjs':'../test/smoke.cjs').run({app,win,makeTab,selectTab,sleepTab,archiveIdle,spectrum,commandBar:()=>commandBar,peek:()=>peek,library:()=>library,enforceAwakeBudget,action,snapshot,tabs,settings,services,passwords,autofill,wallet,ai,toolWindows,inspector,sessionStore,captureScroll,restoreSession,dispose,privateController:()=>privateNetwork,sidePanels:()=>sidePanels,showWhatsNew,whatsNewWindow:()=>whatsNewWindow,checkWhatsNew,passkeys:()=>passkeys,setUpdateOverride:value=>{updateOverride=value;emit();}}).catch(error=>{console.error(error);app.exit(1);});
+  if(smoke) require(process.env.PRISM_TEST_FLOW?'../test/'+path.basename(process.env.PRISM_TEST_FLOW):process.env.PRISM_TEST_PRIVATE_PUBLIC==='1'?'../test/private-public-flow.cjs':restartTest?'../test/restart-flow.cjs':process.env.PRISM_TEST_COMPATIBILITY==='1'?'../test/compatibility-flow.cjs':process.env.PRISM_PERFORMANCE==='1'?'../test/performance-flow.cjs':process.env.PRISM_TEST_CREDENTIALS==='1'?'../test/credentials-flow.cjs':process.env.PRISM_TEST_RECOVERY==='1'?'../test/recovery-flow.cjs':process.env.PRISM_TEST_BASICS==='1'?'../test/basics-flow.cjs':process.env.PRISM_BENCHMARK==='1'?'../test/benchmark.cjs':process.env.PRISM_TEST_STORE==='1'?'../test/store.cjs':'../test/smoke.cjs').run({app,win,makeTab,selectTab,sleepTab,archiveIdle,spectrum,pip:()=>pip,media:()=>media,commandBar:()=>commandBar,peek:()=>peek,library:()=>library,enforceAwakeBudget,action,snapshot,tabs,settings,services,passwords,autofill,wallet,ai,toolWindows,inspector,sessionStore,captureScroll,restoreSession,dispose,privateController:()=>privateNetwork,sidePanels:()=>sidePanels,showWhatsNew,whatsNewWindow:()=>whatsNewWindow,checkWhatsNew,passkeys:()=>passkeys,setUpdateOverride:value=>{updateOverride=value;emit();}}).catch(error=>{console.error(error);app.exit(1);});
 });
 app.on('second-instance',()=>{if(win){if(win.isMinimized())win.restore();win.show();win.focus();}});
 app.on('window-all-closed',()=>app.quit());
