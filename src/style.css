@@ -920,3 +920,30 @@ img.glass-fallback{visibility:hidden!important}
 .tab.archived:hover .archive-when{display:none}
 .archive-clear{display:block;margin:4px 0 0 auto;padding:4px 10px;border-radius:7px;color:var(--muted);font-size:.76rem;background:transparent}
 .archive-clear:hover{background:color-mix(in srgb,var(--ink) 6%,transparent);color:var(--ink)}
+/* 0.32 · Spectrum (spectrum-ui.js): today as a band of light. Stripes are soft, saturated light; a sheen on top makes
+   the band read as glass. It grows a little on hover so it can be read and scrubbed. */
+#spectrum{position:relative;margin:2px 4px 8px}
+.spectrum-band{position:relative;height:14px;display:flex;align-items:center;cursor:pointer;outline:none;-webkit-app-region:no-drag}
+.spectrum-track{position:relative;flex:1;height:4px;border-radius:3px;overflow:hidden;background:color-mix(in srgb,var(--ink) 7%,transparent);box-shadow:inset 0 0 0 .5px color-mix(in srgb,var(--ink) 8%,transparent);transition:height .2s var(--ease-out,ease),border-radius .2s}
+.spectrum-track:after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,#ffffff70,#ffffff00 55%,#00000010);mix-blend-mode:soft-light;pointer-events:none}
+.spectrum-stripe{position:absolute;top:0;bottom:0;background:linear-gradient(90deg,hsl(var(--h) 78% 64%),hsl(calc(var(--h) + 18) 82% 66%));box-shadow:0 0 6px hsl(var(--h) 90% 60% / .55)}
+:root[data-theme=dark] .spectrum-stripe{background:hsl(var(--h) 70% 62%)}
+#spectrum.hover .spectrum-track,#spectrum.open .spectrum-track,.spectrum-band:focus-visible .spectrum-track{height:10px;border-radius:5px}
+.spectrum-band:focus-visible .spectrum-track{box-shadow:0 0 0 2px color-mix(in srgb,var(--accent) 45%,transparent)}
+.spectrum-cursor{position:absolute;top:0;bottom:0;width:2px;margin-left:-1px;border-radius:1px;background:var(--ink);opacity:0;box-shadow:0 0 0 1px color-mix(in srgb,var(--chrome) 70%,transparent);transition:opacity .15s;pointer-events:none}
+#spectrum.hover .spectrum-cursor,#spectrum.open .spectrum-cursor{opacity:.85}
+.spectrum-label{position:absolute;bottom:100%;left:var(--x,50%);transform:translate(-50%,-4px);display:flex;gap:6px;padding:3px 8px;border-radius:7px;white-space:nowrap;font-size:11px;color:var(--ink);background:color-mix(in srgb,var(--raised) 88%,transparent);box-shadow:0 4px 14px #0000001f,inset 0 0 0 .5px var(--line);opacity:0;pointer-events:none;transition:opacity .15s;-webkit-backdrop-filter:blur(18px);backdrop-filter:blur(18px)}
+.spectrum-host{color:var(--muted)}
+#spectrum.hover .spectrum-label{opacity:1}#spectrum.open .spectrum-label{opacity:0}
+.spectrum-card{position:absolute;left:0;right:0;bottom:calc(100% + 10px);z-index:30;padding:12px;border-radius:14px;background:color-mix(in srgb,var(--raised) 92%,transparent);box-shadow:0 18px 44px #00000033,inset 0 0 0 .5px var(--line);-webkit-backdrop-filter:blur(24px) saturate(1.4);backdrop-filter:blur(24px) saturate(1.4);animation:spectrumIn .18s var(--ease-out,ease)}
+@keyframes spectrumIn{from{opacity:0;transform:translateY(4px) scale(.98)}to{opacity:1;transform:none}}
+.spectrum-card-head{display:flex;align-items:baseline;justify-content:space-between;gap:8px;margin:0 2px 8px}
+.spectrum-card-head strong{font-size:12.5px;font-weight:600}.spectrum-card-head small{font-size:11px;color:var(--muted)}
+.spectrum-row{display:flex;align-items:center;gap:8px;height:26px;padding:0 2px;font-size:12px;overflow:hidden}
+.spectrum-row>span:last-child{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.spectrum-row .tab-icon{transform:scale(.85)}
+.spectrum-more{display:block;margin:2px 2px 0;color:var(--muted);font-size:11px}
+.spectrum-card-actions{display:flex;justify-content:flex-end;margin-top:10px}
+.spectrum-restore{height:28px;padding:0 12px;border-radius:999px;font-size:12px;font-weight:500;color:#fff;background:color-mix(in srgb,var(--accent) 78%,#000);box-shadow:0 1px 2px #0002}
+.spectrum-restore:hover{filter:brightness(1.06)}.spectrum-restore:active{transform:scale(.97)}
+[data-motion=reduced] .spectrum-card,[data-motion=reduced] .spectrum-track{animation:none;transition:none}

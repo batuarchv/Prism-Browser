@@ -56,7 +56,18 @@ let extensionApi,sidePanels,passwords,ai,autofill,wallet,pageAssistant;
 let space=fallbackSpace(settings.spaces),privateSession,privateNetwork,privateServices;
 const homeSpace=()=>fallbackSpace(settings.spaces);
 const selectedInSpace={};
-let toolWindows,inspector,passkeys,siteControls,surfaces,peek,commandBar;const passkeyFile=path.join(app.getPath('userData'),'passkeys.enc');
+let toolWindows,inspector,passkeys,siteControls,surfaces,peek,commandBar;
+// Spectrum (0.32, spectrum.cjs): today's sites as a band of light in the sidebar; kept on this Mac, never for Private.
+const spectrumFile=path.join(app.getPath('userData'),'spectrum.json');
+const spectrum=require('./spectrum.cjs').createSpectrum({now:()=>Date.now(),load:()=>{if(smoke)return null;try{return JSON.parse(fs.readFileSync(spectrumFile,'utf8'));}catch{return null;}},save:data=>{if(smoke)return;try{fs.mkdirSync(path.dirname(spectrumFile),{recursive:true});fs.writeFileSync(spectrumFile+'.tmp',JSON.stringify(data),{mode:0o600});fs.renameSync(spectrumFile+'.tmp',spectrumFile);}catch{}}});
+function spectrumAction(name,value){
+ if(space==='private')return null;
+ if(name==='spectrum-view')return spectrum.view();
+ const time=Number(value?.time);if(!Number.isFinite(time))return null;const moment=spectrum.at(time,space);
+ if(name==='spectrum-at')return moment;
+ if(name==='spectrum-restore'&&moment){const open=new Set(tabs.filter(t=>inSpace(t,space)).map(t=>t.url));let count=0;for(const item of moment.tabs)if(!open.has(item.url)){const t=makeTab(item.url,false,space);t.title=item.title||t.title;open.add(item.url);count++;}persist();emit();return {message:count?(count===1?'1 tab is back, asleep until you open it.':count+' tabs are back, asleep until you open them.'):'Those tabs are already open.'};}
+ return null;
+}const passkeyFile=path.join(app.getPath('userData'),'passkeys.enc');
 function readPasskeys(){try{return fs.existsSync(passkeyFile)?JSON.parse(safeStorage.decryptString(fs.readFileSync(passkeyFile))):[];}catch{return [];}}let split=null;let tidyUndo=null;
 const profileFile=path.join(app.getPath('userData'),'profile.json');let profileExists=!smoke&&fs.existsSync(profileFile);let profile={name:'',email:'',theme:'Glacier',createdAt:null};if(!smoke)try{profile=normalizeProfile(JSON.parse(fs.readFileSync(profileFile,'utf8')));}catch{}
 const accounts=require('./accounts.cjs').createAccounts({file:path.join(app.getPath('userData'),'account-session.enc'),safeStorage});
@@ -96,7 +107,7 @@ function snapshot() {
   const active = tabs.find(t => t.id === activeId);
   const privateMode=space==='private';
   return {popover:{open:toolWindows?.visible()?toolWindows.section():null,returnTo:popoverReturn},account:privateMode?null:accounts.snapshot(),profile:privateMode?null:profile,split,inspecting:!!inspector?.isOpen(),ai:privateMode?null:ai?.snapshot(),updates:updateOverride||updater?.snapshot(),version:require('../package.json').version,blocking:blocker?.snapshot(active?.url,privateMode,active?.view?.webContents.id),space,privateNetwork:privateNetwork?.snapshot(),tabs: tabs.filter(t=>inSpace(t,space)).map(({view,recovery,restoring,scrollCapturePending, ...t}) => ({...t,title:t.customTitle||t.title, sleeping: !view && !!t.url})), activeId, glass,settings:{...settings,extensions:undefined},system:{...accessibility(),dark:nativeTheme.shouldUseDarkColors,accent:privateMode?'#9275b5':accent(),hardwareAcceleration:launchHardwareAcceleration,gpu:app.getGPUFeatureStatus(),restartRequired:settings.hardwareAcceleration!==launchHardwareAcceleration||settings.leanMemory!==launchLeanMemory},extensions:privateMode?[]:services?.extensionRows()||[],sidePanel:privateMode?null:sidePanels?.snapshot()||null,downloads:(privateMode?privateServices:services)?.downloads()||[],imageRevision:privateMode?'private':'normal-'+(services?.imageRevision()||0),images:privateMode?{}:services?.images()||{},passwords:privateMode?{message:'Password vault is disabled in Private.'}:passwords?.status()||{},browserPartition:privateMode?'private-disabled':browserPartition,activeWebContentsId:privateMode?-1:active?.view?.webContents.id||-1,bookmarks:privateMode?[]:library.bookmarks,folders:privateMode?[]:library.folders,theme:library.theme,importReport:privateMode?null:library.importReport,importing,sessionRecovery:sessionStore.status(),recentlyClosed:privateMode?[]:recentlyClosed.list(space),spaceTabs:tabs.reduce((n,t)=>{const k=t.space||'personal';n[k]=(n[k]||0)+1;return n;},{}),
-    find,designTheme,chromium: process.versions.chrome, live: tabs.filter(t => t.view).length,archived:privateMode?0:(library.archive||[]).filter(e=>e.space===space).length,
+    find,designTheme,chromium: process.versions.chrome, live: tabs.filter(t => t.view).length,archived:privateMode?0:(library.archive||[]).filter(e=>e.space===space).length,spectrum:privateMode?null:spectrum.revision(),
 
     canBack: !!active?.view?.webContents.navigationHistory.canGoBack(), canForward: !!active?.view?.webContents.navigationHistory.canGoForward()};
 }
@@ -108,7 +119,7 @@ function queueEmit(gap) { const due=Math.max(Date.now(),lastEmit+gap);if(emitTim
 function sendState() { emitTimer=null;lastEmit=Date.now();if(win&&!win.isDestroyed()&&!win.webContents.isDestroyed())win.webContents.send('state',stateTransport.prepare(snapshot()));toolWindows?.publish(); }
 function persist() {
   if(restoringSession)return;
-  sessionStore.schedule(captureSnapshot(tabs,activeId,selectedInSpace));
+  sessionStore.schedule(captureSnapshot(tabs,activeId,selectedInSpace));spectrum.moment(tabs);
 }
 function captureNavigation(t){
  if(t.space==='private'||t.restoring||!t.view?.webContents||t.view.webContents.isDestroyed())return;
@@ -233,7 +244,7 @@ function attach(t) {
   wc.on('did-stop-loading', () => {t.loading=false; emit();if(!isPrivate&&t.id===activeId&&library.bookmarks.some(b=>b.favorite&&b.url===t.url))services?.thumbnail(t);});
   wc.on('page-favicon-updated',(_event,urls)=>{if(!isPrivate&&/^https?:/.test(t.url)&&library.bookmarks.some(b=>new URL(b.url).origin===new URL(t.url).origin)&&urls[0])services?.favicon(t.url,urls[0]);});
   wc.on('dom-ready', () => {applyPinch(wc);if(!isPrivate)siteControls?.apply(wc).catch(()=>{});wc.executeJavaScriptInIsolatedWorld(999,[{code:tracker}]).catch(()=>{});});
-  const navigated = (_event,_url,main=true) => {if(!main)return;t.url=wc.getURL();t.dirty=false;captureNavigation(t);if(!isPrivate){library.history=visit(library.history,t);saveLibrary();}if(t.id===activeId)closeFind(false);emit();persist();};
+  const navigated = (_event,_url,main=true) => {if(!main)return;t.url=wc.getURL();t.dirty=false;captureNavigation(t);if(t.id===activeId)spectrum.presence(t.url,t.space);if(!isPrivate){library.history=visit(library.history,t);saveLibrary();}if(t.id===activeId)closeFind(false);emit();persist();};
   wc.on('did-navigate',()=>navigated()); wc.on('did-navigate-in-page', navigated);
   wc.on('found-in-page',(_event,result)=>{if(t.id===activeId&&find.open&&result.requestId===find.requestId){find.matches=result.matches;find.active=result.activeMatchOrdinal;emit();}});
   wc.on('media-started-playing', () => {t.audible=true; emit();});
@@ -270,7 +281,7 @@ function selectTab(id) {
   const t=tabs.find(t=>t.id===id); if (!t) return;
   const old=tabs.find(t=>t.id===activeId); if (old){old.lastUsed=Date.now();captureScroll(old);}
   if(id!==activeId){closeFind(false);passwords?.closeManager();}
-  space=t.space||'personal';tabSelection.select(t.id);selectedInSpace[space]=id;activeId=id; t.lastUsed=Date.now(); attach(t); if(t.view&&space!=='private')extensionApi?.selectTab(t.view.webContents);sidePanels?.sync();layout(); emit(); persist();queueFavoriteThumbnail(t);
+  space=t.space||'personal';tabSelection.select(t.id);selectedInSpace[space]=id;activeId=id; t.lastUsed=Date.now(); attach(t); if(t.view&&space!=='private')extensionApi?.selectTab(t.view.webContents);sidePanels?.sync();layout(); emit(); persist();queueFavoriteThumbnail(t);spectrum.presence(t.url,t.space);
 }
 async function sleepTab(t, manual=false) {
   if (!t?.view||t.id===activeId||split?.ids.includes(t.id)||t.keepAwake||t.loading||t.audible) return false;
@@ -383,6 +394,7 @@ async function togglePiP(t,frame){
 }
 async function action(name,value) {
  if(name.startsWith('archive-'))return archiveAction(name,value);
+ if(name.startsWith('spectrum-'))return spectrumAction(name,value);
  if(name==='instagram-app-open'){
   const isPrivate=space==='private';
   instagramApp?.open({session:isPrivate?privateSession:session.fromPartition(browserPartition),isPrivate,space});
@@ -730,6 +742,7 @@ app.whenReady().then(async()=>{
   wallet=require('./wallet.cjs').createWallet({read:readCards,write:rows=>saveEncrypted(walletFile,rows)});
   autofill=require('./autofill.cjs').createAutofill({WebContentsView,ipcMain,window:()=>win,activeTab:()=>tabs.find(t=>t.id===activeId),readVault,wallet,settings,nativeTheme,isOverlay:()=>overlay||toolWindows?.visible()});
   win.on('blur',()=>autofill.dismiss());
+  const front=()=>tabs.find(t=>t.id===activeId);win.on('blur',()=>spectrum.focus(false,'',space));win.on('focus',()=>spectrum.focus(true,front()?.url,space));
   updater=localUpdater?.snapshot().configured?localUpdater:createUpdater({autoUpdater,app,config:require('./update-config.json'),onChange:emit});updater.schedule(settings.automaticUpdates);if(settings.automaticUpdates&&localUpdater?.snapshot().configured){localUpdater.watchFeed();app.on('did-become-active',()=>localUpdater.resumed());}checkWhatsNew();
   memoryManager=require('./memory-manager.cjs').createMemoryManager({app,session:ses,settings,tabs:()=>tabs,activeId:()=>activeId,sleepTab});
   inspector=require('./inspector.cjs').createInspector({WebContentsView,parent:()=>win,changed:()=>{layout();emit();}});
@@ -756,14 +769,14 @@ app.whenReady().then(async()=>{
     if(dirty||services.hasActiveDownloads()||privateServices.hasActiveDownloads()){const answer=await dialog.showMessageBox(win,{type:'question',message:'Close Prism?',detail:dirty?'Some tabs contain unsaved input. Closing will discard it.':'Downloads are still running. Closing will interrupt them.',buttons:['Keep browsing','Close Prism'],defaultId:0,cancelId:0});if(answer.response!==1){restartRequested=false;installUpdateRequested=false;return;}}
     for(const t of tabs){captureNavigation(t);await captureScroll(t);}persist();sessionStore.flush();flushLibrary();if(installUpdateRequested&&localUpdater?.snapshot().configured){if(await localUpdater.install()){services.close();privateServices.close();await privateNetwork.close().catch(()=>{});app.exit(0);return;}installUpdateRequested=false;emit();return;}closingApproved=true;services.close();privateServices.close();await privateNetwork.close();if(installUpdateRequested){updater.install();return;}if(restartRequested)app.relaunch();win.close();
   });
-  win.on('closed',()=>{quitting=true;autofill?.destroy();updater?.close();toolWindows.destroy(); clearInterval(timer);clearInterval(scrollTimer);sessionStore.close();flushLibrary();for(const t of tabs)if(t.view&&!t.view.webContents.isDestroyed())t.view.webContents.close();win=null;app.quit();});
+  win.on('closed',()=>{quitting=true;spectrum.flush();autofill?.destroy();updater?.close();toolWindows.destroy(); clearInterval(timer);clearInterval(scrollTimer);sessionStore.close();flushLibrary();for(const t of tabs)if(t.view&&!t.view.webContents.isDestroyed())t.view.webContents.close();win=null;app.quit();});
   let sweeping=false;timer=setInterval(async()=>{if(sweeping)return;sweeping=true;try{for(const t of [...tabs]){if(quitting)break;await sleepTab(t);}if(!quitting){await enforceAwakeBudget();await memoryManager?.sweep();archiveIdle();}}finally{sweeping=false;}},30000);
   scrollTimer=setInterval(()=>{captureScroll(tabs.find(t=>t.id===activeId));},5000);
   win.webContents.on('did-finish-load',()=>{passwords?.closeManager();stateTransport.reset();emit();});
   win.show();localUpdater?.healthy(); emit();if(!smoke)setTimeout(()=>toolWindows?.prewarm(),4000).unref?.();externalReady=true;for(const url of pendingExternal.splice(0))receiveExternal(url);
   if(process.argv.includes('--import-arc')&&!smoke) importArc().then(result=>console.log('Arc import:',JSON.stringify(result)));
   // PRISM_TEST_FLOW=<name> runs one flow from test/ on its own (development; smoke profile only).
-  if(smoke) require(process.env.PRISM_TEST_FLOW?'../test/'+path.basename(process.env.PRISM_TEST_FLOW):process.env.PRISM_TEST_PRIVATE_PUBLIC==='1'?'../test/private-public-flow.cjs':restartTest?'../test/restart-flow.cjs':process.env.PRISM_TEST_COMPATIBILITY==='1'?'../test/compatibility-flow.cjs':process.env.PRISM_PERFORMANCE==='1'?'../test/performance-flow.cjs':process.env.PRISM_TEST_CREDENTIALS==='1'?'../test/credentials-flow.cjs':process.env.PRISM_TEST_RECOVERY==='1'?'../test/recovery-flow.cjs':process.env.PRISM_TEST_BASICS==='1'?'../test/basics-flow.cjs':process.env.PRISM_BENCHMARK==='1'?'../test/benchmark.cjs':process.env.PRISM_TEST_STORE==='1'?'../test/store.cjs':'../test/smoke.cjs').run({app,win,makeTab,selectTab,sleepTab,archiveIdle,commandBar:()=>commandBar,peek:()=>peek,library:()=>library,enforceAwakeBudget,action,snapshot,tabs,settings,services,passwords,autofill,wallet,ai,toolWindows,inspector,sessionStore,captureScroll,restoreSession,dispose,privateController:()=>privateNetwork,sidePanels:()=>sidePanels,showWhatsNew,whatsNewWindow:()=>whatsNewWindow,checkWhatsNew,passkeys:()=>passkeys,setUpdateOverride:value=>{updateOverride=value;emit();}}).catch(error=>{console.error(error);app.exit(1);});
+  if(smoke) require(process.env.PRISM_TEST_FLOW?'../test/'+path.basename(process.env.PRISM_TEST_FLOW):process.env.PRISM_TEST_PRIVATE_PUBLIC==='1'?'../test/private-public-flow.cjs':restartTest?'../test/restart-flow.cjs':process.env.PRISM_TEST_COMPATIBILITY==='1'?'../test/compatibility-flow.cjs':process.env.PRISM_PERFORMANCE==='1'?'../test/performance-flow.cjs':process.env.PRISM_TEST_CREDENTIALS==='1'?'../test/credentials-flow.cjs':process.env.PRISM_TEST_RECOVERY==='1'?'../test/recovery-flow.cjs':process.env.PRISM_TEST_BASICS==='1'?'../test/basics-flow.cjs':process.env.PRISM_BENCHMARK==='1'?'../test/benchmark.cjs':process.env.PRISM_TEST_STORE==='1'?'../test/store.cjs':'../test/smoke.cjs').run({app,win,makeTab,selectTab,sleepTab,archiveIdle,spectrum,commandBar:()=>commandBar,peek:()=>peek,library:()=>library,enforceAwakeBudget,action,snapshot,tabs,settings,services,passwords,autofill,wallet,ai,toolWindows,inspector,sessionStore,captureScroll,restoreSession,dispose,privateController:()=>privateNetwork,sidePanels:()=>sidePanels,showWhatsNew,whatsNewWindow:()=>whatsNewWindow,checkWhatsNew,passkeys:()=>passkeys,setUpdateOverride:value=>{updateOverride=value;emit();}}).catch(error=>{console.error(error);app.exit(1);});
 });
 app.on('second-instance',()=>{if(win){if(win.isMinimized())win.restore();win.show();win.focus();}});
 app.on('window-all-closed',()=>app.quit());
