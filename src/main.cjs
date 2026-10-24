@@ -60,8 +60,8 @@ let toolWindows,inspector,passkeys,siteControls,surfaces,peek,commandBar,media,p
 // Spectrum (0.32, spectrum.cjs): today's sites as a band of light in the sidebar; kept on this Mac, never for Private.
 const spectrumFile=path.join(app.getPath('userData'),'spectrum.json');
 const {hostOf}=require('./spectrum.cjs');const spectrum=require('./spectrum.cjs').createSpectrum({now:()=>Date.now(),load:()=>{if(smoke)return null;try{return JSON.parse(fs.readFileSync(spectrumFile,'utf8'));}catch{return null;}},save:data=>{if(smoke)return;try{fs.mkdirSync(path.dirname(spectrumFile),{recursive:true});fs.writeFileSync(spectrumFile+'.tmp',JSON.stringify(data),{mode:0o600});fs.renameSync(spectrumFile+'.tmp',spectrumFile);}catch{}}});
-// Spectrum's chapter titles (0.33) come from Apple Intelligence on this Mac, asked for when the chapters change, at most
-// every five minutes, and never for Private. Without it, chapters are named from what their sites are for.
+// Spectrum's chapter titles (0.33) come from Apple Intelligence on this Mac, asked for only when the day card is opened
+// (0.33.1) and the chapters changed, at most every five minutes, and never for Private. Without it, chapters are named from what their sites are for.
 let spectrumAsking=null,spectrumAskedAt=0,spectrumAskedKey='';
 function spectrumInsights(view){
  if(spectrumAsking||!ai||!view.chapters.length||view.insightsFresh||view.insightsKey===spectrumAskedKey&&Date.now()-spectrumAskedAt<30*60000||Date.now()-spectrumAskedAt<5*60000)return;
@@ -72,7 +72,7 @@ function spectrumInsights(view){
 }
 function spectrumAction(name,value){
  if(space==='private')return null;
- if(name==='spectrum-view'){const on=settings.spectrumInsights!==false;const view=spectrum.view({usual:on,openHosts:tabs.filter(t=>inSpace(t,space)).map(t=>hostOf(t.url))});if(on)spectrumInsights(view);return view;}
+ if(name==='spectrum-view'){const on=settings.spectrumInsights!==false;const view=spectrum.view({usual:on,openHosts:tabs.filter(t=>inSpace(t,space)).map(t=>hostOf(t.url))});if(on&&value?.insights)spectrumInsights(view);return view;}
  if(name==='spectrum-open'&&typeof value?.url==='string'&&/^https:\/\/[a-z0-9.-]+\/$/i.test(value.url)){makeTab(value.url,true,space);persist();return;}
  const time=Number(value?.time);if(!Number.isFinite(time))return null;const moment=spectrum.at(time,space);
  if(name==='spectrum-at')return moment;

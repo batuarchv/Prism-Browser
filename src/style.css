@@ -925,11 +925,11 @@ img.glass-fallback{visibility:hidden!important}
 .spectrum-glow{position:absolute;left:0;right:0;top:50%;height:8px;margin-top:-3px;background-repeat:no-repeat;filter:blur(7px) saturate(1.3);opacity:.45;pointer-events:none;transition:opacity .22s,height .22s}
 :root[data-theme=dark] .spectrum-glow{opacity:.6}
 .spectrum-now{position:absolute;right:-1px;top:50%;width:5px;height:5px;margin-top:-2.5px;border-radius:50%;background:#fff;box-shadow:0 0 0 1px color-mix(in srgb,var(--now,#fff) 70%,transparent),0 0 8px 2px var(--now,#fff);opacity:0;transition:opacity .3s;pointer-events:none}
-#spectrum.live .spectrum-now{opacity:.95;animation:spectrumSpark 2.6s ease-in-out infinite}
-@keyframes spectrumSpark{50%{box-shadow:0 0 0 1px color-mix(in srgb,var(--now,#fff) 70%,transparent),0 0 13px 4px var(--now,#fff)}}
+/* 0.33.1: a still spark; an endless animation here kept the whole window repainting while you browsed. */
+#spectrum.live .spectrum-now{opacity:.95}
 #spectrum.hover .spectrum-track,#spectrum.open .spectrum-track,.spectrum-band:focus-visible .spectrum-track{height:10px;border-radius:5px}
 #spectrum.hover .spectrum-glow,#spectrum.open .spectrum-glow{opacity:.75;height:14px;margin-top:-5px}
-#spectrum.hover .spectrum-now,#spectrum.open .spectrum-now{opacity:0;animation:none}
+#spectrum.hover .spectrum-now,#spectrum.open .spectrum-now{opacity:0}
 .spectrum-band:focus-visible .spectrum-track{box-shadow:0 0 0 2px color-mix(in srgb,var(--accent) 45%,transparent)}
 .spectrum-cursor{position:absolute;top:1px;bottom:1px;width:3px;margin-left:-1.5px;border-radius:2px;background:#fff;opacity:0;box-shadow:0 0 0 .5px #0003,0 0 8px var(--c,#fff);transition:opacity .15s;pointer-events:none}
 #spectrum.hover .spectrum-cursor,#spectrum.open .spectrum-cursor{opacity:.95}

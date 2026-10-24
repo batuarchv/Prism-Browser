@@ -10,5 +10,10 @@ test('Shield cleans tracking tags from links, swaps in stand-ins and hands scrip
  assert.equal(cleanLink('https://example.test/a?utm_source=x&id=7&fbclid=1'),'https://example.test/a?id=7');assert.equal(cleanLink('https://www.youtube.com/watch?v=abc&si=track'),'https://www.youtube.com/watch?v=abc');assert.equal(cleanLink('https://example.test/a?si=keep'),null);assert.equal(cleanLink('https://example.test/'),null);
  const b=new Blocker();assert.deepEqual(b.decide({...details('https://example.test/?utm_campaign=x'),resourceType:'mainFrame'}),{redirectURL:'https://example.test/'});
  const analytics=b.decide(details('https://www.google-analytics.com/analytics.js'));assert.ok(analytics.redirectURL?.startsWith('data:')||analytics.cancel);
- const youtube=b.frame({url:'https://www.youtube.com/watch?v=abc',main:true});assert.ok(youtube.scripts.length>5);assert.ok(youtube.scripts.some(s=>s.includes('__prismSkip')));
+ const youtube=b.frame({url:'https://www.youtube.com/watch?v=abc',main:true});assert.ok(youtube.script.includes('__prismSkip'));
+ // Every scriptlet runs in its own function scope, so their helpers cannot overwrite each other (0.33.1).
+ assert.ok((youtube.script.match(/try\{\(function\(\)\{/g)||[]).length>5);assert.ok(!/^if \(typeof scriptletGlobals/m.test(youtube.script));assert.equal(b.frame({url:'https://www.youtube.com/other',main:true}),youtube,'kept per site');
+ assert.equal(b.engine.config.enableCompression,false);assert.equal(b.engine.config.enableInMemoryCache,true);
  b.toggleSite('https://www.youtube.com/');assert.equal(b.frame({url:'https://www.youtube.com/watch?v=abc',main:true}),null);});
+test('a page that asks again for a blocked address in a tight loop is answered later and later',()=>{const b=new Blocker({engine:engine()});const delays=[];for(let i=0;i<14;i++)delays.push(b.decide(details()).delay||0);
+ assert.deepEqual(delays.slice(0,8),[0,0,0,0,0,0,0,0]);assert.ok(delays[8]>0&&delays[13]>delays[8]&&delays[13]<=4000);assert.equal(b.decide(details('https://tracker.test/x.js')).delay,undefined,'other addresses are unaffected');});

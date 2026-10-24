@@ -2,6 +2,17 @@
 
 All notable changes to Prism, newest first. Downloads are on the [Releases page](https://github.com/batuarchv/Prism-Browser/releases).
 
+## 0.33.1 — Fast again
+
+### New
+- **YouTube and X work again.** Shield's page scripts were overwriting each other, which broke YouTube and parts of X. Each one now runs on its own, and YouTube's ads are still removed.
+- **A much lighter Shield.** Looking up a request in Shield's rules is about 30 times faster, so Prism's main process stays free for the window and your tabs.
+- **No more runaway pages.** When a page asks for a blocked ad again and again (CNN did it 8,000 times a second), Prism now answers more and more slowly, so the page settles down.
+- **Less work in the background.** Shield reads a page only when the page is idle, the Spectrum spark no longer animates all the time, and Apple Intelligence names your day only when you open Spectrum.
+
+### Install notes
+This beta is **ad-hoc signed and not notarized by Apple**. The first time you open it, macOS may say it can't verify the developer: right-click (or Control-click) Prism in Applications and choose **Open**, then **Open** again. Apple Silicon (arm64) only.
+
 ## 0.33.0 — A stronger Shield, a smarter Spectrum
 
 ### New

@@ -1,8 +1,8 @@
 {
-  "built": "2026-10-24T17:44:31.015Z",
+  "built": "2026-10-24T19:05:50.746Z",
   "engine": "2.18.2",
-  "bytes": 6837217,
-  "sha256": "e1aacc1b7c5f05bcd8cba3827a6ae39196c53e5916161b4211f316d9ac1c18bc",
+  "bytes": 8715573,
+  "sha256": "b638df7032b02bd36ad1b5e3b4cda54e7a739f9b1973a3a804ee7e52d55f9571",
   "scriptlets": true,
   "sources": [
     {

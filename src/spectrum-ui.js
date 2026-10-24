@@ -27,7 +27,7 @@
   const gradient=`linear-gradient(90deg,${stops.join(',')})`;light.style.backgroundImage=gradient;glow.style.backgroundImage=gradient;
   const live=view.segments.at(-1);root.classList.toggle('live',!!live&&view.now-live.to<90000);if(live)root.style.setProperty('--now',colour(live.host));
   if(!card.hidden)fillCard();}
- async function refresh(){if(fetching||document.hidden||state?.space==='private')return;fetching=true;try{const next=await window.prism.action('spectrum-view');if(next){view=next;draw();}}finally{fetching=false;}}
+ async function refresh(){if(fetching||document.hidden||state?.space==='private')return;fetching=true;try{const next=await window.prism.action('spectrum-view',{insights:!card.hidden});if(next){view=next;draw();}}finally{fetching=false;}}
  function timeAt(x){const r=band.getBoundingClientRect(),{start,end}=span();return start+Math.max(0,Math.min(1,(x-r.left)/r.width))*(end-start);}
  function point(time){if(!view)return;cursorTime=time;const {start,end}=span(),p=(time-start)/Math.max(1,end-start);cursor.style.left=(p*100)+'%';const seg=view.segments.find(s=>time>=s.from&&time<=s.to),chapter=seg&&chapterAt(time);
   $s('.spectrum-time').textContent=clock(time);$s('.spectrum-host').textContent=seg?seg.host:t('Away');$s('.spectrum-chapter').textContent=chapter?title(chapter):'';label.style.setProperty('--x',Math.max(8,Math.min(92,p*100))+'%');
@@ -47,7 +47,7 @@
   const list=box.querySelector('.spectrum-card-list');list.replaceChildren(...moment.tabs.slice(0,5).map(x=>{const row=document.createElement('div');row.className='spectrum-row';const badge=document.createElement('span');badge.className='tab-icon';badge.append(symbol(x.url,x.title));const name=document.createElement('span');name.textContent=x.title||x.url;row.append(badge,name);row.title=x.url;return row;}));
   if(moment.tabs.length>5){const more=document.createElement('small');more.className='spectrum-more';more.textContent=t('and {count} more').replace('{count}',moment.tabs.length-5);list.append(more);}
   const restore=box.querySelector('.spectrum-restore');restore.textContent=t('Bring them back');restore.onclick=async()=>{closeCard();await act('spectrum-restore',{time:moment.at});};box.hidden=false;}
- async function openCard(time){if(!view)return;await refresh();const chapter=chapterAt(time);chosen=chapter?.from??null;fillCard();card.hidden=false;root.classList.add('open');await showMoment(time);(!$s('.spectrum-moment').hidden?$s('.spectrum-restore'):$s('.spectrum-chapter-row'))?.focus({focusVisible:false});}
+ async function openCard(time){if(!view)return;card.hidden=false;await refresh();const chapter=chapterAt(time);chosen=chapter?.from??null;fillCard();card.hidden=false;root.classList.add('open');await showMoment(time);(!$s('.spectrum-moment').hidden?$s('.spectrum-restore'):$s('.spectrum-chapter-row'))?.focus({focusVisible:false});}
  function closeCard(){card.hidden=true;root.classList.remove('open');chosen=null;}
  band.addEventListener('pointermove',e=>{root.classList.add('hover');point(timeAt(e.clientX));});
  band.addEventListener('pointerleave',()=>{if(card.hidden)root.classList.remove('hover');});
