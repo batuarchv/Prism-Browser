@@ -2,6 +2,24 @@
 
 All notable changes to Prism, newest first. Downloads are on the [Releases page](https://github.com/batuarchv/Prism-Browser/releases).
 
+## 0.35.0 — Faster hands
+
+### New
+- **Open in background.** Middle-click or ⌘-click a link and it opens next to your tab and starts loading while you stay put. Open Link in Background Tab is now first in the link menu.
+- **⌘T is Beam.** Type an address, search, or jump to any tab, Settings page, the Chrome Web Store and more. ⌘K opens a blank tab.
+- **Middle clicks in the sidebar.** Middle-click a tab to close it. On a pinned tab or bookmark, one middle click closes its page and two remove it (⌘Z brings it back).
+- **YouTube stays connected.** Shield no longer blocks the requests YouTube uses to check your connection and keep playback steady, and never blocks video data.
+- **Subtle liquid glass.** Favorites, toolbar and sidebar buttons, the current tab and Settings icons now have a soft glass highlight.
+
+### Also new
+- **Simple addresses.** The address field shows just the site's name until you click it (Settings → Appearance).
+- **Passwords in Private.** Optionally fill saved passwords and cards in Private, after Touch ID (Settings → Passwords). Private never saves new ones.
+- **Private protections everywhere.** Optionally keep no history or Spectrum, hide your local address from video calls and use encrypted DNS in every space (Settings → Prism Shield).
+- **Tidier details.** Lens's close button is on the left, and Reload spins only its arrow.
+
+### Install notes
+This beta is **ad-hoc signed and not notarized by Apple**. The first time you open it, macOS may say it can't verify the developer: right-click (or Control-click) Prism in Applications and choose **Open**, then **Open** again. Apple Silicon (arm64) only.
+
 ## 0.34.0 — A watch on Chromium
 
 ### New

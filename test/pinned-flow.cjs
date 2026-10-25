@@ -14,6 +14,14 @@ exports.run=async({app,action,makeTab,selectTab,snapshot})=>{let server;const ch
  selectTab(back.id);assert.equal(row(back.id).parked,false);
  await action('close',b.id);await action('restore-closed');assert.ok(snapshot().tabs.some(t=>t.url===base+'/other'),'closed tab restored');checks.push('⌘Z reopens the last closed tab');
  // 0.33.2: pointing at a sleeping tab wakes it in the background, without switching to it.
+ await action('set-setting',{key:'leanMemory',value:false});// so a busy test Mac's memory pressure does not veto it
  const sleeper=makeTab(base+'/sleeper',false);assert.equal(row(sleeper.id).sleeping,true);const front=snapshot().activeId;await action('tab-warm',sleeper.id);assert.ok(sleeper.view,'woken');assert.equal(snapshot().activeId,front,'still on the same tab');await eventually(()=>!sleeper.view.webContents.isLoading(),'warm page loaded');checks.push('pointing at a sleeping tab wakes it in the background');
+ // 0.35: a middle click on a link opens it in the background, right after the tab it came from.
+ const linkPage=makeTab(base+'/links',true);await eventually(()=>!linkPage.loading&&linkPage.view?.webContents.getURL(),'link page');
+ await linkPage.view.webContents.executeJavaScript(`document.body.innerHTML='<a id="l" href="/target" style="display:block;font-size:40px;padding:20px">Target</a>';1`);
+ const box=await linkPage.view.webContents.executeJavaScript(`(()=>{const r=document.getElementById('l').getBoundingClientRect();return {x:Math.round(r.x+20),y:Math.round(r.y+20)}})()`);
+ for(const type of ['mouseDown','mouseUp'])linkPage.view.webContents.sendInputEvent({type,x:box.x,y:box.y,button:'middle',clickCount:1});
+ await eventually(()=>snapshot().tabs.some(t=>t.url.endsWith('/target')),'background tab opened');const bg=snapshot().tabs.find(t=>t.url.endsWith('/target'));
+ assert.equal(snapshot().activeId,linkPage.id,'stayed on the page');assert.equal(ids().indexOf(bg.id),ids().indexOf(linkPage.id)+1,'right after its opener');assert.equal(bg.sleeping,false,'already loading');checks.push('middle click opens a link in the background next to its tab');
  console.log(JSON.stringify(checks));return checks;
 }finally{server?.close();if(process.env.PRISM_TEST_FLOW?.includes('pinned-flow'))app.exit(process.exitCode||0);}};

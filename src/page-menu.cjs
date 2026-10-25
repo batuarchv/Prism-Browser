@@ -5,7 +5,7 @@ function pageMenu({wc,params:p,clipboard,openTab,bookmark,inspect,pip,translate,
  const addGroup=rows=>{if(!rows.length)return;if(items.length)items.push({type:'separator'});items.push(...rows);};
  const command=(label,method,enabled=true)=>({label,enabled,click:alive(()=>{wc.focus();wc[method]();})});
  const link=webURL(p.linkURL),image=webURL(p.srcURL);
- if(p.linkURL)addGroup([...(link?[...(peek?[{label:'Open Link in Lens',click:()=>peek(link)}]:[]),{label:'Open Link in New Tab',click:()=>openTab(link)},{label:'Open Link in Background Tab',click:()=>openTab(link,false)},{label:'Save Link As…',click:alive(()=>wc.downloadURL(link))}]:[]),{label:'Copy Link Address',click:()=>clipboard.writeText(String(p.linkURL))}]);
+ if(p.linkURL)addGroup([...(link?[{label:'Open Link in Background Tab',click:()=>openTab(link,false)},{label:'Open Link in New Tab',click:()=>openTab(link)},...(peek?[{label:'Open Link in Lens',click:()=>peek(link)}]:[]),{label:'Save Link As…',click:alive(()=>wc.downloadURL(link))}]:[]),{label:'Copy Link Address',click:()=>clipboard.writeText(String(p.linkURL))}]);
  if(p.mediaType==='image')addGroup([
   ...(p.hasImageContents?[{label:'Copy Image',click:alive(()=>wc.copyImageAt(p.x,p.y))}]:[]),
   ...(image?[{label:'Open Image in New Tab',click:()=>openTab(image)},{label:'Save Image As…',click:alive(()=>wc.downloadURL(image))},{label:'Copy Image Address',click:()=>clipboard.writeText(image)},{label:'Search Image with Google',click:()=>openTab('https://lens.google.com/uploadbyurl?url='+encodeURIComponent(image))}]:[])

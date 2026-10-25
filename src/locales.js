@@ -1610,13 +1610,6 @@ const catalog={
   "fr": "Allez à la barre d’adresse. Utilisez ↑ ↓ et Entrée pour choisir une suggestion.",
   "uk": "Перейдіть до адресного рядка. Використовуйте ↑ ↓ та Enter для вибору підказки."
  },
- "Open a new tab. Favorites and pinned labels keep their own pages.": {
-  "tr": "Yeni sekme aç. Favoriler ve sabit etiketler kendi sayfalarını korur.",
-  "es": "Abre una pestaña. Favoritos y etiquetas fijadas conservan sus páginas.",
-  "pt": "Abra um separador. Favoritos e etiquetas fixadas mantêm as suas páginas.",
-  "fr": "Ouvrez un onglet. Les favoris et éléments épinglés conservent leurs pages.",
-  "uk": "Відкрийте вкладку. Обране й закріплені елементи зберігають свої сторінки."
- },
  "Save a page. Drag bookmarks into folders to organize them.": {
   "tr": "Sayfa kaydet. Yer imlerini klasörlere sürükleyerek düzenle.",
   "es": "Guarda una página. Arrastra marcadores a carpetas para organizarlos.",
@@ -2106,13 +2099,6 @@ const catalog={
   "pt": "A extensão oficial Palavras-passe do iCloud não conseguiu ligar-se ao assistente da Apple nesta versão. O preenchimento automático e a sincronização diretos com o iCloud não estão disponíveis. Abra a app Palavras-passe da Apple para consultar um início de sessão, ou exporte aí as palavras-passe selecionadas e importe o CSV para o Prism. As palavras-passe importadas são uma cópia separada e encriptada neste Mac.",
   "fr": "L’extension officielle Mots de passe iCloud n’a pas pu se connecter à l’assistant d’Apple dans cette version. Le remplissage automatique et la synchronisation iCloud directs ne sont pas disponibles. Ouvrez l’app Mots de passe d’Apple pour retrouver un identifiant, ou exportez-y les mots de passe choisis puis importez le fichier CSV dans Prism. Les mots de passe importés sont une copie distincte et chiffrée sur ce Mac.",
   "uk": "Офіційне розширення «Паролі iCloud» не змогло під’єднатися до помічника Apple у цій збірці. Пряме автозаповнення й синхронізація iCloud недоступні. Відкрийте застосунок «Паролі» від Apple, щоб знайти дані входу, або експортуйте там вибрані паролі й імпортуйте CSV у Prism. Імпортовані паролі — це окрема зашифрована копія на цьому Mac."
- },
- "Keyboard shortcuts: ⌘L address · ⌘T new tab · ⌘D bookmark · ⌘, settings · ⌘J downloads. Focus the sidebar divider and use arrow keys to resize.": {
-  "tr": "Klavye kısayolları: ⌘L adres · ⌘T yeni sekme · ⌘D yer imi · ⌘, ayarlar · ⌘J indirilenler. Boyutlandırmak için kenar çubuğu ayırıcısına odaklan ve ok tuşlarını kullan.",
-  "es": "Atajos de teclado: ⌘L dirección · ⌘T nueva pestaña · ⌘D marcador · ⌘, ajustes · ⌘J descargas. Selecciona el divisor de la barra lateral y usa las flechas para cambiar su tamaño.",
-  "pt": "Atalhos de teclado: ⌘L endereço · ⌘T novo separador · ⌘D marcador · ⌘, definições · ⌘J transferências. Selecione o divisor da barra lateral e use as setas para redimensionar.",
-  "fr": "Raccourcis clavier : ⌘L adresse · ⌘T nouvel onglet · ⌘D signet · ⌘, réglages · ⌘J téléchargements. Sélectionnez le séparateur de la barre latérale et utilisez les flèches pour redimensionner.",
-  "uk": "Клавіатурні скорочення: ⌘L адреса · ⌘T нова вкладка · ⌘D закладка · ⌘, налаштування · ⌘J завантаження. Перейдіть до роздільника бічної панелі й змінюйте розмір клавішами зі стрілками."
  },
  "This page": {
   "tr": "Bu sayfa",
@@ -4129,6 +4115,104 @@ const catalog={
   "pt": "A verificar…",
   "fr": "Vérification…",
   "uk": "Перевірка…"
+ },
+ "Opened in background": {
+  "tr": "Arka planda açıldı",
+  "es": "Abierta en segundo plano",
+  "pt": "Aberto em segundo plano",
+  "fr": "Ouvert en arrière-plan",
+  "uk": "Відкрито у фоні"
+ },
+ "Open Link in Background Tab": {
+  "tr": "Bağlantıyı arka plan sekmesinde aç",
+  "es": "Abrir enlace en pestaña en segundo plano",
+  "pt": "Abrir ligação em separador em segundo plano",
+  "fr": "Ouvrir le lien dans un onglet en arrière-plan",
+  "uk": "Відкрити посилання у фоновій вкладці"
+ },
+ "Simple addresses": {
+  "tr": "Sade adresler",
+  "es": "Direcciones simples",
+  "pt": "Endereços simples",
+  "fr": "Adresses simplifiées",
+  "uk": "Прості адреси"
+ },
+ "Show just the site’s name in the address field; the full address appears when you click it.": {
+  "tr": "Adres alanında yalnızca sitenin adını gösterir; tıklayınca tam adres görünür.",
+  "es": "Muestra solo el nombre del sitio en el campo de dirección; la dirección completa aparece al hacer clic.",
+  "pt": "Mostra só o nome do site no campo de endereço; o endereço completo aparece ao clicar.",
+  "fr": "Affiche seulement le nom du site dans le champ d’adresse ; l’adresse complète apparaît quand vous cliquez.",
+  "uk": "Показує лише назву сайту в полі адреси; повна адреса з’являється після натискання."
+ },
+ "Use passwords in Private": {
+  "tr": "Özel’de parolaları kullan",
+  "es": "Usar contraseñas en Privado",
+  "pt": "Usar palavras-passe em Privado",
+  "fr": "Utiliser les mots de passe en Privé",
+  "uk": "Використовувати паролі в Приватному"
+ },
+ "Fill saved passwords and cards in Private, after Touch ID. Private never saves new ones. Applies to new Private tabs.": {
+  "tr": "Özel’de kayıtlı parolaları ve kartları Touch ID’den sonra doldurur. Özel asla yenilerini kaydetmez. Yeni Özel sekmelerde geçerlidir.",
+  "es": "Rellena contraseñas y tarjetas guardadas en Privado tras Touch ID. Privado nunca guarda nuevas. Se aplica a nuevas pestañas privadas.",
+  "pt": "Preenche palavras-passe e cartões guardados em Privado após o Touch ID. O Privado nunca guarda novos. Aplica-se a novos separadores privados.",
+  "fr": "Remplit les mots de passe et cartes enregistrés en Privé après Touch ID. Privé n’en enregistre jamais de nouveaux. S’applique aux nouveaux onglets privés.",
+  "uk": "Заповнює збережені паролі й картки в Приватному після Touch ID. Приватний режим ніколи не зберігає нові. Діє для нових приватних вкладок."
+ },
+ "Private protections everywhere": {
+  "tr": "Özel korumalar her yerde",
+  "es": "Protecciones de Privado en todas partes",
+  "pt": "Proteções do Privado em todo o lado",
+  "fr": "Protections de Privé partout",
+  "uk": "Захист Приватного всюди"
+ },
+ "Your other spaces keep no history and no Spectrum, hide your Mac’s local address from video calls and look sites up over encrypted DNS, like Private. Cookies and sign-ins stay.": {
+  "tr": "Diğer alanların da Özel gibi geçmiş ve Spectrum tutmaz, Mac’inin yerel adresini görüntülü aramalardan gizler ve siteleri şifreli DNS ile bulur. Çerezler ve oturumlar kalır.",
+  "es": "Tus otros espacios no guardan historial ni Spectrum, ocultan la dirección local de tu Mac en videollamadas y buscan sitios con DNS cifrado, como Privado. Las cookies y sesiones se mantienen.",
+  "pt": "Os seus outros espaços não guardam histórico nem Spectrum, escondem o endereço local do Mac nas videochamadas e procuram sites por DNS cifrado, como o Privado. Cookies e sessões mantêm-se.",
+  "fr": "Vos autres espaces ne gardent ni historique ni Spectrum, masquent l’adresse locale de votre Mac aux appels vidéo et cherchent les sites via DNS chiffré, comme Privé. Cookies et connexions restent.",
+  "uk": "Інші простори не зберігають історію та Spectrum, приховують локальну адресу Mac від відеодзвінків і шукають сайти через зашифрований DNS, як Приватний. Cookie та входи зберігаються."
+ },
+ "Customize": {
+  "tr": "Özelleştir",
+  "es": "Personalizar",
+  "pt": "Personalizar",
+  "fr": "Personnaliser",
+  "uk": "Налаштувати вигляд"
+ },
+ "Chrome Web Store": {
+  "tr": "Chrome Web Mağazası",
+  "es": "Chrome Web Store",
+  "pt": "Chrome Web Store",
+  "fr": "Chrome Web Store",
+  "uk": "Chrome Web Store"
+ },
+ "Open Passwords app": {
+  "tr": "Parolalar uygulamasını aç",
+  "es": "Abrir la app Contraseñas",
+  "pt": "Abrir a app Palavras-passe",
+  "fr": "Ouvrir l’app Mots de passe",
+  "uk": "Відкрити програму «Паролі»"
+ },
+ "New Private tab": {
+  "tr": "Yeni Özel sekme",
+  "es": "Nueva pestaña privada",
+  "pt": "Novo separador privado",
+  "fr": "Nouvel onglet privé",
+  "uk": "Нова приватна вкладка"
+ },
+ "Keyboard shortcuts: ⌘T Beam · ⌘K new tab · ⌘L address · ⌘D bookmark · ⌘, settings · ⌘J downloads. Focus the sidebar divider and use arrow keys to resize.": {
+  "tr": "Klavye kısayolları: ⌘T Işın · ⌘K yeni sekme · ⌘L adres · ⌘D yer imi · ⌘, ayarlar · ⌘J indirmeler. Boyutlandırmak için kenar çubuğu ayırıcısına odaklanıp ok tuşlarını kullan.",
+  "es": "Atajos de teclado: ⌘T Haz · ⌘K nueva pestaña · ⌘L dirección · ⌘D marcador · ⌘, ajustes · ⌘J descargas. Enfoca el divisor de la barra lateral y usa las flechas para cambiar su tamaño.",
+  "pt": "Atalhos de teclado: ⌘T Feixe · ⌘K novo separador · ⌘L endereço · ⌘D marcador · ⌘, definições · ⌘J transferências. Foque o divisor da barra lateral e use as setas para redimensionar.",
+  "fr": "Raccourcis clavier : ⌘T Faisceau · ⌘K nouvel onglet · ⌘L adresse · ⌘D signet · ⌘, réglages · ⌘J téléchargements. Placez le focus sur le séparateur de la barre latérale et utilisez les flèches pour redimensionner.",
+  "uk": "Клавіатурні скорочення: ⌘T Промінь · ⌘K нова вкладка · ⌘L адреса · ⌘D закладка · ⌘, налаштування · ⌘J завантаження. Наведіть фокус на роздільник бічної панелі й змінюйте розмір стрілками."
+ },
+ "Open Beam: type an address, search, or find any tab, setting or action. ⌘K opens a blank tab.": {
+  "tr": "Işın’ı açar: adres yaz, ara ya da herhangi bir sekmeyi, ayarı veya eylemi bul. ⌘K boş sekme açar.",
+  "es": "Abre Haz: escribe una dirección, busca o encuentra cualquier pestaña, ajuste o acción. ⌘K abre una pestaña en blanco.",
+  "pt": "Abre o Feixe: escreva um endereço, pesquise ou encontre qualquer separador, definição ou ação. ⌘K abre um separador em branco.",
+  "fr": "Ouvre Faisceau : tapez une adresse, cherchez, ou trouvez un onglet, un réglage ou une action. ⌘K ouvre un onglet vide.",
+  "uk": "Відкриває Промінь: введіть адресу, шукайте або знайдіть будь-яку вкладку, налаштування чи дію. ⌘K відкриває порожню вкладку."
  }
 };
 const languages=["en","tr","es","pt","fr","uk"];

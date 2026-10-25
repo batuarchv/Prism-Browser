@@ -13,7 +13,8 @@ function createPasswords({app,window,settings,readVault,writeVault,importVault=w
  // Sign-in forms can live in a frame from the login's own site (Apple Account: account.apple.com embeds the form from
  // idmsa.apple.com). A saved login is offered for the page or such a frame, filled only into the frame of its exact
  // origin, and only after Touch ID (confirm). Prism never submits the form.
- async function fill(tab){if(tab?.space==='private')return {error:'Password vault is disabled in Private.'};if(!tab?.view)return {error:'Open a sign-in page first.'};const wc=tab.view.webContents;const originalURL=wc.getURL(),version=tab.navigationVersion;if(!originalURL.startsWith('https://'))return {error:'Passwords can only be filled on HTTPS pages.'};
+ // Private can fill saved passwords when Settings → Passwords allows it (0.35); it never saves new ones.
+ async function fill(tab){if(tab?.space==='private'&&!settings.privatePasswords)return {error:'Password vault is disabled in Private.'};if(!tab?.view)return {error:'Open a sign-in page first.'};const wc=tab.view.webContents;const originalURL=wc.getURL(),version=tab.navigationVersion;if(!originalURL.startsWith('https://'))return {error:'Passwords can only be filled on HTTPS pages.'};
   const originOf=f=>{try{const u=new URL(f.url);return u.protocol==='https:'?u.origin:null;}catch{return null;}};
   const main=wc.mainFrame||{url:originalURL},frames=[main,...(wc.mainFrame?.framesInSubtree||[]).filter(f=>f!==main)].filter(originOf),rows=read();
   const origin=[...new Set(frames.map(originOf))].find(o=>rows.some(e=>e.origin===o));const matches=origin?rows.filter(e=>e.origin===origin):[];

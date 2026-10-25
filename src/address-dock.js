@@ -39,11 +39,13 @@
  document.addEventListener('pointerdown',e=>{if(!menu.hidden&&!menu.contains(e.target)&&!e.target.closest('#settings'))closeMenu(false);});
  menu.addEventListener('keydown',e=>{if(e.key==='Escape'){e.stopPropagation();closeMenu();}});
  window.addEventListener('blur',()=>closeMenu(false));
- // The narrow field shows the site; the full address comes back while you edit it.
- function host(url){try{const u=new URL(url);return /^https?:$/.test(u.protocol)?u.hostname.replace(/^www\./,'')+(u.pathname.length>1?u.pathname:''):url;}catch{return url||'';}}
+ // The narrow field shows the site; the full address comes back while you edit it. With Simple addresses (0.35,
+ // Settings → Appearance) the field shows only the site's name, above the page too.
+ const simple=()=>state?.settings?.simpleAddress!==false;
+ function host(url,bare=simple()){try{const u=new URL(url);return /^https?:$/.test(u.protocol)?u.hostname.replace(/^www\./,'')+(!bare&&u.pathname.length>1?u.pathname:''):url;}catch{return url||'';}}
  const activeURL=()=>state?.tabs.find(t=>t.id===state.activeId)?.url||'';
- function show(){const input=$('address');if(!placed||document.activeElement===input)return;input.value=host(activeURL());input.title=activeURL();}
- $('address').addEventListener('focus',()=>{const url=activeURL();if(placed&&url&&$('address').value===host(url)){$('address').value=url;requestAnimationFrame(()=>$('address').select());}});
+ function show(){const input=$('address');if(!(placed||simple())||document.activeElement===input)return;input.value=host(activeURL());input.title=activeURL();}
+ $('address').addEventListener('focus',()=>{const url=activeURL();if((placed||simple())&&url&&$('address').value===host(url)){$('address').value=url;requestAnimationFrame(()=>$('address').select());}});
  $('address').addEventListener('blur',()=>setTimeout(show,0));
  window.prism.onState(s=>{const want=s.settings.compactMode||s.settings.addressBar==='sidebar'&&!s.settings.sidebarCollapsed;if(want!==placed){if(suggestionsOpen)dismissSuggestions();if(want)toSidebar();else toToolbar();}root.dataset.address=placed?'sidebar':'top';show();ready=true;});
  window.addressInSidebar=()=>placed;

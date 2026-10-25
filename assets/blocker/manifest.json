@@ -1,8 +1,8 @@
 {
-  "built": "2026-10-24T19:05:50.746Z",
+  "built": "2026-10-25T14:20:57.735Z",
   "engine": "2.18.2",
-  "bytes": 8715573,
-  "sha256": "b638df7032b02bd36ad1b5e3b4cda54e7a739f9b1973a3a804ee7e52d55f9571",
+  "bytes": 8715953,
+  "sha256": "cd28a21ccaddbd93a2cd8f631e6ce0bc414da747949c242b942e4f96d9630910",
   "scriptlets": true,
   "sources": [
     {
@@ -84,6 +84,11 @@
       "name": "ublock-origin/annoyances-cookies",
       "url": "https://raw.githubusercontent.com/ghostery/adblocker/master/packages/adblocker/assets/ublock-origin/annoyances-cookies.txt",
       "sha256": "d0bb345c4177aa9689692bda42be9beeb594a5fd99306a3b225a3f97c68ab51e"
+    },
+    {
+      "name": "prism/unbreak",
+      "url": "assets/blocker/lists/prism-unbreak.txt",
+      "sha256": "3156d28b7f1386191011bff1334d4ae979401fccadc03f1b564cfd9a1d3f33ea"
     }
   ]
 }

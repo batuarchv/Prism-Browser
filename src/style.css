@@ -433,10 +433,11 @@ header{gap:3px;padding-left:8px}
 @keyframes addressSweep{to{transform:translateX(100%)}}
 .feedback-pop{animation:feedbackPop 380ms cubic-bezier(.3,1.6,.5,1)}
 @keyframes feedbackPop{0%{transform:scale(1)}40%{transform:scale(1.22)}100%{transform:scale(1)}}
-.feedback-spin{animation:feedbackSpin 520ms cubic-bezier(.3,.7,.3,1)}
+/* 0.35: only the arrow turns; the button's background stays put. */
+.feedback-spin>svg,.feedback-spin>.icon{animation:feedbackSpin 520ms cubic-bezier(.3,.7,.3,1)}
 @keyframes feedbackSpin{to{transform:rotate(360deg)}}
-@media(prefers-reduced-motion:reduce){.feedback-chip.show{animation:chipFade 1.6s linear both}#address-form.feedback-sweep:after,.feedback-pop,.feedback-spin{animation:none}}
-[data-motion=reduced] .feedback-chip.show{animation:chipFade 1.6s linear both}[data-motion=reduced] #address-form.feedback-sweep:after,[data-motion=reduced] .feedback-pop,[data-motion=reduced] .feedback-spin{animation:none}
+@media(prefers-reduced-motion:reduce){.feedback-chip.show{animation:chipFade 1.6s linear both}#address-form.feedback-sweep:after,.feedback-pop,.feedback-spin>svg,.feedback-spin>.icon{animation:none}}
+[data-motion=reduced] .feedback-chip.show{animation:chipFade 1.6s linear both}[data-motion=reduced] #address-form.feedback-sweep:after,[data-motion=reduced] .feedback-pop,[data-motion=reduced] .feedback-spin>svg,[data-motion=reduced] .feedback-spin>.icon{animation:none}
 @keyframes chipFade{0%,85%{opacity:1}100%{opacity:0}}
 /* Inline tab rename and the undo toast (sidebar-ui.js, feedback-ui.js) */
 #tabs .tab-rename{flex:1;min-width:0;height:24px;margin:0 6px 0 0;padding:0 7px;border:1px solid color-mix(in srgb,var(--accent) 55%,var(--line));border-radius:7px;background:var(--surface);color:var(--ink);font:inherit;font-size:13px;outline:none;box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 18%,transparent)}
@@ -1051,3 +1052,22 @@ img.glass-fallback{visibility:hidden!important}
 /* 0.33: Restart to Update sits in the middle of the sidebar footer, whatever the buttons around it. */
 #sidebar .sidebar-bottom .utilities{position:relative}
 #sidebar .sidebar-bottom .utilities #update-indicator{position:absolute;left:50%;top:50%;margin:0;translate:-50% -50%}
+/* 0.35 · Subtle liquid glass on the small controls: a soft top highlight, a hairline edge and a faint shadow, so buttons,
+   favorites and Settings icons read as little pieces of glass instead of flat grey squares. It deepens on hover and
+   when selected, and steps aside for Reduce Transparency and Increase Contrast. */
+:root{--glass-fill:linear-gradient(180deg,rgb(255 255 255/.42),rgb(255 255 255/.12) 55%,rgb(255 255 255/.04));--glass-fill-strong:linear-gradient(180deg,rgb(255 255 255/.62),rgb(255 255 255/.22) 55%,rgb(255 255 255/.10));
+ --glass-edge:inset 0 .5px 0 rgb(255 255 255/.7),inset 0 0 0 .5px color-mix(in srgb,var(--ink) 10%,transparent),0 1px 2px rgb(0 0 0/.06);--glass-edge-strong:inset 0 .5px 0 rgb(255 255 255/.85),inset 0 0 0 .5px color-mix(in srgb,var(--ink) 14%,transparent),0 2px 6px rgb(0 0 0/.10)}
+:root[data-theme=dark]{--glass-fill:linear-gradient(180deg,rgb(255 255 255/.12),rgb(255 255 255/.04) 55%,rgb(255 255 255/.02));--glass-fill-strong:linear-gradient(180deg,rgb(255 255 255/.20),rgb(255 255 255/.08) 55%,rgb(255 255 255/.04));
+ --glass-edge:inset 0 .5px 0 rgb(255 255 255/.18),inset 0 0 0 .5px rgb(255 255 255/.08),0 1px 2px rgb(0 0 0/.25);--glass-edge-strong:inset 0 .5px 0 rgb(255 255 255/.28),inset 0 0 0 .5px rgb(255 255 255/.12),0 2px 8px rgb(0 0 0/.35)}
+/* Favorites rest on a faint glass tile. */
+:root #favorites .favorite{background:var(--glass-fill);box-shadow:var(--glass-edge)}
+/* Toolbar, sidebar footer and favorites: glass on hover and press instead of a flat square. */
+:root :is(:is(main>header,.toolbar-dock) :is(.nav button,.protect,#extensions,#workspace-tools),.utilities button,#favorites .favorite):is(:hover,:focus-visible):not(:disabled){background:var(--glass-fill-strong);box-shadow:var(--glass-edge-strong)}
+:root :is(:is(main>header,.toolbar-dock) :is(.nav button,.protect,#extensions,#workspace-tools),.utilities button,#favorites .favorite):active:not(:disabled){background:var(--glass-fill);box-shadow:var(--glass-edge),inset 0 1px 3px rgb(0 0 0/.08)}
+:root :is(:is(main>header,.toolbar-dock) :is(.nav button,.protect,#extensions,#workspace-tools),.utilities button,#favorites .favorite):is(.selected,[aria-pressed=true]){background:var(--glass-fill-strong);box-shadow:var(--glass-edge-strong)}
+/* The tab you are on. */
+:root #tabs .tab.selected{background:var(--glass-fill-strong);box-shadow:var(--glass-edge)}
+/* Settings: each coloured section tile gets a glass top highlight and edge; the chosen section is a pane of glass. */
+:root #preferences #prefs-nav button[data-section] svg{background-image:linear-gradient(180deg,rgb(255 255 255/.38),rgb(255 255 255/.08) 50%,rgb(0 0 0/.06));background-color:var(--tile,#8e8e93);box-shadow:inset 0 .5px 0 rgb(255 255 255/.55),inset 0 0 0 .5px rgb(0 0 0/.12),0 1px 2px rgb(0 0 0/.12);border-radius:6px}
+:root #prefs-nav button[data-section].selected{background:var(--glass-fill-strong);box-shadow:var(--glass-edge-strong);border-color:transparent}
+:root[data-contrast=high] :is(#favorites .favorite,#tabs .tab.selected,#preferences #prefs-nav button[data-section] svg){background-image:none}
