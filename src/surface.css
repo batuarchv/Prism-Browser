@@ -65,3 +65,7 @@ body.enter .command-field,body.enter #command-list{animation:commandIn .18s cubi
 #pip-bar:hover{height:6px}
 #pip-fill{height:100%;width:0;background:#fff;border-radius:2px}
 .pip.live .pip-bottom{display:none}
+
+/* Beam's answer from Claude (0.37). */
+#command-answer{margin:0 12px 10px;padding:10px 12px;border-radius:10px;font-size:13px;line-height:1.45;white-space:pre-wrap;user-select:text;background:color-mix(in srgb,currentColor 6%,transparent);max-height:260px;overflow:auto}
+#command-answer.thinking{color:color-mix(in srgb,currentColor 55%,transparent)}

@@ -15,9 +15,16 @@
    row.append(badge,text,hint);row.onpointermove=()=>{if(index!==i)select(i);};row.onclick=e=>run(i,e.altKey);return row;}));
   list.hidden=!items.length;document.body.classList.toggle('has-results',!!items.length);select(0);fit();}
  async function query(){const gen=++request;const rows=await surface.ask('query',input.value);if(gen===request)draw(rows);}
- function run(i,alt){const item=items[i];if(item)surface.send('run',{id:item.id,query:input.value,alt});}
- input.addEventListener('input',query);
+ // Ask Claude (0.37): Beam stays open while Claude either runs the right item (Beam then closes) or answers here.
+ const answer=$('command-answer');let asking=0;
+ async function ask(){const gen=++asking,q=input.value;answer.hidden=false;answer.classList.add('thinking');answer.textContent=t('Thinking…');fit();
+  const result=await surface.ask('ai',q).catch(()=>null);if(gen!==asking)return;answer.classList.remove('thinking');
+  if(result?.ran){surface.send('close');return;}answer.textContent=result?.answer||t('Claude had no answer.');fit();}
+ function run(i,alt){const item=items[i];if(!item)return;if(item.kind==='ai'){ask();return;}surface.send('run',{id:item.id,query:input.value,alt});}
+ // Paste an image into Beam to search with it (Google Lens).
+ input.addEventListener('paste',e=>{const file=[...(e.clipboardData?.items||[])].find(x=>x.kind==='file'&&x.type.startsWith('image/'));if(!file)return;e.preventDefault();surface.send('run',{id:'action:image-search-clipboard',query:'',alt:false});});
+ input.addEventListener('input',()=>{asking++;answer.hidden=true;query();});
  input.addEventListener('keydown',e=>{if(e.isComposing)return;if(e.key==='ArrowDown'){e.preventDefault();select(index+1);}else if(e.key==='ArrowUp'){e.preventDefault();select(index-1);}else if(e.key==='Enter'){e.preventDefault();run(index,e.altKey);}else if(e.key==='Escape'){e.preventDefault();surface.send('close');}});
  $('command-form').onsubmit=e=>e.preventDefault();
- surface.on(s=>{if(s.type==='reset'){input.value='';list.replaceChildren();items=[];return;}if(s.type!=='open')return;language=s.language||'en';applySurfaceTheme(s);input.placeholder=t('Search tabs, bookmarks, history or actions');input.value=s.query||'';document.body.classList.remove('enter');void document.body.offsetWidth;document.body.classList.add('enter');input.focus();input.select();query();});
+ surface.on(s=>{if(s.type==='reset'){input.value='';list.replaceChildren();items=[];asking++;answer.hidden=true;return;}if(s.type!=='open')return;language=s.language||'en';applySurfaceTheme(s);input.placeholder=t('Search, type an address, ask, or paste an image');input.value=s.query||'';document.body.classList.remove('enter');void document.body.offsetWidth;document.body.classList.add('enter');input.focus();input.select();query();});
 })();

@@ -2,6 +2,16 @@
 
 All notable changes to Prism, newest first. Downloads are on the [Releases page](https://github.com/batuarchv/Prism-Browser/releases).
 
+## 0.37.0 — Beam gets smarter
+
+### New
+- **Right-click to paste.** Prism's own fields, like the address bar, Beam, Settings and popovers, now have Cut, Copy, Paste, Select All and spelling suggestions. The address bar adds Paste and Go.
+- **Ask Beam anything.** With Claude chosen in Settings, type a question or a request in plain words: Beam switches to the right tab, opens the right page or runs the right action, or answers right there.
+- **Search with a picture.** Choose Search with an image in Beam, or paste an image into it, and Google Lens shows what it is in a new tab.
+
+### Install notes
+This beta is **ad-hoc signed and not notarized by Apple**. The first time you open it, macOS may say it can't verify the developer: right-click (or Control-click) Prism in Applications and choose **Open**, then **Open** again. Apple Silicon (arm64) only.
+
 ## 0.36.0 — The biggest Prism yet
 
 ### New

@@ -4290,6 +4290,104 @@ const catalog={
   "pt": "A IA acima dá título a cada parte do seu dia quando abre o Spectrum, e o Spectrum sugere os sites que costuma abrir.",
   "fr": "L’IA ci-dessus titre chaque moment de votre journée quand vous ouvrez Spectrum, et Spectrum suggère les sites que vous ouvrez souvent.",
   "uk": "ШІ вище дає назву кожній частині дня, коли ви відкриваєте Spectrum, а Spectrum пропонує сайти, які ви зазвичай відкриваєте."
+ },
+ "Redo": {
+  "tr": "Yinele",
+  "es": "Rehacer",
+  "pt": "Refazer",
+  "fr": "Rétablir",
+  "uk": "Повторити"
+ },
+ "Cut": {
+  "tr": "Kes",
+  "es": "Cortar",
+  "pt": "Cortar",
+  "fr": "Couper",
+  "uk": "Вирізати"
+ },
+ "Copy": {
+  "tr": "Kopyala",
+  "es": "Copiar",
+  "pt": "Copiar",
+  "fr": "Copier",
+  "uk": "Копіювати"
+ },
+ "Paste": {
+  "tr": "Yapıştır",
+  "es": "Pegar",
+  "pt": "Colar",
+  "fr": "Coller",
+  "uk": "Вставити"
+ },
+ "Paste and Match Style": {
+  "tr": "Yapıştır ve Stili Eşleştir",
+  "es": "Pegar con el mismo estilo",
+  "pt": "Colar com o mesmo estilo",
+  "fr": "Coller et adapter le style",
+  "uk": "Вставити з тим самим стилем"
+ },
+ "Select All": {
+  "tr": "Tümünü Seç",
+  "es": "Seleccionar todo",
+  "pt": "Selecionar tudo",
+  "fr": "Tout sélectionner",
+  "uk": "Вибрати все"
+ },
+ "Paste and Go": {
+  "tr": "Yapıştır ve Git",
+  "es": "Pegar e ir",
+  "pt": "Colar e ir",
+  "fr": "Coller et aller",
+  "uk": "Вставити й перейти"
+ },
+ "Paste and Search": {
+  "tr": "Yapıştır ve Ara",
+  "es": "Pegar y buscar",
+  "pt": "Colar e pesquisar",
+  "fr": "Coller et rechercher",
+  "uk": "Вставити й шукати"
+ },
+ "Ask Claude": {
+  "tr": "Claude’a sor",
+  "es": "Preguntar a Claude",
+  "pt": "Perguntar ao Claude",
+  "fr": "Demander à Claude",
+  "uk": "Запитати Claude"
+ },
+ "Search with an image": {
+  "tr": "Görselle ara",
+  "es": "Buscar con una imagen",
+  "pt": "Pesquisar com uma imagem",
+  "fr": "Rechercher avec une image",
+  "uk": "Шукати за зображенням"
+ },
+ "Search with the copied image": {
+  "tr": "Kopyalanan görselle ara",
+  "es": "Buscar con la imagen copiada",
+  "pt": "Pesquisar com a imagem copiada",
+  "fr": "Rechercher avec l’image copiée",
+  "uk": "Шукати за скопійованим зображенням"
+ },
+ "Search, type an address, ask, or paste an image": {
+  "tr": "Ara, adres yaz, sor ya da görsel yapıştır",
+  "es": "Busca, escribe una dirección, pregunta o pega una imagen",
+  "pt": "Pesquise, escreva um endereço, pergunte ou cole uma imagem",
+  "fr": "Cherchez, tapez une adresse, posez une question ou collez une image",
+  "uk": "Шукайте, введіть адресу, запитайте або вставте зображення"
+ },
+ "Claude had no answer.": {
+  "tr": "Claude bir yanıt veremedi.",
+  "es": "Claude no tuvo respuesta.",
+  "pt": "O Claude não teve resposta.",
+  "fr": "Claude n’a pas de réponse.",
+  "uk": "Claude не має відповіді."
+ },
+ "Choose Claude in Settings → AI & assistants to ask Beam.": {
+  "tr": "Işın’a sormak için Ayarlar → Yapay zekâ ve asistanlar’da Claude’u seç.",
+  "es": "Elige Claude en Ajustes → IA y asistentes para preguntar a Haz.",
+  "pt": "Escolha o Claude em Definições → IA e assistentes para perguntar ao Feixe.",
+  "fr": "Choisissez Claude dans Réglages → IA et assistants pour interroger Faisceau.",
+  "uk": "Виберіть Claude у Налаштуваннях → ШІ та помічники, щоб питати Промінь."
  }
 };
 const languages=["en","tr","es","pt","fr","uk"];

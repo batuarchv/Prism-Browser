@@ -1,7 +1,7 @@
 {
   "name": "prism-browser",
   "productName": "Prism",
-  "version": "0.36.0",
+  "version": "0.37.0",
   "description": "A glass Chromium browser prototype with sleeping tabs",
   "main": "src/main.cjs",
   "scripts": {

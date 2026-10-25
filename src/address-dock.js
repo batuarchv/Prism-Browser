@@ -47,6 +47,8 @@
  function show(){const input=$('address');if(!(placed||simple())||document.activeElement===input)return;input.value=host(activeURL());input.title=activeURL();}
  $('address').addEventListener('focus',()=>{const url=activeURL();if((placed||simple())&&url&&$('address').value===host(url)){$('address').value=url;requestAnimationFrame(()=>$('address').select());}});
  $('address').addEventListener('blur',()=>setTimeout(show,0));
+ // Right-click in the address field (0.37): Paste and Go first, then the usual editing commands.
+ $('address').addEventListener('contextmenu',e=>{e.preventDefault();$('address').focus();act('address-menu');});
  window.prism.onState(s=>{const want=s.settings.compactMode||s.settings.addressBar==='sidebar'&&!s.settings.sidebarCollapsed;if(want!==placed){if(suggestionsOpen)dismissSuggestions();if(want)toSidebar();else toToolbar();}root.dataset.address=placed?'sidebar':'top';show();ready=true;});
  window.addressInSidebar=()=>placed;
 })();
