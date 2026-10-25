@@ -11,8 +11,8 @@ function closeTargets(tabs,id,mode,space,favoriteIds){
 }
 
 // Library edits that can be undone keep a deep copy of the bookmarks and folders they replace.
-function snapshotLibrary(library){return {bookmarks:library.bookmarks.map(b=>({...b})),folders:[...library.folders]};}
-function restoreLibrary(library,snapshot){library.bookmarks=snapshot.bookmarks.map(b=>({...b}));library.folders=[...snapshot.folders];return library;}
+function snapshotLibrary(library){return {bookmarks:library.bookmarks.map(b=>({...b})),folders:[...library.folders],folderIcons:{...library.folderIcons}};}
+function restoreLibrary(library,snapshot){library.bookmarks=snapshot.bookmarks.map(b=>({...b}));library.folders=[...snapshot.folders];if(snapshot.folderIcons)library.folderIcons={...snapshot.folderIcons};return library;}
 function deleteFolderWithBookmarks(library,folder){library.bookmarks=library.bookmarks.filter(b=>b.folder!==folder);library.folders=library.folders.filter(f=>f!==folder);return library;}
 
 module.exports={visibleTabs,closeTargets,snapshotLibrary,restoreLibrary,deleteFolderWithBookmarks};

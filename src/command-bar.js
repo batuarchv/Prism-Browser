@@ -3,18 +3,22 @@
 (()=>{const $=id=>document.getElementById(id),input=$('command-input'),list=$('command-list');let items=[],index=0,request=0,language='en';
  $('command-glyph').append(icon('search'));
  const t=key=>globalThis.PrismLanguages?PrismLanguages.translate(language,key):key;
- const HINT={go:'Open',tab:'Switch to tab',favorite:'Favorite',bookmark:'Bookmark',history:'History',archive:'Archived',action:'Action'};
+ const HINT={suggest:'Search',go:'Open',tab:'Switch to tab',favorite:'Favorite',bookmark:'Bookmark',history:'History',archive:'Archived',action:'Action'};
  function fit(){requestAnimationFrame(()=>surface.send('size',{height:Math.ceil(document.body.scrollHeight)}));}
  function select(i){index=Math.max(0,Math.min(items.length-1,i));[...list.children].forEach((row,n)=>row.setAttribute('aria-selected',String(n===index)));list.children[index]?.scrollIntoView({block:'nearest'});input.setAttribute('aria-activedescendant','command-'+index);}
  function glyph(item){if(item.image){const img=document.createElement('img');img.src=item.image;img.alt='';img.onerror=()=>img.replaceWith(glyphFallback(item));return img;}return glyphFallback(item);}
  function glyphFallback(item){if(item.icon)return icon(item.icon);const span=document.createElement('span');span.className='monogram';try{span.textContent=new URL(item.detail).hostname.replace(/^www\./,'')[0].toUpperCase();}catch{span.textContent=(item.title||'·')[0].toUpperCase();}return span;}
  function draw(next){items=next||[];list.replaceChildren(...items.map((item,i)=>{const row=document.createElement('div');row.className='command-row';row.id='command-'+i;row.setAttribute('role','option');
-   const badge=document.createElement('span');badge.className='command-icon';badge.append(glyph(item));const text=document.createElement('span');text.className='command-text';const title=document.createElement('strong');title.textContent=item.kind==='action'||item.kind==='go'?t(item.title):item.title;text.append(title);
+   const badge=document.createElement('span');badge.className='command-icon';badge.append(glyph(item));const text=document.createElement('span');text.className='command-text';const title=document.createElement('strong');title.textContent=item.kind==='action'||item.kind==='go'?t(item.title):item.title;if(item.kind==='suggest'){const typed=input.value.trim().toLowerCase();if(typed&&item.title.toLowerCase().startsWith(typed)){const lead=document.createElement('span');lead.className='typed';lead.textContent=item.title.slice(0,typed.length);title.replaceChildren(lead,document.createTextNode(item.title.slice(typed.length)));}}text.append(title);
    if(item.detail&&item.kind!=='action'){const small=document.createElement('small');small.textContent=item.detail.replace(/^https?:\/\/(www\.)?/,'');text.append(small);}
    const hint=document.createElement('span');hint.className='command-hint';hint.textContent=t(item.hint||HINT[item.kind]||'');
    row.append(badge,text,hint);row.onpointermove=()=>{if(index!==i)select(i);};row.onclick=e=>run(i,e.altKey);return row;}));
   list.hidden=!items.length;document.body.classList.toggle('has-results',!!items.length);select(0);fit();}
- async function query(){const gen=++request;const rows=await surface.ask('query',input.value);if(gen===request)draw(rows);}
+ async function query(){const gen=++request,q=input.value;const rows=await surface.ask('query',q);if(gen!==request)return;draw(rows);suggest(gen,q);}
+ // Google's suggestions (0.39) join under the top results once they arrive, without moving what you have selected.
+ let suggestTimer;function suggest(gen,q){clearTimeout(suggestTimer);if(q.trim().length<2)return;suggestTimer=setTimeout(async()=>{const rows=await surface.ask('suggest',q).catch(()=>null);if(gen!==request||!rows?.length)return;
+  const typed=q.trim().toLowerCase(),have=new Set(items.map(i=>String(i.title).toLowerCase())),extra=rows.filter(r=>r.title.toLowerCase()!==typed&&!have.has(r.title.toLowerCase())).slice(0,5);if(!extra.length)return;
+  const chosen=items[index]?.id,head=items.filter(i=>i.kind==='go'||i.kind==='ai'),rest=items.filter(i=>i.kind!=='go'&&i.kind!=='ai');draw([...head,...rest.slice(0,3),...extra,...rest.slice(3,6)]);const keep=items.findIndex(i=>i.id===chosen);if(keep>0)select(keep);},80);}
  // Ask Claude or Apple Intelligence (0.37/0.38): Beam stays open while the assistant either runs the right item (Beam then closes) or answers here.
  const answer=$('command-answer');let asking=0;
  async function ask(){const gen=++asking,q=input.value;answer.hidden=false;answer.classList.add('thinking');answer.textContent=t('Thinking…');fit();

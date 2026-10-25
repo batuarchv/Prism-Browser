@@ -15,7 +15,8 @@
  let view=null,revision=null,cursorTime=null,language='en',fetching=false,chosen=null,map=null;const moments=new Map();
  const KIND={mail:'Mail',ai:'Asking AI',code:'Coding',work:'Working',video:'Watching',music:'Listening',social:'Social',news:'Catching up on news',shopping:'Shopping',learning:'Learning',travel:'Planning travel',money:'Money matters',web:'Browsing'};
  const hue=host=>{let h=2166136261;for(const c of host){h^=c.charCodeAt(0);h=Math.imul(h,16777619);}return (h>>>0)%360;};
- const colour=host=>`hsl(${hue(host)} 78% 62%)`;
+ // 0.39: one colour, the theme's accent, at a few strengths; each site keeps its strength, so neighbours stay apart.
+ const STRENGTHS=[100,74,52,34],colour=host=>`color-mix(in srgb,var(--accent) ${STRENGTHS[hue(host)%STRENGTHS.length]}%,transparent)`;
  const clock=time=>new Intl.DateTimeFormat(language,{hour:'numeric',minute:'2-digit'}).format(time);
  const duration=ms=>{const m=Math.max(1,Math.round(ms/60000)),h=Math.floor(m/60);return h?t('{h} h {m} min').replace('{h}',h).replace('{m}',m%60):t('{m} min').replace('{m}',m);};
  const title=c=>c.title||t(KIND[c.kind]||'Browsing');

@@ -40,15 +40,15 @@ exports.run=async({win,action,snapshot,makeTab,selectTab,settings})=>{
   for(const row of snapshot().tabs.filter(x=>x.url?.endsWith('/draft'))){selectTab(row.id);const draft=require('electron').webContents.fromId(snapshot().activeWebContentsId);draft?.reload();await delay(600);}
   await win.webContents.executeJavaScript(`document.getElementById('close-all-tabs').click()`);
   await eventually(()=>open().length===0,'Close all tabs closed the unpinned tabs');
-  // The new tab left behind shows the live glass logo, the wordmark under it and the closed tabs at the bottom.
-  await eventually(()=>win.webContents.executeJavaScript(`!document.getElementById('home-closed').hidden&&document.querySelectorAll('#home-closed button').length>0`),'recently closed tabs on the new tab');
+  // The new tab left behind shows only the live glass logo, the wordmark under it and the bar (0.39): no past sites.
+  assert.equal(await win.webContents.executeJavaScript(`!!document.getElementById('home-closed')`),false,'no recently closed list on the new tab');
   await win.webContents.executeJavaScript(`typeof closePanel==='function'&&panel?closePanel():null`);await delay(400);
-  const home=await win.webContents.executeJavaScript(`(()=>{const logo=document.querySelector('.welcome-logo').getBoundingClientRect(),word=document.querySelector('.welcome-wordmark').getBoundingClientRect(),list=document.getElementById('home-closed').getBoundingClientRect(),page=document.getElementById('welcome').getBoundingClientRect();return {wordBelow:word.top>=logo.bottom-1,centred:Math.abs((logo.left+logo.right)/2-(page.left+page.right)/2)<2,listAtBottom:list.bottom>page.bottom-60,shown:getComputedStyle(document.getElementById('welcome')).visibility==='visible'&&getComputedStyle(document.getElementById('welcome')).display!=='none',live:!!document.querySelector('#welcome canvas.glass-logo')}})()`);
-  assert.deepEqual(home,{wordBelow:true,centred:true,listAtBottom:true,shown:true,live:true});
+  const home=await win.webContents.executeJavaScript(`(()=>{const logo=document.querySelector('.welcome-logo').getBoundingClientRect(),word=document.querySelector('.welcome-wordmark').getBoundingClientRect(),page=document.getElementById('welcome').getBoundingClientRect();return {wordBelow:word.top>=logo.bottom-1,centred:Math.abs((logo.left+logo.right)/2-(page.left+page.right)/2)<2,shown:getComputedStyle(document.getElementById('welcome')).visibility==='visible'&&getComputedStyle(document.getElementById('welcome')).display!=='none',live:!!document.querySelector('#welcome canvas.glass-logo')}})()`);
+  assert.deepEqual(home,{wordBelow:true,centred:true,shown:true,live:true});
   {await delay(1200);const dir=require('node:path').resolve(__dirname,'../reports/'+require('../package.json').version);require('node:fs').mkdirSync(dir,{recursive:true});require('node:fs').writeFileSync(require('node:path').join(dir,'new-tab.png'),(await win.webContents.capturePage()).toPNG());}
-  await win.webContents.executeJavaScript(`document.querySelector('#home-closed button').click()`);await eventually(()=>open().length===1,'a closed tab reopens from the new tab');
+  await action('reopen');await eventually(()=>open().length===1,'a closed tab reopens');
   for(let i=1;i<urls.length;i++)await action('reopen');
   await eventually(()=>JSON.stringify(open().map(x=>x.url).sort())===JSON.stringify(urls),'⇧⌘T brought them back');
-  return ['two-finger swipe back/forward','swipe respects horizontal scrollers and the setting','sidebar swipe switches spaces','close all tabs with reopen','new tab: centred logo, wordmark, closed tabs'];
+  return ['two-finger swipe back/forward','swipe respects horizontal scrollers and the setting','sidebar swipe switches spaces','close all tabs with reopen','new tab: centred logo, wordmark and bar only'];
  }finally{server.close();}
 };

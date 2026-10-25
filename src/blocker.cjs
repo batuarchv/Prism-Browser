@@ -71,7 +71,8 @@ class Blocker {
  // The normal session is filtered here; Private's requests go through PrivateNetwork, which asks decide() first.
  // Global Privacy Control is announced to pages (navigator.globalPrivacyControl) rather than as a request header: a header
  // needs a second webRequest listener, one more trip through the main process for every request (0.33.1).
- bind(session,privateMode=false){if(!privateMode)session.webRequest.onBeforeRequest((details,callback)=>{const d=this.decide(details);if(d.delay){const timer=setTimeout(()=>callback({cancel:true}),d.delay);timer.unref?.();return;}callback(d);});}
+ // before() may return a promise to hold an allowed request briefly (the site bypass adding a host to its route).
+ bind(session,privateMode=false,before){if(!privateMode)session.webRequest.onBeforeRequest((details,callback)=>{const d=this.decide(details);if(d.delay){const timer=setTimeout(()=>callback({cancel:true}),d.delay);timer.unref?.();return;}const wait=!d.cancel&&!d.redirectURL&&before?.(details);if(wait)wait.then(()=>callback(d),()=>callback(d));else callback(d);});}
  attach(wc){wc.once('destroyed',()=>this.counts.delete(wc.id));}
  clearPrivate(){this.privateExceptions.clear();}
 }

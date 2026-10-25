@@ -4409,6 +4409,146 @@ const catalog={
   "pt": "Escolha o Claude ou o Apple Intelligence em Definições → IA e assistentes para perguntar ao Feixe.",
   "fr": "Choisissez Claude ou Apple Intelligence dans Réglages → IA et assistants pour interroger Faisceau.",
   "uk": "Виберіть Claude або Apple Intelligence у Налаштуваннях → ШІ та помічники, щоб питати Промінь."
+ },
+ "Bypass in Personal and Work": {
+  "tr": "Kişisel ve İş’te engel aşma",
+  "es": "Evasión en Personal y Trabajo",
+  "pt": "Contorno em Pessoal e Trabalho",
+  "fr": "Contournement dans Personnel et Travail",
+  "uk": "Обхід в Особистому та Робочому"
+ },
+ "Use bypass": {
+  "tr": "Engel aşmayı kullan",
+  "es": "Usar evasión",
+  "pt": "Usar contorno",
+  "fr": "Utiliser le contournement",
+  "uk": "Використовувати обхід"
+ },
+ "Only chosen sites keeps everything else on your normal connection.": {
+  "tr": "Yalnızca seçilen siteler, geri kalan her şeyi normal bağlantında tutar.",
+  "es": "Solo los sitios elegidos mantiene todo lo demás en tu conexión normal.",
+  "pt": "Apenas os sites escolhidos mantém tudo o resto na sua ligação normal.",
+  "fr": "Seulement les sites choisis garde tout le reste sur votre connexion normale.",
+  "uk": "Лише вибрані сайти залишає все інше на звичайному з’єднанні."
+ },
+ "Only chosen sites": {
+  "tr": "Yalnızca seçilen siteler",
+  "es": "Solo los sitios elegidos",
+  "pt": "Apenas os sites escolhidos",
+  "fr": "Seulement les sites choisis",
+  "uk": "Лише вибрані сайти"
+ },
+ "All sites": {
+  "tr": "Tüm siteler",
+  "es": "Todos los sitios",
+  "pt": "Todos os sites",
+  "fr": "Tous les sites",
+  "uk": "Усі сайти"
+ },
+ "Chosen sites": {
+  "tr": "Seçilen siteler",
+  "es": "Sitios elegidos",
+  "pt": "Sites escolhidos",
+  "fr": "Sites choisis",
+  "uk": "Вибрані сайти"
+ },
+ "A site brings its own domains: discord.com also covers discord.gg, its CDN and its gateway, so the connection holds while you move around it.": {
+  "tr": "Bir site kendi alan adlarını da getirir: discord.com, discord.gg’yi, CDN’ini ve ağ geçidini de kapsar; böylece site içinde gezinirken bağlantı kopmaz.",
+  "es": "Un sitio incluye sus propios dominios: discord.com también cubre discord.gg, su CDN y su pasarela, así la conexión se mantiene mientras navegas por él.",
+  "pt": "Um site inclui os seus próprios domínios: discord.com também abrange discord.gg, a sua CDN e o seu gateway, para a ligação se manter enquanto navega nele.",
+  "fr": "Un site inclut ses propres domaines : discord.com couvre aussi discord.gg, son CDN et sa passerelle, pour que la connexion tienne pendant que vous y naviguez.",
+  "uk": "Сайт приносить свої домени: discord.com також охоплює discord.gg, його CDN і шлюз, тож з’єднання тримається, поки ви ним користуєтеся."
+ },
+ "Add": {
+  "tr": "Ekle",
+  "es": "Añadir",
+  "pt": "Adicionar",
+  "fr": "Ajouter",
+  "uk": "Додати"
+ },
+ "Add current site": {
+  "tr": "Geçerli siteyi ekle",
+  "es": "Añadir el sitio actual",
+  "pt": "Adicionar o site atual",
+  "fr": "Ajouter le site actuel",
+  "uk": "Додати поточний сайт"
+ },
+ "Passwords in Private": {
+  "tr": "Özel’de parolalar",
+  "es": "Contraseñas en Privado",
+  "pt": "Palavras-passe em Privado",
+  "fr": "Mots de passe en Privé",
+  "uk": "Паролі в Приватному"
+ },
+ "Use Personal passwords in Private": {
+  "tr": "Özel’de Kişisel parolaları kullan",
+  "es": "Usar las contraseñas de Personal en Privado",
+  "pt": "Usar as palavras-passe de Pessoal em Privado",
+  "fr": "Utiliser les mots de passe de Personnel en Privé",
+  "uk": "Використовувати особисті паролі в Приватному"
+ },
+ "Fill the logins and cards saved in Personal and Work, after Touch ID. Private never saves new ones.": {
+  "tr": "Kişisel ve İş’te kayıtlı girişleri ve kartları Touch ID’den sonra doldurur. Özel asla yenilerini kaydetmez.",
+  "es": "Rellena los inicios de sesión y tarjetas guardados en Personal y Trabajo tras Touch ID. Privado nunca guarda nuevos.",
+  "pt": "Preenche os inícios de sessão e cartões guardados em Pessoal e Trabalho após o Touch ID. O Privado nunca guarda novos.",
+  "fr": "Remplit les identifiants et cartes enregistrés dans Personnel et Travail après Touch ID. Privé n’en enregistre jamais de nouveaux.",
+  "uk": "Заповнює логіни й картки, збережені в Особистому та Робочому, після Touch ID. Приватний режим ніколи не зберігає нові."
+ },
+ "Fill saved passwords and cards in Private, after Touch ID. Private never saves new ones.": {
+  "tr": "Özel’de kayıtlı parolaları ve kartları Touch ID’den sonra doldurur. Özel asla yenilerini kaydetmez.",
+  "es": "Rellena contraseñas y tarjetas guardadas en Privado tras Touch ID. Privado nunca guarda nuevas.",
+  "pt": "Preenche palavras-passe e cartões guardados em Privado após o Touch ID. O Privado nunca guarda novos.",
+  "fr": "Remplit les mots de passe et cartes enregistrés en Privé après Touch ID. Privé n’en enregistre jamais de nouveaux.",
+  "uk": "Заповнює збережені паролі й картки в Приватному після Touch ID. Приватний режим ніколи не зберігає нові."
+ },
+ "Search suggestions": {
+  "tr": "Arama önerileri",
+  "es": "Sugerencias de búsqueda",
+  "pt": "Sugestões de pesquisa",
+  "fr": "Suggestions de recherche",
+  "uk": "Пошукові підказки"
+ },
+ "Beam suggests searches from Google as you type. Only the typed text is sent; never in Private.": {
+  "tr": "Işın, sen yazarken Google’dan arama önerir. Yalnızca yazılan metin gönderilir; Özel’de asla.",
+  "es": "Haz sugiere búsquedas de Google mientras escribes. Solo se envía el texto escrito; nunca en Privado.",
+  "pt": "O Feixe sugere pesquisas do Google enquanto escreve. Só é enviado o texto escrito; nunca em Privado.",
+  "fr": "Faisceau suggère des recherches Google pendant la saisie. Seul le texte tapé est envoyé ; jamais en Privé.",
+  "uk": "Промінь пропонує пошукові запити Google, поки ви друкуєте. Надсилається лише набраний текст; ніколи в Приватному."
+ },
+ "Change symbol…": {
+  "tr": "Simgeyi değiştir…",
+  "es": "Cambiar símbolo…",
+  "pt": "Alterar símbolo…",
+  "fr": "Changer de symbole…",
+  "uk": "Змінити символ…"
+ },
+ "Folder symbol": {
+  "tr": "Klasör simgesi",
+  "es": "Símbolo de carpeta",
+  "pt": "Símbolo da pasta",
+  "fr": "Symbole du dossier",
+  "uk": "Символ папки"
+ },
+ "While the bypass runs, Prism splits the first packets of each connection so filters can’t read them, and looks up sites over encrypted DNS (Cloudflare, Google) so blocked addresses resolve correctly. The helper is built into Prism (tpws from the open-source Zapret project); nothing is installed and no system settings change. If it fails in Private, Private requests stay blocked; in Personal and Work, sites fall back to your normal connection. It is not a VPN: sites still see your IP address.": {
+  "tr": "Engel aşma çalışırken Prism, filtreler okuyamasın diye her bağlantının ilk paketlerini böler ve engellenen adresler doğru çözülsün diye siteleri şifreli DNS (Cloudflare, Google) üzerinden arar. Yardımcı araç Prism’e yerleşiktir (açık kaynaklı Zapret projesinden tpws); hiçbir şey kurulmaz ve sistem ayarları değişmez. Özel’de başarısız olursa Özel istekleri engelli kalır; Kişisel ve İş’te siteler normal bağlantına döner. Bu bir VPN değildir: siteler IP adresini yine görür.",
+  "es": "Mientras la evasión funciona, Prism divide los primeros paquetes de cada conexión para que los filtros no puedan leerlos y busca los sitios por DNS cifrado (Cloudflare, Google) para que las direcciones bloqueadas se resuelvan bien. El asistente viene integrado en Prism (tpws del proyecto de código abierto Zapret); no se instala nada ni cambia ningún ajuste del sistema. Si falla en Privado, las solicitudes privadas siguen bloqueadas; en Personal y Trabajo, los sitios vuelven a tu conexión normal. No es una VPN: los sitios siguen viendo tu dirección IP.",
+  "pt": "Enquanto o contorno funciona, o Prism divide os primeiros pacotes de cada ligação para que os filtros não os consigam ler e procura os sites por DNS cifrado (Cloudflare, Google) para que os endereços bloqueados sejam resolvidos corretamente. O auxiliar vem integrado no Prism (tpws do projeto de código aberto Zapret); nada é instalado e nenhuma definição do sistema muda. Se falhar em Privado, os pedidos privados continuam bloqueados; em Pessoal e Trabalho, os sites voltam à sua ligação normal. Não é uma VPN: os sites continuam a ver o seu endereço IP.",
+  "fr": "Pendant le contournement, Prism découpe les premiers paquets de chaque connexion pour que les filtres ne puissent pas les lire, et résout les sites via un DNS chiffré (Cloudflare, Google) pour que les adresses bloquées soient correctement résolues. L’outil est intégré à Prism (tpws du projet open source Zapret) ; rien n’est installé et aucun réglage système ne change. En cas d’échec en Privé, les requêtes privées restent bloquées ; dans Personnel et Travail, les sites reviennent à votre connexion normale. Ce n’est pas un VPN : les sites voient toujours votre adresse IP.",
+  "uk": "Поки працює обхід, Prism розділяє перші пакети кожного з’єднання, щоб фільтри не могли їх прочитати, і шукає сайти через зашифрований DNS (Cloudflare, Google), щоб заблоковані адреси визначалися правильно. Помічник вбудовано в Prism (tpws з відкритого проєкту Zapret); нічого не встановлюється і системні налаштування не змінюються. Якщо в Приватному він не спрацює, приватні запити залишаться заблокованими; в Особистому та Робочому сайти повернуться до звичайного з’єднання. Це не VPN: сайти все одно бачать вашу IP-адресу."
+ },
+ "Bypass in Private": {
+  "tr": "Özel’de engel aşma",
+  "es": "Evasión en Privado",
+  "pt": "Contorno em Privado",
+  "fr": "Contournement en Privé",
+  "uk": "Обхід у Приватному"
+ },
+ "Add a site, like x.com": {
+  "tr": "Bir site ekle, ör. x.com",
+  "es": "Añade un sitio, como x.com",
+  "pt": "Adicione um site, como x.com",
+  "fr": "Ajoutez un site, comme x.com",
+  "uk": "Додайте сайт, наприклад x.com"
  }
 };
 const languages=["en","tr","es","pt","fr","uk"];

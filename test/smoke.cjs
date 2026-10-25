@@ -30,7 +30,7 @@ exports.run=async({app,win,makeTab,selectTab,sleepTab,action,snapshot,tabs,setti
   assert.equal(await a.view.webContents.executeJavaScript('typeof require'),'undefined');
   assert.equal(await a.view.webContents.executeJavaScript('typeof window.prism'),'undefined');
   const dirty=makeTab(base+'/draft');await loaded(dirty);
-  await dirty.view.webContents.executeJavaScript(`document.querySelector('input').value='Draft';document.querySelector('input').dispatchEvent(new Event('input',{bubbles:true}));`);
+  await dirty.view.webContents.executeJavaScript(`document.querySelector('input').value='A draft that is long enough to count as real writing';document.querySelector('input').dispatchEvent(new Event('input',{bubbles:true}));`);
   const b=makeTab(base+'/two');await loaded(b);
   assert.equal(await sleepTab(b,true),false,'active tab protected');
   assert.equal(await sleepTab(dirty,true),false,'draft protected');

@@ -2,6 +2,24 @@
 
 All notable changes to Prism, newest first. Downloads are on the [Releases page](https://github.com/batuarchv/Prism-Browser/releases).
 
+## 0.39.0 — Bypass anywhere, cleaner sidebar
+
+### New
+- **Bypass built into Prism.** The censorship bypass no longer needs anything installed: its helper ships inside Prism. In Settings → Private network you can now use it in Personal and Work too, for every site or **only the sites you choose**. A chosen site brings its own domains, so discord.com also covers discord.gg, its CDN and gateway, plus anything else its tabs load, and the connection holds as you move around it. If the bypass fails there, sites fall back to your normal connection.
+- **Search suggestions in Beam.** As you type, Beam suggests searches from Google, with the rest of each suggestion in bold. Only the typed text is sent; never in Private. Turn it off in Settings → Appearance.
+- **Close pinned pages.** An open pinned page now has a close button, like a tab. It closes the page and keeps the pin.
+- **Folder symbols.** Right-click a folder → Change symbol to give it one of the space symbols.
+- **Use Personal passwords in Private.** The switch now also sits in Settings → Private network and works at once in open Private tabs. Private still never saves new logins.
+
+### Improved
+- **Fewer "discard input" questions.** Closing a tab only asks when you typed real writing that is still on the page: a text area, a rich editor or a long field. Searches, sign-ins, sent messages and submitted forms no longer count.
+- **A quiet new tab.** Just the logo and the bar. No past sites, no list over the page and no dimmed bar while you type.
+- **Aligned sidebar.** Pinned pages, folders and tabs share one row shape, so icons and titles line up.
+- **Spectrum in your colours.** The timeline uses your theme's accent at a few strengths instead of a rainbow of colours.
+
+### Install notes
+This beta is **ad-hoc signed and not notarized by Apple**. The first time you open it, macOS may say it can't verify the developer: right-click (or Control-click) Prism in Applications and choose **Open**, then **Open** again. Apple Silicon (arm64) only.
+
 ## 0.38.2 — A glass swipe arrow
 
 ### New

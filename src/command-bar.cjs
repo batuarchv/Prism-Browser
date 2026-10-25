@@ -19,7 +19,7 @@ function rank(query,entries,max=MAX){
  for(const {e} of scored){const key=e.kind!=='action'&&e.kind!=='go'&&e.detail?e.detail:e.id;if(seen.has(key))continue;seen.add(key);out.push(e);if(out.length>=max)break;}
  return out;
 }
-function createCommandBar({BrowserWindow,parent,surfaces,entries,run,look,decorate=()=>{},ask=null,image=null}){
+function createCommandBar({BrowserWindow,parent,surfaces,entries,run,look,decorate=()=>{},ask=null,image=null,suggest=null}){
  let current=null,idle=null,generation=0;
  function bounds(height){const owner=parent(),b=owner.getContentBounds(),width=Math.min(WIDTH,b.width-48);return {x:Math.round(b.x+(b.width-width)/2),y:Math.round(b.y+Math.max(40,b.height*.16)),width,height:Math.round(Math.max(60,Math.min(height,b.height-80)))};}
  function destroy(){clearTimeout(idle);const c=current;current=null;if(c&&!c.win.isDestroyed())c.win.destroy();}
@@ -28,7 +28,7 @@ function createCommandBar({BrowserWindow,parent,surfaces,entries,run,look,decora
   const win=new BrowserWindow({parent:parent(),...bounds(64),show:false,frame:false,transparent:true,backgroundColor:'#00000000',vibrancy:'popover',visualEffectState:'active',roundedCorners:true,hasShadow:true,resizable:false,movable:false,minimizable:false,maximizable:false,fullscreenable:false,skipTaskbar:true,webPreferences:{preload:surfaces.preload,sandbox:true,contextIsolation:true,nodeIntegration:false}});
   const record={win,visible:false,ready:null};current=record;decorate(win.webContents);
   surfaces.register(win.webContents,{
-   ask:(name,value)=>name==='query'&&typeof value==='string'?rank(value.slice(0,300),entries(value.slice(0,300))):name==='ai'&&typeof value==='string'&&ask?ask(value.slice(0,2000)):null,
+   ask:(name,value)=>name==='query'&&typeof value==='string'?rank(value.slice(0,300),entries(value.slice(0,300))):name==='ai'&&typeof value==='string'&&ask?ask(value.slice(0,2000)):name==='suggest'&&typeof value==='string'&&suggest?suggest(value.slice(0,300)):null,
    command:(name,value)=>{if(current!==record)return;if(name==='close')hide();else if(name==='size'&&Number.isFinite(value?.height)&&record.visible){const owner=parent();if(owner&&!owner.isDestroyed())win.setBounds(bounds(value.height));}
     else if(name==='image'&&value instanceof Uint8Array&&image){hide();Promise.resolve().then(()=>image(value)).catch(()=>{});}
     else if(name==='run'&&value&&typeof value.id==='string'){hide();Promise.resolve().then(()=>run(value.id,{query:String(value.query||'').slice(0,8192),alt:!!value.alt})).catch(()=>{});}}
