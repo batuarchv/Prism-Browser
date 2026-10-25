@@ -214,7 +214,8 @@ function registerGestures(ses){ses.registerPreloadScript({id:'prism-gestures',ty
 function applyPinch(wc){if(wc&&!wc.isDestroyed())wc.setVisualZoomLevelLimits(1,settings.trackpadGestures?3:1).catch(()=>{});}
 function swipeRequest(event,value){const t=tabs.find(t=>t.view?.webContents===event.sender);if(!t||(t.id!==activeId&&!split?.ids.includes(t.id))||event.senderFrame!==event.sender.mainFrame)return null;
  const history=event.sender.navigationHistory;
- if(value?.type==='query')return {enabled:swipeEnabled(),back:history.canGoBack(),forward:history.canGoForward(),reduceMotion:!!settings.reduceMotion||systemPreferences.getAnimationSettings().prefersReducedMotion};
+ // The arrow wears the space's colour (or the theme's accent) and follows light/dark (0.38.2).
+ if(value?.type==='query'){const sp=settings.spaces.find(x=>x.id===t.space),hex=/^#[0-9a-f]{6}$/i.test(sp?.color||'')?sp.color:t.space==='private'?'#9275b5':accent();return {accent:hex,dark:nativeTheme.shouldUseDarkColors,enabled:swipeEnabled(),back:history.canGoBack(),forward:history.canGoForward(),reduceMotion:!!settings.reduceMotion||systemPreferences.getAnimationSettings().prefersReducedMotion};}
  if(value?.type==='go'&&swipeEnabled()){if(value.dir==='back'&&history.canGoBack())history.goBack();else if(value.dir==='forward'&&history.canGoForward())history.goForward();}
  return null;}
 let whatsNewWindow=null;

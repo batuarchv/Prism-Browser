@@ -2,6 +2,14 @@
 
 All notable changes to Prism, newest first. Downloads are on the [Releases page](https://github.com/batuarchv/Prism-Browser/releases).
 
+## 0.38.2 — A glass swipe arrow
+
+### New
+- **Liquid glass swipe arrow.** The back and forward arrow that follows a two-finger swipe is now a small piece of glass, and it fills with your space's colour (or your theme's accent) once letting go would go back or forward. It follows light and dark mode.
+
+### Install notes
+This beta is **ad-hoc signed and not notarized by Apple**. The first time you open it, macOS may say it can't verify the developer: right-click (or Control-click) Prism in Applications and choose **Open**, then **Open** again. Apple Silicon (arm64) only.
+
 ## 0.38.1 — Beam works again
 
 ### New
