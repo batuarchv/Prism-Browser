@@ -2,7 +2,7 @@
 // (full "Restart to Update" in its tooltip) between Settings and Downloads.
 // Settings → Updates gains a "What’s New" button for the current version.
 (()=>{if(new URLSearchParams(location.search).has('tool')){
-  const actions=document.querySelector('[data-pane=updates] .manager-actions');if(actions&&!$('whats-new')){const b=document.createElement('button');b.id='whats-new';b.textContent='What’s New';b.onclick=()=>act('whats-new');actions.append(b);}
+  const actions=document.querySelector('[data-pane=updates] .manager-actions');if(actions&&!$('whats-new')){const b=document.createElement('button');b.id='whats-new';b.textContent='What’s New';b.onclick=()=>act('whats-new');const notes=document.createElement('button');notes.id='release-notes';notes.textContent='Release notes';notes.onclick=()=>{act('close-tools');act('release-notes');};actions.append(b,notes);}
   return;}
  const holder=document.querySelector('.sidebar-bottom .utilities');if(!holder)return;
  const button=document.createElement('button');button.id='update-indicator';button.hidden=true;button.type='button';

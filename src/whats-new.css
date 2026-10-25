@@ -22,3 +22,13 @@ h1{font-size:22px;font-weight:700;letter-spacing:-.01em;margin:4px 0 2px}
 .sequence.revealed #wn-version{transition-delay:60ms}
 .sequence.revealed #wn-items li{transition-delay:calc(120ms + var(--i) * 55ms)}
 .sequence.revealed #wn-continue{transition-delay:420ms}
+/* 0.36: each change carries one line of detail, and the full release notes are a click away. */
+#wn-items{max-width:380px}
+#wn-items li{align-items:start}
+#wn-items small{display:block;margin-top:2px;color:var(--muted);font-size:12px;line-height:1.35}
+.wn-actions{display:flex;align-items:center;justify-content:center;gap:16px;margin-top:18px;-webkit-app-region:no-drag}
+.wn-actions #wn-continue{margin-top:0}
+#wn-notes{color:var(--accent);text-decoration:none;font-weight:500}
+#wn-notes:hover{text-decoration:underline}
+.sequence .wn-actions{opacity:0;transform:translateY(8px)}
+.sequence.revealed .wn-actions{opacity:1;transform:none;transition:opacity 380ms cubic-bezier(.2,.7,.2,1) 300ms,transform 420ms cubic-bezier(.2,.8,.25,1) 300ms}

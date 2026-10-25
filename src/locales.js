@@ -4004,13 +4004,6 @@ const catalog={
   "fr": "Ce que vous ouvrez souvent à cette heure",
   "uk": "Що ви зазвичай відкриваєте в цей час"
  },
- "Only on this Mac · never in Private": {
-  "tr": "Yalnızca bu Mac’te · Özel’de asla",
-  "es": "Solo en este Mac · nunca en Privado",
-  "pt": "Só neste Mac · nunca em Privado",
-  "fr": "Uniquement sur ce Mac · jamais en Privé",
-  "uk": "Лише на цьому Mac · ніколи в Приватному"
- },
  "Name my day in Spectrum": {
   "tr": "Spectrum günümü adlandırsın",
   "es": "Que Spectrum ponga nombre a mi día",
@@ -4213,6 +4206,90 @@ const catalog={
   "pt": "Abre o Feixe: escreva um endereço, pesquise ou encontre qualquer separador, definição ou ação. ⌘K abre um separador em branco.",
   "fr": "Ouvre Faisceau : tapez une adresse, cherchez, ou trouvez un onglet, un réglage ou une action. ⌘K ouvre un onglet vide.",
   "uk": "Відкриває Промінь: введіть адресу, шукайте або знайдіть будь-яку вкладку, налаштування чи дію. ⌘K відкриває порожню вкладку."
+ },
+ "Bring it back": {
+  "tr": "Geri getir",
+  "es": "Recuperarla",
+  "pt": "Recuperar",
+  "fr": "La ramener",
+  "uk": "Повернути"
+ },
+ "Bring back {count} tabs": {
+  "tr": "{count} sekmeyi geri getir",
+  "es": "Recuperar {count} pestañas",
+  "pt": "Recuperar {count} separadores",
+  "fr": "Ramener {count} onglets",
+  "uk": "Повернути вкладки: {count}"
+ },
+ "Release notes": {
+  "tr": "Sürüm notları",
+  "es": "Notas de la versión",
+  "pt": "Notas de lançamento",
+  "fr": "Notes de version",
+  "uk": "Нотатки до випуску"
+ },
+ "Release Notes": {
+  "tr": "Sürüm Notları",
+  "es": "Notas de la versión",
+  "pt": "Notas de lançamento",
+  "fr": "Notes de version",
+  "uk": "Нотатки до випуску"
+ },
+ "See everything new": {
+  "tr": "Tüm yenilikleri gör",
+  "es": "Ver todas las novedades",
+  "pt": "Ver todas as novidades",
+  "fr": "Voir toutes les nouveautés",
+  "uk": "Переглянути все нове"
+ },
+ "AI for Prism": {
+  "tr": "Prism için yapay zekâ",
+  "es": "IA para Prism",
+  "pt": "IA para o Prism",
+  "fr": "IA pour Prism",
+  "uk": "ШІ для Prism"
+ },
+ "Used for download names, page summaries and translations, and Spectrum.": {
+  "tr": "İndirme adları, sayfa özetleri ve çevirileri ile Spectrum için kullanılır.",
+  "es": "Se usa para nombres de descargas, resúmenes y traducciones de páginas, y Spectrum.",
+  "pt": "Usada para nomes de transferências, resumos e traduções de páginas e o Spectrum.",
+  "fr": "Utilisée pour les noms de téléchargements, les résumés et traductions de pages, et Spectrum.",
+  "uk": "Використовується для назв завантажень, підсумків і перекладів сторінок та Spectrum."
+ },
+ "Claude · your Anthropic API key": {
+  "tr": "Claude · Anthropic API anahtarın",
+  "es": "Claude · tu clave de API de Anthropic",
+  "pt": "Claude · a sua chave de API da Anthropic",
+  "fr": "Claude · votre clé d’API Anthropic",
+  "uk": "Claude · ваш ключ API Anthropic"
+ },
+ "Anthropic API key": {
+  "tr": "Anthropic API anahtarı",
+  "es": "Clave de API de Anthropic",
+  "pt": "Chave de API da Anthropic",
+  "fr": "Clé d’API Anthropic",
+  "uk": "Ключ API Anthropic"
+ },
+ "Create one at console.anthropic.com. Stored encrypted on this Mac.": {
+  "tr": "console.anthropic.com adresinden oluştur. Bu Mac’te şifreli saklanır.",
+  "es": "Créala en console.anthropic.com. Se guarda cifrada en este Mac.",
+  "pt": "Crie uma em console.anthropic.com. Guardada cifrada neste Mac.",
+  "fr": "Créez-en une sur console.anthropic.com. Stockée chiffrée sur ce Mac.",
+  "uk": "Створіть на console.anthropic.com. Зберігається зашифрованим на цьому Mac."
+ },
+ "Name downloads, summarize and translate pages, and title your day in Spectrum.": {
+  "tr": "İndirmeleri adlandır, sayfaları özetle ve çevir, Spectrum’da gününe başlık ver.",
+  "es": "Nombra descargas, resume y traduce páginas y titula tu día en Spectrum.",
+  "pt": "Dê nome a transferências, resuma e traduza páginas e dê título ao seu dia no Spectrum.",
+  "fr": "Nommez les téléchargements, résumez et traduisez des pages, et titrez votre journée dans Spectrum.",
+  "uk": "Називайте завантаження, підсумовуйте й перекладайте сторінки та давайте назви своєму дню в Spectrum."
+ },
+ "The AI above titles each part of your day when you open Spectrum, and Spectrum suggests sites you usually open.": {
+  "tr": "Yukarıdaki yapay zekâ Spectrum’u açtığında gününün her bölümüne başlık verir; Spectrum genelde açtığın siteleri önerir.",
+  "es": "La IA de arriba titula cada parte de tu día al abrir Spectrum, y Spectrum sugiere los sitios que sueles abrir.",
+  "pt": "A IA acima dá título a cada parte do seu dia quando abre o Spectrum, e o Spectrum sugere os sites que costuma abrir.",
+  "fr": "L’IA ci-dessus titre chaque moment de votre journée quand vous ouvrez Spectrum, et Spectrum suggère les sites que vous ouvrez souvent.",
+  "uk": "ШІ вище дає назву кожній частині дня, коли ви відкриваєте Spectrum, а Spectrum пропонує сайти, які ви зазвичай відкриваєте."
  }
 };
 const languages=["en","tr","es","pt","fr","uk"];

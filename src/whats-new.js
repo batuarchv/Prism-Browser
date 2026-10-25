@@ -11,8 +11,9 @@
  const list=document.getElementById('wn-items');
  for(const [i,item] of (Array.isArray(data.items)?data.items:[]).entries()){const li=document.createElement('li');li.style.setProperty('--i',i);
   const glyph=document.createElement('span');glyph.className='wn-icon';glyph.append(icon(String(item.icon||'sparkles')));
-  const text=document.createElement('div');const title=document.createElement('strong');title.textContent=String(item.title||'');text.append(title);if(item.detail)li.title=String(item.detail);
+  const text=document.createElement('div');const title=document.createElement('strong');title.textContent=String(item.title||'');text.append(title);if(item.detail){const detail=document.createElement('small');detail.textContent=String(item.detail);text.append(detail);}
   li.append(glyph,text);list.append(li);}
+ const notes=document.getElementById('wn-notes');notes.textContent=t(data.more?'See everything new':'Release notes');
  const button=document.getElementById('wn-continue');button.textContent=t('Continue');button.onclick=()=>window.close();button.focus({focusVisible:false});
  addEventListener('keydown',e=>{if(e.key==='Escape')window.close();});
  // The sequence: logo first, then text. Reduce Motion shows everything at once.

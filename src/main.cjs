@@ -222,10 +222,12 @@ function showWhatsNew(){
  if(whatsNewWindow&&!whatsNewWindow.isDestroyed()){whatsNewWindow.focus();return;}
  const version=require('../package.json').version,flow=require('./update-flow.js');let notes={version,date:'',items:[]};
  try{notes=flow.releaseNotes(fs.readFileSync(path.join(__dirname,'..','RELEASE-'+version+'.md'),'utf8'),version);}catch{}
- const data={version,date:notes.date,items:notes.items,language:settings.language,dark:nativeTheme.shouldUseDarkColors,reduceMotion:!!settings.reduceMotion||accessibility().reduceMotion};
- const [wx,wy]=win.getPosition(),[ww]=win.getSize(),width=400,height=Math.min(660,360+notes.items.length*40);
+ // The window shows the six biggest changes (the release notes list them most important first); the full story is a
+ // release notes page in a tab (0.36).
+ const data={version,date:notes.date,items:notes.items.slice(0,6),more:notes.items.length>6,language:settings.language,dark:nativeTheme.shouldUseDarkColors,reduceMotion:!!settings.reduceMotion||accessibility().reduceMotion};
+ const [wx,wy]=win.getPosition(),[ww]=win.getSize(),width=460,height=Math.min(700,420+Math.min(6,notes.items.length)*56);
  whatsNewWindow=new BrowserWindow({parent:win,width,height,x:Math.round(wx+(ww-width)/2),y:wy+90,show:false,resizable:false,minimizable:false,maximizable:false,fullscreenable:false,titleBarStyle:'hiddenInset',vibrancy:'under-window',visualEffectState:'active',transparent:true,backgroundColor:'#00000000',title:translate(settings.language,'What’s New'),webPreferences:{sandbox:true,contextIsolation:true,nodeIntegration:false}});
- const wc=whatsNewWindow.webContents;wc.setWindowOpenHandler(()=>({action:'deny'}));wc.on('will-navigate',e=>e.preventDefault());
+ const wc=whatsNewWindow.webContents;wc.setWindowOpenHandler(()=>({action:'deny'}));wc.on('will-navigate',(e,url)=>{e.preventDefault();if(url===require('./release-notes.cjs').URL){whatsNewWindow?.close();action('release-notes');}});
  whatsNewWindow.once('ready-to-show',()=>whatsNewWindow?.show());whatsNewWindow.once('closed',()=>{whatsNewWindow=null;});
  whatsNewWindow.loadFile(path.join(__dirname,'whats-new.html'),{query:{data:JSON.stringify(data)}}).catch(()=>{});
 }
@@ -366,6 +368,7 @@ function commandActions(){
   ['settings','Settings','settings','preferences',panel('appearance')],
   // Settings pages and browser places (0.35), so Beam reaches anything in a few letters.
   ...[['appearance','Appearance','brush','theme look colour dark light glass'],['design','Customize','brush','design theme wallpaper'],['workspace','Tabs & layout','sidebar','tabs sidebar sleep archive'],['performance','Performance','power','memory speed sleep'],['blocking','Prism Shield','shield','ads trackers blocker privacy'],['passwords','Passwords','key','logins credentials'],['extensions','Extensions','extension','add-ons plugins'],['ai','AI & assistants','sparkles','apple intelligence chatgpt'],['private','Private network','lock','zapret proxy private'],['accessibility','Accessibility','accessibility','text size contrast motion'],['updates','Updates','reload','version chromium'],['profile','Profile','folder','account name'],['imports','Imports','download','arc chrome import bookmarks'],['permissions','Site permissions','lock','camera microphone location']].map(([section,title,icon,keywords])=>['open-'+section,title,icon,'settings '+keywords,panel(section)]),
+  ['release-notes','Release notes','history','what’s new changes version',()=>action('release-notes')],
   ['web-store','Chrome Web Store','extension','extensions add install',()=>action('web-store')],
   ['passwords-app','Open Passwords app','key','apple keychain',()=>action('apple-passwords')],
   ['private-tab','New Private tab','lock','incognito',()=>action('space','private').then(()=>makeTab()).catch(()=>{})],
@@ -684,6 +687,7 @@ async function action(name,value) {
   if (name==='select' && Number.isInteger(value)) selectTab(value);
   if (name==='close' && Number.isInteger(value)) await closeTab(value);
   if(name==='restore-closed')return undoKey();
+  if(name==='release-notes'){const url=require('./release-notes.cjs').URL,target=space==='private'?homeSpace():space,open=tabs.find(t=>t.space===target&&t.url===url);if(open)selectTab(open.id);else{const t=makeTab(url,true,target);t.title=translate(settings.language,'Release notes');}return;}
   // Pointing at a sleeping tab starts waking it (0.33.2), so it is usually ready by the time the click lands; never in
   // Private, for a closed pinned tab, or while macOS is short of memory.
   if(name==='tab-warm'&&Number.isInteger(value)){const target=tabs.find(x=>x.id===value&&inSpace(x,space));if(!target||target.view||!target.url||target.parked||target.space==='private'||Date.now()-warmedAt<400)return;if(settings.leanMemory&&await memoryManager?.underPressure())return;warmedAt=Date.now();target.lastUsed=Date.now();
@@ -737,7 +741,7 @@ async function endPrivate(){
 function setupMenu() {
   const localize=items=>items.map(item=>({...item,...(item.label?{label:translate(settings.language,item.label)}:{}),...(item.submenu?{submenu:localize(item.submenu)}:{})}));
   Menu.setApplicationMenu(Menu.buildFromTemplate(localize([
-    {label:'Prism',submenu:[{role:'about'},{label:'Check for Updates…',click:()=>{win.webContents.send('open-panel','updates');updater.check();}},{label:translate(settings.language,'What’s New'),click:()=>showWhatsNew()},{label:'Settings…',accelerator:'CmdOrCtrl+,',click:()=>win.webContents.send('open-panel','appearance')},{type:'separator'},{role:'hide'},{role:'hideOthers'},{role:'unhide'},{type:'separator'},{role:'quit'}]},
+    {label:'Prism',submenu:[{role:'about'},{label:'Check for Updates…',click:()=>{win.webContents.send('open-panel','updates');updater.check();}},{label:translate(settings.language,'What’s New'),click:()=>showWhatsNew()},{label:'Release Notes',click:()=>action('release-notes')},{label:'Settings…',accelerator:'CmdOrCtrl+,',click:()=>win.webContents.send('open-panel','appearance')},{type:'separator'},{role:'hide'},{role:'hideOthers'},{role:'unhide'},{type:'separator'},{role:'quit'}]},
     {label:'File',submenu:[{label:'New tab',accelerator:'CmdOrCtrl+K',click:()=>command('k')},{label:'Close tab',accelerator:'CmdOrCtrl+W',click:()=>command('w')},{label:'Reopen closed tab',accelerator:'CmdOrCtrl+Shift+T',click:()=>command('reopen')}]},
     {label:'Edit',submenu:[{label:'Copy page link',accelerator:'Control+Shift+C',click:()=>action('copy-page-url')},{label:'Undo',accelerator:'CmdOrCtrl+Z',click:()=>undoKey()},{label:'Restore closed tab',accelerator:'Control+Z',visible:false,acceleratorWorksWhenHidden:true,click:()=>undoKey()},{role:'redo'},{type:'separator'},{role:'cut'},{role:'copy'},{role:'paste'},{role:'selectAll'}]},
     {label:'Bookmarks',submenu:[{label:'Bookmark this page',accelerator:'CmdOrCtrl+D',click:()=>action('bookmark-current')},{label:'Import from Arc…',click:()=>importArc()}]},
@@ -795,11 +799,11 @@ app.whenReady().then(async()=>{
   sidePanels.setOpenTab(url=>makeTab(url,true,space==='private'?homeSpace():space));
   ElectronChromeExtensions.handleCRXProtocol(session.defaultSession);
   services=createServices({app,ses,window:()=>win,settings,saveSettings,emit,smoke,onDownloadComplete:id=>ai?.enqueue(id)});
-  blocker=new Blocker({file:path.join(app.getPath('userData'),'blocking.json'),changed:emit});blocker.bind(ses);
+  blocker=new Blocker({file:path.join(app.getPath('userData'),'blocking.json'),changed:emit});blocker.bind(ses);require('./release-notes.cjs').register(ses,{root:path.join(__dirname,'..'),version:require('../package.json').version});
   setupPrivate();if(settings.privacyEverywhere)applyPrivacyEverywhere();
   ai=require('./ai.cjs').createAI({app,safeStorage,settings,emit,downloads:()=>services.downloads(),saveDownloads:()=>services.persistDownloads(),isPrivate:()=>space==='private'});
   passwords=createPasswords({app,window:()=>win,settings,readVault,writeVault:entries=>saveEncrypted(vaultFile,entries),importVault:next=>commitWithUndo({...importStore('passwords'),next}),activeTab:()=>tabs.find(t=>t.id===activeId),emit,customPicker:true,confirm:confirmOwner});
-  pageAssistant=require('./page-assistant.cjs').createPageAssistant({activeTab:()=>tabs.find(t=>t.id===activeId),isPrivate:()=>space==='private',getKey:()=>ai.pageKey()});
+  pageAssistant=require('./page-assistant.cjs').createPageAssistant({activeTab:()=>tabs.find(t=>t.id===activeId),isPrivate:()=>space==='private',getKey:()=>ai.pageKey(),getProvider:()=>ai.provider()});
   // Web Share from the active tab's main frame: re-validated here, then shown in the native macOS share menu.
   passkeys=require('./passkeys.cjs').createPasskeys({read:readPasskeys,write:rows=>saveEncrypted(passkeyFile,rows),confirmOwner,tabFor:wc=>tabs.find(t=>t.view?.webContents===wc),emit});
   ipcMain.handle('prism-passkey',(event,value)=>passkeys.request(event,value));

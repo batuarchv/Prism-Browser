@@ -2,6 +2,25 @@
 
 All notable changes to Prism, newest first. Downloads are on the [Releases page](https://github.com/batuarchv/Prism-Browser/releases).
 
+## 0.36.0 — The biggest Prism yet
+
+### New
+- **Prism Shield.** Blocks ads, trackers and cookie banners, removes YouTube's video ads, and strips tracking tags from links, with no extension running.
+- **Spaces you make your own.** Up to 40 spaces, each with its own tabs, icon and colour; swipe the sidebar to move between them.
+- **Spectrum, redesigned.** Your day as one line of light: hover for a glance at your tabs then, click to see your day in chapters and bring tabs back.
+- **⌘T is Beam.** Type an address, search, or jump to any tab, setting or action; links open in the background with a middle click.
+- **Claude for Prism's AI.** Use your Anthropic API key for download names, page summaries and translations, and Spectrum.
+- **Split view, Lens and Picture in Picture.** Drag a tab onto the page to split it, Shift-click a link to peek at it, and float videos above every app.
+- **Tabs that stay ready.** Pinned tabs, favorites and the tabs you use often stay awake, and sleep only when your Mac needs memory.
+- **Release notes in a tab.** Everything new since Prism 0.24.1, in one page you can read any time (Prism menu → Release Notes).
+
+### Also new
+- **Spectrum details.** Long pauses shrink to a short break so the line is about your time, the day card has a rainbow edge, and a click anywhere else closes it.
+- **What's New, ranked.** This window now shows the most important changes first, with a line about each.
+
+### Install notes
+This beta is **ad-hoc signed and not notarized by Apple**. The first time you open it, macOS may say it can't verify the developer: right-click (or Control-click) Prism in Applications and choose **Open**, then **Open** again. Apple Silicon (arm64) only.
+
 ## 0.35.1 — Quicker favorites
 
 ### New
@@ -108,6 +127,172 @@ This beta is **ad-hoc signed and not notarized by Apple**. The first time you op
 
 ### Install notes
 This beta is **ad-hoc signed and not notarized by Apple**. The first time you open it, macOS may say it can't verify the developer: right-click (or Control-click) Prism in Applications and choose **Open**, then **Open** again. Apple Silicon (arm64) only.
+
+## 0.31.1 — Everything new since 0.24
+
+This release brings together everything from 0.25 to 0.31.
+
+### New
+- **Make your own spaces.** Up to 40 spaces, each with its own name, icon and colour; jump between them with ⌃1 to ⌃9 or a two-finger swipe on the sidebar.
+- **Much lighter on memory.** Idle tabs now really go to sleep, so ten busy sites drop from about 2 GB to 0.8 GB once you leave them.
+- **Drag a tab onto the page to split.** Drop it on the left, right, top or bottom half to open it next to the page you're on.
+- **Passkeys with Touch ID.** Sites can create and use passkeys, approved with Touch ID and kept encrypted on this Mac; saved logins fill after Touch ID too.
+- **Site controls.** Click the lock in the address bar for this site's permissions, zoom, cookies and Picture in Picture, or to erase parts of a page.
+- **Swipe and pinch.** Swipe with two fingers to go back and forward, pinch to zoom, and right-click a word to look it up.
+- **Extension panels.** Extensions with a popup or a side panel, like Claude, open under the toolbar's Extensions button or docked beside the page.
+- **A live glass logo.** The Prism logo is a real 3D glass pyramid now: drag it to spin it, click it to send light through it.
+- **Quicker and tidier.** Popovers open instantly and close when you click away, tabs and favorites drag smoothly, and Settings looks like macOS.
+- **Smoother updates.** A quiet ring in the sidebar shows an update downloading, a small Restart button installs it, and this window shows what changed.
+
+### Also new
+- **Close all tabs** with the button beside Open Tabs; Undo or ⇧⌘T brings them back.
+- **Sign-in pages see a standard browser.** Prism identifies as Chrome, so Apple and Google sign-in treat it like any supported browser.
+- **Space colours** tint the accent and, faintly, the sidebar; right-click the space name to customize the current space.
+- **A calmer new tab.** With every tab closed, the logo sits in the middle and recently closed tabs wait at the bottom.
+- **Favorite icons stay visible.** One-colour logos that would vanish against the sidebar are shown in the opposite tone.
+- **Faster page loads from the address bar.** Prism connects to the site you're most likely going to while you type.
+- **Accessibility.** VoiceOver hears whether a popover is open, focus returns to its button after Esc, and the tab list works with the arrow keys and ⇧F10.
+
+### Fixed
+- **Swiping between spaces** is smooth again: a second swipe right after the first is no longer ignored, slowing down mid-swipe no longer snaps back, and the old space no longer flashes.
+- **Uploading files** on sites that use the newer file picker works again.
+- **Busy pages** that keep changing their title no longer make the sidebar redraw several times a second, and history is saved in batches.
+
+## 0.31.0 — Snappier and easier to use
+
+### New
+- **Drag a tab onto the page to split.** Drag any tab from the sidebar over the page: drop it on the left, right, top or bottom half to open it next to the current page, or in the middle to just switch to it. Esc cancels.
+- **Tabs move smoothly.** Dragging a tab in the sidebar lifts it and the other tabs slide aside to show where it will land, like favorites. With the keyboard, ↑ and ↓ move between tabs, ⌥↑ and ⌥↓ move the tab, and ⇧F10 opens its menu.
+
+### Improved
+- **Popovers open at once.** Spaces, Downloads, Extensions and Settings are kept ready in the background, so they appear without the short wait they had before.
+- **Popovers close the way you expect.** Click the button again, or click anywhere else in the window, and the popover closes. After closing one with Esc, the keyboard focus goes back to the button that opened it.
+- **Faster page loads from the address bar.** While you type, Prism opens a connection to the site you're most likely going to, so it starts loading sooner when you press Return.
+- **Spaces.** The edit button on each space is always shown and easier to hit, and pressing it no longer starts dragging the space. The space icon next to the logo no longer has a tinted square behind it.
+- **Favorites dragging** follows the pointer more reliably and lands without a jump.
+- **Accessibility.** Popover buttons tell VoiceOver whether their popover is open, and the site settings button in the address bar has a bigger target.
+
+## 0.30.0 — Lighter and quieter
+
+### Improved
+- **Idle tabs really sleep now.** Tabs you haven't used for a while are put to sleep to free memory, but any page with an embedded frame (an ad, a video embed, a sign-in widget) used to stay awake forever, which is almost every site. Now only frames with something to lose keep a tab awake: a half-filled form, playing media or picture-in-picture. With ten busy sites open, Prism used about 2 GB; once they idle it drops to about 0.8 GB.
+- **Less work in the background.** Pages that keep changing their title (tickers, unread counters) no longer redraw the sidebar several times a second, and history is saved in batches instead of rewriting the whole file on every title change.
+
+## 0.29.1 — Spaces you make your own
+
+### New
+- **Make your own spaces.** Click the space name next to the logo to open Spaces: every space with its tab count, a search field once you have more than six, and New space. Press ⌃1 to ⌃9 anywhere to jump to the first nine (they're in the Spaces menu too). Drag spaces in the list, or press ⌥↑ and ⌥↓, to reorder them; swipes follow the same order.
+- **Customize a space.** Give it a name, one of 40 icons and a colour: your theme's accent, one of the theme colours, or any custom colour with the colour picker or a hex value. Changes show as you make them. Right-click the space name to customize the current space. Deleting a space asks first, right in the window, and says how many tabs will close.
+- **Space colours.** The current space's colour tints the accent and, faintly, the sidebar.
+- **The logo turns with you.** Each time you switch spaces, the glass logo in the corner turns 60° in 3D.
+
+### Fixed
+- **Uploading files.** Upload buttons on sites that use the newer file picker did nothing after you chose a file. They work now.
+
+## 0.29.0 — Spaces you make your own
+
+### New
+- **Make your own spaces.** Click the space name next to the logo to open Spaces: every space with its tab count, a search field once you have more than six, and New space. Press ⌃1 to ⌃9 anywhere to jump to the first nine (they're in the Spaces menu too). Drag spaces in the list, or press ⌥↑ and ⌥↓, to reorder them; swipes follow the same order.
+- **Customize a space.** Give it a name, one of 40 icons and a colour: your theme's accent, one of the theme colours, or any custom colour with the colour picker or a hex value. Changes show as you make them. Right-click the space name to customize the current space. Deleting a space asks first, right in the window, and says how many tabs will close.
+- **Space colours.** The current space's colour tints the accent and, faintly, the sidebar.
+- **The logo turns with you.** Each time you switch spaces, the glass logo in the corner turns 60° in 3D.
+
+### Fixed
+- **Uploading files.** Upload buttons on sites that use the newer file picker did nothing after you chose a file. They work now.
+
+## 0.28.1 — Picture in Picture in site controls
+
+### New
+- **Picture in Picture in site controls.** Once a site plays video in Picture in Picture, it appears in the site controls next to camera, microphone and location, where you can block it for that site.
+
+## 0.28.0 — passkeys with Touch ID, site controls
+
+### New
+- **Passkeys with Touch ID.** Websites can create and use passkeys in Prism. Touch ID approves each one; they are kept encrypted on this Mac and listed in Settings → Passwords.
+- **Touch ID sign-in, including Apple Account.** The key button fills your saved login after Touch ID, also in sign-in forms embedded from the account's own site, like Apple Account's.
+- **Sign-in pages see a standard browser.** Prism now identifies as Chrome, so Apple and Google sign-in pages treat it like any supported browser.
+- **Site controls.** Click the lock in the address bar for this site's permissions, page zoom, cookies and site data, and cache.
+- **Erase elements.** Hide parts of a page you don't want to see; ⌥-click hides every similar one. Prism remembers them for the site, and Restore brings them back.
+
+## 0.27.5 — the logo is the pyramid
+
+### New
+- **The logo is a true pyramid.** The Prism logo and app icon are now drawn from a real square pyramid, so the 2D logo and the 3D glass pyramid are the same object. It keeps the look of the original: the same faces, colours and angle.
+- **The glass wears the logo.** At rest the 3D logo looks exactly like the icon; spin it and every face keeps its colour while the glass catches the light.
+
+## 0.27.4 — the glass logo at the app icon's angle
+
+### New
+- **The logo at the icon's exact angle.** The glass pyramid now rests at exactly the angle of the Prism app icon: the same outline, the same edges and the same faces. Drag it to spin it; it glides back to the icon's pose.
+
+## 0.27.3 — a true glass pyramid, a tidier update button
+
+### New
+- **A true glass pyramid.** The logo is a regular triangular pyramid: four equilateral glass faces, set at the angle of the original logo. Light still enters from the left and leaves as a spectrum as it turns.
+- **A tidier update button.** When an update is ready, a small Restart button sits neatly between Settings and Downloads, in light and dark.
+
+## 0.27.2 — a true glass prism
+
+### New
+- **A true prism.** The logo is now an equilateral triangular prism in glass: two equilateral triangles joined by three rectangular faces, set at the same angle as the original logo.
+- **Light that splits like a real prism.** White light enters one face, bends through the glass and leaves the other face as a spectrum, following the prism as it turns. Click the logo to switch the light on or off.
+
+## 0.27.1 — a live glass logo, smoother swipes, a calmer new tab
+
+### New
+- **A live glass logo.** The Blender-modelled Prism now renders live at full frame rate. Drag it to spin it all the way round; it keeps turning slowly on its own.
+- **Light through the prism.** A white beam enters the glass and leaves as a spectrum, bending as the prism turns. Click the logo to switch the light on or off.
+- **Swipe between pages, faster.** The arrow follows your fingers and the page changes the moment you let go. A quick flick is enough.
+- **Swipe between spaces, like macOS.** The sidebar follows your fingers and springs back if you don't go far enough. Swipe left for the next space, right for the previous one.
+- **A calmer new tab.** When every tab is closed, the logo sits in the middle with the wordmark below it, and your recently closed tabs wait at the bottom.
+
+## 0.27.0 — a real glass logo, trackpad gestures, close all tabs
+
+### New
+- **A real glass logo.** The Prism logo is now a 3D glass object modelled and rendered in Blender, built on the exact corners of the original. Light refracts through it with a faint spectrum, and in the welcome guide it turns toward the pointer.
+- **Swipe between pages.** Swipe left or right with two fingers to go back or forward. An arrow at the edge shows when the swipe will go through. Pages that scroll sideways keep their own swipe.
+- **Swipe between spaces.** Swipe with two fingers on the sidebar to move to the next or previous space.
+- **Close all tabs.** A new button beside Open Tabs closes every unpinned tab in the space. Undo or ⇧⌘T brings them back.
+- **Pinch to zoom.** Pinch to zoom into a page, and double-tap with two fingers for smart zoom.
+- **Look Up.** Right-click a selected word to look it up in the macOS dictionary.
+
+Trackpad gestures follow macOS's "Swipe between pages" setting and can be turned off in Settings → Accessibility.
+
+## 0.26.0 — glass logo, swipe transitions, update sequence, extension side panels
+
+### New
+- **A glass Prism logo.** The logo is now a 3D glass object: the same shape, with light refracting through it and splitting into a soft spectrum. In the welcome guide it turns gently and leans toward the pointer.
+- **Swipe between steps.** Each step of the welcome guide swipes into place, and you can swipe with two fingers on the trackpad. Switching profiles swipes the sidebar too.
+- **Smoother updates.** A quiet ring in the sidebar shows an update downloading, then a small Restart to Update button appears. After restarting, this window shows what changed.
+- **Extension side panels.** Extensions with a side panel, such as Claude, open docked beside the page. Resize the panel by its edge; Prism remembers the width.
+- **Settings, closer to macOS.** Small coloured icons, grouped sections and native-sized controls, with less clutter.
+- **A tidier sidebar corner.** The window buttons line up with the toolbar, and the sidebar starts right below them.
+
+## 0.25.2 — extension side panels, a tidier sidebar corner, macOS-style Settings
+
+### New
+- **Extension side panels.** Extensions that use Chrome's side panel (Claude, for example) now show up under the toolbar's Extensions button. Choosing one docks its panel to the right of the page, with the extension's name and a close button on top. Drag the panel's left edge to resize it; Prism remembers the width for each extension. A panel an extension opens for one tab stays with that tab, and a window-wide panel follows every tab.
+- **Claude's extension works.** Its background worker used to stop at startup on Chrome features Prism doesn't have yet, so its toolbar icon did nothing. It now starts, and its panel opens next to the page. Its browser-control features (page automation through Chrome's debugger) aren't supported in Prism yet.
+- **Extension options open in a tab**, as in Chrome, instead of a small separate window. In Settings → Extensions, extensions with a side panel get an **Open side panel** button.
+- **Tidier top-left corner.** The window buttons now line up with the toolbar, and the space switcher and first sidebar rows sit right under them on the same left edge.
+- **Settings closer to macOS System Settings, still minimal.** It has small coloured symbol tiles in the sidebar, a soft highlight on the selected section, and section names without capitals. Pages use grouped rounded sections with fine separators, labels on the left and controls on the right. Pop-up menus, buttons and switches are native-sized, the descriptions are smaller and grey, and the heavy borders, rings and oversized headings are gone.
+
+## 0.25.1 — native-looking toolbar and sidebar, drag-to-reorder favorites, extension panels
+
+### New
+- **Native-looking toolbar and sidebar icons.** Toolbar buttons, favorites and the sidebar footer buttons are plain icons at rest, like macOS toolbars and sidebars; a soft rounded highlight fades in only when you hover, press or select them.
+- **Drag favorites like on macOS.** Pick up a favorite and it lifts and follows the pointer while the others slide aside to show where it will land; let go and it settles into place. Press Esc to put it back. (To remove a favorite, use its right-click menu.)
+- **Native-feeling motion.** Buttons press in quickly, dragged tabs and bookmarks lift with a soft shadow, resize and split lines light up, and switches and sliders glide. All of it is short and turns off with Reduce Motion.
+- **Favorite icons stay visible.** One-colour site logos that disappear against the sidebar — a black logo in dark mode, a white one in light mode — are shown in the opposite tone. Colourful logos are never changed.
+- **Extension panels from the toolbar.** The Extensions button shows only extensions that have their own panel, as icons. Choosing one opens its panel right under the button; it closes when you click away.
+
+## 0.25.0 — liquid glass icons, native-feeling motion, readable favorites, extension panels
+
+### New
+- **Liquid glass icons.** Toolbar buttons, favorite tiles and the sidebar footer buttons are glass: translucent, blurred and saturated, with a soft top highlight, inner edge and shadow, tuned for light and dark. With Reduce Transparency they turn solid.
+- **Native-feeling motion everywhere.** Buttons brighten and lift slightly on hover and press in quickly; dragged tabs, bookmarks and favorites lift with a soft shadow and the drop spot glows; resize and split lines light up; switches and sliders glide. All of it is short (120–240 ms) and turns off with Reduce Motion.
+- **Favorite icons stay visible.** One-colour site logos that disappear against the sidebar — a black logo in dark mode, a white one in light mode — are shown in the opposite tone. Colourful logos and icons with their own background are never changed.
+- **Extension panels from the toolbar.** The Extensions button now shows only extensions that have their own panel, as icons (names on hover). Choosing one opens its panel right under the button; it closes when you click away. Manage all extensions in Settings → Extensions.
 
 ## 0.24.1 — extension windows, aligned buttons, Extensions popover under its icon
 

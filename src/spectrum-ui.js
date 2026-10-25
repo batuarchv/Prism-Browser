@@ -1,61 +1,76 @@
-// Spectrum (0.32, spectrum.cjs): today as a thin band of light above the sidebar footer. Each stripe is a site you were
-// on, tinted by the site, blended into its neighbours like light through a prism, with a soft glow beneath and a spark
-// for now. Hover to read the time, site and chapter; click (or Return) to open the day: a line about it, its chapters
-// (named by Apple Intelligence on this Mac, or by what their sites are for), the tabs you had open at any point to bring
-// back, and the sites you usually open around this hour. Redrawn once a minute at most, only while the window is visible.
+// Spectrum (0.32, spectrum.cjs): today as a thin band of light above the sidebar footer, one colour per site.
+// 0.36: a calmer design. The band is one slim line; long stretches away from Prism shrink to a short break, so the
+// band is about the time you actually spent. Hovering it shows a quick glance: the time, the chapter and the tabs you
+// had open then. Clicking opens the day in a glass card with a rainbow edge: a line about the day, its chapters (named
+// by the AI chosen in Settings, or by what their sites are for) and the sites you usually open now. Choosing a chapter
+// shows its tabs and brings them back. A click anywhere else, Esc, or leaving the window closes it.
 (()=>{if(toolMode)return;
  const t=key=>window.prismLocale?.t?.(key)||key;
  const root=document.createElement('div');root.id='spectrum';root.hidden=true;
- root.innerHTML='<div class="spectrum-label" aria-hidden="true"><span class="spectrum-time"></span><span class="spectrum-host"></span><span class="spectrum-chapter"></span></div><div class="spectrum-band" role="slider" tabindex="0" aria-valuemin="0" aria-valuemax="100"><div class="spectrum-glow" aria-hidden="true"></div><div class="spectrum-track"><div class="spectrum-light"></div></div><div class="spectrum-now" aria-hidden="true"></div><div class="spectrum-cursor"></div></div>'
-  +'<div class="spectrum-card" role="dialog" hidden><div class="spectrum-card-head"><strong class="spectrum-day"></strong><small class="spectrum-total"></small></div><p class="spectrum-summary"></p><div class="spectrum-chapters" role="list"></div><div class="spectrum-moment" hidden><div class="spectrum-moment-head"><span></span><small></small></div><div class="spectrum-card-list"></div><div class="spectrum-card-actions"><button type="button" class="spectrum-restore"></button></div></div><div class="spectrum-usual" hidden><small></small><div class="spectrum-chips"></div></div><small class="spectrum-private"></small></div>';
+ root.innerHTML='<div class="spectrum-glance" aria-hidden="true" hidden><div class="spectrum-glance-head"><strong></strong><small></small></div><div class="spectrum-glance-tabs"></div></div>'
+  +'<div class="spectrum-band" role="slider" tabindex="0" aria-label="Spectrum" aria-valuemin="0" aria-valuemax="100"><div class="spectrum-track"></div><div class="spectrum-cursor"></div></div>'
+  +'<div class="spectrum-card" role="dialog" aria-label="Spectrum" hidden><div class="spectrum-card-head"><strong class="spectrum-day"></strong><small class="spectrum-total"></small></div><p class="spectrum-summary"></p><div class="spectrum-chapters" role="list"></div><div class="spectrum-usual" hidden></div></div>';
  document.querySelector('#sidebar .sidebar-bottom').prepend(root);
- const $s=sel=>root.querySelector(sel),band=$s('.spectrum-band'),light=$s('.spectrum-light'),glow=$s('.spectrum-glow'),cursor=$s('.spectrum-cursor'),label=$s('.spectrum-label'),card=$s('.spectrum-card');
- let view=null,revision=null,cursorTime=null,language='en',fetching=false,chosen=null,cardTime=null;
+ const $s=sel=>root.querySelector(sel),band=$s('.spectrum-band'),track=$s('.spectrum-track'),cursor=$s('.spectrum-cursor'),glance=$s('.spectrum-glance'),card=$s('.spectrum-card');
+ let view=null,revision=null,cursorTime=null,language='en',fetching=false,chosen=null,map=null;const moments=new Map();
  const KIND={mail:'Mail',ai:'Asking AI',code:'Coding',work:'Working',video:'Watching',music:'Listening',social:'Social',news:'Catching up on news',shopping:'Shopping',learning:'Learning',travel:'Planning travel',money:'Money matters',web:'Browsing'};
- // A site's colour: its name picks a hue, kept a little soft so the band reads as light, not as a chart.
  const hue=host=>{let h=2166136261;for(const c of host){h^=c.charCodeAt(0);h=Math.imul(h,16777619);}return (h>>>0)%360;};
- const colour=(host,a=1)=>`hsl(${hue(host)} 80% 63% / ${a})`;
+ const colour=host=>`hsl(${hue(host)} 78% 62%)`;
  const clock=time=>new Intl.DateTimeFormat(language,{hour:'numeric',minute:'2-digit'}).format(time);
  const duration=ms=>{const m=Math.max(1,Math.round(ms/60000)),h=Math.floor(m/60);return h?t('{h} h {m} min').replace('{h}',h).replace('{m}',m%60):t('{m} min').replace('{m}',m);};
  const title=c=>c.title||t(KIND[c.kind]||'Browsing');
- const span=()=>{const s=view.segments,m=view.moments;const start=Math.min(...s.map(x=>x.from),...m.map(x=>x.at),view.now-15*60000);return {start,end:view.now};};
  const chapterAt=time=>view?.chapters.find(c=>time>=c.from-60000&&time<=c.to+60000)||null;
- // One gradient for the whole day: each site is a band of colour that fades into the next, and pauses stay dark.
- function draw(){if(!view)return;const has=view.segments.length>0;root.hidden=!has;if(!has)return;const {start,end}=span(),total=Math.max(1,end-start),p=x=>((x-start)/total*100).toFixed(3)+'%';
-  const stops=[];let last=start;for(const s of view.segments){if(s.from-last>60000)stops.push(`transparent ${p(last)}`,`transparent ${p(s.from)}`);const c=colour(s.host),w=Math.max(s.to,s.from+total*.004);stops.push(`${c} ${p(s.from)}`,`${c} ${p(w)}`);last=w;}
-  if(end-last>60000)stops.push(`transparent ${p(last)}`,'transparent 100%');
-  const gradient=`linear-gradient(90deg,${stops.join(',')})`;light.style.backgroundImage=gradient;glow.style.backgroundImage=gradient;
-  const live=view.segments.at(-1);root.classList.toggle('live',!!live&&view.now-live.to<90000);if(live)root.style.setProperty('--now',colour(live.host));
+ // Time to band position. Pauses of ten minutes or more become a fixed short break; everything else is to scale.
+ const BREAK=600000,BREAK_SHARE=.018;
+ function buildMap(){const s=view.segments;if(!s.length)return null;const pieces=[];let from=s[0].from,to=s[0].to;
+  for(const seg of s.slice(1)){if(seg.from-to>=BREAK){pieces.push([from,to]);from=seg.from;}to=Math.max(to,seg.to);}
+  pieces.push([from,view.now-to>=BREAK?to:view.now]);
+  const breaks=pieces.length-1+(view.now-to>=BREAK?1:0),live=pieces.reduce((n,[a,b])=>n+Math.max(1,b-a),0),scale=(1-breaks*BREAK_SHARE)/live;
+  let x=0;const parts=[];pieces.forEach(([a,b],i)=>{if(i){parts.push({gap:true,x0:x,x1:x+BREAK_SHARE,t0:pieces[i-1][1],t1:a});x+=BREAK_SHARE;}const w=Math.max(1,b-a)*scale;parts.push({x0:x,x1:x+w,t0:a,t1:b});x+=w;});
+  if(view.now-to>=BREAK)parts.push({gap:true,x0:x,x1:1,t0:to,t1:view.now});return parts;}
+ const xOf=time=>{for(const p of map)if(time<=p.t1)return p.gap?p.x0:p.x0+(p.x1-p.x0)*Math.max(0,(time-p.t0)/Math.max(1,p.t1-p.t0));return 1;};
+ const timeOf=x=>{for(const p of map)if(x<=p.x1)return p.gap?p.t0:p.t0+(p.t1-p.t0)*Math.max(0,(x-p.x0)/Math.max(1e-9,p.x1-p.x0));return view.now;};
+ function draw(){if(!view)return;root.hidden=!view.segments.length;if(root.hidden)return;map=buildMap();const pct=v=>(v*100).toFixed(3)+'%';
+  // Sites are colour stops that blend into each other; a break is see-through.
+  const marks=[...view.segments.map(s=>{const a=xOf(s.from);return {x:a,stops:[`${colour(s.host)} ${pct(a)}`,`${colour(s.host)} ${pct(Math.max(xOf(s.to),a+.006))}`]};}),...map.filter(p=>p.gap).map(p=>({x:p.x0,stops:[`transparent ${pct(p.x0)}`,`transparent ${pct(p.x1)}`]}))].sort((a,b)=>a.x-b.x);const stops=marks.flatMap(m=>m.stops);
+  track.style.backgroundImage=`linear-gradient(90deg,${stops.join(',')})`;
+  track.replaceChildren(...map.filter(p=>p.gap).map(p=>{const gap=document.createElement('i');gap.className='spectrum-break';gap.style.left=pct(p.x0);gap.style.width=pct(p.x1-p.x0);return gap;}));
   if(!card.hidden)fillCard();}
- async function refresh(){if(fetching||document.hidden||state?.space==='private')return;fetching=true;try{const next=await window.prism.action('spectrum-view',{insights:!card.hidden});if(next){view=next;draw();}}finally{fetching=false;}}
- function timeAt(x){const r=band.getBoundingClientRect(),{start,end}=span();return start+Math.max(0,Math.min(1,(x-r.left)/r.width))*(end-start);}
- function point(time){if(!view)return;cursorTime=time;const {start,end}=span(),p=(time-start)/Math.max(1,end-start);cursor.style.left=(p*100)+'%';const seg=view.segments.find(s=>time>=s.from&&time<=s.to),chapter=seg&&chapterAt(time);
-  $s('.spectrum-time').textContent=clock(time);$s('.spectrum-host').textContent=seg?seg.host:t('Away');$s('.spectrum-chapter').textContent=chapter?title(chapter):'';label.style.setProperty('--x',Math.max(8,Math.min(92,p*100))+'%');
-  if(seg)cursor.style.setProperty('--c',colour(seg.host));band.setAttribute('aria-valuenow',String(Math.round(p*100)));band.setAttribute('aria-valuetext',clock(time)+' · '+(seg?seg.host:t('Away')));}
- const swatch=sites=>{const el=document.createElement('span');el.className='spectrum-swatch';const total=sites.reduce((n,s)=>n+s.ms,0)||1;let at=0;el.style.backgroundImage='linear-gradient(90deg,'+sites.map(s=>{const from=at;at+=s.ms/total*100;return `${colour(s.host)} ${from.toFixed(1)}%,${colour(s.host)} ${at.toFixed(1)}%`;}).join(',')+')';return el;};
+ async function refresh(){if(fetching||document.hidden||state?.space==='private')return;fetching=true;try{const next=await window.prism.action('spectrum-view',{insights:!card.hidden});if(next){if(next.moments.length!==view?.moments.length)moments.clear();view=next;draw();}}finally{fetching=false;}}
+ const xAt=clientX=>{const r=band.getBoundingClientRect();return Math.max(0,Math.min(1,(clientX-r.left)/r.width));};
+ // The tabs open at a moment, asked for once per recorded moment.
+ function momentAt(time){const list=view.moments.filter(m=>m.at<=time);const m=list.at(-1)||view.moments[0];if(!m)return Promise.resolve(null);if(!moments.has(m.at))moments.set(m.at,window.prism.action('spectrum-at',{time:m.at}).catch(()=>null));return moments.get(m.at);}
+ const badge=(url,label)=>{const b=document.createElement('span');b.className='tab-icon';b.append(symbol(url,label));return b;};
+ let glanceFor=0;
+ async function point(x){if(!view||!map)return;const time=timeOf(x);cursorTime=time;cursor.style.left=(x*100)+'%';const seg=view.segments.find(s=>time>=s.from&&time<=s.to),chapter=chapterAt(time);
+  band.setAttribute('aria-valuenow',String(Math.round(x*100)));band.setAttribute('aria-valuetext',clock(time)+' · '+(seg?seg.host:t('Away')));
+  if(!card.hidden)return;glance.hidden=false;glance.style.setProperty('--x',(x*100)+'%');glance.querySelector('strong').textContent=clock(time);glance.querySelector('small').textContent=chapter?title(chapter):seg?seg.host:t('Away');
+  const ticket=++glanceFor,moment=await momentAt(time);if(ticket!==glanceFor)return;const tabs=moment?.tabs||[],row=glance.querySelector('.spectrum-glance-tabs');
+  row.replaceChildren(...tabs.slice(0,6).map(x=>{const b=badge(x.url,x.title);b.title=x.title||x.url;return b;}),...(tabs.length>6?[Object.assign(document.createElement('small'),{textContent:'+'+(tabs.length-6)})]:[]));row.hidden=!tabs.length;}
  function fillCard(){
   $s('.spectrum-day').textContent=t('Today');$s('.spectrum-total').textContent=duration(view.active);
-  const top=[...view.chapters].sort((a,b)=>b.active-a.active)[0];const summary=$s('.spectrum-summary');
-  summary.textContent=view.summary||(top?t('Mostly {activity}, across {count} chapters').replace('{activity}',title(top).toLocaleLowerCase(language)).replace('{count}',view.chapters.length):'');summary.classList.toggle('ai',!!view.summary);
-  if(view.chapters.length===1&&!view.summary)summary.textContent=t('Mostly {activity}').replace('{activity}',title(top).toLocaleLowerCase(language));
-  const list=$s('.spectrum-chapters');list.replaceChildren(...[...view.chapters].reverse().slice(0,6).map(c=>{const row=document.createElement('button');row.type='button';row.className='spectrum-chapter-row'+(chosen===c.from?' chosen':'');row.setAttribute('role','listitem');
-   const text=document.createElement('span');text.className='spectrum-chapter-text';const name=document.createElement('strong');name.textContent=title(c);const meta=document.createElement('small');meta.textContent=clock(c.from)+' – '+clock(c.to)+' · '+duration(c.active);text.append(name,meta);row.title=c.sites.slice(0,4).map(s=>s.host).join(', ');row.append(swatch(c.sites),text);row.onclick=()=>{chosen=c.from;showMoment(Math.min(c.to,view.now));fillCard();};return row;}));
-  const usual=$s('.spectrum-usual');usual.hidden=!view.usual?.length;if(view.usual?.length){usual.querySelector('small').textContent=t('You usually open around now');usual.querySelector('.spectrum-chips').replaceChildren(...view.usual.map(u=>{const chip=document.createElement('button');chip.type='button';chip.className='spectrum-chip';const badge=document.createElement('span');badge.className='tab-icon';badge.append(symbol(u.url,u.host));const name=document.createElement('span');name.textContent=u.host;chip.append(badge,name);chip.title=u.url;chip.onclick=()=>{closeCard();act('spectrum-open',{url:u.url});};return chip;}));}
-  $s('.spectrum-private').textContent=t('Only on this Mac · never in Private');}
- async function showMoment(time){cardTime=time;const box=$s('.spectrum-moment'),moment=await act('spectrum-at',{time});if(cardTime!==time)return;if(!moment?.tabs?.length){box.hidden=true;return;}
-  box.querySelector('span').textContent=t('Your tabs at {time}').replace('{time}',clock(moment.at));box.querySelector('small').textContent=moment.tabs.length===1?t('1 tab'):t('{count} tabs').replace('{count}',moment.tabs.length);
-  const list=box.querySelector('.spectrum-card-list');list.replaceChildren(...moment.tabs.slice(0,5).map(x=>{const row=document.createElement('div');row.className='spectrum-row';const badge=document.createElement('span');badge.className='tab-icon';badge.append(symbol(x.url,x.title));const name=document.createElement('span');name.textContent=x.title||x.url;row.append(badge,name);row.title=x.url;return row;}));
-  if(moment.tabs.length>5){const more=document.createElement('small');more.className='spectrum-more';more.textContent=t('and {count} more').replace('{count}',moment.tabs.length-5);list.append(more);}
-  const restore=box.querySelector('.spectrum-restore');restore.textContent=t('Bring them back');restore.onclick=async()=>{closeCard();await act('spectrum-restore',{time:moment.at});};box.hidden=false;}
- async function openCard(time){if(!view)return;card.hidden=false;await refresh();const chapter=chapterAt(time);chosen=chapter?.from??null;fillCard();card.hidden=false;root.classList.add('open');await showMoment(time);(!$s('.spectrum-moment').hidden?$s('.spectrum-restore'):$s('.spectrum-chapter-row'))?.focus({focusVisible:false});}
- function closeCard(){card.hidden=true;root.classList.remove('open');chosen=null;}
- band.addEventListener('pointermove',e=>{root.classList.add('hover');point(timeAt(e.clientX));});
- band.addEventListener('pointerleave',()=>{if(card.hidden)root.classList.remove('hover');});
- band.addEventListener('click',e=>{if(!card.hidden&&chapterAt(timeAt(e.clientX))?.from===chosen){closeCard();return;}openCard(timeAt(e.clientX));});
- band.addEventListener('focus',()=>{root.classList.add('hover');if(view)point(cursorTime??view.now);});band.addEventListener('blur',()=>{if(card.hidden)root.classList.remove('hover');});
- band.addEventListener('keydown',e=>{if(!view)return;const step=(e.shiftKey?30:5)*60000;if(e.key==='ArrowLeft'||e.key==='ArrowRight'){e.preventDefault();const {start,end}=span();point(Math.max(start,Math.min(end,(cursorTime??end)+(e.key==='ArrowLeft'?-step:step))));}else if(e.key==='Enter'||e.key===' '){e.preventDefault();openCard(cursorTime??view.now);}else if(e.key==='Escape')closeCard();});
+  const top=[...view.chapters].sort((a,b)=>b.active-a.active)[0],summary=$s('.spectrum-summary');
+  summary.textContent=view.summary||(top?(view.chapters.length>1?t('Mostly {activity}, across {count} chapters').replace('{count}',view.chapters.length):t('Mostly {activity}')).replace('{activity}',title(top).toLocaleLowerCase(language)):'');summary.classList.toggle('ai',!!view.summary);
+  $s('.spectrum-chapters').replaceChildren(...[...view.chapters].reverse().slice(0,5).map(c=>{const item=document.createElement('div');item.className='spectrum-chapter'+(chosen===c.from?' chosen':'');item.setAttribute('role','listitem');
+   const row=document.createElement('button');row.type='button';row.className='spectrum-chapter-row';const dot=document.createElement('span');dot.className='spectrum-dot';dot.style.background=`linear-gradient(135deg,${c.sites.slice(0,3).map(s=>colour(s.host)).join(',')}${c.sites.length<2?','+colour(c.sites[0]?.host||'web'):''})`;
+   const name=document.createElement('strong');name.textContent=title(c);const when=document.createElement('small');when.textContent=clock(c.from);row.append(dot,name,when);row.title=clock(c.from)+' – '+clock(c.to)+' · '+duration(c.active)+'\n'+c.sites.slice(0,4).map(s=>s.host).join(', ');
+   row.onclick=()=>{chosen=chosen===c.from?null:c.from;fillCard();};item.append(row);if(chosen===c.from)item.append(chapterTabs(c));return item;}));
+  const usual=$s('.spectrum-usual');usual.hidden=!view.usual?.length;usual.replaceChildren(...(view.usual||[]).map(u=>{const chip=document.createElement('button');chip.type='button';chip.className='spectrum-chip';chip.append(badge(u.url,u.host),Object.assign(document.createElement('span'),{textContent:u.host.replace(/^www\./,'')}));chip.title=t('You usually open around now');chip.onclick=()=>{closeCard();act('spectrum-open',{url:u.url});};return chip;}));}
+ // A chapter's tabs, as they were at its end, with one button to bring them back.
+ function chapterTabs(c){const box=document.createElement('div');box.className='spectrum-chapter-tabs';momentAt(Math.min(c.to,view.now)).then(moment=>{const tabs=moment?.tabs||[];if(!tabs.length){box.remove();return;}
+  const icons=document.createElement('div');icons.className='spectrum-chapter-icons';icons.append(...tabs.slice(0,8).map(x=>{const b=badge(x.url,x.title);b.title=x.title||x.url;return b;}));
+  const restore=document.createElement('button');restore.type='button';restore.className='spectrum-restore';restore.textContent=tabs.length===1?t('Bring it back'):t('Bring back {count} tabs').replace('{count}',tabs.length);restore.onclick=async()=>{closeCard();await act('spectrum-restore',{time:moment.at});};box.append(icons,restore);});return box;}
+ async function openCard(time){if(!view)return;glance.hidden=true;card.hidden=false;root.classList.add('open');await refresh();chosen=chapterAt(time)?.from??null;fillCard();$s('.spectrum-chapter.chosen .spectrum-chapter-row,.spectrum-chapter-row')?.focus({focusVisible:false});}
+ function closeCard(){if(card.hidden)return;card.hidden=true;root.classList.remove('open','hover');chosen=null;}
+ band.addEventListener('pointermove',e=>{root.classList.add('hover');point(xAt(e.clientX));});
+ band.addEventListener('pointerleave',()=>{glanceFor++;glance.hidden=true;if(card.hidden)root.classList.remove('hover');});
+ band.addEventListener('click',e=>{if(!card.hidden){closeCard();return;}openCard(timeOf(xAt(e.clientX)));});
+ band.addEventListener('focus',()=>{root.classList.add('hover');if(view&&map)point(cursorTime!=null?xOf(cursorTime):1);});band.addEventListener('blur',()=>{glance.hidden=true;if(card.hidden)root.classList.remove('hover');});
+ band.addEventListener('keydown',e=>{if(!view||!map)return;if(e.key==='ArrowLeft'||e.key==='ArrowRight'){e.preventDefault();const x=xOf(cursorTime??view.now)+(e.key==='ArrowLeft'?-1:1)*(e.shiftKey?.1:.02);point(Math.max(0,Math.min(1,x)));}else if(e.key==='Enter'||e.key===' '){e.preventDefault();openCard(cursorTime??view.now);}else if(e.key==='Escape')closeCard();});
  card.addEventListener('keydown',e=>{if(e.key==='Escape'){closeCard();band.focus();}});
- document.addEventListener('pointerdown',e=>{if(!card.hidden&&!root.contains(e.target)){closeCard();root.classList.remove('hover');}});
- window.prism.onState(s=>{language=s.settings.language||'en';if(s.space==='private'||s.spectrum==null){root.hidden=true;return;}if(s.spectrum!==revision){revision=s.spectrum;refresh();}});
+ // Anything else closes the card: a click elsewhere in the window, a click on the page (the window loses focus to it), Esc.
+ document.addEventListener('pointerdown',e=>{if(!card.hidden&&!root.contains(e.target))closeCard();},true);
+ window.addEventListener('blur',closeCard);
+ window.prism.onState(s=>{language=s.settings.language||'en';if(s.space==='private'||s.spectrum==null){root.hidden=true;closeCard();return;}if(s.spectrum!==revision){revision=s.spectrum;refresh();}});
  setInterval(refresh,60000);document.addEventListener('visibilitychange',()=>{if(!document.hidden)refresh();});
 })();
