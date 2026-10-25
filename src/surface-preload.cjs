@@ -2,7 +2,7 @@
 // send named commands to the browser and receive their own state; they never see web content or other Prism state.
 const {contextBridge,ipcRenderer}=require('electron');
 contextBridge.exposeInMainWorld('surface',{
- send:(command,value)=>ipcRenderer.send('prism-surface',String(command),value===undefined?null:JSON.parse(JSON.stringify(value))),
+ send:(command,value)=>ipcRenderer.send('prism-surface',String(command),value===undefined?null:value instanceof Uint8Array?value:JSON.parse(JSON.stringify(value))),
  ask:(command,value)=>ipcRenderer.invoke('prism-surface-ask',String(command),value===undefined?null:JSON.parse(JSON.stringify(value))),
  on:fn=>ipcRenderer.on('surface-state',(_event,value)=>fn(value))
 });

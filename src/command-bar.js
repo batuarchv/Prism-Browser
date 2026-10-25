@@ -19,10 +19,10 @@
  const answer=$('command-answer');let asking=0;
  async function ask(){const gen=++asking,q=input.value;answer.hidden=false;answer.classList.add('thinking');answer.textContent=t('Thinking…');fit();
   const result=await surface.ask('ai',q).catch(()=>null);if(gen!==asking)return;answer.classList.remove('thinking');
-  if(result?.ran){surface.send('close');return;}answer.textContent=result?.answer||t('No answer came back.');fit();}
+  if(result?.ran){answer.hidden=true;surface.send('close');return;}answer.textContent=result?.answer||t('No answer came back.');fit();}
  function run(i,alt){const item=items[i];if(!item)return;if(item.kind==='ai'){ask();return;}surface.send('run',{id:item.id,query:input.value,alt});}
  // Paste an image into Beam to search with it (Google Lens).
- input.addEventListener('paste',e=>{const file=[...(e.clipboardData?.items||[])].find(x=>x.kind==='file'&&x.type.startsWith('image/'));if(!file)return;e.preventDefault();surface.send('run',{id:'action:image-search-clipboard',query:'',alt:false});});
+ input.addEventListener('paste',async e=>{const item=[...(e.clipboardData?.items||[])].find(x=>x.kind==='file'&&x.type.startsWith('image/'));if(!item)return;e.preventDefault();const file=item.getAsFile();if(file)surface.send('image',new Uint8Array(await file.arrayBuffer()));});
  input.addEventListener('input',()=>{asking++;answer.hidden=true;query();});
  input.addEventListener('keydown',e=>{if(e.isComposing)return;if(e.key==='ArrowDown'){e.preventDefault();select(index+1);}else if(e.key==='ArrowUp'){e.preventDefault();select(index-1);}else if(e.key==='Enter'){e.preventDefault();run(index,e.altKey);}else if(e.key==='Escape'){e.preventDefault();surface.send('close');}});
  $('command-form').onsubmit=e=>e.preventDefault();

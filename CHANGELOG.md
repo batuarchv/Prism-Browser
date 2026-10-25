@@ -2,6 +2,16 @@
 
 All notable changes to Prism, newest first. Downloads are on the [Releases page](https://github.com/batuarchv/Prism-Browser/releases).
 
+## 0.38.1 — Beam works again
+
+### New
+- **Beam is fixed.** In 0.37 and 0.38 Beam showed no results as soon as you typed, because it asked the clipboard for something this version of Prism's engine can't provide. Results, Ask Apple Intelligence and Ask Claude all work again.
+- **Better answers.** Plain questions are always answered instead of being turned into an action, and Apple Intelligence gets a shorter, clearer list to choose from.
+- **Paste an image into Beam** to search with it in Google Lens.
+
+### Install notes
+This beta is **ad-hoc signed and not notarized by Apple**. The first time you open it, macOS may say it can't verify the developer: right-click (or Control-click) Prism in Applications and choose **Open**, then **Open** again. Apple Silicon (arm64) only.
+
 ## 0.38.0 — Beam with Apple Intelligence
 
 ### New

@@ -254,8 +254,11 @@ function lensSearch(png){const boundary='----PrismLens'+randomUUID().replace(/-/
 async function beamAsk(query){
  if(space==='private'||!ai?.beamName())return {answer:menuLabel('Choose Claude or Apple Intelligence in Settings → AI & assistants to ask Beam.')};
  const candidates=require('./command-bar.cjs').rank(query,commandEntries(query),40).filter(e=>e.kind!=='ai'&&e.kind!=='go').map(e=>({id:e.id,kind:e.kind,title:String(e.title).slice(0,120),...(e.detail?{address:String(e.detail).slice(0,200)}:{})}));
- const items=[...candidates,...commandActions().map(({id,title})=>({id,kind:'action',title})).filter(a=>!candidates.some(c=>c.id===a.id))].slice(0,80);
- try{const result=await ai.beam({request:query,items});
+ // The on-device model does best with a short list: what matched the words, then Prism's actions.
+ const local=ai.beamName()==='Apple Intelligence',items=[...candidates.slice(0,local?12:40),...commandActions().map(({id,title})=>({id,kind:'action',title})).filter(a=>!candidates.some(c=>c.id===a.id))].slice(0,local?30:80);
+ // A plain question is answered, never turned into an action (the on-device model sometimes reached for one).
+ const question=/^(what|who|whom|whose|when|where|why|how|which|is|are|was|were|can|could|do|does|did|should|will|would|ne|nasıl|neden|kim|nerede|kaç)\b|\?\s*$/i.test(query.trim());
+ try{const result=await ai.beam({request:query,items:question?[]:items});
   if(result.run&&items.some(c=>c.id===result.run)){setImmediate(()=>Promise.resolve(commandRun(result.run,{query,alt:false})).catch(()=>{}));return {ran:true};}
   return {answer:String(result.answer||'').slice(0,4000)||menuLabel('No answer came back.')};
  }catch(error){return {answer:error.message};}
@@ -384,7 +387,6 @@ function commandActions(){
   ...[['appearance','Appearance','brush','theme look colour dark light glass'],['design','Customize','brush','design theme wallpaper'],['workspace','Tabs & layout','sidebar','tabs sidebar sleep archive'],['performance','Performance','power','memory speed sleep'],['blocking','Prism Shield','shield','ads trackers blocker privacy'],['passwords','Passwords','key','logins credentials'],['extensions','Extensions','extension','add-ons plugins'],['ai','AI & assistants','sparkles','apple intelligence chatgpt'],['private','Private network','lock','zapret proxy private'],['accessibility','Accessibility','accessibility','text size contrast motion'],['updates','Updates','reload','version chromium'],['profile','Profile','folder','account name'],['imports','Imports','download','arc chrome import bookmarks'],['permissions','Site permissions','lock','camera microphone location']].map(([section,title,icon,keywords])=>['open-'+section,title,icon,'settings '+keywords,panel(section)]),
   ['release-notes','Release notes','history','what’s new changes version',()=>action('release-notes')],
   ['image-search','Search with an image','image','picture photo google lens reverse',()=>action('image-search')],
-  ...(clipboard.availableFormats().some(f=>f.startsWith('image/'))?[['image-search-clipboard','Search with the copied image','image','picture photo paste google lens',()=>action('image-search',{clipboard:true})]]:[]),
   ['web-store','Chrome Web Store','extension','extensions add install',()=>action('web-store')],
   ['passwords-app','Open Passwords app','key','apple keychain',()=>action('apple-passwords')],
   ['private-tab','New Private tab','lock','incognito',()=>action('space','private').then(()=>makeTab()).catch(()=>{})],
@@ -705,7 +707,8 @@ async function action(name,value) {
   if (name==='close' && Number.isInteger(value)) await closeTab(value);
   if(name==='restore-closed')return undoKey();
   // Search with a picture (0.37): a file you choose, or the image on the clipboard, goes to Google Lens in a new tab.
-  if(name==='image-search'){let image;if(value?.clipboard)image=clipboard.readImage();else{const pick=await dialog.showOpenDialog(win,{properties:['openFile'],filters:[{name:'Images',extensions:['png','jpg','jpeg','gif','webp','heic','tiff','bmp']}]});if(pick.canceled||!pick.filePaths[0])return;image=nativeImage.createFromPath(pick.filePaths[0]);}
+  // Electron 44's clipboard reads text only in the main process, so a pasted image arrives from Beam's own page (bytes).
+  if(name==='image-search'){let image;if(value?.bytes instanceof Uint8Array&&value.bytes.length<20*1024*1024)image=nativeImage.createFromBuffer(Buffer.from(value.bytes));else{const pick=await dialog.showOpenDialog(win,{properties:['openFile'],filters:[{name:'Images',extensions:['png','jpg','jpeg','gif','webp','heic','tiff','bmp']}]});if(pick.canceled||!pick.filePaths[0])return;image=nativeImage.createFromPath(pick.filePaths[0]);}
    if(!image||image.isEmpty())return {error:'That image could not be read.'};const {width,height}=image.getSize();if(Math.max(width,height)>1600)image=image.resize(width>=height?{width:1600}:{height:1600});lensSearch(image.toPNG());return;}
   // The address field's own menu (0.37): Paste and Go, then the usual editing commands.
   if(name==='address-menu'){const text=clipboard.readText().trim().slice(0,8192),edit=require('./edit-menu.cjs').editItems({isEditable:true,editFlags:{canUndo:true,canRedo:true,canCut:true,canCopy:true,canPaste:!!text,canSelectAll:true}},{translate:menuLabel});
@@ -869,7 +872,7 @@ app.whenReady().then(async()=>{
   {const mm=require('./memory-manager.cjs');memoryManager=mm.createMemoryManager({app,session:ses,settings,tabs:()=>tabs,activeId:()=>activeId,sleepTab,systemPressure:process.platform==='darwin'?()=>mm.readSystemPressure():undefined});}
   inspector=require('./inspector.cjs').createInspector({WebContentsView,parent:()=>win,changed:()=>{layout();emit();}});
   surfaces=require('./surfaces.cjs').createSurfaces(ipcMain);
-  commandBar=require('./command-bar.cjs').createCommandBar({BrowserWindow,parent:()=>win,surfaces,entries:commandEntries,run:commandRun,decorate:editMenu,ask:beamAsk,look:()=>({dark:nativeTheme.shouldUseDarkColors,language:settings.language,reduceMotion:!!settings.reduceMotion||systemPreferences.getAnimationSettings().prefersReducedMotion})});
+  commandBar=require('./command-bar.cjs').createCommandBar({BrowserWindow,parent:()=>win,surfaces,entries:commandEntries,run:commandRun,decorate:editMenu,ask:beamAsk,image:bytes=>action('image-search',{bytes}),look:()=>({dark:nativeTheme.shouldUseDarkColors,language:settings.language,reduceMotion:!!settings.reduceMotion||systemPreferences.getAnimationSettings().prefersReducedMotion})});
   media=require('./media.cjs').createMedia({tabs:()=>tabs,visibleIds:()=>split?split.ids:[activeId],emit});
   pip=require('./pip.cjs').createPip({BrowserWindow,WebContentsView,screen,parent:()=>win,surfaces,language:()=>settings.language,onChange:()=>{layout();emit();},reduceMotion:()=>!!settings.reduceMotion||systemPreferences.getAnimationSettings().prefersReducedMotion,
    detach:t=>{win.contentView.removeChildView(t.view);t.view.setVisible(true);t.view._prismVisible=null;t.view._prismBounds=null;t.view._prismRadius=null;},
