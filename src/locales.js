@@ -4584,6 +4584,20 @@ const catalog={
   "pt": "Mostrar todos os espaços juntos",
   "fr": "Afficher tous les espaces ensemble",
   "uk": "Показати всі простори разом"
+ },
+ "Added to Favorites": {
+  "tr": "Favorilere eklendi",
+  "es": "Añadido a Favoritos",
+  "pt": "Adicionado aos Favoritos",
+  "fr": "Ajouté aux favoris",
+  "uk": "Додано до вибраного"
+ },
+ "Drop here to add to Favorites": {
+  "tr": "Favorilere eklemek için buraya bırak",
+  "es": "Suelta aquí para añadir a Favoritos",
+  "pt": "Largue aqui para adicionar aos Favoritos",
+  "fr": "Déposez ici pour ajouter aux favoris",
+  "uk": "Перетягніть сюди, щоб додати до вибраного"
  }
 };
 const languages=["en","tr","es","pt","fr","uk"];

@@ -1094,3 +1094,10 @@ img.glass-fallback{visibility:hidden!important}
 .spectrum-card-head .spectrum-scope:hover{background:color-mix(in srgb,var(--accent) 20%,transparent)}
 .spectrum-card-head .spectrum-scope[aria-pressed=true]{color:var(--ink);background:color-mix(in srgb,var(--ink) 8%,transparent)}
 .spectrum-card-head{align-items:center}.spectrum-card-head .spectrum-total{margin-left:auto}.spectrum-card-head .spectrum-scope{margin-left:2px}
+/* 0.39.2: drag a tab onto Favorites. */
+#favorites.tab-drop-ready{min-height:44px;border-radius:12px;outline:1.5px dashed color-mix(in srgb,var(--accent) 35%,transparent);outline-offset:3px;transition:outline-color .15s,background-color .15s}
+#favorites.tab-drop-ready:empty{display:block}
+#favorites.tab-drop-over{outline-color:var(--accent);background:color-mix(in srgb,var(--accent) 10%,transparent)}
+#tabs.reordering .tab.lifted.to-favorite{opacity:.85}
+#favorites.tab-drop-ready:empty::before{content:'Drop here to add to Favorites';display:grid;place-items:center;height:44px;font-size:11px;color:var(--muted)}
+.section-label #section-new-tab{opacity:.75}.section-label #section-new-tab:hover{opacity:1}

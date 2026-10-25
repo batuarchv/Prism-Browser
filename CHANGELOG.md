@@ -2,6 +2,15 @@
 
 All notable changes to Prism, newest first. Downloads are on the [Releases page](https://github.com/batuarchv/Prism-Browser/releases).
 
+## 0.39.2 — Drag tabs to Favorites
+
+### New
+- **Drag a tab onto Favorites.** While you drag a tab, Favorites shows a drop target (even when it's empty). Drop the tab there and it becomes a favorite, in the spot you dropped it.
+- **A + for new tabs** sits right of Close all tabs in the Open tabs header.
+
+### Install notes
+This beta is **ad-hoc signed and not notarized by Apple**. The first time you open it, macOS may say it can't verify the developer: right-click (or Control-click) Prism in Applications and choose **Open**, then **Open** again. Apple Silicon (arm64) only.
+
 ## 0.39.1 — Music everywhere, a Spectrum per space
 
 ### New

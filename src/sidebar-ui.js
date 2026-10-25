@@ -25,6 +25,8 @@
  if(organize){organize.replaceChildren(icon('sort'));organize.onclick=()=>act('tabs-tidy');}
  // Closes every unpinned tab in this space; the undo toast and ⇧⌘T bring them back.
  const closeAll=document.getElementById('close-all-tabs');if(closeAll){closeAll.replaceChildren(icon('close'));closeAll.onclick=()=>act('tabs-close',{mode:'all'});}
+ // 0.39.2: a + right of Close all tabs opens a new tab, like the New tab row at the top.
+ const plus=document.getElementById('section-new-tab');if(plus){plus.replaceChildren(icon('plus'));plus.onclick=()=>act('new');}
 })();
 
 // Favorites: native-style drag to reorder. The tile lifts and follows the pointer, the others slide aside to show

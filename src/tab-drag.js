@@ -25,6 +25,11 @@
  async function drop(){const s=split;split=null;zone.hidden=true;hint.dataset.side='';if(!s)return false;
   if(!s.ready||!s.side){act('drag-split-end');return false;}await act('split-drop',{id:s.id,side:s.side});return true;}
  function cancel(){const s=split;split=null;zone.hidden=true;hint.dataset.side='';if(s)act('drag-split-end');}
+ // 0.39.2: dragging a tab up onto Favorites makes it a favorite. While a tab is lifted the grid shows a drop target
+ // (also when there are no favorites yet); over it, the row shrinks to a tile and the grid lights up.
+ const favorites=document.getElementById('favorites');
+ const overFavorites=(x,y)=>{const r=favorites?.getBoundingClientRect();return !!r&&r.height>0&&x>=r.left-6&&x<=r.right+6&&y>=r.top-8&&y<=r.bottom+8;};
+ const favoriteIndex=x=>{const tiles=[...favorites.querySelectorAll(':scope > .favorite')];const i=tiles.findIndex(t=>{const r=t.getBoundingClientRect();return x<r.left+r.width/2;});return i<0?tiles.length:i;};
  const outside=x=>{const r=document.getElementById('sidebar')?.getBoundingClientRect();return !!r&&x>r.right+4;};
  window.prismSplitDrag={begin,over,drop,cancel,outside};
 
@@ -36,11 +41,12 @@
   order.forEach((el,i)=>{if(el===drag.row)return;el.style.transform=`translateY(${drag.rects[i].top-drag.rects[drag.items.indexOf(el)].top}px)`;});drag.target=target;drag.order=order;}
  function resetOthers(){for(const el of drag.items)if(el!==drag.row)el.style.transform='';drag.target=drag.start;drag.order=drag.items;}
  function start(){drag.items=rows();drag.start=drag.items.indexOf(drag.row);drag.rects=drag.items.map(el=>el.getBoundingClientRect());drag.target=drag.start;drag.order=drag.items;drag.started=true;
-  window.tabsDragging=true;list.setPointerCapture(drag.pointer);list.classList.add('reordering');drag.row.classList.add('lifted');window.addEventListener('keydown',onKey,true);}
- function clear(d){window.removeEventListener('keydown',onKey,true);list.classList.remove('reordering');for(const el of d.items){el.style.transform='';el.classList.remove('lifted','settling','to-split');el.style.removeProperty('--lift');}
+  window.tabsDragging=true;favorites?.classList.add('tab-drop-ready');list.setPointerCapture(drag.pointer);list.classList.add('reordering');drag.row.classList.add('lifted');window.addEventListener('keydown',onKey,true);}
+ function clear(d){window.removeEventListener('keydown',onKey,true);favorites?.classList.remove('tab-drop-ready','tab-drop-over');list.classList.remove('reordering');for(const el of d.items){el.style.transform='';el.classList.remove('lifted','settling','to-split');el.style.removeProperty('--lift');}
   window.tabsDragging=false;tabKey='';renderTabs();}
  async function finish(commit){const d=drag;drag=null;if(!d)return;
   if(d.splitting){const opened=commit&&await drop();if(!opened)cancel();clear(d);return;}
+  if(d.favorite){if(commit)await act('tab-to-favorite',{id:Number(d.row.dataset.tabId),index:d.favoriteIndex});clear(d);return;}
   const slot=commit?d.rects[d.target]:d.rects[d.start],from=d.rects[d.start];if(!commit)for(const el of d.items)if(el!==d.row)el.style.transform='';
   d.row.classList.remove('lifted');d.row.classList.add('settling');d.row.style.setProperty('--lift',`translate(0px,${slot.top-from.top}px)`);
   const done=()=>{if(commit&&d.target!==d.start){const next=d.order[d.target+1];for(const el of d.order)list.append(el);act('tab-reorder',{id:Number(d.row.dataset.tabId),beforeId:next?Number(next.dataset.tabId):null});}clear(d);};
@@ -53,6 +59,8 @@
   if(outside(event.clientX)){if(!drag.splitting){drag.splitting=true;resetOthers();drag.row.classList.add('to-split');begin(Number(drag.row.dataset.tabId));}
    over(event.clientX,event.clientY);drag.row.style.setProperty('--lift',`translate(${dx}px,${dy}px) scale(.96)`);return;}
   if(drag.splitting){drag.splitting=false;drag.row.classList.remove('to-split');cancel();}
+  if(overFavorites(event.clientX,event.clientY)){if(!drag.favorite){drag.favorite=true;resetOthers();favorites.classList.add('tab-drop-over');drag.row.classList.add('to-favorite');}drag.favoriteIndex=favoriteIndex(event.clientX);drag.row.style.setProperty('--lift',`translate(${dx}px,${dy}px) scale(.9)`);return;}
+  if(drag.favorite){drag.favorite=false;favorites.classList.remove('tab-drop-over');drag.row.classList.remove('to-favorite');}
   drag.row.style.setProperty('--lift',`translate(${Math.max(-12,Math.min(12,dx))}px,${dy}px)`);const target=slotFor(event.clientY);if(target!==drag.target)layout(target);});
  const end=event=>{if(!drag||event.pointerId!==drag.pointer)return;if(drag.started){suppressClick=true;finish(event.type==='pointerup');}else drag=null;};
  // Window-level, because hiding the page for the drop zones can take the pointer capture away mid-drag.
