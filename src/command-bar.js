@@ -15,11 +15,11 @@
    row.append(badge,text,hint);row.onpointermove=()=>{if(index!==i)select(i);};row.onclick=e=>run(i,e.altKey);return row;}));
   list.hidden=!items.length;document.body.classList.toggle('has-results',!!items.length);select(0);fit();}
  async function query(){const gen=++request;const rows=await surface.ask('query',input.value);if(gen===request)draw(rows);}
- // Ask Claude (0.37): Beam stays open while Claude either runs the right item (Beam then closes) or answers here.
+ // Ask Claude or Apple Intelligence (0.37/0.38): Beam stays open while the assistant either runs the right item (Beam then closes) or answers here.
  const answer=$('command-answer');let asking=0;
  async function ask(){const gen=++asking,q=input.value;answer.hidden=false;answer.classList.add('thinking');answer.textContent=t('Thinking…');fit();
   const result=await surface.ask('ai',q).catch(()=>null);if(gen!==asking)return;answer.classList.remove('thinking');
-  if(result?.ran){surface.send('close');return;}answer.textContent=result?.answer||t('Claude had no answer.');fit();}
+  if(result?.ran){surface.send('close');return;}answer.textContent=result?.answer||t('No answer came back.');fit();}
  function run(i,alt){const item=items[i];if(!item)return;if(item.kind==='ai'){ask();return;}surface.send('run',{id:item.id,query:input.value,alt});}
  // Paste an image into Beam to search with it (Google Lens).
  input.addEventListener('paste',e=>{const file=[...(e.clipboardData?.items||[])].find(x=>x.kind==='file'&&x.type.startsWith('image/'));if(!file)return;e.preventDefault();surface.send('run',{id:'action:image-search-clipboard',query:'',alt:false});});

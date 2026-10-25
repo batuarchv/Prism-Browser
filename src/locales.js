@@ -4388,6 +4388,27 @@ const catalog={
   "pt": "Escolha o Claude em Definições → IA e assistentes para perguntar ao Feixe.",
   "fr": "Choisissez Claude dans Réglages → IA et assistants pour interroger Faisceau.",
   "uk": "Виберіть Claude у Налаштуваннях → ШІ та помічники, щоб питати Промінь."
+ },
+ "Ask Apple Intelligence": {
+  "tr": "Apple Intelligence’a sor",
+  "es": "Preguntar a Apple Intelligence",
+  "pt": "Perguntar ao Apple Intelligence",
+  "fr": "Demander à Apple Intelligence",
+  "uk": "Запитати Apple Intelligence"
+ },
+ "No answer came back.": {
+  "tr": "Yanıt gelmedi.",
+  "es": "No llegó ninguna respuesta.",
+  "pt": "Não chegou resposta.",
+  "fr": "Aucune réponse n’est revenue.",
+  "uk": "Відповіді немає."
+ },
+ "Choose Claude or Apple Intelligence in Settings → AI & assistants to ask Beam.": {
+  "tr": "Işın’a sormak için Ayarlar → Yapay zekâ ve asistanlar’da Claude’u ya da Apple Intelligence’ı seç.",
+  "es": "Elige Claude o Apple Intelligence en Ajustes → IA y asistentes para preguntar a Haz.",
+  "pt": "Escolha o Claude ou o Apple Intelligence em Definições → IA e assistentes para perguntar ao Feixe.",
+  "fr": "Choisissez Claude ou Apple Intelligence dans Réglages → IA et assistants pour interroger Faisceau.",
+  "uk": "Виберіть Claude або Apple Intelligence у Налаштуваннях → ШІ та помічники, щоб питати Промінь."
  }
 };
 const languages=["en","tr","es","pt","fr","uk"];

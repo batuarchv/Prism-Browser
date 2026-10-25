@@ -2,6 +2,14 @@
 
 All notable changes to Prism, newest first. Downloads are on the [Releases page](https://github.com/batuarchv/Prism-Browser/releases).
 
+## 0.38.0 — Beam with Apple Intelligence
+
+### New
+- **Ask Apple Intelligence in Beam.** With Apple Intelligence chosen in Settings → AI & assistants, Beam's assistant runs on your Mac: ask a question and it answers, or ask for something and it switches to the right tab, opens the page or runs the action. No API key needed.
+
+### Install notes
+This beta is **ad-hoc signed and not notarized by Apple**. The first time you open it, macOS may say it can't verify the developer: right-click (or Control-click) Prism in Applications and choose **Open**, then **Open** again. Apple Silicon (arm64) only.
+
 ## 0.37.0 — Beam gets smarter
 
 ### New
