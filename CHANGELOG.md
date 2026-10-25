@@ -2,6 +2,16 @@
 
 All notable changes to Prism, newest first. Downloads are on the [Releases page](https://github.com/batuarchv/Prism-Browser/releases).
 
+## 0.35.1 — Quicker favorites
+
+### New
+- **Glass only where you are.** A favorite gets the liquid glass look only while its page is the one in front.
+- **Icons without a visit.** Favorites and pinned bookmarks fetch their site icon in the background, so they show their logo before you open them.
+- **Faster icons and preview cards.** A new icon or card reaches the sidebar on its own instead of resending every stored picture, and they're saved in the background instead of rewriting the whole file each time.
+
+### Install notes
+This beta is **ad-hoc signed and not notarized by Apple**. The first time you open it, macOS may say it can't verify the developer: right-click (or Control-click) Prism in Applications and choose **Open**, then **Open** again. Apple Silicon (arm64) only.
+
 ## 0.35.0 — Faster hands
 
 ### New

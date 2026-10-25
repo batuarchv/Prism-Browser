@@ -8,7 +8,12 @@ function createServices({app,ses,window,settings,saveSettings,emit,smoke,private
  const downloadsFile=path.join(app.getPath('userData'),'downloads.json');const imagesFile=path.join(app.getPath('userData'),'site-images.json');
  const live=new Map();let downloads=(privateMode?[]:readJSON(downloadsFile,[])).map(d=>({...d,active:false,state:['progressing','paused'].includes(d.state)?'interrupted':d.state}));
  let images=privateMode?{}:trimImages(readJSON(imagesFile,{}),settings.leanMemory?2*1024*1024:4*1024*1024),imageRevision=0;
- function changedImages(){images=trimImages(images,settings.leanMemory?2*1024*1024:4*1024*1024);imageRevision++;if(!smoke)writeJSON(imagesFile,images);}
+ // Icons and preview cards are written a moment after they change, off the main thread, instead of rewriting the
+ // whole file synchronously for each one (0.35); anything pending is written when Prism closes.
+ let imagesTimer=null,imagesWriting=Promise.resolve();
+ function writeImagesSoon(){if(smoke||privateMode)return;clearTimeout(imagesTimer);imagesTimer=setTimeout(()=>{imagesTimer=null;const data=JSON.stringify(images);imagesWriting=imagesWriting.then(async()=>{await fs.promises.mkdir(path.dirname(imagesFile),{recursive:true});await fs.promises.writeFile(imagesFile+'.tmp',data,{mode:0o600});await fs.promises.rename(imagesFile+'.tmp',imagesFile);}).catch(()=>{});},1500);imagesTimer.unref?.();}
+ function flushImages(){if(!imagesTimer)return;clearTimeout(imagesTimer);imagesTimer=null;try{writeJSON(imagesFile,images);}catch{}}
+ function changedImages(){images=trimImages(images,settings.leanMemory?2*1024*1024:4*1024*1024);imageRevision++;writeImagesSoon();}
 const popupWindows=new Set();let lastEmit=0;
  const persistDownloads=()=>{if(!smoke)writeJSON(downloadsFile,downloads.slice(0,150));};
  // Each extension's own icon (largest declared size up to 128 px, under 256 KB) as an inline image, cached per version.
@@ -81,7 +86,9 @@ const popupWindows=new Set();let lastEmit=0;
   emit();persistDownloads();
  }
  async function chooseDownloadDirectory(){const result=await dialog.showOpenDialog(window(),{properties:['openDirectory','createDirectory'],defaultPath:settings.downloadDirectory||app.getPath('downloads')});if(!result.canceled){settings.downloadDirectory=result.filePaths[0];saveSettings();emit();}}
- function storeIcon(url,buffer){try{const icon=nativeImage.createFromBuffer(buffer);if(icon.isEmpty())return;url=new URL(url).origin;images[url]={...images[url],icon:icon.resize({width:48,height:48}).toDataURL()};}catch{}}
+ // A favicon.ico often wraps PNG images; the largest one is used when macOS cannot read the .ico itself.
+ function icoPng(buffer){try{if(buffer.readUInt16LE(0)!==0||buffer.readUInt16LE(2)!==1)return null;let best=null;for(let i=0,n=buffer.readUInt16LE(4);i<n&&i<32;i++){const o=6+i*16,size=buffer.readUInt32LE(o+8),at=buffer.readUInt32LE(o+12),w=buffer[o]||256;if(at+size>buffer.length)continue;const data=buffer.subarray(at,at+size);if(data.readUInt32BE(0)===0x89504e47&&(!best||w>best.w))best={w,data};}return best?.data||null;}catch{return null;}}
+ function storeIcon(url,buffer){try{let icon=nativeImage.createFromBuffer(buffer);if(icon.isEmpty()){const png=icoPng(buffer);if(png)icon=nativeImage.createFromBuffer(png);}if(icon.isEmpty())return;url=new URL(url).origin;images[url]={...images[url],icon:icon.resize({width:48,height:48}).toDataURL()};}catch{}}
  function importArcIcons(bookmarks){
   try{const file=path.join(app.getPath('appData'),'Arc/User Data/Default/Favicons');if(!fs.existsSync(file))return;const {DatabaseSync}=require('node:sqlite');const db=new DatabaseSync(file,{readOnly:true});try{const query=db.prepare('SELECT b.image_data FROM icon_mapping m JOIN favicon_bitmaps b ON b.icon_id=m.icon_id WHERE m.page_url=? ORDER BY b.width DESC LIMIT 1');for(const b of bookmarks){if(images[new URL(b.url).origin]?.icon)continue;const row=query.get(b.url);if(row?.image_data?.length<256000)storeIcon(b.url,Buffer.from(row.image_data));}}finally{db.close();}changedImages();}catch{}
  }
@@ -90,6 +97,12 @@ const popupWindows=new Set();let lastEmit=0;
   if(!/^https?:\/\//.test(iconURL)||pendingIcons.has(url)||images[new URL(url).origin]?.icon)return;pendingIcons.add(url);
   try{const response=await ses.fetch(iconURL,{credentials:'omit',signal:AbortSignal.timeout(5000)});if(!response.ok)return;const reader=response.body.getReader();const parts=[];let size=0;while(true){const {done,value}=await reader.read();if(done)break;size+=value.byteLength;if(size>256000){await reader.cancel();return;}parts.push(Buffer.from(value));}storeIcon(url,Buffer.concat(parts));changedImages();emit();}catch{}finally{pendingIcons.delete(url);}
  }
+ // Favorites and pinned bookmarks get their icon without waiting for a visit (0.35): the site's own favicon is asked
+ // for in the background, two at a time, without cookies.
+ const iconTried=new Set();
+ async function warmIcons(urls){if(privateMode)return;const origins=[...new Set(urls.map(u=>{try{const x=new URL(u);return /^https?:$/.test(x.protocol)?x.origin:null;}catch{return null;}}).filter(o=>o&&!images[o]?.icon&&!iconTried.has(o)))].slice(0,60);for(const o of origins)iconTried.add(o);
+  const next=async()=>{while(origins.length){const origin=origins.shift();for(const file of ['/apple-touch-icon.png','/favicon.ico']){if(images[origin]?.icon)break;try{const response=await ses.fetch(origin+file,{credentials:'omit',signal:AbortSignal.timeout(5000)});const type=response.headers.get('content-type')||'';if(!response.ok||/text\/html/.test(type))continue;const buffer=Buffer.from(await response.arrayBuffer());if(buffer.length>256000)continue;const before=images[origin]?.icon;storeIcon(origin,buffer);if(images[origin]?.icon&&images[origin].icon!==before){changedImages();emit();}}catch{}}}};
+  await Promise.all([next(),next()]);}
  const thumbnailTimes=new Map(),pendingThumbnails=new Map();let imageGeneration=0;
  async function thumbnail(tab){if(settings.favoriteStyle!=='cards'||!tab.view||tab.loading||tab.space==='private')return;const url=tab.url,wc=tab.view.webContents,generation=imageGeneration;
  if(pendingThumbnails.has(url))return pendingThumbnails.get(url);if(Date.now()-(thumbnailTimes.get(url)||0)<60000)return;
@@ -99,6 +112,6 @@ const popupWindows=new Set();let lastEmit=0;
  thumbnailTimes.delete(url);thumbnailTimes.set(url,Date.now());while(thumbnailTimes.size>200)thumbnailTimes.delete(thumbnailTimes.keys().next().value);changedImages();emit();}catch{}finally{pendingThumbnails.delete(url);}})();pendingThumbnails.set(url,job);return job;}
 
  function clearImages(){imageGeneration++;images={};thumbnailTimes.clear();changedImages();emit();}
- return {persistDownloads,reviewExtension,extensionRows,extensionPage,restoreExtensions,installExtension,extensionAction,downloadAction,chooseDownloadDirectory,downloads:()=>downloads,images:()=>images,imageRevision:()=>imageRevision,importArcIcons,favicon,thumbnail,clearImages,close:()=>{if(privateMode){for(const item of live.values())item.cancel();downloads=[];live.clear();}persistDownloads();for(const w of popupWindows)w.close();},hasActiveDownloads:()=>live.size>0};
+ return {persistDownloads,reviewExtension,extensionRows,extensionPage,restoreExtensions,installExtension,extensionAction,downloadAction,chooseDownloadDirectory,downloads:()=>downloads,images:()=>images,imageRevision:()=>imageRevision,importArcIcons,favicon,thumbnail,warmIcons,clearImages,close:()=>{flushImages();if(privateMode){for(const item of live.values())item.cancel();downloads=[];live.clear();}persistDownloads();for(const w of popupWindows)w.close();},hasActiveDownloads:()=>live.size>0};
 }
 module.exports={createServices,uniqueFile};
