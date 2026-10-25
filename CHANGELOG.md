@@ -2,6 +2,16 @@
 
 All notable changes to Prism, newest first. Downloads are on the [Releases page](https://github.com/batuarchv/Prism-Browser/releases).
 
+## 0.39.1 — Music everywhere, a Spectrum per space
+
+### New
+- **SoundCloud and other music sites in the miniplayer.** SoundCloud, Spotify, Mixcloud, Bandcamp and similar sites play through a hidden player that isn't part of the page, so the sidebar miniplayer never saw them. It now finds them, with the track name, artist, play/pause and skip.
+- **A Spectrum for each space.** The timeline and day card show only the space you're in, and the chapter names are worked out per space.
+- **All usage.** A button in the Spectrum card shows every space together; press it again (or close the card) to go back to this space.
+
+### Install notes
+This beta is **ad-hoc signed and not notarized by Apple**. The first time you open it, macOS may say it can't verify the developer: right-click (or Control-click) Prism in Applications and choose **Open**, then **Open** again. Apple Silicon (arm64) only.
+
 ## 0.39.0 — Bypass anywhere, cleaner sidebar
 
 ### New

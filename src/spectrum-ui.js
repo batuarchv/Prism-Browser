@@ -9,10 +9,11 @@
  const root=document.createElement('div');root.id='spectrum';root.hidden=true;
  root.innerHTML='<div class="spectrum-glance" aria-hidden="true" hidden><div class="spectrum-glance-head"><strong></strong><small></small></div><div class="spectrum-glance-tabs"></div></div>'
   +'<div class="spectrum-band" role="slider" tabindex="0" aria-label="Spectrum" aria-valuemin="0" aria-valuemax="100"><div class="spectrum-track"></div><div class="spectrum-cursor"></div></div>'
-  +'<div class="spectrum-card" role="dialog" aria-label="Spectrum" hidden><div class="spectrum-card-head"><strong class="spectrum-day"></strong><small class="spectrum-total"></small></div><p class="spectrum-summary"></p><div class="spectrum-chapters" role="list"></div><div class="spectrum-usual" hidden></div></div>';
+  +'<div class="spectrum-card" role="dialog" aria-label="Spectrum" hidden><div class="spectrum-card-head"><strong class="spectrum-day"></strong><small class="spectrum-total"></small><button type="button" class="spectrum-scope" aria-pressed="false"></button></div><p class="spectrum-summary"></p><div class="spectrum-chapters" role="list"></div><div class="spectrum-usual" hidden></div></div>';
  document.querySelector('#sidebar .sidebar-bottom').prepend(root);
  const $s=sel=>root.querySelector(sel),band=$s('.spectrum-band'),track=$s('.spectrum-track'),cursor=$s('.spectrum-cursor'),glance=$s('.spectrum-glance'),card=$s('.spectrum-card');
- let view=null,revision=null,cursorTime=null,language='en',fetching=false,chosen=null,map=null;const moments=new Map();
+ // 0.39.1: Spectrum follows the space you are in; the card's All usage button shows every space together.
+ let all=false,shownSpace=null,view=null,revision=null,cursorTime=null,language='en',fetching=false,chosen=null,map=null;const moments=new Map();
  const KIND={mail:'Mail',ai:'Asking AI',code:'Coding',work:'Working',video:'Watching',music:'Listening',social:'Social',news:'Catching up on news',shopping:'Shopping',learning:'Learning',travel:'Planning travel',money:'Money matters',web:'Browsing'};
  const hue=host=>{let h=2166136261;for(const c of host){h^=c.charCodeAt(0);h=Math.imul(h,16777619);}return (h>>>0)%360;};
  // 0.39: one colour, the theme's accent, at a few strengths; each site keeps its strength, so neighbours stay apart.
@@ -37,10 +38,10 @@
   track.style.backgroundImage=`linear-gradient(90deg,${stops.join(',')})`;
   track.replaceChildren(...map.filter(p=>p.gap).map(p=>{const gap=document.createElement('i');gap.className='spectrum-break';gap.style.left=pct(p.x0);gap.style.width=pct(p.x1-p.x0);return gap;}));
   if(!card.hidden)fillCard();}
- async function refresh(){if(fetching||document.hidden||state?.space==='private')return;fetching=true;try{const next=await window.prism.action('spectrum-view',{insights:!card.hidden});if(next){if(next.moments.length!==view?.moments.length)moments.clear();view=next;draw();}}finally{fetching=false;}}
+ async function refresh(){if(fetching||document.hidden||state?.space==='private')return;fetching=true;try{const next=await window.prism.action('spectrum-view',{insights:!card.hidden,all});if(next){if(next.moments.length!==view?.moments.length||next.space!==view?.space)moments.clear();view=next;draw();}}finally{fetching=false;}}
  const xAt=clientX=>{const r=band.getBoundingClientRect();return Math.max(0,Math.min(1,(clientX-r.left)/r.width));};
  // The tabs open at a moment, asked for once per recorded moment.
- function momentAt(time){const list=view.moments.filter(m=>m.at<=time);const m=list.at(-1)||view.moments[0];if(!m)return Promise.resolve(null);if(!moments.has(m.at))moments.set(m.at,window.prism.action('spectrum-at',{time:m.at}).catch(()=>null));return moments.get(m.at);}
+ function momentAt(time){const list=view.moments.filter(m=>m.at<=time);const m=list.at(-1)||view.moments[0];if(!m)return Promise.resolve(null);if(!moments.has(m.at))moments.set(m.at,window.prism.action('spectrum-at',{time:m.at,all}).catch(()=>null));return moments.get(m.at);}
  const badge=(url,label)=>{const b=document.createElement('span');b.className='tab-icon';b.append(symbol(url,label));return b;};
  let glanceFor=0;
  async function point(x){if(!view||!map)return;const time=timeOf(x);cursorTime=time;cursor.style.left=(x*100)+'%';const seg=view.segments.find(s=>time>=s.from&&time<=s.to),chapter=chapterAt(time);
@@ -49,7 +50,7 @@
   const ticket=++glanceFor,moment=await momentAt(time);if(ticket!==glanceFor)return;const tabs=moment?.tabs||[],row=glance.querySelector('.spectrum-glance-tabs');
   row.replaceChildren(...tabs.slice(0,6).map(x=>{const b=badge(x.url,x.title);b.title=x.title||x.url;return b;}),...(tabs.length>6?[Object.assign(document.createElement('small'),{textContent:'+'+(tabs.length-6)})]:[]));row.hidden=!tabs.length;}
  function fillCard(){
-  $s('.spectrum-day').textContent=t('Today');$s('.spectrum-total').textContent=duration(view.active);
+  {const name=state?.settings?.spaces?.find?.(x=>x.id===state.space)?.name||state?.space||'';$s('.spectrum-day').textContent=all?t('Today · all spaces'):name?t('Today')+' · '+name:t('Today');const scope=$s('.spectrum-scope');scope.textContent=all?t('This space'):t('All usage');scope.setAttribute('aria-pressed',String(all));scope.title=all?t('Show only this space'):t('Show every space together');}$s('.spectrum-total').textContent=duration(view.active);
   const top=[...view.chapters].sort((a,b)=>b.active-a.active)[0],summary=$s('.spectrum-summary');
   summary.textContent=view.summary||(top?(view.chapters.length>1?t('Mostly {activity}, across {count} chapters').replace('{count}',view.chapters.length):t('Mostly {activity}')).replace('{activity}',title(top).toLocaleLowerCase(language)):'');summary.classList.toggle('ai',!!view.summary);
   $s('.spectrum-chapters').replaceChildren(...[...view.chapters].reverse().slice(0,5).map(c=>{const item=document.createElement('div');item.className='spectrum-chapter'+(chosen===c.from?' chosen':'');item.setAttribute('role','listitem');
@@ -62,7 +63,8 @@
   const icons=document.createElement('div');icons.className='spectrum-chapter-icons';icons.append(...tabs.slice(0,8).map(x=>{const b=badge(x.url,x.title);b.title=x.title||x.url;return b;}));
   const restore=document.createElement('button');restore.type='button';restore.className='spectrum-restore';restore.textContent=tabs.length===1?t('Bring it back'):t('Bring back {count} tabs').replace('{count}',tabs.length);restore.onclick=async()=>{closeCard();await act('spectrum-restore',{time:moment.at});};box.append(icons,restore);});return box;}
  async function openCard(time){if(!view)return;glance.hidden=true;card.hidden=false;root.classList.add('open');await refresh();chosen=chapterAt(time)?.from??null;fillCard();$s('.spectrum-chapter.chosen .spectrum-chapter-row,.spectrum-chapter-row')?.focus({focusVisible:false});}
- function closeCard(){if(card.hidden)return;card.hidden=true;root.classList.remove('open','hover');chosen=null;}
+ function closeCard(){if(card.hidden)return;card.hidden=true;root.classList.remove('open','hover');chosen=null;if(all){all=false;refresh();}}
+ $s('.spectrum-scope').addEventListener('click',async e=>{e.stopPropagation();all=!all;chosen=null;await refresh();fillCard();});
  band.addEventListener('pointermove',e=>{root.classList.add('hover');point(xAt(e.clientX));});
  band.addEventListener('pointerleave',()=>{glanceFor++;glance.hidden=true;if(card.hidden)root.classList.remove('hover');});
  band.addEventListener('click',e=>{if(!card.hidden){closeCard();return;}openCard(timeOf(xAt(e.clientX)));});
@@ -72,6 +74,6 @@
  // Anything else closes the card: a click elsewhere in the window, a click on the page (the window loses focus to it), Esc.
  document.addEventListener('pointerdown',e=>{if(!card.hidden&&!root.contains(e.target))closeCard();},true);
  window.addEventListener('blur',closeCard);
- window.prism.onState(s=>{language=s.settings.language||'en';if(s.space==='private'||s.spectrum==null){root.hidden=true;closeCard();return;}if(s.spectrum!==revision){revision=s.spectrum;refresh();}});
+ window.prism.onState(s=>{language=s.settings.language||'en';if(s.space==='private'||s.spectrum==null){root.hidden=true;closeCard();return;}if(s.spectrum!==revision||s.space!==shownSpace){revision=s.spectrum;shownSpace=s.space;refresh();}});
  setInterval(refresh,60000);document.addEventListener('visibilitychange',()=>{if(!document.hidden)refresh();});
 })();

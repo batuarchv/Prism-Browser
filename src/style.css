@@ -1089,3 +1089,8 @@ img.glass-fallback{visibility:hidden!important}
 .bypass-sites li button .icon{width:11px;height:11px}
 .bypass-add{display:flex;gap:6px;padding:0 24px 6px}.bypass-add input{flex:1;min-width:0;height:32px;padding:0 10px;border:1px solid var(--line);border-radius:8px;background:var(--surface);color:var(--ink)}
 .bypass-add[hidden],.bypass-sites[hidden],#bypass-sites-row[hidden],#bypass-profile-row[hidden]{display:none}
+/* 0.39.1: the Spectrum card's All usage / This space switch. */
+.spectrum-card-head .spectrum-scope{margin-left:auto;height:22px;padding:0 9px;border-radius:999px;font-size:11px;font-weight:550;color:var(--accent);background:color-mix(in srgb,var(--accent) 12%,transparent)}
+.spectrum-card-head .spectrum-scope:hover{background:color-mix(in srgb,var(--accent) 20%,transparent)}
+.spectrum-card-head .spectrum-scope[aria-pressed=true]{color:var(--ink);background:color-mix(in srgb,var(--ink) 8%,transparent)}
+.spectrum-card-head{align-items:center}.spectrum-card-head .spectrum-total{margin-left:auto}.spectrum-card-head .spectrum-scope{margin-left:2px}

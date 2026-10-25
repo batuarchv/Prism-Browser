@@ -4549,6 +4549,41 @@ const catalog={
   "pt": "Adicione um site, como x.com",
   "fr": "Ajoutez un site, comme x.com",
   "uk": "Додайте сайт, наприклад x.com"
+ },
+ "Today · all spaces": {
+  "tr": "Bugün · tüm alanlar",
+  "es": "Hoy · todos los espacios",
+  "pt": "Hoje · todos os espaços",
+  "fr": "Aujourd’hui · tous les espaces",
+  "uk": "Сьогодні · усі простори"
+ },
+ "This space": {
+  "tr": "Bu alan",
+  "es": "Este espacio",
+  "pt": "Este espaço",
+  "fr": "Cet espace",
+  "uk": "Цей простір"
+ },
+ "All usage": {
+  "tr": "Tüm kullanım",
+  "es": "Todo el uso",
+  "pt": "Toda a utilização",
+  "fr": "Toute l’utilisation",
+  "uk": "Усе використання"
+ },
+ "Show only this space": {
+  "tr": "Yalnızca bu alanı göster",
+  "es": "Mostrar solo este espacio",
+  "pt": "Mostrar apenas este espaço",
+  "fr": "Afficher seulement cet espace",
+  "uk": "Показати лише цей простір"
+ },
+ "Show every space together": {
+  "tr": "Tüm alanları birlikte göster",
+  "es": "Mostrar todos los espacios juntos",
+  "pt": "Mostrar todos os espaços juntos",
+  "fr": "Afficher tous les espaces ensemble",
+  "uk": "Показати всі простори разом"
  }
 };
 const languages=["en","tr","es","pt","fr","uk"];

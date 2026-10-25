@@ -23,3 +23,9 @@ test('chapters split at pauses, are named by kind, and habits suggest sites usua
  const v=s.view();assert.equal(v.chapters.length,2);assert.equal(v.chapters[0].kind,'code');assert.equal(v.chapters[1].kind,'video');assert.deepEqual(s.chapters()[0].titles,['Pull request']);
  s.setInsights(v.insightsKey,{titles:['Reviewing code','Watching videos'],summary:'A focused morning.'});assert.equal(s.view().chapters[0].title,'Reviewing code');assert.equal(s.view().summary,'A focused morning.');
  s.flush();const next=createSpectrum({now:()=>new Date(2026,9,22,9,15).getTime(),load:()=>saved});const usual=next.usual({openHosts:['stackoverflow.com']}).map(u=>u.host);assert.equal(usual[0],'github.com');assert.ok(!usual.includes('stackoverflow.com'));assert.equal(next.view().segments.length,0);});
+test('Spectrum follows the space and All usage shows every space (0.39.1)',()=>{let t=new Date(2026,9,26,10).getTime();const s=require('../src/spectrum.cjs').createSpectrum({now:()=>t});
+ s.presence('https://github.com/','personal');t+=60000;s.presence('https://slack.com/','work');t+=120000;s.presence('https://github.com/','work');t+=60000;s.presence('','personal');
+ const personal=s.view({space:'personal'}),work=s.view({space:'work'}),all=s.view({});
+ assert.deepEqual(personal.segments.map(x=>x.host),['github.com']);assert.deepEqual(work.segments.map(x=>x.host),['slack.com','github.com']);assert.equal(all.segments.length,3);
+ assert.equal(work.space,'work');assert.notEqual(personal.insightsKey,all.insightsKey);
+ s.setInsights(work.insightsKey,{titles:['Team chat'],summary:'Work day'},'work');assert.equal(s.view({space:'work'}).chapters[0].title,'Team chat');assert.equal(s.view({space:'personal'}).summary,'');});
