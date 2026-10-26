@@ -1,0 +1,27 @@
+{
+ "note": "Right square pyramid (base side 1, centred on the origin, z up) and the perspective camera that draws assets/prism-mark.svg. Camera space: x right, y down, z forward; pixel = 512 + focal\u00b7(x/z, y/z) on the 1024 canvas. Solved from the original icon (design/legacy-logo); see RELEASE-0.27.5.md.",
+ "height": 0.86179,
+ "rotation": [
+  [
+   0.970518,
+   -0.240343,
+   -0.018146
+  ],
+  [
+   -0.040254,
+   -0.087399,
+   -0.99536
+  ],
+  [
+   0.237642,
+   0.966745,
+   -0.094497
+  ]
+ ],
+ "translation": [
+  -0.014823,
+  0.347573,
+  5.57576
+ ],
+ "focal": 3917.981
+}

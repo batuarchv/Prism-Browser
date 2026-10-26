@@ -12,7 +12,9 @@ require('./prepare-extensions.cjs');
     for(const dep of Object.keys(pkg.dependencies||{}))copyDependency(dep,local);
   }
   for(const name of Object.keys(manifest.dependencies))copyDependency(name);
-  for(const name of ['src','assets','LICENSE','THIRD-PARTY-NOTICES.md'])fs.cpSync(path.join(root,name),path.join(stage,name),{recursive:true,filter:p=>!p.includes('Prism.iconset')&&!/assets\/blocker\/.*\.txt$/.test(p)});
+  // The current release notes feed the What’s New window (src/update-flow.js).
+  {const notes='RELEASE-'+require(path.join(root,'package.json')).version+'.md';if(fs.existsSync(path.join(root,notes)))fs.copyFileSync(path.join(root,notes),path.join(stage,notes));}
+  for(const name of ['src','assets','LICENSE','THIRD-PARTY-NOTICES.md','CHANGELOG.md'])fs.cpSync(path.join(root,name),path.join(stage,name),{recursive:true,filter:p=>!p.includes('Prism.iconset')&&!/assets\/blocker\/(lists|.*\.txt$)/.test(p)});
   delete manifest.devDependencies;fs.writeFileSync(path.join(stage,'package.json'),JSON.stringify(manifest,null,2));
   const {packager}=await import('@electron/packager');
   const electronVersion=require('electron/package.json').version;
@@ -25,7 +27,10 @@ require('./prepare-extensions.cjs');
       execFileSync('/usr/bin/ditto',['-c','-k','--sequesterRsrc','--keepParent',electronApp,archive],{stdio:'inherit'});
     }
   }
-  const result=await packager({dir:stage,name:'Prism',platform:'darwin',arch:'arm64',electronVersion,out:process.env.PRISM_PACKAGE_OUT||path.join(root,'dist'),overwrite:true,prune:false,extraResource:[path.join(root,'src/native/prism-ai')],icon:path.join(root,'assets','Prism-current.icns'),appBundleId:'local.prism.browser',protocols:[{name:'Web links',schemes:['http','https']},{name:'Prism assistant actions',schemes:['prism']}],extendInfo:{NSCameraUsageDescription:'Sites you allow can use your camera.',NSMicrophoneUsageDescription:'Sites you allow can use your microphone.',NSLocationWhenInUseUsageDescription:'Sites you allow can request your location.'},...(electronZipDir?{electronZipDir}:{})});
+  // Electron's and Chromium's own licence notices for the exact version inside (0.34), in Prism.app/Contents/Resources.
+  const electronDist=path.join(path.dirname(resolve.resolve('electron/package.json')),'dist'),notices=path.join(stage,'engine-notices');fs.mkdirSync(notices,{recursive:true});
+  fs.copyFileSync(path.join(electronDist,'LICENSE'),path.join(notices,'ELECTRON-LICENSE'));fs.copyFileSync(path.join(electronDist,'LICENSES.chromium.html'),path.join(notices,'LICENSES.chromium.html'));
+  const result=await packager({dir:stage,name:'Prism',platform:'darwin',arch:'arm64',electronVersion,out:process.env.PRISM_PACKAGE_OUT||path.join(root,'dist'),overwrite:true,prune:false,extraResource:[path.join(root,'src/native/prism-ai'),path.join(root,'src/native/tpws'),path.join(notices,'ELECTRON-LICENSE'),path.join(notices,'LICENSES.chromium.html'),path.join(root,'src/native/ZAPRET-LICENSE')],icon:path.join(root,'assets','Prism-current.icns'),appBundleId:'local.prism.browser',protocols:[{name:'Web links',schemes:['http','https']},{name:'Prism assistant actions',schemes:['prism']}],extendInfo:{NSCameraUsageDescription:'Sites you allow can use your camera.',NSMicrophoneUsageDescription:'Sites you allow can use your microphone.',NSLocationWhenInUseUsageDescription:'Sites you allow can request your location.'},...(electronZipDir?{electronZipDir}:{})});
   console.log(result.join('\n'));
   }finally{fs.rmSync(stage,{recursive:true,force:true});}
 })().catch(error=>{console.error(error);process.exit(1);});

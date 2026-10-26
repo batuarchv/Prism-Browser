@@ -5,9 +5,6 @@
   const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
   const fine = matchMedia('(pointer: fine)').matches;
 
-  // Project links from config.js.
-  for (const a of $$('[data-link]')) { const href = window.PrismSite?.[a.dataset.link]; if (href) a.href = href; }
-
   // Scroll reveals.
   const io = new IntersectionObserver(entries => {
     for (const e of entries) if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); }

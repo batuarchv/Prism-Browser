@@ -5,14 +5,14 @@ function visibleTabs(tabs,space,favoriteIds=new Set()){return tabs.filter(t=>t.s
 
 // "Close other tabs" and "Close tabs below" never close pinned tabs, the chosen tab, or tabs in another space.
 function closeTargets(tabs,id,mode,space,favoriteIds){
- const list=visibleTabs(tabs,space,favoriteIds),index=list.findIndex(t=>t.id===id);if(index<0)return [];
+ const list=visibleTabs(tabs,space,favoriteIds),index=list.findIndex(t=>t.id===id);if(mode==='all')return list.filter(t=>!t.pinned).map(t=>t.id);if(index<0)return [];
  const pool=mode==='others'?list.filter(t=>t.id!==id):mode==='below'?list.slice(index+1):[];
  return pool.filter(t=>!t.pinned).map(t=>t.id);
 }
 
 // Library edits that can be undone keep a deep copy of the bookmarks and folders they replace.
-function snapshotLibrary(library){return {bookmarks:library.bookmarks.map(b=>({...b})),folders:[...library.folders]};}
-function restoreLibrary(library,snapshot){library.bookmarks=snapshot.bookmarks.map(b=>({...b}));library.folders=[...snapshot.folders];return library;}
+function snapshotLibrary(library){return {bookmarks:library.bookmarks.map(b=>({...b})),folders:[...library.folders],folderIcons:{...library.folderIcons}};}
+function restoreLibrary(library,snapshot){library.bookmarks=snapshot.bookmarks.map(b=>({...b}));library.folders=[...snapshot.folders];if(snapshot.folderIcons)library.folderIcons={...snapshot.folderIcons};return library;}
 function deleteFolderWithBookmarks(library,folder){library.bookmarks=library.bookmarks.filter(b=>b.folder!==folder);library.folders=library.folders.filter(f=>f!==folder);return library;}
 
 module.exports={visibleTabs,closeTargets,snapshotLibrary,restoreLibrary,deleteFolderWithBookmarks};

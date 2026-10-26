@@ -53,8 +53,15 @@ function createLocalUpdater({app,config,onChange=()=>{},fetch,platform=process.p
  }catch{if(root)await disk.promises.rm(root,{recursive:true,force:true}).catch(()=>{});change('error');return false;}finally{busy=false;}}
  // Launch never waits on the network: it installs only what the local feed or an earlier background download already holds.
  async function startup(){if(!enabled)return false;await check({network:false});return status==='ready'&&await install();}
+ // A build published to the local feed while Prism is open is picked up within seconds (manifest watch) and when
+ // Prism comes back to the front, instead of waiting for the next launch or the 6-hour check.
+ let watcher=null,debounce=null,lastFeedCheck=0;
+ function feedCheck(){if(!enabled||!localFeed||busy||status==='ready'||status==='downloading')return;lastFeedCheck=Date.now();check({network:false}).catch(()=>{});}
+ // Polls the manifest's modification time (a cheap stat every 2 s); folder events can be coalesced or dropped on macOS.
+ function watchFeed(){if(!enabled||!localFeed||watcher)return;const file=path.join(localFeed,'latest.json');fs.watchFile(file,{interval:2000,persistent:false},(now,before)=>{if(now.mtimeMs!==before.mtimeMs){clearTimeout(debounce);debounce=setTimeout(feedCheck,500);debounce.unref?.();}});watcher={close:()=>fs.unwatchFile(file)};}
+ function resumed(){if(Date.now()-lastFeedCheck>60000)feedCheck();}
  function schedule(automatic){clearTimeout(timer);timer=null;if(!enabled||!github||!automatic)return;const run=()=>{check().catch(()=>{}).finally(()=>{timer=setTimeout(run,6*3600000);timer.unref?.();});};timer=setTimeout(run,20000);timer.unref?.();}
  async function healthy(){try{const t=JSON.parse(await fs.promises.readFile(transaction,'utf8')),bundle=path.resolve(app.getPath('exe'),'../../..');if(t.version!==app.getVersion()||t.bundle!==bundle||path.dirname(t.root)!==path.dirname(bundle)||!path.basename(t.root).startsWith('.prism-update-'))return;await disk.promises.rm(t.root,{recursive:true,force:true});await fs.promises.unlink(transaction);await fs.promises.rm(failure,{force:true});await disk.promises.rm(downloads,{recursive:true,force:true});}catch{}}
- return {snapshot,check,install,startup,healthy,schedule,close(){clearTimeout(timer);timer=null;}};
+ return {snapshot,check,install,startup,healthy,schedule,watchFeed,resumed,close(){clearTimeout(timer);timer=null;clearTimeout(debounce);watcher?.close();watcher=null;}};
 }
 module.exports={createLocalUpdater,verifyManifest,newer,digest,feedDirectory};

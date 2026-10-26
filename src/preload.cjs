@@ -1,4 +1,6 @@
 const {contextBridge, ipcRenderer} = require('electron');
+// Each UI module subscribes to state once per page; there are more than Node's default of 10.
+ipcRenderer.setMaxListeners(32);
 contextBridge.exposeInMainWorld('prism', {
   action: (name, value) => ipcRenderer.invoke('action', name, value),
   onGmail: fn => ipcRenderer.on('gmail-preview',(_e,data)=>fn(data)),
