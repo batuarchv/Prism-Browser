@@ -1,5 +1,89 @@
 (function(root){
 const catalog={
+ "What’s New": {
+  "tr": "Yenilikler",
+  "es": "Novedades",
+  "pt": "Novidades",
+  "fr": "Nouveautés",
+  "uk": "Що нового"
+ },
+ "Restart": {
+  "tr": "Yeniden başlat",
+  "es": "Reiniciar",
+  "pt": "Reiniciar",
+  "fr": "Redémarrer",
+  "uk": "Перезапустити"
+ },
+ "Restart to Update": {
+  "tr": "Güncellemek için yeniden başlat",
+  "es": "Reiniciar para actualizar",
+  "pt": "Reiniciar para atualizar",
+  "fr": "Redémarrer pour mettre à jour",
+  "uk": "Перезапустити для оновлення"
+ },
+ "Downloading update": {
+  "tr": "Güncelleme indiriliyor",
+  "es": "Descargando actualización",
+  "pt": "A transferir atualização",
+  "fr": "Téléchargement de la mise à jour",
+  "uk": "Завантаження оновлення"
+ },
+ "Updated to Prism {version}": {
+  "tr": "Prism {version} sürümüne güncellendi",
+  "es": "Actualizado a Prism {version}",
+  "pt": "Atualizado para Prism {version}",
+  "fr": "Mis à jour vers Prism {version}",
+  "uk": "Оновлено до Prism {version}"
+ },
+ "Open side panel": {
+  "tr": "Yan paneli aç",
+  "es": "Abrir panel lateral",
+  "pt": "Abrir painel lateral",
+  "fr": "Ouvrir le panneau latéral",
+  "uk": "Відкрити бічну панель"
+ },
+ "Close side panel": {
+  "tr": "Yan paneli kapat",
+  "es": "Cerrar panel lateral",
+  "pt": "Fechar painel lateral",
+  "fr": "Fermer le panneau latéral",
+  "uk": "Закрити бічну панель"
+ },
+ "Extension side panel": {
+  "tr": "Uzantı yan paneli",
+  "es": "Panel lateral de la extensión",
+  "pt": "Painel lateral da extensão",
+  "fr": "Panneau latéral de l’extension",
+  "uk": "Бічна панель розширення"
+ },
+ "Resize side panel": {
+  "tr": "Yan paneli yeniden boyutlandır",
+  "es": "Cambiar tamaño del panel lateral",
+  "pt": "Redimensionar painel lateral",
+  "fr": "Redimensionner le panneau latéral",
+  "uk": "Змінити розмір бічної панелі"
+ },
+ "This extension has no side panel.": {
+  "tr": "Bu uzantının yan paneli yok.",
+  "es": "Esta extensión no tiene panel lateral.",
+  "pt": "Esta extensão não tem painel lateral.",
+  "fr": "Cette extension n’a pas de panneau latéral.",
+  "uk": "Це розширення не має бічної панелі."
+ },
+ "Open a page first.": {
+  "tr": "Önce bir sayfa açın.",
+  "es": "Abre primero una página.",
+  "pt": "Abra primeiro uma página.",
+  "fr": "Ouvrez d’abord une page.",
+  "uk": "Спершу відкрийте сторінку."
+ },
+ "Extension": {
+  "tr": "Uzantı",
+  "es": "Extensión",
+  "pt": "Extensão",
+  "fr": "Extension",
+  "uk": "Розширення"
+ },
  "Settings": {
   "tr": "Ayarlar",
   "es": "Ajustes",
@@ -1106,13 +1190,6 @@ const catalog={
   "fr": "Studio de design",
   "uk": "Студія дизайну"
  },
- "Ads & trackers": {
-  "tr": "Reklamlar ve izleyiciler",
-  "es": "Anuncios y rastreadores",
-  "pt": "Anúncios e rastreadores",
-  "fr": "Publicités et traqueurs",
-  "uk": "Реклама й відстеження"
- },
  "Save a page with ⌘D, or drag a bookmark here.": {
   "tr": "⌘D ile bir sayfa kaydet veya buraya yer imi sürükle.",
   "es": "Guarda una página con ⌘D o arrastra aquí un marcador.",
@@ -1533,13 +1610,6 @@ const catalog={
   "fr": "Allez à la barre d’adresse. Utilisez ↑ ↓ et Entrée pour choisir une suggestion.",
   "uk": "Перейдіть до адресного рядка. Використовуйте ↑ ↓ та Enter для вибору підказки."
  },
- "Open a new tab. Favorites and pinned labels keep their own pages.": {
-  "tr": "Yeni sekme aç. Favoriler ve sabit etiketler kendi sayfalarını korur.",
-  "es": "Abre una pestaña. Favoritos y etiquetas fijadas conservan sus páginas.",
-  "pt": "Abra um separador. Favoritos e etiquetas fixadas mantêm as suas páginas.",
-  "fr": "Ouvrez un onglet. Les favoris et éléments épinglés conservent leurs pages.",
-  "uk": "Відкрийте вкладку. Обране й закріплені елементи зберігають свої сторінки."
- },
  "Save a page. Drag bookmarks into folders to organize them.": {
   "tr": "Sayfa kaydet. Yer imlerini klasörlere sürükleyerek düzenle.",
   "es": "Guarda una página. Arrastra marcadores a carpetas para organizarlos.",
@@ -1673,27 +1743,6 @@ const catalog={
   "fr": "Les adresses sont restaurées, mais pas les saisies non enregistrées.",
   "uk": "Адреси вкладок відновлюються, але незбережені дані — ні."
  },
- "A quieter web": {
-  "tr": "Daha sakin bir web",
-  "es": "Una web más tranquila",
-  "pt": "Uma web mais tranquila",
-  "fr": "Un Web plus calme",
-  "uk": "Спокійніший інтернет"
- },
- "Block ads & trackers": {
-  "tr": "Reklamları ve izleyicileri engelle",
-  "es": "Bloquear anuncios y rastreadores",
-  "pt": "Bloquear anúncios e rastreadores",
-  "fr": "Bloquer les publicités et traqueurs",
-  "uk": "Блокувати рекламу й відстеження"
- },
- "Applies to Personal, Work and Private.": {
-  "tr": "Kişisel, İş ve Özel alanlarına uygulanır.",
-  "es": "Se aplica a Personal, Trabajo y Privado.",
-  "pt": "Aplica-se a Pessoal, Trabalho e Privado.",
-  "fr": "S’applique à Personnel, Travail et Privé.",
-  "uk": "Діє в Особистому, Робочому та Приватному просторах."
- },
  "Pause on this site": {
   "tr": "Bu sitede duraklat",
   "es": "Pausar en este sitio",
@@ -1721,13 +1770,6 @@ const catalog={
   "pt": "Nenhum",
   "fr": "Aucun",
   "uk": "Немає"
- },
- "Ad and tracker protection": {
-  "tr": "Reklam ve izleyici koruması",
-  "es": "Protección contra anuncios y rastreadores",
-  "pt": "Proteção contra anúncios e rastreadores",
-  "fr": "Protection contre les publicités et traqueurs",
-  "uk": "Захист від реклами й відстеження"
  },
  "Open a website to adjust protection": {
   "tr": "Korumayı ayarlamak için bir site aç",
@@ -1969,10 +2011,10 @@ const catalog={
  },
  "Browsing": {
   "tr": "Gezinme",
-  "es": "Navegación",
-  "pt": "Navegação",
+  "es": "Navegando",
+  "pt": "A navegar",
   "fr": "Navigation",
-  "uk": "Перегляд"
+  "uk": "Перегляд вебу"
  },
  "Page assistant": {
   "tr": "Sayfa asistanı",
@@ -2057,13 +2099,6 @@ const catalog={
   "pt": "A extensão oficial Palavras-passe do iCloud não conseguiu ligar-se ao assistente da Apple nesta versão. O preenchimento automático e a sincronização diretos com o iCloud não estão disponíveis. Abra a app Palavras-passe da Apple para consultar um início de sessão, ou exporte aí as palavras-passe selecionadas e importe o CSV para o Prism. As palavras-passe importadas são uma cópia separada e encriptada neste Mac.",
   "fr": "L’extension officielle Mots de passe iCloud n’a pas pu se connecter à l’assistant d’Apple dans cette version. Le remplissage automatique et la synchronisation iCloud directs ne sont pas disponibles. Ouvrez l’app Mots de passe d’Apple pour retrouver un identifiant, ou exportez-y les mots de passe choisis puis importez le fichier CSV dans Prism. Les mots de passe importés sont une copie distincte et chiffrée sur ce Mac.",
   "uk": "Офіційне розширення «Паролі iCloud» не змогло під’єднатися до помічника Apple у цій збірці. Пряме автозаповнення й синхронізація iCloud недоступні. Відкрийте застосунок «Паролі» від Apple, щоб знайти дані входу, або експортуйте там вибрані паролі й імпортуйте CSV у Prism. Імпортовані паролі — це окрема зашифрована копія на цьому Mac."
- },
- "Keyboard shortcuts: ⌘L address · ⌘T new tab · ⌘D bookmark · ⌘, settings · ⌘J downloads. Focus the sidebar divider and use arrow keys to resize.": {
-  "tr": "Klavye kısayolları: ⌘L adres · ⌘T yeni sekme · ⌘D yer imi · ⌘, ayarlar · ⌘J indirilenler. Boyutlandırmak için kenar çubuğu ayırıcısına odaklan ve ok tuşlarını kullan.",
-  "es": "Atajos de teclado: ⌘L dirección · ⌘T nueva pestaña · ⌘D marcador · ⌘, ajustes · ⌘J descargas. Selecciona el divisor de la barra lateral y usa las flechas para cambiar su tamaño.",
-  "pt": "Atalhos de teclado: ⌘L endereço · ⌘T novo separador · ⌘D marcador · ⌘, definições · ⌘J transferências. Selecione o divisor da barra lateral e use as setas para redimensionar.",
-  "fr": "Raccourcis clavier : ⌘L adresse · ⌘T nouvel onglet · ⌘D signet · ⌘, réglages · ⌘J téléchargements. Sélectionnez le séparateur de la barre latérale et utilisez les flèches pour redimensionner.",
-  "uk": "Клавіатурні скорочення: ⌘L адреса · ⌘T нова вкладка · ⌘D закладка · ⌘, налаштування · ⌘J завантаження. Перейдіть до роздільника бічної панелі й змінюйте розмір клавішами зі стрілками."
  },
  "This page": {
   "tr": "Bu sayfa",
@@ -2576,6 +2611,188 @@ const catalog={
   "fr": "Supprimer le signet",
   "uk": "Видалити закладку"
  },
+ "Close all tabs": {
+  "tr": "Tüm sekmeleri kapat",
+  "es": "Cerrar todas las pestañas",
+  "pt": "Fechar todos os separadores",
+  "fr": "Fermer tous les onglets",
+  "uk": "Закрити всі вкладки"
+ },
+ "Trackpad gestures": {
+  "tr": "Trackpad hareketleri",
+  "es": "Gestos del trackpad",
+  "pt": "Gestos do trackpad",
+  "fr": "Gestes du trackpad",
+  "uk": "Жести трекпада"
+ },
+ "Swipe between pages and spaces. Pinch to zoom.": {
+  "tr": "Sayfalar ve alanlar arasında kaydırın. Yakınlaştırmak için kıstırın.",
+  "es": "Desliza entre páginas y espacios. Pellizca para ampliar.",
+  "pt": "Deslize entre páginas e espaços. Junte os dedos para ampliar.",
+  "fr": "Balayez entre les pages et les espaces. Pincez pour zoomer.",
+  "uk": "Гортайте між сторінками й просторами. Зведіть пальці, щоб масштабувати."
+ },
+ "Passkeys": {
+  "tr": "Geçiş anahtarları",
+  "es": "Llaves de acceso",
+  "pt": "Chaves-senha",
+  "fr": "Clés d’accès",
+  "uk": "Ключі доступу"
+ },
+ "Saved in Prism and unlocked with Touch ID.": {
+  "tr": "Prism’de saklanır, Touch ID ile açılır.",
+  "es": "Guardadas en Prism y desbloqueadas con Touch ID.",
+  "pt": "Guardadas no Prism e desbloqueadas com Touch ID.",
+  "fr": "Enregistrées dans Prism et déverrouillées avec Touch ID.",
+  "uk": "Зберігаються в Prism і відкриваються через Touch ID."
+ },
+ "No passkeys yet.": {
+  "tr": "Henüz geçiş anahtarı yok.",
+  "es": "Aún no hay llaves de acceso.",
+  "pt": "Ainda não há chaves-senha.",
+  "fr": "Aucune clé d’accès pour l’instant.",
+  "uk": "Ключів доступу ще немає."
+ },
+ "Remove this passkey?": {
+  "tr": "Bu geçiş anahtarı kaldırılsın mı?",
+  "es": "¿Quitar esta llave de acceso?",
+  "pt": "Remover esta chave-senha?",
+  "fr": "Supprimer cette clé d’accès ?",
+  "uk": "Видалити цей ключ доступу?"
+ },
+ "Site settings": {
+  "tr": "Site ayarları",
+  "es": "Ajustes del sitio",
+  "pt": "Definições do site",
+  "fr": "Réglages du site",
+  "uk": "Налаштування сайту"
+ },
+ "Site settings are unavailable here.": {
+  "tr": "Site ayarları burada kullanılamaz.",
+  "es": "Los ajustes del sitio no están disponibles aquí.",
+  "pt": "As definições do site não estão disponíveis aqui.",
+  "fr": "Réglages du site indisponibles ici.",
+  "uk": "Налаштування сайту тут недоступні."
+ },
+ "Allow": {
+  "tr": "İzin ver",
+  "es": "Permitir",
+  "pt": "Permitir",
+  "fr": "Autoriser",
+  "uk": "Дозволити"
+ },
+ "Ask": {
+  "tr": "Sor",
+  "es": "Preguntar",
+  "pt": "Perguntar",
+  "fr": "Demander",
+  "uk": "Питати"
+ },
+ "Block": {
+  "tr": "Engelle",
+  "es": "Bloquear",
+  "pt": "Bloquear",
+  "fr": "Bloquer",
+  "uk": "Блокувати"
+ },
+ "Zoom": {
+  "tr": "Yakınlaştırma",
+  "es": "Zoom",
+  "pt": "Zoom",
+  "fr": "Zoom",
+  "uk": "Масштаб"
+ },
+ "Reset zoom": {
+  "tr": "Yakınlaştırmayı sıfırla",
+  "es": "Restablecer zoom",
+  "pt": "Repor zoom",
+  "fr": "Réinitialiser le zoom",
+  "uk": "Скинути масштаб"
+ },
+ "Cookies and site data": {
+  "tr": "Çerezler ve site verileri",
+  "es": "Cookies y datos del sitio",
+  "pt": "Cookies e dados do site",
+  "fr": "Cookies et données du site",
+  "uk": "Cookie та дані сайту"
+ },
+ "Cache": {
+  "tr": "Önbellek",
+  "es": "Caché",
+  "pt": "Cache",
+  "fr": "Cache",
+  "uk": "Кеш"
+ },
+ "Hidden elements": {
+  "tr": "Gizlenen öğeler",
+  "es": "Elementos ocultos",
+  "pt": "Elementos ocultos",
+  "fr": "Éléments masqués",
+  "uk": "Приховані елементи"
+ },
+ "Restore": {
+  "tr": "Geri yükle",
+  "es": "Restaurar",
+  "pt": "Repor",
+  "fr": "Restaurer",
+  "uk": "Відновити"
+ },
+ "Erase elements": {
+  "tr": "Öğeleri sil",
+  "es": "Borrar elementos",
+  "pt": "Apagar elementos",
+  "fr": "Effacer des éléments",
+  "uk": "Стерти елементи"
+ },
+ "Reset permissions": {
+  "tr": "İzinleri sıfırla",
+  "es": "Restablecer permisos",
+  "pt": "Repor permissões",
+  "fr": "Réinitialiser les autorisations",
+  "uk": "Скинути дозволи"
+ },
+ "Clear cookies and data for {site}?": {
+  "tr": "{site} için çerezler ve veriler temizlensin mi?",
+  "es": "¿Borrar cookies y datos de {site}?",
+  "pt": "Limpar cookies e dados de {site}?",
+  "fr": "Effacer les cookies et données de {site} ?",
+  "uk": "Очистити cookie та дані для {site}?"
+ },
+ "Cache cleared": {
+  "tr": "Önbellek temizlendi",
+  "es": "Caché borrada",
+  "pt": "Cache limpa",
+  "fr": "Cache effacé",
+  "uk": "Кеш очищено"
+ },
+ "Click to hide · ⌥-click hides all similar · Esc when done": {
+  "tr": "Gizlemek için tıkla · benzerlerin hepsi için ⌥-tıkla · bitince Esc",
+  "es": "Clic para ocultar · ⌥-clic oculta los similares · Esc al terminar",
+  "pt": "Clique para ocultar · ⌥-clique oculta os semelhantes · Esc para terminar",
+  "fr": "Clic pour masquer · ⌥-clic masque les similaires · Échap pour finir",
+  "uk": "Клацніть, щоб приховати · ⌥-клацання ховає подібні · Esc — готово"
+ },
+ "{n} similar": {
+  "tr": "{n} benzer",
+  "es": "{n} similares",
+  "pt": "{n} semelhantes",
+  "fr": "{n} similaires",
+  "uk": "{n} подібних"
+ },
+ "hide all {n}": {
+  "tr": "{n} öğenin hepsini gizle",
+  "es": "ocultar los {n}",
+  "pt": "ocultar os {n}",
+  "fr": "tout masquer ({n})",
+  "uk": "приховати всі {n}"
+ },
+ "Picture in Picture": {
+  "tr": "Resim İçinde Resim",
+  "es": "Imagen dentro de imagen",
+  "pt": "Imagem na imagem",
+  "fr": "Image dans l’image",
+  "uk": "Картинка в картинці"
+ },
  "Organize tabs by site": {
   "tr": "Sekmeleri siteye göre düzenle",
   "es": "Organizar pestañas por sitio",
@@ -2953,6 +3170,1434 @@ const catalog={
   "pt": "Bloqueado",
   "fr": "Bloqué",
   "uk": "Заблоковано"
+ },
+ "No extension panels": {
+  "tr": "Uzantı paneli yok",
+  "es": "No hay paneles de extensiones",
+  "pt": "Sem painéis de extensões",
+  "fr": "Aucun panneau d’extension",
+  "uk": "Немає панелей розширень"
+ },
+ "Extensions with their own panel appear here.": {
+  "tr": "Kendi paneli olan uzantılar burada görünür.",
+  "es": "Aquí aparecen las extensiones con panel propio.",
+  "pt": "As extensões com painel próprio aparecem aqui.",
+  "fr": "Les extensions avec leur propre panneau apparaissent ici.",
+  "uk": "Тут з’являються розширення з власною панеллю."
+ },
+ "Spaces": {
+  "tr": "Alanlar",
+  "es": "Espacios",
+  "pt": "Espaços",
+  "fr": "Espaces",
+  "uk": "Простори"
+ },
+ "Customize space": {
+  "tr": "Alanı özelleştir",
+  "es": "Personalizar espacio",
+  "pt": "Personalizar espaço",
+  "fr": "Personnaliser l’espace",
+  "uk": "Налаштувати простір"
+ },
+ "New space": {
+  "tr": "Yeni alan",
+  "es": "Nuevo espacio",
+  "pt": "Novo espaço",
+  "fr": "Nouvel espace",
+  "uk": "Новий простір"
+ },
+ "{count} of 40 spaces": {
+  "tr": "{count}/40 alan",
+  "es": "{count} de 40 espacios",
+  "pt": "{count} de 40 espaços",
+  "fr": "{count} sur 40 espaces",
+  "uk": "{count} з 40 просторів"
+ },
+ "Space name": {
+  "tr": "Alan adı",
+  "es": "Nombre del espacio",
+  "pt": "Nome do espaço",
+  "fr": "Nom de l’espace",
+  "uk": "Назва простору"
+ },
+ "Icon": {
+  "tr": "Simge",
+  "es": "Icono",
+  "pt": "Ícone",
+  "fr": "Icône",
+  "uk": "Значок"
+ },
+ "Color": {
+  "tr": "Renk",
+  "es": "Color",
+  "pt": "Cor",
+  "fr": "Couleur",
+  "uk": "Колір"
+ },
+ "Theme": {
+  "tr": "Tema",
+  "es": "Tema",
+  "pt": "Tema",
+  "fr": "Thème",
+  "uk": "Тема"
+ },
+ "Custom": {
+  "tr": "Özel",
+  "es": "Personalizado",
+  "pt": "Personalizado",
+  "fr": "Personnalisé",
+  "uk": "Власний"
+ },
+ "Custom color": {
+  "tr": "Özel renk",
+  "es": "Color personalizado",
+  "pt": "Cor personalizada",
+  "fr": "Couleur personnalisée",
+  "uk": "Власний колір"
+ },
+ "Hex color": {
+  "tr": "Hex renk",
+  "es": "Color hex",
+  "pt": "Cor hex",
+  "fr": "Couleur hex",
+  "uk": "Колір hex"
+ },
+ "Delete space": {
+  "tr": "Alanı sil",
+  "es": "Eliminar espacio",
+  "pt": "Eliminar espaço",
+  "fr": "Supprimer l’espace",
+  "uk": "Видалити простір"
+ },
+ "Create space": {
+  "tr": "Alan oluştur",
+  "es": "Crear espacio",
+  "pt": "Criar espaço",
+  "fr": "Créer l’espace",
+  "uk": "Створити простір"
+ },
+ "Delete this space?": {
+  "tr": "Bu alan silinsin mi?",
+  "es": "¿Eliminar este espacio?",
+  "pt": "Eliminar este espaço?",
+  "fr": "Supprimer cet espace ?",
+  "uk": "Видалити цей простір?"
+ },
+ "Its open tabs will close.": {
+  "tr": "Açık sekmeleri kapanacak.",
+  "es": "Sus pestañas abiertas se cerrarán.",
+  "pt": "Os separadores abertos serão fechados.",
+  "fr": "Ses onglets ouverts seront fermés.",
+  "uk": "Його відкриті вкладки закриються."
+ },
+ "Keep at least one space.": {
+  "tr": "En az bir alan kalmalı.",
+  "es": "Debe quedar al menos un espacio.",
+  "pt": "Mantenha pelo menos um espaço.",
+  "fr": "Gardez au moins un espace.",
+  "uk": "Залиште принаймні один простір."
+ },
+ "Find a space": {
+  "tr": "Alan bul",
+  "es": "Buscar un espacio",
+  "pt": "Procurar um espaço",
+  "fr": "Rechercher un espace",
+  "uk": "Знайти простір"
+ },
+ "No matching spaces": {
+  "tr": "Eşleşen alan yok",
+  "es": "No hay espacios que coincidan",
+  "pt": "Nenhum espaço corresponde",
+  "fr": "Aucun espace correspondant",
+  "uk": "Немає відповідних просторів"
+ },
+ "No tabs": {
+  "tr": "Sekme yok",
+  "es": "Sin pestañas",
+  "pt": "Sem separadores",
+  "fr": "Aucun onglet",
+  "uk": "Немає вкладок"
+ },
+ "1 tab": {
+  "tr": "1 sekme",
+  "es": "1 pestaña",
+  "pt": "1 separador",
+  "fr": "1 onglet",
+  "uk": "1 вкладка"
+ },
+ "{count} tabs": {
+  "tr": "{count} sekme",
+  "es": "{count} pestañas",
+  "pt": "{count} separadores",
+  "fr": "{count} onglets",
+  "uk": "Вкладок: {count}"
+ },
+ "It has no open tabs.": {
+  "tr": "Açık sekmesi yok.",
+  "es": "No tiene pestañas abiertas.",
+  "pt": "Não tem separadores abertos.",
+  "fr": "Il n’a aucun onglet ouvert.",
+  "uk": "У ньому немає відкритих вкладок."
+ },
+ "Show all spaces": {
+  "tr": "Tüm alanları göster",
+  "es": "Mostrar todos los espacios",
+  "pt": "Mostrar todos os espaços",
+  "fr": "Afficher tous les espaces",
+  "uk": "Показати всі простори"
+ },
+ "You can have up to 40 spaces.": {
+  "tr": "En fazla 40 alanınız olabilir.",
+  "es": "Puedes tener hasta 40 espacios.",
+  "pt": "Pode ter até 40 espaços.",
+  "fr": "Vous pouvez avoir jusqu’à 40 espaces.",
+  "uk": "Можна мати до 40 просторів."
+ },
+ "Keep it above the page, or in the sidebar where New tab is.": {
+  "tr": "Sayfanın üstünde ya da kenar çubuğunda, Yeni sekme’nin olduğu yerde tutun.",
+  "es": "Mantenla sobre la página o en la barra lateral, donde está Nueva pestaña.",
+  "pt": "Mantenha-a acima da página ou na barra lateral, onde está Novo separador.",
+  "fr": "Gardez-la au-dessus de la page ou dans la barre latérale, à la place de Nouvel onglet.",
+  "uk": "Тримайте її над сторінкою або на бічній панелі, де «Нова вкладка»."
+ },
+ "Above the page": {
+  "tr": "Sayfanın üstünde",
+  "es": "Sobre la página",
+  "pt": "Acima da página",
+  "fr": "Au-dessus de la page",
+  "uk": "Над сторінкою"
+ },
+ "In the sidebar": {
+  "tr": "Kenar çubuğunda",
+  "es": "En la barra lateral",
+  "pt": "Na barra lateral",
+  "fr": "Dans la barre latérale",
+  "uk": "На бічній панелі"
+ },
+ "Archive idle tabs after": {
+  "tr": "Boştaki sekmeleri arşivle",
+  "es": "Archivar pestañas inactivas tras",
+  "pt": "Arquivar separadores inativos após",
+  "fr": "Archiver les onglets inactifs après",
+  "uk": "Архівувати неактивні вкладки через"
+ },
+ "Sleeping tabs you haven’t opened move to Archived under your tabs. Pinned tabs and favorites stay.": {
+  "tr": "Açmadığınız uyuyan sekmeler, sekmelerinizin altındaki Arşivlendi bölümüne taşınır. Sabitlenmiş sekmeler ve favoriler kalır.",
+  "es": "Las pestañas dormidas que no has abierto pasan a Archivadas, bajo tus pestañas. Las fijadas y favoritas se quedan.",
+  "pt": "Os separadores adormecidos que não abriu passam para Arquivados, sob os seus separadores. Os fixados e favoritos ficam.",
+  "fr": "Les onglets en veille que vous n’avez pas ouverts passent dans Archivés, sous vos onglets. Les onglets épinglés et favoris restent.",
+  "uk": "Сплячі вкладки, які ви не відкривали, переходять до «Архіву» під вкладками. Закріплені та улюблені залишаються."
+ },
+ "Never": {
+  "tr": "Asla",
+  "es": "Nunca",
+  "pt": "Nunca",
+  "fr": "Jamais",
+  "uk": "Ніколи"
+ },
+ "12 hours": {
+  "tr": "12 saat",
+  "es": "12 horas",
+  "pt": "12 horas",
+  "fr": "12 heures",
+  "uk": "12 годин"
+ },
+ "1 day": {
+  "tr": "1 gün",
+  "es": "1 día",
+  "pt": "1 dia",
+  "fr": "1 jour",
+  "uk": "1 день"
+ },
+ "1 week": {
+  "tr": "1 hafta",
+  "es": "1 semana",
+  "pt": "1 semana",
+  "fr": "1 semaine",
+  "uk": "1 тиждень"
+ },
+ "Picture in picture when you switch tabs": {
+  "tr": "Sekme değiştirince resim içinde resim",
+  "es": "Imagen en imagen al cambiar de pestaña",
+  "pt": "Imagem na imagem ao mudar de separador",
+  "fr": "Image dans l’image en changeant d’onglet",
+  "uk": "Картинка в картинці під час перемикання вкладок"
+ },
+ "A playing video floats in a small window when you leave its tab, and returns when you come back.": {
+  "tr": "Oynayan bir video, sekmesinden ayrılınca küçük bir pencerede süzülür ve geri döndüğünüzde yerine gelir.",
+  "es": "Un vídeo en reproducción flota en una ventana pequeña al salir de su pestaña y vuelve cuando regresas.",
+  "pt": "Um vídeo a reproduzir flutua numa pequena janela quando sai do separador e volta quando regressa.",
+  "fr": "Une vidéo en lecture flotte dans une petite fenêtre quand vous quittez son onglet, et revient à votre retour.",
+  "uk": "Відео, що грає, плаває в маленькому вікні, коли ви залишаєте його вкладку, і повертається, коли ви повертаєтеся."
+ },
+ "New tab (⌘T)": {
+  "tr": "Yeni sekme (⌘T)",
+  "es": "Nueva pestaña (⌘T)",
+  "pt": "Novo separador (⌘T)",
+  "fr": "Nouvel onglet (⌘T)",
+  "uk": "Нова вкладка (⌘T)"
+ },
+ "Page tools": {
+  "tr": "Sayfa araçları",
+  "es": "Herramientas de página",
+  "pt": "Ferramentas da página",
+  "fr": "Outils de la page",
+  "uk": "Інструменти сторінки"
+ },
+ "Archived": {
+  "tr": "Arşivlendi",
+  "es": "Archivadas",
+  "pt": "Arquivados",
+  "fr": "Archivés",
+  "uk": "Архів"
+ },
+ "Remove from archive": {
+  "tr": "Arşivden kaldır",
+  "es": "Quitar del archivo",
+  "pt": "Remover do arquivo",
+  "fr": "Retirer des archives",
+  "uk": "Вилучити з архіву"
+ },
+ "Clear archive": {
+  "tr": "Arşivi temizle",
+  "es": "Vaciar archivo",
+  "pt": "Limpar arquivo",
+  "fr": "Vider les archives",
+  "uk": "Очистити архів"
+ },
+ "Just now": {
+  "tr": "Az önce",
+  "es": "Ahora mismo",
+  "pt": "Agora mesmo",
+  "fr": "À l’instant",
+  "uk": "Щойно"
+ },
+ "{n} min ago": {
+  "tr": "{n} dk önce",
+  "es": "hace {n} min",
+  "pt": "há {n} min",
+  "fr": "il y a {n} min",
+  "uk": "{n} хв тому"
+ },
+ "{n} h ago": {
+  "tr": "{n} sa önce",
+  "es": "hace {n} h",
+  "pt": "há {n} h",
+  "fr": "il y a {n} h",
+  "uk": "{n} год тому"
+ },
+ "{n} days ago": {
+  "tr": "{n} gün önce",
+  "es": "hace {n} días",
+  "pt": "há {n} dias",
+  "fr": "il y a {n} jours",
+  "uk": "{n} дн. тому"
+ },
+ "Away": {
+  "tr": "Uzakta",
+  "es": "Fuera",
+  "pt": "Ausente",
+  "fr": "Absent",
+  "uk": "Відсутні"
+ },
+ "Your tabs at {time}": {
+  "tr": "{time} itibarıyla sekmeleriniz",
+  "es": "Tus pestañas a las {time}",
+  "pt": "Os seus separadores às {time}",
+  "fr": "Vos onglets à {time}",
+  "uk": "Ваші вкладки о {time}"
+ },
+ "and {count} more": {
+  "tr": "ve {count} tane daha",
+  "es": "y {count} más",
+  "pt": "e mais {count}",
+  "fr": "et {count} de plus",
+  "uk": "і ще {count}"
+ },
+ "Bring them back": {
+  "tr": "Geri getir",
+  "es": "Recuperarlas",
+  "pt": "Recuperá-los",
+  "fr": "Les rouvrir",
+  "uk": "Повернути їх"
+ },
+ "Show tab": {
+  "tr": "Sekmeyi göster",
+  "es": "Mostrar pestaña",
+  "pt": "Mostrar separador",
+  "fr": "Afficher l’onglet",
+  "uk": "Показати вкладку"
+ },
+ "Play": {
+  "tr": "Oynat",
+  "es": "Reproducir",
+  "pt": "Reproduzir",
+  "fr": "Lire",
+  "uk": "Відтворити"
+ },
+ "Back 10 seconds": {
+  "tr": "10 saniye geri",
+  "es": "Retroceder 10 segundos",
+  "pt": "Recuar 10 segundos",
+  "fr": "Reculer de 10 secondes",
+  "uk": "Назад на 10 секунд"
+ },
+ "Forward 10 seconds": {
+  "tr": "10 saniye ileri",
+  "es": "Avanzar 10 segundos",
+  "pt": "Avançar 10 segundos",
+  "fr": "Avancer de 10 secondes",
+  "uk": "Вперед на 10 секунд"
+ },
+ "Playing in Picture in Picture": {
+  "tr": "Resim içinde resimde oynatılıyor",
+  "es": "Reproduciendo en imagen en imagen",
+  "pt": "A reproduzir em imagem na imagem",
+  "fr": "Lecture en image dans l’image",
+  "uk": "Відтворюється в режимі «картинка в картинці»"
+ },
+ "Bring the video back": {
+  "tr": "Videoyu geri getir",
+  "es": "Recuperar el vídeo",
+  "pt": "Recuperar o vídeo",
+  "fr": "Ramener la vidéo",
+  "uk": "Повернути відео"
+ },
+ "Open as tab": {
+  "tr": "Sekme olarak aç",
+  "es": "Abrir como pestaña",
+  "pt": "Abrir como separador",
+  "fr": "Ouvrir dans un onglet",
+  "uk": "Відкрити як вкладку"
+ },
+ "Close": {
+  "tr": "Kapat",
+  "es": "Cerrar",
+  "pt": "Fechar",
+  "fr": "Fermer",
+  "uk": "Закрити"
+ },
+ "Search tabs, bookmarks, history or actions": {
+  "tr": "Sekmelerde, yer imlerinde, geçmişte veya eylemlerde ara",
+  "es": "Busca pestañas, marcadores, historial o acciones",
+  "pt": "Pesquise separadores, marcadores, histórico ou ações",
+  "fr": "Rechercher des onglets, signets, l’historique ou des actions",
+  "uk": "Шукайте вкладки, закладки, історію або дії"
+ },
+ "Switch to tab": {
+  "tr": "Sekmeye geç",
+  "es": "Ir a la pestaña",
+  "pt": "Ir para o separador",
+  "fr": "Aller à l’onglet",
+  "uk": "Перейти до вкладки"
+ },
+ "Favorite": {
+  "tr": "Favori",
+  "es": "Favorito",
+  "pt": "Favorito",
+  "fr": "Favori",
+  "uk": "Улюблене"
+ },
+ "Bookmark": {
+  "tr": "Yer imi",
+  "es": "Marcador",
+  "pt": "Marcador",
+  "fr": "Signet",
+  "uk": "Закладка"
+ },
+ "Action": {
+  "tr": "Eylem",
+  "es": "Acción",
+  "pt": "Ação",
+  "fr": "Action",
+  "uk": "Дія"
+ },
+ "Show sidebar": {
+  "tr": "Kenar çubuğunu göster",
+  "es": "Mostrar barra lateral",
+  "pt": "Mostrar barra lateral",
+  "fr": "Afficher la barre latérale",
+  "uk": "Показати бічну панель"
+ },
+ "Hide sidebar": {
+  "tr": "Kenar çubuğunu gizle",
+  "es": "Ocultar barra lateral",
+  "pt": "Ocultar barra lateral",
+  "fr": "Masquer la barre latérale",
+  "uk": "Сховати бічну панель"
+ },
+ "Move address bar above the page": {
+  "tr": "Adres çubuğunu sayfanın üstüne taşı",
+  "es": "Mover la barra de direcciones sobre la página",
+  "pt": "Mover a barra de endereço para cima da página",
+  "fr": "Placer la barre d’adresse au-dessus de la page",
+  "uk": "Перемістити адресний рядок над сторінку"
+ },
+ "Move address bar to the sidebar": {
+  "tr": "Adres çubuğunu kenar çubuğuna taşı",
+  "es": "Mover la barra de direcciones a la barra lateral",
+  "pt": "Mover a barra de endereço para a barra lateral",
+  "fr": "Placer la barre d’adresse dans la barre latérale",
+  "uk": "Перемістити адресний рядок на бічну панель"
+ },
+ "Copy page link": {
+  "tr": "Sayfa bağlantısını kopyala",
+  "es": "Copiar enlace de la página",
+  "pt": "Copiar ligação da página",
+  "fr": "Copier le lien de la page",
+  "uk": "Скопіювати посилання на сторінку"
+ },
+ "Split view": {
+  "tr": "Bölünmüş görünüm",
+  "es": "Vista dividida",
+  "pt": "Vista dividida",
+  "fr": "Vue partagée",
+  "uk": "Розділений перегляд"
+ },
+ "Back to tab": {
+  "tr": "Sekmeye dön",
+  "es": "Volver a la pestaña",
+  "pt": "Voltar ao separador",
+  "fr": "Revenir à l’onglet",
+  "uk": "Повернутися до вкладки"
+ },
+ "Mute": {
+  "tr": "Sesi kapat",
+  "es": "Silenciar",
+  "pt": "Silenciar",
+  "fr": "Couper le son",
+  "uk": "Вимкнути звук"
+ },
+ "Unmute": {
+  "tr": "Sesi aç",
+  "es": "Activar sonido",
+  "pt": "Ativar som",
+  "fr": "Rétablir le son",
+  "uk": "Увімкнути звук"
+ },
+ "Those tabs are already open.": {
+  "tr": "Bu sekmeler zaten açık.",
+  "es": "Esas pestañas ya están abiertas.",
+  "pt": "Esses separadores já estão abertos.",
+  "fr": "Ces onglets sont déjà ouverts.",
+  "uk": "Ці вкладки вже відкриті."
+ },
+ "Private does not keep an archive.": {
+  "tr": "Gizli, arşiv tutmaz.",
+  "es": "Privado no guarda un archivo.",
+  "pt": "O Privado não guarda arquivo.",
+  "fr": "Le mode Privé ne conserve pas d’archives.",
+  "uk": "Приватний режим не зберігає архів."
+ },
+ "Page tools are in Settings now": {
+  "tr": "Sayfa araçları artık Ayarlar’da",
+  "es": "Las herramientas de página están ahora en Ajustes",
+  "pt": "As ferramentas da página estão agora nas Definições",
+  "fr": "Les outils de la page sont maintenant dans Réglages",
+  "uk": "Інструменти сторінки тепер у Налаштуваннях"
+ },
+ "Clear view": {
+  "tr": "Berrak görünüm",
+  "es": "Vista clara",
+  "pt": "Vista limpa",
+  "fr": "Vue épurée",
+  "uk": "Чистий вигляд"
+ },
+ "Turn off Clear view": {
+  "tr": "Berrak görünümü kapat",
+  "es": "Desactivar Vista clara",
+  "pt": "Desativar Vista limpa",
+  "fr": "Désactiver la Vue épurée",
+  "uk": "Вимкнути чистий вигляд"
+ },
+ "Turn on Clear view": {
+  "tr": "Berrak görünümü aç",
+  "es": "Activar Vista clara",
+  "pt": "Ativar Vista limpa",
+  "fr": "Activer la Vue épurée",
+  "uk": "Увімкнути чистий вигляд"
+ },
+ "Beam": {
+  "tr": "Işın",
+  "es": "Haz",
+  "pt": "Feixe",
+  "fr": "Faisceau",
+  "uk": "Промінь"
+ },
+ "Open Link in Lens": {
+  "tr": "Bağlantıyı Mercek’te aç",
+  "es": "Abrir enlace en Lente",
+  "pt": "Abrir ligação na Lente",
+  "fr": "Ouvrir le lien dans Lentille",
+  "uk": "Відкрити посилання в Лінзі"
+ },
+ "Shield": {
+  "tr": "Kalkan",
+  "es": "Escudo",
+  "pt": "Escudo",
+  "fr": "Bouclier",
+  "uk": "Щит"
+ },
+ "Prism Shield": {
+  "tr": "Prism Kalkanı",
+  "es": "Escudo de Prism",
+  "pt": "Escudo do Prism",
+  "fr": "Bouclier Prism",
+  "uk": "Щит Prism"
+ },
+ "Turn on Shield": {
+  "tr": "Kalkanı aç",
+  "es": "Activar Escudo",
+  "pt": "Ativar Escudo",
+  "fr": "Activer le Bouclier",
+  "uk": "Увімкнути Щит"
+ },
+ "Applies to every space, including Private.": {
+  "tr": "Özel dahil her alanda geçerlidir.",
+  "es": "Se aplica a todos los espacios, incluido Privado.",
+  "pt": "Aplica-se a todos os espaços, incluindo Privado.",
+  "fr": "S’applique à tous les espaces, y compris Privé.",
+  "uk": "Діє в усіх просторах, зокрема в Приватному."
+ },
+ "Only the page: the sidebar and toolbar step aside until you move to the left edge (⌥⌘S).": {
+  "tr": "Yalnızca sayfa: kenar çubuğu ve araç çubuğu, sol kenara gelene kadar çekilir (⌥⌘S).",
+  "es": "Solo la página: la barra lateral y la de herramientas se apartan hasta que vas al borde izquierdo (⌥⌘S).",
+  "pt": "Só a página: a barra lateral e a de ferramentas afastam-se até ir à margem esquerda (⌥⌘S).",
+  "fr": "Seulement la page : la barre latérale et la barre d’outils s’effacent jusqu’à ce que vous alliez au bord gauche (⌥⌘S).",
+  "uk": "Лише сторінка: бічна панель і панель інструментів ховаються, доки ви не наведете на лівий край (⌥⌘S)."
+ },
+ "Blocks ads, trackers, cookie banners and YouTube’s video ads, built into Prism with no extension running.": {
+  "tr": "Reklamları, izleyicileri, çerez bildirimlerini ve YouTube video reklamlarını engeller; Prism’in içinde, hiçbir uzantı çalışmadan.",
+  "es": "Bloquea anuncios, rastreadores, avisos de cookies y los anuncios en vídeo de YouTube, integrado en Prism sin extensiones.",
+  "pt": "Bloqueia anúncios, rastreadores, avisos de cookies e os anúncios em vídeo do YouTube, integrado no Prism sem extensões.",
+  "fr": "Bloque les publicités, les traqueurs, les bandeaux de cookies et les publicités vidéo de YouTube, intégré à Prism sans extension.",
+  "uk": "Блокує рекламу, трекери, банери cookie та відеорекламу YouTube, вбудовано в Prism без розширень."
+ },
+ "Shield also removes tracking tags from links (like utm_ and fbclid), sends Global Privacy Control to sites, and swaps blocked analytics scripts for harmless stand-ins so pages keep working. If a site looks broken, pause Shield on it.": {
+  "tr": "Kalkan ayrıca bağlantılardaki izleme etiketlerini (utm_ ve fbclid gibi) siler, sitelere Global Privacy Control gönderir ve sayfalar bozulmasın diye engellenen analiz betiklerinin yerine zararsız boş sürümler koyar. Bir site bozuk görünürse Kalkan’ı o sitede duraklatın.",
+  "es": "El Escudo también quita las etiquetas de seguimiento de los enlaces (como utm_ y fbclid), envía Global Privacy Control a los sitios y cambia los scripts de analítica bloqueados por sustitutos inofensivos para que las páginas sigan funcionando. Si un sitio se ve roto, pausa el Escudo en él.",
+  "pt": "O Escudo também remove etiquetas de rastreio das ligações (como utm_ e fbclid), envia Global Privacy Control aos sites e troca scripts de análise bloqueados por substitutos inofensivos para que as páginas continuem a funcionar. Se um site parecer avariado, pause o Escudo nele.",
+  "fr": "Le Bouclier retire aussi les balises de suivi des liens (comme utm_ et fbclid), envoie Global Privacy Control aux sites et remplace les scripts d’analyse bloqués par des substituts inoffensifs pour que les pages fonctionnent. Si un site semble cassé, mettez le Bouclier en pause sur ce site.",
+  "uk": "Щит також прибирає мітки відстеження з посилань (як-от utm_ і fbclid), надсилає сайтам Global Privacy Control і замінює заблоковані скрипти аналітики безпечними заглушками, щоб сторінки працювали. Якщо сайт виглядає зламаним, призупиніть Щит на ньому."
+ },
+ "{n} blocked on this page": {
+  "tr": "Bu sayfada {n} engellendi",
+  "es": "{n} bloqueados en esta página",
+  "pt": "{n} bloqueados nesta página",
+  "fr": "{n} bloqués sur cette page",
+  "uk": "{n} заблоковано на цій сторінці"
+ },
+ "{n} blocked so far · {links} links cleaned": {
+  "tr": "Şimdiye kadar {n} engellendi · {links} bağlantı temizlendi",
+  "es": "{n} bloqueados hasta ahora · {links} enlaces limpiados",
+  "pt": "{n} bloqueados até agora · {links} ligações limpas",
+  "fr": "{n} bloqués jusqu’ici · {links} liens nettoyés",
+  "uk": "Заблоковано {n} · очищено посилань: {links}"
+ },
+ "{n} filter lists": {
+  "tr": "{n} filtre listesi",
+  "es": "{n} listas de filtros",
+  "pt": "{n} listas de filtros",
+  "fr": "{n} listes de filtres",
+  "uk": "Списків фільтрів: {n}"
+ },
+ "Shield on": {
+  "tr": "Kalkan açık",
+  "es": "Escudo activado",
+  "pt": "Escudo ativado",
+  "fr": "Bouclier activé",
+  "uk": "Щит увімкнено"
+ },
+ "Shield paused": {
+  "tr": "Kalkan duraklatıldı",
+  "es": "Escudo en pausa",
+  "pt": "Escudo em pausa",
+  "fr": "Bouclier en pause",
+  "uk": "Щит призупинено"
+ },
+ "Close tab · stays pinned": {
+  "tr": "Sekmeyi kapat · sabit kalır",
+  "es": "Cerrar pestaña · sigue fijada",
+  "pt": "Fechar separador · continua fixado",
+  "fr": "Fermer l’onglet · reste épinglé",
+  "uk": "Закрити вкладку · залишиться закріпленою"
+ },
+ "Remove pinned tab": {
+  "tr": "Sabit sekmeyi kaldır",
+  "es": "Quitar pestaña fijada",
+  "pt": "Remover separador fixado",
+  "fr": "Retirer l’onglet épinglé",
+  "uk": "Прибрати закріплену вкладку"
+ },
+ "Closed · still pinned": {
+  "tr": "Kapatıldı · hâlâ sabit",
+  "es": "Cerrada · sigue fijada",
+  "pt": "Fechado · continua fixado",
+  "fr": "Fermé · toujours épinglé",
+  "uk": "Закрито · досі закріплена"
+ },
+ "Removed · ⌘Z brings it back": {
+  "tr": "Kaldırıldı · ⌘Z geri getirir",
+  "es": "Quitada · ⌘Z la recupera",
+  "pt": "Removido · ⌘Z recupera-o",
+  "fr": "Retiré · ⌘Z le ramène",
+  "uk": "Прибрано · ⌘Z поверне"
+ },
+ "Nothing to bring back": {
+  "tr": "Geri getirilecek bir şey yok",
+  "es": "Nada que recuperar",
+  "pt": "Nada para recuperar",
+  "fr": "Rien à ramener",
+  "uk": "Нічого повертати"
+ },
+ "Restore closed tab": {
+  "tr": "Kapatılan sekmeyi geri getir",
+  "es": "Restaurar pestaña cerrada",
+  "pt": "Restaurar separador fechado",
+  "fr": "Restaurer l’onglet fermé",
+  "uk": "Відновити закриту вкладку"
+ },
+ "Keep tab": {
+  "tr": "Sekmeyi tut",
+  "es": "Mantener pestaña",
+  "pt": "Manter separador",
+  "fr": "Garder l’onglet",
+  "uk": "Залишити вкладку"
+ },
+ "Discard input": {
+  "tr": "Girileni sil",
+  "es": "Descartar lo escrito",
+  "pt": "Descartar o texto",
+  "fr": "Abandonner la saisie",
+  "uk": "Скасувати введене"
+ },
+ "Close this tab and discard your input?": {
+  "tr": "Bu sekme kapatılsın ve girdikleriniz silinsin mi?",
+  "es": "¿Cerrar esta pestaña y descartar lo que escribiste?",
+  "pt": "Fechar este separador e descartar o que escreveu?",
+  "fr": "Fermer cet onglet et abandonner votre saisie ?",
+  "uk": "Закрити цю вкладку й скасувати введене?"
+ },
+ "Mail": {
+  "tr": "E-posta",
+  "es": "Correo",
+  "pt": "Correio",
+  "fr": "Mail",
+  "uk": "Пошта"
+ },
+ "Asking AI": {
+  "tr": "Yapay zekâya sorular",
+  "es": "Preguntando a la IA",
+  "pt": "A perguntar à IA",
+  "fr": "Questions à l’IA",
+  "uk": "Питання до ШІ"
+ },
+ "Coding": {
+  "tr": "Kodlama",
+  "es": "Programando",
+  "pt": "A programar",
+  "fr": "Code",
+  "uk": "Програмування"
+ },
+ "Working": {
+  "tr": "Çalışma",
+  "es": "Trabajando",
+  "pt": "A trabalhar",
+  "fr": "Travail",
+  "uk": "Робота"
+ },
+ "Watching": {
+  "tr": "İzleme",
+  "es": "Viendo vídeos",
+  "pt": "A ver vídeos",
+  "fr": "Vidéos",
+  "uk": "Перегляд"
+ },
+ "Listening": {
+  "tr": "Dinleme",
+  "es": "Escuchando",
+  "pt": "A ouvir",
+  "fr": "Écoute",
+  "uk": "Прослуховування"
+ },
+ "Social": {
+  "tr": "Sosyal medya",
+  "es": "Redes sociales",
+  "pt": "Redes sociais",
+  "fr": "Réseaux sociaux",
+  "uk": "Соцмережі"
+ },
+ "Catching up on news": {
+  "tr": "Haberler",
+  "es": "Poniéndote al día",
+  "pt": "A pôr as notícias em dia",
+  "fr": "Actualités",
+  "uk": "Новини"
+ },
+ "Shopping": {
+  "tr": "Alışveriş",
+  "es": "Compras",
+  "pt": "Compras",
+  "fr": "Shopping",
+  "uk": "Покупки"
+ },
+ "Learning": {
+  "tr": "Öğrenme",
+  "es": "Aprendiendo",
+  "pt": "A aprender",
+  "fr": "Apprentissage",
+  "uk": "Навчання"
+ },
+ "Planning travel": {
+  "tr": "Seyahat planı",
+  "es": "Planeando un viaje",
+  "pt": "A planear viagens",
+  "fr": "Préparatifs de voyage",
+  "uk": "Планування подорожі"
+ },
+ "Money matters": {
+  "tr": "Para işleri",
+  "es": "Finanzas",
+  "pt": "Finanças",
+  "fr": "Finances",
+  "uk": "Фінанси"
+ },
+ "{h} h {m} min": {
+  "tr": "{h} sa {m} dk",
+  "es": "{h} h {m} min",
+  "pt": "{h} h {m} min",
+  "fr": "{h} h {m} min",
+  "uk": "{h} год {m} хв"
+ },
+ "{m} min": {
+  "tr": "{m} dk",
+  "es": "{m} min",
+  "pt": "{m} min",
+  "fr": "{m} min",
+  "uk": "{m} хв"
+ },
+ "Today": {
+  "tr": "Bugün",
+  "es": "Hoy",
+  "pt": "Hoje",
+  "fr": "Aujourd’hui",
+  "uk": "Сьогодні"
+ },
+ "Mostly {activity}, across {count} chapters": {
+  "tr": "Çoğunlukla {activity}, {count} bölümde",
+  "es": "Sobre todo {activity}, en {count} capítulos",
+  "pt": "Sobretudo {activity}, em {count} capítulos",
+  "fr": "Surtout {activity}, en {count} chapitres",
+  "uk": "Переважно {activity}, у {count} розділах"
+ },
+ "Mostly {activity}": {
+  "tr": "Çoğunlukla {activity}",
+  "es": "Sobre todo {activity}",
+  "pt": "Sobretudo {activity}",
+  "fr": "Surtout {activity}",
+  "uk": "Переважно {activity}"
+ },
+ "You usually open around now": {
+  "tr": "Genelde bu saatlerde açtıkların",
+  "es": "Lo que sueles abrir a esta hora",
+  "pt": "O que costuma abrir a esta hora",
+  "fr": "Ce que vous ouvrez souvent à cette heure",
+  "uk": "Що ви зазвичай відкриваєте в цей час"
+ },
+ "Name my day in Spectrum": {
+  "tr": "Spectrum günümü adlandırsın",
+  "es": "Que Spectrum ponga nombre a mi día",
+  "pt": "O Spectrum dá nome ao meu dia",
+  "fr": "Spectrum nomme ma journée",
+  "uk": "Spectrum називає мій день"
+ },
+ "Apple Intelligence titles each part of your day and suggests sites you usually open. It runs on this Mac; nothing is sent anywhere.": {
+  "tr": "Apple Intelligence gününün her bölümüne bir başlık verir ve genelde açtığın siteleri önerir. Bu Mac’te çalışır; hiçbir yere bir şey gönderilmez.",
+  "es": "Apple Intelligence titula cada parte de tu día y sugiere los sitios que sueles abrir. Funciona en este Mac; no se envía nada.",
+  "pt": "O Apple Intelligence dá título a cada parte do seu dia e sugere os sites que costuma abrir. Funciona neste Mac; nada é enviado.",
+  "fr": "Apple Intelligence donne un titre à chaque moment de votre journée et suggère les sites que vous ouvrez souvent. Tout se fait sur ce Mac ; rien n’est envoyé.",
+  "uk": "Apple Intelligence дає назву кожній частині вашого дня й пропонує сайти, які ви зазвичай відкриваєте. Працює на цьому Mac; нічого нікуди не надсилається."
+ },
+ "Lean memory mode": {
+  "tr": "Hafif bellek modu",
+  "es": "Modo de memoria ligera",
+  "pt": "Modo de memória leve",
+  "fr": "Mode mémoire légère",
+  "uk": "Ощадливий режим пам’яті"
+ },
+ "Sleep idle tabs when macOS runs short of memory. Keeps up to 1 GB of web cache on disk so sleeping tabs come back quickly. Cookies, passwords and site storage stay intact.": {
+  "tr": "macOS’ta bellek azaldığında boştaki sekmeleri uyutur. Uyuyan sekmeler hızlı geri gelsin diye diskte 1 GB’a kadar web önbelleği tutar. Çerezler, parolalar ve site verileri korunur.",
+  "es": "Duerme las pestañas inactivas cuando macOS se queda sin memoria. Guarda hasta 1 GB de caché web en el disco para que las pestañas dormidas vuelvan rápido. Cookies, contraseñas y datos de sitios se conservan.",
+  "pt": "Adormece separadores inativos quando o macOS fica com pouca memória. Mantém até 1 GB de cache web no disco para que separadores adormecidos voltem depressa. Cookies, palavras-passe e dados de sites mantêm-se.",
+  "fr": "Met en veille les onglets inactifs quand macOS manque de mémoire. Garde jusqu’à 1 Go de cache web sur le disque pour que les onglets en veille reviennent vite. Cookies, mots de passe et données des sites sont conservés.",
+  "uk": "Присипляє неактивні вкладки, коли macOS бракує пам’яті. Зберігає до 1 ГБ веб-кешу на диску, щоб приспані вкладки швидко поверталися. Cookie, паролі й дані сайтів зберігаються."
+ },
+ "Chromium {n} is out · Prism will update": {
+  "tr": "Chromium {n} çıktı · Prism güncellenecek",
+  "es": "Chromium {n} ya salió · Prism se actualizará",
+  "pt": "Chromium {n} já saiu · o Prism vai atualizar",
+  "fr": "Chromium {n} est sorti · Prism se mettra à jour",
+  "uk": "Вийшов Chromium {n} · Prism оновиться"
+ },
+ "Checks are off.": {
+  "tr": "Denetim kapalı.",
+  "es": "Las comprobaciones están desactivadas.",
+  "pt": "As verificações estão desligadas.",
+  "fr": "Les vérifications sont désactivées.",
+  "uk": "Перевірки вимкнено."
+ },
+ "Chromium {v} is available in Electron {e}. Prism’s next update brings it.": {
+  "tr": "Chromium {v}, Electron {e} ile çıktı. Prism’in bir sonraki güncellemesi onu getirecek.",
+  "es": "Chromium {v} está disponible en Electron {e}. La próxima actualización de Prism lo traerá.",
+  "pt": "O Chromium {v} está disponível no Electron {e}. A próxima atualização do Prism traz.",
+  "fr": "Chromium {v} est disponible dans Electron {e}. La prochaine mise à jour de Prism l’apportera.",
+  "uk": "Chromium {v} доступний в Electron {e}. Наступне оновлення Prism його принесе."
+ },
+ "Electron {e} is available. Prism’s next update brings it.": {
+  "tr": "Electron {e} çıktı. Prism’in bir sonraki güncellemesi onu getirecek.",
+  "es": "Electron {e} está disponible. La próxima actualización de Prism lo traerá.",
+  "pt": "O Electron {e} está disponível. A próxima atualização do Prism traz.",
+  "fr": "Electron {e} est disponible. La prochaine mise à jour de Prism l’apportera.",
+  "uk": "Electron {e} доступний. Наступне оновлення Prism його принесе."
+ },
+ "Chrome {v} is out; Electron has not shipped it yet.": {
+  "tr": "Chrome {v} çıktı; Electron henüz yayımlamadı.",
+  "es": "Chrome {v} ya salió; Electron aún no lo incluye.",
+  "pt": "O Chrome {v} já saiu; o Electron ainda não o inclui.",
+  "fr": "Chrome {v} est sorti ; Electron ne l’a pas encore intégré.",
+  "uk": "Вийшов Chrome {v}; Electron його ще не випустив."
+ },
+ "Up to date with Chrome {v}.": {
+  "tr": "Chrome {v} ile güncel.",
+  "es": "Al día con Chrome {v}.",
+  "pt": "Atualizado com o Chrome {v}.",
+  "fr": "À jour avec Chrome {v}.",
+  "uk": "Актуально з Chrome {v}."
+ },
+ "Could not check. Prism will try again next time it opens.": {
+  "tr": "Denetlenemedi. Prism bir sonraki açılışta yeniden deneyecek.",
+  "es": "No se pudo comprobar. Prism lo intentará de nuevo la próxima vez que se abra.",
+  "pt": "Não foi possível verificar. O Prism tenta de novo na próxima vez que abrir.",
+  "fr": "Vérification impossible. Prism réessaiera à sa prochaine ouverture.",
+  "uk": "Не вдалося перевірити. Prism спробує знову під час наступного запуску."
+ },
+ "Checked each time Prism opens.": {
+  "tr": "Prism her açıldığında denetlenir.",
+  "es": "Se comprueba cada vez que se abre Prism.",
+  "pt": "Verificado sempre que o Prism abre.",
+  "fr": "Vérifié à chaque ouverture de Prism.",
+  "uk": "Перевіряється щоразу, коли відкривається Prism."
+ },
+ "Check for Chromium updates": {
+  "tr": "Chromium güncellemelerini denetle",
+  "es": "Buscar actualizaciones de Chromium",
+  "pt": "Procurar atualizações do Chromium",
+  "fr": "Rechercher les mises à jour de Chromium",
+  "uk": "Перевіряти оновлення Chromium"
+ },
+ "Each time Prism opens, compare its Chromium with the newest Chrome and Electron releases. Only public version lists are requested.": {
+  "tr": "Prism her açıldığında Chromium sürümünü en yeni Chrome ve Electron sürümleriyle karşılaştırır. Yalnızca herkese açık sürüm listeleri istenir.",
+  "es": "Cada vez que se abre Prism, compara su Chromium con las versiones más recientes de Chrome y Electron. Solo se piden listas de versiones públicas.",
+  "pt": "Sempre que o Prism abre, compara o seu Chromium com as versões mais recentes do Chrome e do Electron. Só são pedidas listas públicas de versões.",
+  "fr": "À chaque ouverture, Prism compare son Chromium aux dernières versions de Chrome et d’Electron. Seules des listes publiques de versions sont demandées.",
+  "uk": "Щоразу під час запуску Prism порівнює свій Chromium з найновішими випусками Chrome і Electron. Запитуються лише публічні списки версій."
+ },
+ "Checking…": {
+  "tr": "Denetleniyor…",
+  "es": "Comprobando…",
+  "pt": "A verificar…",
+  "fr": "Vérification…",
+  "uk": "Перевірка…"
+ },
+ "Opened in background": {
+  "tr": "Arka planda açıldı",
+  "es": "Abierta en segundo plano",
+  "pt": "Aberto em segundo plano",
+  "fr": "Ouvert en arrière-plan",
+  "uk": "Відкрито у фоні"
+ },
+ "Open Link in Background Tab": {
+  "tr": "Bağlantıyı arka plan sekmesinde aç",
+  "es": "Abrir enlace en pestaña en segundo plano",
+  "pt": "Abrir ligação em separador em segundo plano",
+  "fr": "Ouvrir le lien dans un onglet en arrière-plan",
+  "uk": "Відкрити посилання у фоновій вкладці"
+ },
+ "Simple addresses": {
+  "tr": "Sade adresler",
+  "es": "Direcciones simples",
+  "pt": "Endereços simples",
+  "fr": "Adresses simplifiées",
+  "uk": "Прості адреси"
+ },
+ "Show just the site’s name in the address field; the full address appears when you click it.": {
+  "tr": "Adres alanında yalnızca sitenin adını gösterir; tıklayınca tam adres görünür.",
+  "es": "Muestra solo el nombre del sitio en el campo de dirección; la dirección completa aparece al hacer clic.",
+  "pt": "Mostra só o nome do site no campo de endereço; o endereço completo aparece ao clicar.",
+  "fr": "Affiche seulement le nom du site dans le champ d’adresse ; l’adresse complète apparaît quand vous cliquez.",
+  "uk": "Показує лише назву сайту в полі адреси; повна адреса з’являється після натискання."
+ },
+ "Use passwords in Private": {
+  "tr": "Özel’de parolaları kullan",
+  "es": "Usar contraseñas en Privado",
+  "pt": "Usar palavras-passe em Privado",
+  "fr": "Utiliser les mots de passe en Privé",
+  "uk": "Використовувати паролі в Приватному"
+ },
+ "Fill saved passwords and cards in Private, after Touch ID. Private never saves new ones. Applies to new Private tabs.": {
+  "tr": "Özel’de kayıtlı parolaları ve kartları Touch ID’den sonra doldurur. Özel asla yenilerini kaydetmez. Yeni Özel sekmelerde geçerlidir.",
+  "es": "Rellena contraseñas y tarjetas guardadas en Privado tras Touch ID. Privado nunca guarda nuevas. Se aplica a nuevas pestañas privadas.",
+  "pt": "Preenche palavras-passe e cartões guardados em Privado após o Touch ID. O Privado nunca guarda novos. Aplica-se a novos separadores privados.",
+  "fr": "Remplit les mots de passe et cartes enregistrés en Privé après Touch ID. Privé n’en enregistre jamais de nouveaux. S’applique aux nouveaux onglets privés.",
+  "uk": "Заповнює збережені паролі й картки в Приватному після Touch ID. Приватний режим ніколи не зберігає нові. Діє для нових приватних вкладок."
+ },
+ "Private protections everywhere": {
+  "tr": "Özel korumalar her yerde",
+  "es": "Protecciones de Privado en todas partes",
+  "pt": "Proteções do Privado em todo o lado",
+  "fr": "Protections de Privé partout",
+  "uk": "Захист Приватного всюди"
+ },
+ "Your other spaces keep no history and no Spectrum, hide your Mac’s local address from video calls and look sites up over encrypted DNS, like Private. Cookies and sign-ins stay.": {
+  "tr": "Diğer alanların da Özel gibi geçmiş ve Spectrum tutmaz, Mac’inin yerel adresini görüntülü aramalardan gizler ve siteleri şifreli DNS ile bulur. Çerezler ve oturumlar kalır.",
+  "es": "Tus otros espacios no guardan historial ni Spectrum, ocultan la dirección local de tu Mac en videollamadas y buscan sitios con DNS cifrado, como Privado. Las cookies y sesiones se mantienen.",
+  "pt": "Os seus outros espaços não guardam histórico nem Spectrum, escondem o endereço local do Mac nas videochamadas e procuram sites por DNS cifrado, como o Privado. Cookies e sessões mantêm-se.",
+  "fr": "Vos autres espaces ne gardent ni historique ni Spectrum, masquent l’adresse locale de votre Mac aux appels vidéo et cherchent les sites via DNS chiffré, comme Privé. Cookies et connexions restent.",
+  "uk": "Інші простори не зберігають історію та Spectrum, приховують локальну адресу Mac від відеодзвінків і шукають сайти через зашифрований DNS, як Приватний. Cookie та входи зберігаються."
+ },
+ "Customize": {
+  "tr": "Özelleştir",
+  "es": "Personalizar",
+  "pt": "Personalizar",
+  "fr": "Personnaliser",
+  "uk": "Налаштувати вигляд"
+ },
+ "Chrome Web Store": {
+  "tr": "Chrome Web Mağazası",
+  "es": "Chrome Web Store",
+  "pt": "Chrome Web Store",
+  "fr": "Chrome Web Store",
+  "uk": "Chrome Web Store"
+ },
+ "Open Passwords app": {
+  "tr": "Parolalar uygulamasını aç",
+  "es": "Abrir la app Contraseñas",
+  "pt": "Abrir a app Palavras-passe",
+  "fr": "Ouvrir l’app Mots de passe",
+  "uk": "Відкрити програму «Паролі»"
+ },
+ "New Private tab": {
+  "tr": "Yeni Özel sekme",
+  "es": "Nueva pestaña privada",
+  "pt": "Novo separador privado",
+  "fr": "Nouvel onglet privé",
+  "uk": "Нова приватна вкладка"
+ },
+ "Keyboard shortcuts: ⌘T Beam · ⌘K new tab · ⌘L address · ⌘D bookmark · ⌘, settings · ⌘J downloads. Focus the sidebar divider and use arrow keys to resize.": {
+  "tr": "Klavye kısayolları: ⌘T Işın · ⌘K yeni sekme · ⌘L adres · ⌘D yer imi · ⌘, ayarlar · ⌘J indirmeler. Boyutlandırmak için kenar çubuğu ayırıcısına odaklanıp ok tuşlarını kullan.",
+  "es": "Atajos de teclado: ⌘T Haz · ⌘K nueva pestaña · ⌘L dirección · ⌘D marcador · ⌘, ajustes · ⌘J descargas. Enfoca el divisor de la barra lateral y usa las flechas para cambiar su tamaño.",
+  "pt": "Atalhos de teclado: ⌘T Feixe · ⌘K novo separador · ⌘L endereço · ⌘D marcador · ⌘, definições · ⌘J transferências. Foque o divisor da barra lateral e use as setas para redimensionar.",
+  "fr": "Raccourcis clavier : ⌘T Faisceau · ⌘K nouvel onglet · ⌘L adresse · ⌘D signet · ⌘, réglages · ⌘J téléchargements. Placez le focus sur le séparateur de la barre latérale et utilisez les flèches pour redimensionner.",
+  "uk": "Клавіатурні скорочення: ⌘T Промінь · ⌘K нова вкладка · ⌘L адреса · ⌘D закладка · ⌘, налаштування · ⌘J завантаження. Наведіть фокус на роздільник бічної панелі й змінюйте розмір стрілками."
+ },
+ "Open Beam: type an address, search, or find any tab, setting or action. ⌘K opens a blank tab.": {
+  "tr": "Işın’ı açar: adres yaz, ara ya da herhangi bir sekmeyi, ayarı veya eylemi bul. ⌘K boş sekme açar.",
+  "es": "Abre Haz: escribe una dirección, busca o encuentra cualquier pestaña, ajuste o acción. ⌘K abre una pestaña en blanco.",
+  "pt": "Abre o Feixe: escreva um endereço, pesquise ou encontre qualquer separador, definição ou ação. ⌘K abre um separador em branco.",
+  "fr": "Ouvre Faisceau : tapez une adresse, cherchez, ou trouvez un onglet, un réglage ou une action. ⌘K ouvre un onglet vide.",
+  "uk": "Відкриває Промінь: введіть адресу, шукайте або знайдіть будь-яку вкладку, налаштування чи дію. ⌘K відкриває порожню вкладку."
+ },
+ "Bring it back": {
+  "tr": "Geri getir",
+  "es": "Recuperarla",
+  "pt": "Recuperar",
+  "fr": "La ramener",
+  "uk": "Повернути"
+ },
+ "Bring back {count} tabs": {
+  "tr": "{count} sekmeyi geri getir",
+  "es": "Recuperar {count} pestañas",
+  "pt": "Recuperar {count} separadores",
+  "fr": "Ramener {count} onglets",
+  "uk": "Повернути вкладки: {count}"
+ },
+ "Release notes": {
+  "tr": "Sürüm notları",
+  "es": "Notas de la versión",
+  "pt": "Notas de lançamento",
+  "fr": "Notes de version",
+  "uk": "Нотатки до випуску"
+ },
+ "Release Notes": {
+  "tr": "Sürüm Notları",
+  "es": "Notas de la versión",
+  "pt": "Notas de lançamento",
+  "fr": "Notes de version",
+  "uk": "Нотатки до випуску"
+ },
+ "See everything new": {
+  "tr": "Tüm yenilikleri gör",
+  "es": "Ver todas las novedades",
+  "pt": "Ver todas as novidades",
+  "fr": "Voir toutes les nouveautés",
+  "uk": "Переглянути все нове"
+ },
+ "AI for Prism": {
+  "tr": "Prism için yapay zekâ",
+  "es": "IA para Prism",
+  "pt": "IA para o Prism",
+  "fr": "IA pour Prism",
+  "uk": "ШІ для Prism"
+ },
+ "Used for download names, page summaries and translations, and Spectrum.": {
+  "tr": "İndirme adları, sayfa özetleri ve çevirileri ile Spectrum için kullanılır.",
+  "es": "Se usa para nombres de descargas, resúmenes y traducciones de páginas, y Spectrum.",
+  "pt": "Usada para nomes de transferências, resumos e traduções de páginas e o Spectrum.",
+  "fr": "Utilisée pour les noms de téléchargements, les résumés et traductions de pages, et Spectrum.",
+  "uk": "Використовується для назв завантажень, підсумків і перекладів сторінок та Spectrum."
+ },
+ "Claude · your Anthropic API key": {
+  "tr": "Claude · Anthropic API anahtarın",
+  "es": "Claude · tu clave de API de Anthropic",
+  "pt": "Claude · a sua chave de API da Anthropic",
+  "fr": "Claude · votre clé d’API Anthropic",
+  "uk": "Claude · ваш ключ API Anthropic"
+ },
+ "Anthropic API key": {
+  "tr": "Anthropic API anahtarı",
+  "es": "Clave de API de Anthropic",
+  "pt": "Chave de API da Anthropic",
+  "fr": "Clé d’API Anthropic",
+  "uk": "Ключ API Anthropic"
+ },
+ "Create one at console.anthropic.com. Stored encrypted on this Mac.": {
+  "tr": "console.anthropic.com adresinden oluştur. Bu Mac’te şifreli saklanır.",
+  "es": "Créala en console.anthropic.com. Se guarda cifrada en este Mac.",
+  "pt": "Crie uma em console.anthropic.com. Guardada cifrada neste Mac.",
+  "fr": "Créez-en une sur console.anthropic.com. Stockée chiffrée sur ce Mac.",
+  "uk": "Створіть на console.anthropic.com. Зберігається зашифрованим на цьому Mac."
+ },
+ "Name downloads, summarize and translate pages, and title your day in Spectrum.": {
+  "tr": "İndirmeleri adlandır, sayfaları özetle ve çevir, Spectrum’da gününe başlık ver.",
+  "es": "Nombra descargas, resume y traduce páginas y titula tu día en Spectrum.",
+  "pt": "Dê nome a transferências, resuma e traduza páginas e dê título ao seu dia no Spectrum.",
+  "fr": "Nommez les téléchargements, résumez et traduisez des pages, et titrez votre journée dans Spectrum.",
+  "uk": "Називайте завантаження, підсумовуйте й перекладайте сторінки та давайте назви своєму дню в Spectrum."
+ },
+ "The AI above titles each part of your day when you open Spectrum, and Spectrum suggests sites you usually open.": {
+  "tr": "Yukarıdaki yapay zekâ Spectrum’u açtığında gününün her bölümüne başlık verir; Spectrum genelde açtığın siteleri önerir.",
+  "es": "La IA de arriba titula cada parte de tu día al abrir Spectrum, y Spectrum sugiere los sitios que sueles abrir.",
+  "pt": "A IA acima dá título a cada parte do seu dia quando abre o Spectrum, e o Spectrum sugere os sites que costuma abrir.",
+  "fr": "L’IA ci-dessus titre chaque moment de votre journée quand vous ouvrez Spectrum, et Spectrum suggère les sites que vous ouvrez souvent.",
+  "uk": "ШІ вище дає назву кожній частині дня, коли ви відкриваєте Spectrum, а Spectrum пропонує сайти, які ви зазвичай відкриваєте."
+ },
+ "Redo": {
+  "tr": "Yinele",
+  "es": "Rehacer",
+  "pt": "Refazer",
+  "fr": "Rétablir",
+  "uk": "Повторити"
+ },
+ "Cut": {
+  "tr": "Kes",
+  "es": "Cortar",
+  "pt": "Cortar",
+  "fr": "Couper",
+  "uk": "Вирізати"
+ },
+ "Copy": {
+  "tr": "Kopyala",
+  "es": "Copiar",
+  "pt": "Copiar",
+  "fr": "Copier",
+  "uk": "Копіювати"
+ },
+ "Paste": {
+  "tr": "Yapıştır",
+  "es": "Pegar",
+  "pt": "Colar",
+  "fr": "Coller",
+  "uk": "Вставити"
+ },
+ "Paste and Match Style": {
+  "tr": "Yapıştır ve Stili Eşleştir",
+  "es": "Pegar con el mismo estilo",
+  "pt": "Colar com o mesmo estilo",
+  "fr": "Coller et adapter le style",
+  "uk": "Вставити з тим самим стилем"
+ },
+ "Select All": {
+  "tr": "Tümünü Seç",
+  "es": "Seleccionar todo",
+  "pt": "Selecionar tudo",
+  "fr": "Tout sélectionner",
+  "uk": "Вибрати все"
+ },
+ "Paste and Go": {
+  "tr": "Yapıştır ve Git",
+  "es": "Pegar e ir",
+  "pt": "Colar e ir",
+  "fr": "Coller et aller",
+  "uk": "Вставити й перейти"
+ },
+ "Paste and Search": {
+  "tr": "Yapıştır ve Ara",
+  "es": "Pegar y buscar",
+  "pt": "Colar e pesquisar",
+  "fr": "Coller et rechercher",
+  "uk": "Вставити й шукати"
+ },
+ "Ask Claude": {
+  "tr": "Claude’a sor",
+  "es": "Preguntar a Claude",
+  "pt": "Perguntar ao Claude",
+  "fr": "Demander à Claude",
+  "uk": "Запитати Claude"
+ },
+ "Search with an image": {
+  "tr": "Görselle ara",
+  "es": "Buscar con una imagen",
+  "pt": "Pesquisar com uma imagem",
+  "fr": "Rechercher avec une image",
+  "uk": "Шукати за зображенням"
+ },
+ "Search with the copied image": {
+  "tr": "Kopyalanan görselle ara",
+  "es": "Buscar con la imagen copiada",
+  "pt": "Pesquisar com a imagem copiada",
+  "fr": "Rechercher avec l’image copiée",
+  "uk": "Шукати за скопійованим зображенням"
+ },
+ "Search, type an address, ask, or paste an image": {
+  "tr": "Ara, adres yaz, sor ya da görsel yapıştır",
+  "es": "Busca, escribe una dirección, pregunta o pega una imagen",
+  "pt": "Pesquise, escreva um endereço, pergunte ou cole uma imagem",
+  "fr": "Cherchez, tapez une adresse, posez une question ou collez une image",
+  "uk": "Шукайте, введіть адресу, запитайте або вставте зображення"
+ },
+ "Claude had no answer.": {
+  "tr": "Claude bir yanıt veremedi.",
+  "es": "Claude no tuvo respuesta.",
+  "pt": "O Claude não teve resposta.",
+  "fr": "Claude n’a pas de réponse.",
+  "uk": "Claude не має відповіді."
+ },
+ "Choose Claude in Settings → AI & assistants to ask Beam.": {
+  "tr": "Işın’a sormak için Ayarlar → Yapay zekâ ve asistanlar’da Claude’u seç.",
+  "es": "Elige Claude en Ajustes → IA y asistentes para preguntar a Haz.",
+  "pt": "Escolha o Claude em Definições → IA e assistentes para perguntar ao Feixe.",
+  "fr": "Choisissez Claude dans Réglages → IA et assistants pour interroger Faisceau.",
+  "uk": "Виберіть Claude у Налаштуваннях → ШІ та помічники, щоб питати Промінь."
+ },
+ "Ask Apple Intelligence": {
+  "tr": "Apple Intelligence’a sor",
+  "es": "Preguntar a Apple Intelligence",
+  "pt": "Perguntar ao Apple Intelligence",
+  "fr": "Demander à Apple Intelligence",
+  "uk": "Запитати Apple Intelligence"
+ },
+ "No answer came back.": {
+  "tr": "Yanıt gelmedi.",
+  "es": "No llegó ninguna respuesta.",
+  "pt": "Não chegou resposta.",
+  "fr": "Aucune réponse n’est revenue.",
+  "uk": "Відповіді немає."
+ },
+ "Choose Claude or Apple Intelligence in Settings → AI & assistants to ask Beam.": {
+  "tr": "Işın’a sormak için Ayarlar → Yapay zekâ ve asistanlar’da Claude’u ya da Apple Intelligence’ı seç.",
+  "es": "Elige Claude o Apple Intelligence en Ajustes → IA y asistentes para preguntar a Haz.",
+  "pt": "Escolha o Claude ou o Apple Intelligence em Definições → IA e assistentes para perguntar ao Feixe.",
+  "fr": "Choisissez Claude ou Apple Intelligence dans Réglages → IA et assistants pour interroger Faisceau.",
+  "uk": "Виберіть Claude або Apple Intelligence у Налаштуваннях → ШІ та помічники, щоб питати Промінь."
+ },
+ "Bypass in Personal and Work": {
+  "tr": "Kişisel ve İş’te engel aşma",
+  "es": "Evasión en Personal y Trabajo",
+  "pt": "Contorno em Pessoal e Trabalho",
+  "fr": "Contournement dans Personnel et Travail",
+  "uk": "Обхід в Особистому та Робочому"
+ },
+ "Use bypass": {
+  "tr": "Engel aşmayı kullan",
+  "es": "Usar evasión",
+  "pt": "Usar contorno",
+  "fr": "Utiliser le contournement",
+  "uk": "Використовувати обхід"
+ },
+ "Only chosen sites keeps everything else on your normal connection.": {
+  "tr": "Yalnızca seçilen siteler, geri kalan her şeyi normal bağlantında tutar.",
+  "es": "Solo los sitios elegidos mantiene todo lo demás en tu conexión normal.",
+  "pt": "Apenas os sites escolhidos mantém tudo o resto na sua ligação normal.",
+  "fr": "Seulement les sites choisis garde tout le reste sur votre connexion normale.",
+  "uk": "Лише вибрані сайти залишає все інше на звичайному з’єднанні."
+ },
+ "Only chosen sites": {
+  "tr": "Yalnızca seçilen siteler",
+  "es": "Solo los sitios elegidos",
+  "pt": "Apenas os sites escolhidos",
+  "fr": "Seulement les sites choisis",
+  "uk": "Лише вибрані сайти"
+ },
+ "All sites": {
+  "tr": "Tüm siteler",
+  "es": "Todos los sitios",
+  "pt": "Todos os sites",
+  "fr": "Tous les sites",
+  "uk": "Усі сайти"
+ },
+ "Chosen sites": {
+  "tr": "Seçilen siteler",
+  "es": "Sitios elegidos",
+  "pt": "Sites escolhidos",
+  "fr": "Sites choisis",
+  "uk": "Вибрані сайти"
+ },
+ "A site brings its own domains: discord.com also covers discord.gg, its CDN and its gateway, so the connection holds while you move around it.": {
+  "tr": "Bir site kendi alan adlarını da getirir: discord.com, discord.gg’yi, CDN’ini ve ağ geçidini de kapsar; böylece site içinde gezinirken bağlantı kopmaz.",
+  "es": "Un sitio incluye sus propios dominios: discord.com también cubre discord.gg, su CDN y su pasarela, así la conexión se mantiene mientras navegas por él.",
+  "pt": "Um site inclui os seus próprios domínios: discord.com também abrange discord.gg, a sua CDN e o seu gateway, para a ligação se manter enquanto navega nele.",
+  "fr": "Un site inclut ses propres domaines : discord.com couvre aussi discord.gg, son CDN et sa passerelle, pour que la connexion tienne pendant que vous y naviguez.",
+  "uk": "Сайт приносить свої домени: discord.com також охоплює discord.gg, його CDN і шлюз, тож з’єднання тримається, поки ви ним користуєтеся."
+ },
+ "Add": {
+  "tr": "Ekle",
+  "es": "Añadir",
+  "pt": "Adicionar",
+  "fr": "Ajouter",
+  "uk": "Додати"
+ },
+ "Add current site": {
+  "tr": "Geçerli siteyi ekle",
+  "es": "Añadir el sitio actual",
+  "pt": "Adicionar o site atual",
+  "fr": "Ajouter le site actuel",
+  "uk": "Додати поточний сайт"
+ },
+ "Passwords in Private": {
+  "tr": "Özel’de parolalar",
+  "es": "Contraseñas en Privado",
+  "pt": "Palavras-passe em Privado",
+  "fr": "Mots de passe en Privé",
+  "uk": "Паролі в Приватному"
+ },
+ "Use Personal passwords in Private": {
+  "tr": "Özel’de Kişisel parolaları kullan",
+  "es": "Usar las contraseñas de Personal en Privado",
+  "pt": "Usar as palavras-passe de Pessoal em Privado",
+  "fr": "Utiliser les mots de passe de Personnel en Privé",
+  "uk": "Використовувати особисті паролі в Приватному"
+ },
+ "Fill the logins and cards saved in Personal and Work, after Touch ID. Private never saves new ones.": {
+  "tr": "Kişisel ve İş’te kayıtlı girişleri ve kartları Touch ID’den sonra doldurur. Özel asla yenilerini kaydetmez.",
+  "es": "Rellena los inicios de sesión y tarjetas guardados en Personal y Trabajo tras Touch ID. Privado nunca guarda nuevos.",
+  "pt": "Preenche os inícios de sessão e cartões guardados em Pessoal e Trabalho após o Touch ID. O Privado nunca guarda novos.",
+  "fr": "Remplit les identifiants et cartes enregistrés dans Personnel et Travail après Touch ID. Privé n’en enregistre jamais de nouveaux.",
+  "uk": "Заповнює логіни й картки, збережені в Особистому та Робочому, після Touch ID. Приватний режим ніколи не зберігає нові."
+ },
+ "Fill saved passwords and cards in Private, after Touch ID. Private never saves new ones.": {
+  "tr": "Özel’de kayıtlı parolaları ve kartları Touch ID’den sonra doldurur. Özel asla yenilerini kaydetmez.",
+  "es": "Rellena contraseñas y tarjetas guardadas en Privado tras Touch ID. Privado nunca guarda nuevas.",
+  "pt": "Preenche palavras-passe e cartões guardados em Privado após o Touch ID. O Privado nunca guarda novos.",
+  "fr": "Remplit les mots de passe et cartes enregistrés en Privé après Touch ID. Privé n’en enregistre jamais de nouveaux.",
+  "uk": "Заповнює збережені паролі й картки в Приватному після Touch ID. Приватний режим ніколи не зберігає нові."
+ },
+ "Search suggestions": {
+  "tr": "Arama önerileri",
+  "es": "Sugerencias de búsqueda",
+  "pt": "Sugestões de pesquisa",
+  "fr": "Suggestions de recherche",
+  "uk": "Пошукові підказки"
+ },
+ "Beam suggests searches from Google as you type. Only the typed text is sent; never in Private.": {
+  "tr": "Işın, sen yazarken Google’dan arama önerir. Yalnızca yazılan metin gönderilir; Özel’de asla.",
+  "es": "Haz sugiere búsquedas de Google mientras escribes. Solo se envía el texto escrito; nunca en Privado.",
+  "pt": "O Feixe sugere pesquisas do Google enquanto escreve. Só é enviado o texto escrito; nunca em Privado.",
+  "fr": "Faisceau suggère des recherches Google pendant la saisie. Seul le texte tapé est envoyé ; jamais en Privé.",
+  "uk": "Промінь пропонує пошукові запити Google, поки ви друкуєте. Надсилається лише набраний текст; ніколи в Приватному."
+ },
+ "Change symbol…": {
+  "tr": "Simgeyi değiştir…",
+  "es": "Cambiar símbolo…",
+  "pt": "Alterar símbolo…",
+  "fr": "Changer de symbole…",
+  "uk": "Змінити символ…"
+ },
+ "Folder symbol": {
+  "tr": "Klasör simgesi",
+  "es": "Símbolo de carpeta",
+  "pt": "Símbolo da pasta",
+  "fr": "Symbole du dossier",
+  "uk": "Символ папки"
+ },
+ "While the bypass runs, Prism splits the first packets of each connection so filters can’t read them, and looks up sites over encrypted DNS (Cloudflare, Google) so blocked addresses resolve correctly. The helper is built into Prism (tpws from the open-source Zapret project); nothing is installed and no system settings change. If it fails in Private, Private requests stay blocked; in Personal and Work, sites fall back to your normal connection. It is not a VPN: sites still see your IP address.": {
+  "tr": "Engel aşma çalışırken Prism, filtreler okuyamasın diye her bağlantının ilk paketlerini böler ve engellenen adresler doğru çözülsün diye siteleri şifreli DNS (Cloudflare, Google) üzerinden arar. Yardımcı araç Prism’e yerleşiktir (açık kaynaklı Zapret projesinden tpws); hiçbir şey kurulmaz ve sistem ayarları değişmez. Özel’de başarısız olursa Özel istekleri engelli kalır; Kişisel ve İş’te siteler normal bağlantına döner. Bu bir VPN değildir: siteler IP adresini yine görür.",
+  "es": "Mientras la evasión funciona, Prism divide los primeros paquetes de cada conexión para que los filtros no puedan leerlos y busca los sitios por DNS cifrado (Cloudflare, Google) para que las direcciones bloqueadas se resuelvan bien. El asistente viene integrado en Prism (tpws del proyecto de código abierto Zapret); no se instala nada ni cambia ningún ajuste del sistema. Si falla en Privado, las solicitudes privadas siguen bloqueadas; en Personal y Trabajo, los sitios vuelven a tu conexión normal. No es una VPN: los sitios siguen viendo tu dirección IP.",
+  "pt": "Enquanto o contorno funciona, o Prism divide os primeiros pacotes de cada ligação para que os filtros não os consigam ler e procura os sites por DNS cifrado (Cloudflare, Google) para que os endereços bloqueados sejam resolvidos corretamente. O auxiliar vem integrado no Prism (tpws do projeto de código aberto Zapret); nada é instalado e nenhuma definição do sistema muda. Se falhar em Privado, os pedidos privados continuam bloqueados; em Pessoal e Trabalho, os sites voltam à sua ligação normal. Não é uma VPN: os sites continuam a ver o seu endereço IP.",
+  "fr": "Pendant le contournement, Prism découpe les premiers paquets de chaque connexion pour que les filtres ne puissent pas les lire, et résout les sites via un DNS chiffré (Cloudflare, Google) pour que les adresses bloquées soient correctement résolues. L’outil est intégré à Prism (tpws du projet open source Zapret) ; rien n’est installé et aucun réglage système ne change. En cas d’échec en Privé, les requêtes privées restent bloquées ; dans Personnel et Travail, les sites reviennent à votre connexion normale. Ce n’est pas un VPN : les sites voient toujours votre adresse IP.",
+  "uk": "Поки працює обхід, Prism розділяє перші пакети кожного з’єднання, щоб фільтри не могли їх прочитати, і шукає сайти через зашифрований DNS (Cloudflare, Google), щоб заблоковані адреси визначалися правильно. Помічник вбудовано в Prism (tpws з відкритого проєкту Zapret); нічого не встановлюється і системні налаштування не змінюються. Якщо в Приватному він не спрацює, приватні запити залишаться заблокованими; в Особистому та Робочому сайти повернуться до звичайного з’єднання. Це не VPN: сайти все одно бачать вашу IP-адресу."
+ },
+ "Bypass in Private": {
+  "tr": "Özel’de engel aşma",
+  "es": "Evasión en Privado",
+  "pt": "Contorno em Privado",
+  "fr": "Contournement en Privé",
+  "uk": "Обхід у Приватному"
+ },
+ "Add a site, like x.com": {
+  "tr": "Bir site ekle, ör. x.com",
+  "es": "Añade un sitio, como x.com",
+  "pt": "Adicione um site, como x.com",
+  "fr": "Ajoutez un site, comme x.com",
+  "uk": "Додайте сайт, наприклад x.com"
+ },
+ "Today · all spaces": {
+  "tr": "Bugün · tüm alanlar",
+  "es": "Hoy · todos los espacios",
+  "pt": "Hoje · todos os espaços",
+  "fr": "Aujourd’hui · tous les espaces",
+  "uk": "Сьогодні · усі простори"
+ },
+ "This space": {
+  "tr": "Bu alan",
+  "es": "Este espacio",
+  "pt": "Este espaço",
+  "fr": "Cet espace",
+  "uk": "Цей простір"
+ },
+ "All usage": {
+  "tr": "Tüm kullanım",
+  "es": "Todo el uso",
+  "pt": "Toda a utilização",
+  "fr": "Toute l’utilisation",
+  "uk": "Усе використання"
+ },
+ "Show only this space": {
+  "tr": "Yalnızca bu alanı göster",
+  "es": "Mostrar solo este espacio",
+  "pt": "Mostrar apenas este espaço",
+  "fr": "Afficher seulement cet espace",
+  "uk": "Показати лише цей простір"
+ },
+ "Show every space together": {
+  "tr": "Tüm alanları birlikte göster",
+  "es": "Mostrar todos los espacios juntos",
+  "pt": "Mostrar todos os espaços juntos",
+  "fr": "Afficher tous les espaces ensemble",
+  "uk": "Показати всі простори разом"
+ },
+ "Added to Favorites": {
+  "tr": "Favorilere eklendi",
+  "es": "Añadido a Favoritos",
+  "pt": "Adicionado aos Favoritos",
+  "fr": "Ajouté aux favoris",
+  "uk": "Додано до вибраного"
+ },
+ "Drop here to add to Favorites": {
+  "tr": "Favorilere eklemek için buraya bırak",
+  "es": "Suelta aquí para añadir a Favoritos",
+  "pt": "Largue aqui para adicionar aos Favoritos",
+  "fr": "Déposez ici pour ajouter aux favoris",
+  "uk": "Перетягніть сюди, щоб додати до вибраного"
  }
 };
 const languages=["en","tr","es","pt","fr","uk"];

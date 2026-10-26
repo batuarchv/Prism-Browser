@@ -1,0 +1,9 @@
+<!doctype html>
+<html><head><meta charset="UTF-8"><meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'none'">
+<title>Beam</title><link rel="stylesheet" href="surface.css"></head>
+<body class="command">
+<form id="command-form" class="command-field" autocomplete="off"><span id="command-glyph"></span><input id="command-input" role="combobox" aria-expanded="true" aria-controls="command-list" aria-autocomplete="list" placeholder="Search tabs, bookmarks, history or actions" spellcheck="false"><kbd>esc</kbd></form>
+<div id="command-answer" role="status" aria-live="polite" hidden></div>
+<div id="command-list" role="listbox" aria-label="Results"></div>
+<script src="locales.js"></script><script src="icons.js"></script><script src="surface-ui.js"></script><script src="command-bar.js"></script>
+</body></html>

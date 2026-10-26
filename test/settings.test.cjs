@@ -3,3 +3,11 @@ test('settings constrain geometry and refuse malformed or privileged paths',()=>
 test('drag ordering keeps every item and handles missing targets',()=>{const data=[{id:1},{id:2},{id:3}];assert.deepEqual(moveBefore(data,3,1).map(x=>x.id),[3,1,2]);assert.deepEqual(moveBefore(data,1,null).map(x=>x.id),[2,3,1]);assert.equal(moveBefore(data,99,1),data);assert.equal(moveBefore(data,2,2),data);});
 
 test('settings removed in 0.23 reset to defaults and awake tabs follow Memory balance',()=>{const loaded=normalizeSettings({radius:26,glassOpacity:0.9,maxAwakeTabs:0,sidebarWidth:300});assert.equal(loaded.radius,18);assert.equal(loaded.glassOpacity,0.36);assert.equal(loaded.maxAwakeTabs,8);assert.equal(loaded.sidebarWidth,300,'drag-resized width is kept');for(const [stored,expected] of [[4,4],[2,4],[8,8],[16,8],[32,8]])assert.equal(normalizeSettings({maxAwakeTabs:stored}).maxAwakeTabs,expected);assert.equal(setting('radius',10),undefined);assert.equal(setting('maxAwakeTabs','8'),undefined);});
+test('side panel options and the What’s New version survive a restart, sanitized',()=>{
+ const {normalizeSettings}=require('../src/settings.cjs'),id='b'.repeat(32);
+ const s=normalizeSettings({whatsNewSeen:'0.25.2',sidePanels:{global:{[id]:{path:'panel.html',enabled:false},bad:{path:'x.html'},[ 'c'.repeat(32)]:{path:'https://evil.test/'}},behavior:{[id]:{openPanelOnActionClick:true}},widths:{[id]:100}}});
+ assert.equal(s.whatsNewSeen,'0.25.2');assert.deepEqual(s.sidePanels.global,{[id]:{path:'panel.html',enabled:false},['c'.repeat(32)]:{}});
+ assert.deepEqual(s.sidePanels.behavior,{[id]:{openPanelOnActionClick:true}});assert.equal(s.sidePanels.widths[id],280);
+ assert.equal(normalizeSettings({whatsNewSeen:'../x'}).whatsNewSeen,'');assert.deepEqual(normalizeSettings({}).sidePanels,{global:{},behavior:{},widths:{}});
+});
+test('trackpad gestures are on by default and take only a boolean',()=>{assert.equal(normalizeSettings({}).trackpadGestures,true);assert.equal(setting('trackpadGestures',false),false);assert.equal(setting('trackpadGestures','off'),undefined);});

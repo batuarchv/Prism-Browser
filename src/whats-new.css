@@ -1,0 +1,34 @@
+:root{color-scheme:light dark;--ink:#1d1d1f;--muted:#6e6e73;--tile:color-mix(in srgb,#0a84ff 14%,transparent);--tile-ink:#0a6cdb;--accent:#0a84ff;font:13px -apple-system,BlinkMacSystemFont,"SF Pro Text",sans-serif;-webkit-font-smoothing:antialiased}
+:root[data-theme=dark]{--ink:#f5f5f7;--muted:#a1a1a6;--tile:color-mix(in srgb,#64a8ff 18%,transparent);--tile-ink:#8cc1ff}
+html,body{margin:0;height:100%;background:transparent;color:var(--ink);overflow:hidden;user-select:none;-webkit-app-region:drag}
+.wn{height:100%;box-sizing:border-box;display:flex;flex-direction:column;align-items:center;padding:30px 36px 26px;text-align:center}
+.wn-logo{width:132px;height:132px;display:grid;place-items:center;margin-bottom:6px}
+.wn-logo img{width:132px;height:132px;grid-area:1/1}
+.wn-logo .glass-fallback{visibility:hidden}
+h1{font-size:22px;font-weight:700;letter-spacing:-.01em;margin:4px 0 2px}
+#wn-version{margin:0 0 20px;color:var(--muted);font-size:12px}
+#wn-items{list-style:none;margin:0 auto;padding:0;display:grid;gap:12px;width:fit-content;min-width:220px;text-align:left;flex:1;align-content:start;overflow:auto}
+#wn-items li{display:grid;grid-template-columns:28px 1fr;gap:12px;align-items:center}
+.wn-icon{width:30px;height:30px;border-radius:8px;display:grid;place-items:center;background:var(--tile);color:var(--tile-ink)}
+.wn-icon .icon{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+#wn-items strong{display:block;font-size:13px;font-weight:600}
+#wn-items p{margin:2px 0 0;color:var(--muted);font-size:12px;line-height:1.35}
+#wn-continue{-webkit-app-region:no-drag;margin-top:18px;min-width:200px;height:30px;border:0;border-radius:8px;background:var(--accent);color:#fff;font:inherit;font-weight:500;cursor:default}
+#wn-continue:focus-visible{outline:3px solid color-mix(in srgb,var(--accent) 45%,transparent);outline-offset:1px}
+#wn-continue:active{filter:brightness(.92)}
+/* The sequence: the logo turns in alone, then the title, version, items and button rise in one after another. */
+.sequence h1,.sequence #wn-version,.sequence #wn-items li,.sequence #wn-continue{opacity:0;transform:translateY(8px)}
+.sequence.revealed h1,.sequence.revealed #wn-version,.sequence.revealed #wn-items li,.sequence.revealed #wn-continue{opacity:1;transform:none;transition:opacity 380ms cubic-bezier(.2,.7,.2,1),transform 420ms cubic-bezier(.2,.8,.25,1)}
+.sequence.revealed #wn-version{transition-delay:60ms}
+.sequence.revealed #wn-items li{transition-delay:calc(120ms + var(--i) * 55ms)}
+.sequence.revealed #wn-continue{transition-delay:420ms}
+/* 0.36: each change carries one line of detail, and the full release notes are a click away. */
+#wn-items{max-width:380px}
+#wn-items li{align-items:start}
+#wn-items small{display:block;margin-top:2px;color:var(--muted);font-size:12px;line-height:1.35}
+.wn-actions{display:flex;align-items:center;justify-content:center;gap:16px;margin-top:18px;-webkit-app-region:no-drag}
+.wn-actions #wn-continue{margin-top:0}
+#wn-notes{color:var(--accent);text-decoration:none;font-weight:500}
+#wn-notes:hover{text-decoration:underline}
+.sequence .wn-actions{opacity:0;transform:translateY(8px)}
+.sequence.revealed .wn-actions{opacity:1;transform:none;transition:opacity 380ms cubic-bezier(.2,.7,.2,1) 300ms,transform 420ms cubic-bezier(.2,.8,.25,1) 300ms}

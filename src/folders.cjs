@@ -12,11 +12,18 @@ function renameFolder(library,from,to){
  if(affected.some(n=>others.has(rename(n))||rename(n).length>200))throw Error('A folder with this name already exists, or the name is too long.');
  library.folders=names.map(n=>within(n,from)?rename(n):n);
  for(const b of library.bookmarks)if(b.folder&&within(b.folder,from))b.folder=rename(b.folder);
+ if(library.folderIcons)for(const n of affected)if(library.folderIcons[n]){library.folderIcons[rename(n)]=library.folderIcons[n];delete library.folderIcons[n];}
 }
 function removeFolder(library,name){
  if(typeof name!=='string'||!folderNames(library).includes(name))throw Error('This folder no longer exists.');
  // Remove only this folder. Descendant folders and all saved pages survive.
  library.folders=library.folders.filter(n=>n!==name);
  for(const b of library.bookmarks)if(b.folder===name)b.folder='';
+ if(library.folderIcons)delete library.folderIcons[name];
 }
-module.exports={folderNames,renameFolder,removeFolder};
+// A folder's symbol (0.39): one of the folder symbols from the spaces' set; 'folder' goes back to the plain folder.
+const FOLDER_SYMBOLS=['folder','briefcase','house','person','star','heart','bolt','book','pencil','code','terminal','flask','palette','camera','film','music','headphones','game','cart','gift','coffee','fork','dumbbell','paw','plane','car','map','globe','mountain','rocket','graduation','money','chat','leaf'];
+function setFolderIcon(library,name,icon){if(!folderNames(library).includes(name))throw Error('This folder no longer exists.');if(!FOLDER_SYMBOLS.includes(icon))throw Error('Choose one of the folder symbols.');
+ library.folderIcons={...normalizeFolderIcons(library.folderIcons)};if(icon==='folder')delete library.folderIcons[name];else library.folderIcons[name]=icon;}
+function normalizeFolderIcons(value){const out={};if(value&&typeof value==='object')for(const [k,v] of Object.entries(value).slice(0,500))if(typeof k==='string'&&k.length<=200&&FOLDER_SYMBOLS.includes(v)&&v!=='folder')out[k]=v;return out;}
+module.exports={folderNames,renameFolder,removeFolder,setFolderIcon,normalizeFolderIcons,FOLDER_SYMBOLS};
