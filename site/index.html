@@ -1,95 +1,255 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#0b0c10">
-  <meta name="description" content="Prism is an experimental open-source Chromium browser for macOS, shaped around native Liquid Glass and thoughtful browsing tools.">
-  <title>Prism — Chromium, refracted</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#060608">
+  <meta name="color-scheme" content="dark">
+  <meta name="description" content="Prism is a quiet, fast browser for Mac. It blocks the junk, gets past censorship and puts idle tabs to sleep. No agents, no chatbots, just a browser.">
+  <meta property="og:title" content="Prism — see the web in a new light">
+  <meta property="og:description" content="A quiet, fast browser for Mac. No agent, no chatbot, no clutter.">
+  <meta property="og:image" content="https://batuarchv.github.io/Prism-Browser/assets/shots/sidebar-light.jpg">
+  <title>Prism Browser</title>
   <link rel="icon" type="image/png" href="assets/prism-mark.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700;800&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
+  <script>if (!matchMedia("(prefers-reduced-motion: reduce)").matches) document.documentElement.classList.add("intro");</script>
 </head>
 <body>
-  <div class="noise" aria-hidden="true"></div>
-  <header class="nav wrap">
-    <a class="brand" href="#top" aria-label="Prism home"><img src="assets/prism-mark.png" alt=""><span>Prism</span></a>
-    <nav aria-label="Main navigation">
-      <a href="#about">About</a><a href="#features">Features</a><a href="#principles">Principles</a>
-    </nav>
-    <a class="nav-cta" data-link="download" href="#project-links">Download <span aria-hidden="true">↓</span></a>
+  <!-- Liquid glass lens filters, filled in by app.js for Chromium (other browsers keep a plain frosted glass). -->
+  <svg class="defs" aria-hidden="true" width="0" height="0"><defs id="lens-defs"></defs></svg>
+
+  <div class="sky" aria-hidden="true"><i class="orb o1"></i><i class="orb o2"></i><i class="orb o3"></i><i class="orb o4"></i></div>
+  <div class="cursor-light" aria-hidden="true"></div>
+  <div class="grain" aria-hidden="true"></div>
+
+  <header class="nav" id="nav">
+    <div class="nav-pill glass" data-lens>
+      <a class="brand" href="#top" aria-label="Prism home"><img src="assets/prism-mark.png" alt="" width="26" height="26"><span>Prism</span></a>
+      <nav aria-label="Sections">
+        <a href="#features">Features</a><a href="#light">Lightness</a><a href="#honest">No gimmicks</a><a data-link="repo" href="#">GitHub</a>
+      </nav>
+      <a class="btn btn-solid btn-small" data-link="download" href="#">Download</a>
+    </div>
   </header>
 
   <main id="top">
-    <section class="hero wrap">
-      <div class="hero-copy">
-        <div class="eyebrow"><span class="pulse"></span> An open browser experiment for macOS</div>
-        <h1>Chromium,<br><em>refracted.</em></h1>
-        <p class="lede">A browser shaped around the clarity of Liquid Glass and the freedom of an open web.</p>
-        <div class="hero-actions" id="project-links">
-          <a class="button button-primary" data-link="download" href="#project-links">Download for Mac <span aria-hidden="true">↓</span></a>
-          <a class="button button-quiet" data-link="repo" href="#project-links">View source <span aria-hidden="true">↗</span></a>
-        </div>
-        <p class="hero-note"><span class="dot"></span> Free · macOS on Apple Silicon · GPL-3.0 · <a href="https://github.com/batuarchv/Prism-Browser#install">How to install</a></p>
+    <!-- 00 · Hero -->
+    <section class="hero">
+      <div class="hero-meta mono intro-later"><span>Prism Browser</span><span>for macOS</span><span>Free &amp; open source</span></div>
+
+      <div class="logo-stage" id="logo-stage">
+        <span class="intro-beam" aria-hidden="true"></span>
+        <img class="logo-still" id="logo-still" src="assets/prism-glass-dark.png" alt="The Prism logo, a glass pyramid" width="220" height="220">
+        <p class="logo-hint mono" aria-hidden="true"><span>Drag to turn</span><span>·</span><span>Click to switch the light</span></p>
       </div>
-      <div class="visual" aria-label="Abstract illustration of Prism's translucent browser interface">
-        <div class="orbit orbit-a"></div><div class="orbit orbit-b"></div>
-        <div class="glass-window">
-          <div class="window-top"><div class="traffic"><i></i><i></i><i></i></div><div class="tab-chip"><span class="tab-favicon">◈</span> Open web <b>×</b></div><span class="plus">+</span></div>
-          <div class="address"><span>◉</span><span>Search or enter address</span><span class="address-end">⌘ L</span></div>
-          <div class="window-content">
-            <div class="light-beam"></div><div class="glass-orb"><img src="assets/prism-mark.png" alt="Prism mark"></div>
-            <div class="content-label">A more considered way to browse</div>
-            <div class="content-lines"><i></i><i></i><i></i></div>
-            <span class="reflection reflection-one"></span><span class="reflection reflection-two"></span>
+
+      <h1 class="hero-title">
+        <span class="line intro-later">See the web</span>
+        <span class="line"><span class="intro-later">in a new </span><em class="intro-word">light.</em></span>
+      </h1>
+
+      <p class="hero-lede intro-later">A quiet, fast browser for Mac. It blocks the junk, gets past censorship and puts idle tabs to sleep. No agent, no chatbot, nothing in the way.</p>
+      <div class="hero-actions intro-later">
+        <a class="btn btn-solid" data-link="download" href="#">Download for Mac<span class="btn-sub">Apple Silicon · free</span></a>
+        <a class="btn btn-glass glass" data-lens data-link="repo" href="#">View on GitHub <span aria-hidden="true">↗</span></a>
+      </div>
+    </section>
+
+    <!-- The browser itself -->
+    <section class="showcase" aria-label="Prism screenshots">
+      <div class="device-wrap reveal">
+        <div class="device glass" id="device">
+          <div class="device-screen">
+            <img class="shot is-on" data-look="light" src="assets/shots/sidebar-light.jpg" alt="Prism with the address bar in the sidebar, showing an essay page, light appearance" width="2880" height="1800">
+            <img class="shot" data-look="dark" src="assets/shots/sidebar-dark.jpg" alt="Prism with the address bar in the sidebar, dark appearance" width="2880" height="1800" loading="lazy">
+            <img class="shot" data-look="top" src="assets/shots/topbar.jpg" alt="Prism with the address bar above the page" width="2880" height="1800" loading="lazy">
           </div>
-          <div class="window-bottom"><span>Personal</span><span class="bottom-center">•••</span><span>◌</span></div>
-        </div>
-        <div class="float-tag tag-glass"><span class="tag-spark">✳</span> Native glass</div>
-        <div class="float-tag tag-tabs"><span class="tag-dot"></span> Tabs that rest</div>
-        <div class="visual-caption">A browser interface in progress <span>01 / 03</span></div>
-      </div>
-      <div class="hero-index">01 <span>/</span> 03</div>
-    </section>
-
-    <section class="ticker" aria-label="Project technologies"><div class="ticker-track"><span>CHROMIUM ENGINE</span><i>✳</i><span>NATIVE MACOS MATERIALS</span><i>✳</i><span>OPEN SOURCE</span><i>✳</i><span>THOUGHTFUL BY DESIGN</span><i>✳</i><span>CHROMIUM ENGINE</span><i>✳</i><span>NATIVE MACOS MATERIALS</span><i>✳</i><span>OPEN SOURCE</span><i>✳</i><span>THOUGHTFUL BY DESIGN</span><i>✳</i></div></section>
-
-    <section class="intro wrap section" id="about">
-      <div class="section-kicker"><span>01</span> The idea</div>
-      <div class="intro-body"><h2>The web is a place.<br><span>Its frame should feel like one.</span></h2><p>Prism explores a different kind of Chromium browser: one that feels at home on macOS, gives open tabs room to breathe, and keeps the tools of everyday browsing close at hand.</p><a class="text-link" href="#features">Get to know Prism <span>↘</span></a></div>
-      <div class="intro-mark"><img src="assets/prism-mark.png" alt=""></div>
-    </section>
-
-    <section class="features section" id="features">
-      <div class="wrap">
-        <div class="section-heading"><div><div class="section-kicker"><span>02</span> In the browser</div><h2>Made to feel <em>clear.</em></h2></div><p>Care in the details. Space for the things you came to see.</p></div>
-        <div class="feature-grid">
-          <article class="feature-card feature-wide"><div class="feature-art art-material"><div class="material-pane pane-back"></div><div class="material-pane pane-front"><span class="mini-prism">✳</span><span>Light, layered.</span></div><span class="art-label">01 / MATERIAL STUDY</span></div><div class="feature-text"><span class="feature-number">01</span><div><h3>Native glass, not a skin</h3><p>Prism uses macOS materials through a local AppKit bridge, with a frosted-glass fallback when native material isn’t available.</p></div><span class="feature-arrow">↗</span></div></article>
-          <article class="feature-card"><div class="feature-art art-tabs"><div class="tab-stack"><div>✳ &nbsp;Notes <span>×</span></div><div>◉ &nbsp;Reading list <span>×</span></div><div>◎ &nbsp;A quiet tab <span>×</span></div></div><div class="sleep-icon">☾</div><span class="art-label">02 / TAB REST</span></div><div class="feature-text"><span class="feature-number">02</span><div><h3>Tabs can take a breath</h3><p>Sleeping tabs release their page renderer after inactivity and restore when you return.</p></div><span class="feature-arrow">↗</span></div></article>
-          <article class="feature-card"><div class="feature-art art-spaces"><div class="space-pill active">◉ &nbsp;Personal</div><div class="space-pill">◌ &nbsp;Work</div><div class="space-pill private">◍ &nbsp;Private</div><span class="art-label">03 / SEPARATE SPACES</span></div><div class="feature-text"><span class="feature-number">03</span><div><h3>Room for different modes</h3><p>Personal, Work, and Private browsing keep their own tab lists; Private uses an in-memory session.</p></div><span class="feature-arrow">↗</span></div></article>
-          <article class="feature-card feature-wide"><div class="feature-art art-extensions"><div class="extension-tile"><b>◈</b><span>Extensions</span><i>Connected</i></div><div class="extension-tile muted"><b>◉</b><span>Web tools</span><i>Ready</i></div><span class="art-label">04 / YOUR WEB TOOLS</span></div><div class="feature-text"><span class="feature-number">04</span><div><h3>Bring your familiar tools</h3><p>Prism includes a Chromium extension compatibility layer. Compatibility varies, and it is not identical to Chrome.</p></div><span class="feature-arrow">↗</span></div></article>
+          <span class="device-glare" aria-hidden="true"></span>
         </div>
       </div>
+      <div class="look-switch glass" data-lens role="tablist" aria-label="Appearance">
+        <span class="look-thumb" aria-hidden="true"></span>
+        <button role="tab" aria-selected="true" data-look="light">Light</button>
+        <button role="tab" aria-selected="false" data-look="dark">Dark</button>
+        <button role="tab" aria-selected="false" data-look="top">Top bar</button>
+      </div>
+      <p class="caption mono">Real Prism windows. The address bar lives in the sidebar, or above the page if you prefer.</p>
     </section>
 
-    <section class="principles wrap section" id="principles">
-      <div class="section-kicker"><span>03</span> Built in the open</div>
-      <div class="principles-content"><h2>Curious by nature.<br><em>Honest by design.</em></h2><p>Prism is an evolving personal project, shared under GPL-3.0. It’s a macOS prototype today, and its edges are part of the work. Performance depends on your sites and workload; no measured comparison with Arc is published.</p><a class="button button-outline" data-link="repo" href="#project-links">See the source <span>↗</span></a></div>
-      <div class="principles-side"><div class="principle"><span>01</span><div><b>Open code</b><p>Explore, learn from, and contribute to the project.</p></div></div><div class="principle"><span>02</span><div><b>Local-first details</b><p>Private browsing uses an in-memory session and clears its session data when you leave.</p></div></div><div class="principle"><span>03</span><div><b>Work in progress</b><p>Experimental software, with limits documented alongside the features.</p></div></div></div>
+    <!-- Marquee -->
+    <section class="marquee" aria-label="At a glance">
+      <div class="marquee-track mono" aria-hidden="true"></div>
+      <p class="sr-only">Prism Shield, Bypass censorship, Spectrum, sleeping tabs, Clear view, Lens, Beam, Chromium 152, Apple Silicon, GPL-3.0.</p>
     </section>
 
-    <section class="closing">
-      <div class="wrap closing-inner"><div class="closing-symbol">✳</div><div><div class="section-kicker"><span>04</span> Take a closer look</div><h2>Follow the light.</h2><p>Browse the code, see what’s changing, and help shape what comes next.</p></div><a class="button button-primary" data-link="repo" href="#project-links">Explore Prism on GitHub <span>↗</span></a></div>
+    <!-- 01–07 · The spectrum of features -->
+    <section class="features" id="features">
+      <header class="section-head">
+        <p class="kicker mono"><span>01</span>One beam, seven colours</p>
+        <h2>Everything you need.<br><em>Split into seven.</em></h2>
+        <p class="section-lede">White light goes into a prism and leaves as a spectrum. Prism does the same with a browser: everything it does, spread out where you can see it.</p>
+      </header>
+
+      <div class="spectrum-stage" id="spectrum-stage">
+        <ol class="feature-list" id="feature-list">
+          <li class="feature is-on" data-shot="shield" style="--c:var(--red)">
+            <button class="feature-head" aria-expanded="true"><span class="feature-no mono">01</span><span class="feature-name">Prism Shield</span><span class="feature-tag mono">Ad &amp; tracker blocking</span></button>
+            <div class="feature-body"><p>Ads, trackers, cookie banners and the ads inside YouTube videos, gone before they load. Seventeen filter lists and uBlock Origin's page scripts, built in, with no extension running.</p></div>
+          </li>
+          <li class="feature" data-shot="bypass" style="--c:var(--orange)">
+            <button class="feature-head" aria-expanded="false"><span class="feature-no mono">02</span><span class="feature-name">Bypass censorship</span><span class="feature-tag mono">No VPN, no account</span></button>
+            <div class="feature-body"><p>Open sites your network blocks. The helper ships inside Prism: use it in Private, for every site, or only the sites you choose. If it can't get through, the page falls back to your normal connection.</p></div>
+          </li>
+          <li class="feature" data-shot="spectrum" style="--c:var(--yellow)">
+            <button class="feature-head" aria-expanded="false"><span class="feature-no mono">03</span><span class="feature-name">Spectrum</span><span class="feature-tag mono">Your day as a line of light</span></button>
+            <div class="feature-body"><p>A thin band at the foot of the sidebar. Hover for a glance at your tabs then; click for your day in chapters, and bring a whole moment back. Kept only on your Mac, never in Private.</p></div>
+          </li>
+          <li class="feature" data-shot="memory" style="--c:var(--green)">
+            <button class="feature-head" aria-expanded="false"><span class="feature-no mono">04</span><span class="feature-name">Low memory</span><span class="feature-tag mono">2 GB → 0.8 GB</span></button>
+            <div class="feature-body"><p>Tabs you aren't using really go to sleep, even the ones full of ad frames that keep other browsers awake. Pinned and favourite tabs stay ready until your Mac actually needs the memory.</p></div>
+          </li>
+          <li class="feature" data-shot="clear-view" style="--c:var(--blue)">
+            <button class="feature-head" aria-expanded="false"><span class="feature-no mono">05</span><span class="feature-name">Clear view</span><span class="feature-tag mono">⌥⌘S</span></button>
+            <div class="feature-body"><p>One shortcut and there's nothing left but the page. Touch the window's left edge and the sidebar slides back.</p></div>
+          </li>
+          <li class="feature" data-shot="lens" style="--c:var(--indigo)">
+            <button class="feature-head" aria-expanded="false"><span class="feature-no mono">06</span><span class="feature-name">Lens</span><span class="feature-tag mono">Shift-click a link</span></button>
+            <div class="feature-body"><p>Peek at a link in a floating glass window without losing your place. Keep it as a tab, or let it go.</p></div>
+          </li>
+          <li class="feature" data-shot="beam" style="--c:var(--violet)">
+            <button class="feature-head" aria-expanded="false"><span class="feature-no mono">07</span><span class="feature-name">Beam</span><span class="feature-tag mono">⌘T</span></button>
+            <div class="feature-body"><p>One field for everything. Type an address, search, or jump to any open tab, setting or action.</p></div>
+          </li>
+        </ol>
+
+        <div class="feature-view">
+          <div class="feature-frame glass" id="feature-frame">
+            <img class="fshot is-on" data-shot="shield" src="assets/shots/shield.jpg" alt="Prism Shield settings: ads and trackers blocked on the current page" loading="lazy" width="2880" height="1800">
+            <img class="fshot" data-shot="bypass" src="assets/shots/bypass.jpg" alt="Private network settings with Bypass censorship on for chosen sites" loading="lazy" width="2880" height="1800">
+            <img class="fshot" data-shot="spectrum" src="assets/shots/spectrum.jpg" alt="Spectrum's day card: today in chapters with the tabs from each moment" loading="lazy" width="2880" height="1800">
+            <div class="fshot memory-card" data-shot="memory" aria-label="Memory with ten busy sites: about 2 GB awake, about 0.8 GB once idle">
+              <p class="mono">Ten busy sites, open together</p>
+              <div class="mem-row"><span>Awake</span><div class="mem-bar"><i style="--w:100%"></i></div><b>2.0 GB</b></div>
+              <div class="mem-row is-prism"><span>Prism, once idle</span><div class="mem-bar"><i style="--w:40%"></i></div><b>0.8 GB</b></div>
+              <p class="mem-big"><span class="count" data-to="60">60</span>%<small> less memory</small></p>
+            </div>
+            <img class="fshot" data-shot="clear-view" src="assets/shots/clear-view.jpg" alt="Clear view: only the page, no sidebar or toolbar" loading="lazy" width="2880" height="1800">
+            <img class="fshot" data-shot="lens" src="assets/shots/lens.jpg" alt="Lens: a linked page floating over the current one" loading="lazy" width="2880" height="1800">
+            <img class="fshot" data-shot="beam" src="assets/shots/beam.jpg" alt="Beam: a search field over the page with matching tabs and actions" loading="lazy" width="2880" height="1800">
+            <div class="feature-chip glass" data-lens aria-hidden="true"><i></i><span id="chip-name">Prism Shield</span></div>
+          </div>
+          <div class="spectrum-rail" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><span class="rail-dot"></span></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 02 · Lightness -->
+    <section class="light" id="light">
+      <header class="section-head">
+        <p class="kicker mono"><span>02</span>Light by nature</p>
+        <h2>It weighs<br><em>almost nothing.</em></h2>
+      </header>
+      <div class="bento">
+        <article class="tile tile-memory glass" data-lens>
+          <p class="mono tile-label">Memory, ten busy sites</p>
+          <p class="tile-number"><span class="count" data-from="2.0" data-to="0.8" data-decimals="1">0.8</span><small>GB</small></p>
+          <p>About 2 GB while they're busy, about 0.8 GB once they idle. Measured with ad-heavy pages, not a blank tab.</p>
+          <div class="tile-meter" aria-hidden="true"><i></i></div>
+        </article>
+        <article class="tile tile-newtab glass">
+          <img src="assets/shots/newtab-close.jpg" alt="Prism's new tab: only the logo and the search field" loading="lazy" width="2880" height="1800">
+          <div class="tile-over">
+            <p class="mono tile-label">The new tab</p>
+            <h3>Just the logo and the bar.</h3>
+            <p>No news feed, no sponsored tiles, no list of things you didn't ask for.</p>
+          </div>
+        </article>
+        <article class="tile glass" data-lens>
+          <p class="mono tile-label">Engine</p>
+          <p class="tile-word">Chromium 152</p>
+          <p>Sites work as in Chrome, and so do most Chrome extensions. Prism checks for a newer Chromium every launch.</p>
+        </article>
+        <article class="tile glass" data-lens>
+          <p class="mono tile-label">Updates</p>
+          <p class="tile-word">Quietly</p>
+          <p>New versions download in the background and install on the next launch, signed and checked.</p>
+        </article>
+        <article class="tile glass" data-lens>
+          <p class="mono tile-label">Spaces</p>
+          <p class="tile-word">Up to 40</p>
+          <p>Each with its own tabs, symbol and colour. Swipe the sidebar to move between them.</p>
+        </article>
+        <article class="tile glass" data-lens>
+          <p class="mono tile-label">Passwords</p>
+          <p class="tile-word">Touch ID</p>
+          <p>Logins, passkeys and cards stay on this Mac, locked with your Keychain and Touch ID.</p>
+        </article>
+      </div>
+    </section>
+
+    <!-- 03 · Palette -->
+    <section class="palette" id="palette">
+      <header class="section-head">
+        <p class="kicker mono"><span>03</span>The identity</p>
+        <h2>One mark. <em>Seven colours.</em></h2>
+        <p class="section-lede">Every colour in Prism has a job. Red guards, orange gets through, yellow remembers. Pick a chip to see its feature.</p>
+      </header>
+      <ol class="swatches reveal" aria-label="Prism colours">
+        <li><button class="swatch" style="--c:var(--red)" data-feature="0"><span class="swatch-color"></span><span class="swatch-label"><span class="mono">Prism 01-R</span><span class="swatch-name">Red</span><span class="mono swatch-hex">#FF4D5E · Shield</span></span></button></li>
+        <li><button class="swatch" style="--c:var(--orange)" data-feature="1"><span class="swatch-color"></span><span class="swatch-label"><span class="mono">Prism 02-O</span><span class="swatch-name">Orange</span><span class="mono swatch-hex">#FF8A3D · Bypass</span></span></button></li>
+        <li><button class="swatch" style="--c:var(--yellow)" data-feature="2"><span class="swatch-color"></span><span class="swatch-label"><span class="mono">Prism 03-Y</span><span class="swatch-name">Yellow</span><span class="mono swatch-hex">#FFD23F · Spectrum</span></span></button></li>
+        <li><button class="swatch" style="--c:var(--green)" data-feature="3"><span class="swatch-color"></span><span class="swatch-label"><span class="mono">Prism 04-G</span><span class="swatch-name">Green</span><span class="mono swatch-hex">#4FDC7C · Memory</span></span></button></li>
+        <li><button class="swatch" style="--c:var(--blue)" data-feature="4"><span class="swatch-color"></span><span class="swatch-label"><span class="mono">Prism 05-B</span><span class="swatch-name">Blue</span><span class="mono swatch-hex">#3FB4FF · Clear view</span></span></button></li>
+        <li><button class="swatch" style="--c:var(--indigo)" data-feature="5"><span class="swatch-color"></span><span class="swatch-label"><span class="mono">Prism 06-I</span><span class="swatch-name">Indigo</span><span class="mono swatch-hex">#6B6BFF · Lens</span></span></button></li>
+        <li><button class="swatch" style="--c:var(--violet)" data-feature="6"><span class="swatch-color"></span><span class="swatch-label"><span class="mono">Prism 07-V</span><span class="swatch-name">Violet</span><span class="mono swatch-hex">#B36BFF · Beam</span></span></button></li>
+      </ol>
+    </section>
+
+    <!-- 04 · No gimmicks -->
+    <section class="honest" id="honest">
+      <p class="kicker mono"><span>04</span>A note on AI</p>
+      <h2 class="honest-title">
+        <span class="line">No agents. No chatbots.</span>
+        <span class="line"><em>Just a browser.</em></span>
+      </h2>
+      <div class="honest-grid">
+        <p class="honest-body">Here's the twist: most of Prism's code was written by AI, steered by one person with strong opinions. Building it that way made the AI browser playbook easy to see through. A browser should get out of the way, not get between you and the web.</p>
+        <ul class="strike-list" aria-label="What Prism leaves out">
+          <li><s>An agent that clicks around the web for you</s></li>
+          <li><s>A chatbot glued to every page</s></li>
+          <li><s>“Magic” buttons that read all your tabs</s></li>
+          <li><s>Sponsored tiles on the new tab</s></li>
+          <li><s>An account just to get started</s></li>
+        </ul>
+      </div>
+      <p class="honest-foot mono">A few small helpers, like naming Spectrum's chapters, stay quiet until you use them. They run with Apple Intelligence on your Mac, or with your own Claude key.</p>
+    </section>
+
+    <!-- 05 · Download -->
+    <section class="closing" id="download">
+      <h2 class="sr-only">Download Prism</h2>
+      <p class="closing-lede">Follow the light.</p>
+      <div class="hero-actions">
+        <a class="btn btn-solid" data-link="download" href="#">Download for Mac<span class="btn-sub">Apple Silicon · free</span></a>
+        <a class="btn btn-glass glass" data-lens data-link="releases" href="#">Release notes <span aria-hidden="true">↗</span></a>
+      </div>
+      <p class="install-note mono">Prism is a beta and isn't notarized yet. The first time, Control-click Prism in Applications and choose Open. <a data-link="install" href="#">How to install</a></p>
     </section>
   </main>
-  <footer class="footer wrap"><a class="brand" href="#top"><img src="assets/prism-mark.png" alt=""><span>Prism</span></a><span>Chromium, refracted.</span><span>Open source · GPL-3.0</span><a href="#top">Back to top ↑</a></footer>
+
+  <footer class="footer">
+    <p class="footer-word" id="footer-word" aria-hidden="true">Prism</p>
+    <a class="brand" href="#top"><img src="assets/prism-mark.png" alt="" width="22" height="22"><span>Prism</span></a>
+    <span class="mono">See the web in a new light.</span>
+    <span class="mono">GPL-3.0 · <a data-link="repo" href="#">Source</a></span>
+  </footer>
+
   <script src="config.js"></script>
-  <script>
-    document.querySelectorAll('[data-link="repo"]').forEach(a => { if (PrismSite.repository) a.href = PrismSite.repository; else a.addEventListener('click', e => { e.preventDefault(); document.querySelector('#project-links').scrollIntoView({behavior:'smooth'}); }); });
-    document.querySelectorAll('[data-link="download"]').forEach(a => { if (PrismSite.download) a.href = PrismSite.download; });
-    document.querySelectorAll('[data-link="releases"]').forEach(a => { if (PrismSite.releases) a.href = PrismSite.releases; else a.addEventListener('click', e => { e.preventDefault(); document.querySelector('#project-links').scrollIntoView({behavior:'smooth'}); }); });
-  </script>
+  <script src="js/glass-model.js"></script>
+  <script src="js/glass-logo.js"></script>
+  <script src="app.js"></script>
 </body>
 </html>
