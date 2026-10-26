@@ -107,7 +107,7 @@
   // Motion state: yaw (radians) with velocity; the light fades between 0 and 1.
   // Each place (welcome guide, What's New, new tab) remembers whether its light was switched on or off.
   const lightKey='prism.glassLight.'+place;try{const saved=localStorage.getItem(lightKey);if(saved!==null)beam=saved==='1';}catch{}
-  let yaw=intro?-2.4:startYaw,offset=0,vel=0,dragging=null,lastUser=-1e9,beamOn=beam,beamAmount=beam?1:0,raf=0,visible=true,onScreen=true,destroyed=false,last=performance.now(),frames=0,since=performance.now(),fps=0;
+  let yaw=intro?-2.4:startYaw,offset=0,vel=0,dragging=null,lastUser=-1e9,beamOn=beam,beamAmount=beam?1:0,lastBeam=null,raf=0,visible=true,onScreen=true,destroyed=false,last=performance.now(),frames=0,since=performance.now(),fps=0;
   // The logo's camera: rotation (rows) and translation map the pyramid into camera space (y down, z forward).
   const cam=model.camera,Rc=m3T(cam.rotation),viewRot=m3m(FLIP,Rc),tg=m3v(FLIP,cam.translation),toWorld=m3m(ZUP_TO_YUP,m3T(viewRot)),camDepth=cam.translation[2];
   function size(){const r=box.getBoundingClientRect(),dpr=Math.min(2,devicePixelRatio||1),cw=r.width*SX,ch=r.height*SY;
@@ -157,6 +157,7 @@
      out.push(...toClip(P[i]),...ci,...toClip(P[j]),...cj,...toClip(Q[i]),...di,...toClip(P[j]),...cj,...toClip(Q[j]),...dj,...toClip(Q[i]),...di);}}
    const pre=(rgb,al)=>[rgb[0]*al*a,rgb[1]*al*a,rgb[2]*al*a,al*a];
    const E=screen(toView(path.enter)),S=screen(worldToView(v3.add(BEAM_FROM,v3.mul(BEAM_DIR,-3)))),X=screen(toView(path.exit));
+   lastBeam={from:S,to:E,W,H};
    // White beam in (with a faint shadow so it reads on light backgrounds).
    if(!dark)band(S,E,px2*.04,pre([.2,.28,.36],.08),pre([.2,.28,.36],.12));
    band(S,E,px2*.026,pre([1,1,1],.55),pre([1,1,1],.7));band(S,E,px2*.011,pre([1,1,1],1),pre([1,1,1],1));
@@ -189,6 +190,8 @@
   const ctl={replay(){yaw=-2.4;intro=true;vel=0;schedule();},redraw:()=>schedule(),
    // Turns the resting pose by `angle` radians; the glass swings there with the same spring as after a drag.
    turn(angle){if(!Number.isFinite(angle))return;offset+=angle;intro=false;lastUser=-1e9;schedule();},toggleLight(on=!beamOn){beamOn=!!on;schedule();},
+   // Where the incoming white beam was last drawn, in canvas pixels (null while the light is off).
+   beam:()=>lastBeam,
    stats:()=>({fps:Math.round(fps),yaw,rest:offset,light:beamOn,width:W,height:H}),
    destroy(){if(destroyed)return;destroyed=true;active.delete(ctl);cancelAnimationFrame(raf);io.disconnect();ro.disconnect();themeWatch.disconnect();document.removeEventListener('visibilitychange',vis);
     removeEventListener('pointerdown',down);removeEventListener('pointermove',move);removeEventListener('pointerup',up);removeEventListener('pointercancel',up);gl.getExtension('WEBGL_lose_context')?.loseContext();}};

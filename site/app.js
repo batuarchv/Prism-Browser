@@ -13,31 +13,43 @@
   
   // The logo: the same live WebGL glass prism that Prism draws on its new tab. Drag to turn it, click to switch the light.
   const still = $('#logo-still');
-  let logoStarted = false;
+  let logoStarted = false, logo = null;
   const startLogo = () => {
     if (logoStarted || !window.PrismGlass?.supported?.()) return;
     logoStarted = true;
-    const ctl = window.PrismGlass.upgrade(still, { intro: !reduced, beam: true, place: 'site' });
+    const ctl = logo = window.PrismGlass.upgrade(still, { intro: false, beam: true, place: 'site' });
     if (ctl) { const stage = $('#logo-stage'); stage.classList.add('hinting'); setTimeout(() => stage.classList.remove('hinting'), 4200); }
   };
 
   // Intro: the dark page shows only "light."; at 0.5 s a beam of light crosses to the prism, which wakes as it is hit;
   // half a second later the rest of the page arrives.
   const root = document.documentElement;
+  // The intro's beam is laid exactly over the beam the logo draws, so the light that arrives first is the light the prism
+  // catches. The logo is mounted (still hidden) straight away so its beam can be measured.
+  const aimBeam = () => {
+    const b = logo?.beam?.(), canvas = $('#logo-stage canvas.glass-logo'), line = $('.intro-beam');
+    if (!b || !canvas) return;
+    const kx = canvas.offsetWidth / b.W, ky = canvas.offsetHeight / b.H;
+    const sx = canvas.offsetLeft + b.from[0] * kx, sy = canvas.offsetTop + b.from[1] * ky;
+    const ex = canvas.offsetLeft + b.to[0] * kx, ey = canvas.offsetTop + b.to[1] * ky;
+    const angle = Math.atan2(ey - sy, ex - sx);
+    // From the point where the beam meets the glass, back past the left edge of the window.
+    const len = (ex + $('#logo-stage').getBoundingClientRect().left + 40) / Math.max(.2, Math.cos(angle));
+    Object.assign(line.style, { left: `${ex - len}px`, top: `${ey - 1}px`, right: 'auto', width: `${len}px`, transform: `rotate(${angle}rad)` });
+  };
   if (root.classList.contains('intro')) {
-    setTimeout(() => root.classList.add('beam'), 500);
-    setTimeout(() => { startLogo(); root.classList.add('prism'); }, 760);
+    startLogo();
+    setTimeout(() => { aimBeam(); root.classList.add('beam'); }, 500);
+    setTimeout(() => root.classList.add('prism'), 760);
     setTimeout(() => { root.classList.remove('intro', 'beam'); }, 1260);
   } else {
     root.classList.add('prism');
     if (still.complete) startLogo(); else still.addEventListener('load', startLogo, { once: true });
   }
 
-  // Pointer light: a soft glow under the cursor, and a specular highlight on whichever glass surface it is over.
+  // A specular highlight on whichever glass surface the pointer is over.
   if (fine) {
-    const light = $('.cursor-light');
     addEventListener('pointermove', e => {
-      light.style.setProperty('--x', e.clientX + 'px'); light.style.setProperty('--y', e.clientY + 'px');
       const g = e.target.closest?.('.glass');
       if (g) { const r = g.getBoundingClientRect(); g.style.setProperty('--mx', (e.clientX - r.left) + 'px'); g.style.setProperty('--my', (e.clientY - r.top) + 'px'); }
     }, { passive: true });
