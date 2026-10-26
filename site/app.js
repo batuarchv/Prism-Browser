@@ -13,16 +13,28 @@
     for (const e of entries) if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); }
   }, { threshold: .18 });
   $$('.reveal, .strike-list, .tile-memory').forEach(el => io.observe(el));
-  requestAnimationFrame(() => $$('.hero .reveal').forEach(el => el.classList.add('in')));
-
+  
   // The logo: the same live WebGL glass prism that Prism draws on its new tab. Drag to turn it, click to switch the light.
   const still = $('#logo-still');
+  let logoStarted = false;
   const startLogo = () => {
-    if (!window.PrismGlass?.supported?.()) return;
+    if (logoStarted || !window.PrismGlass?.supported?.()) return;
+    logoStarted = true;
     const ctl = window.PrismGlass.upgrade(still, { intro: !reduced, beam: true, place: 'site' });
     if (ctl) { const stage = $('#logo-stage'); stage.classList.add('hinting'); setTimeout(() => stage.classList.remove('hinting'), 4200); }
   };
-  if (still.complete) startLogo(); else still.addEventListener('load', startLogo, { once: true });
+
+  // Intro: the dark page shows only "light."; at 0.5 s a beam of light crosses to the prism, which wakes as it is hit;
+  // half a second later the rest of the page arrives.
+  const root = document.documentElement;
+  if (root.classList.contains('intro')) {
+    setTimeout(() => root.classList.add('beam'), 500);
+    setTimeout(() => { startLogo(); root.classList.add('prism'); }, 760);
+    setTimeout(() => { root.classList.remove('intro', 'beam'); }, 1260);
+  } else {
+    root.classList.add('prism');
+    if (still.complete) startLogo(); else still.addEventListener('load', startLogo, { once: true });
+  }
 
   // Pointer light: a soft glow under the cursor, and a specular highlight on whichever glass surface it is over.
   if (fine) {
@@ -102,13 +114,6 @@
   const memTile = $('.tile-memory .count');
   new IntersectionObserver(([e], obs) => { if (e.isIntersecting) { countUp(memTile, 2, .8, 1, 2000); obs.disconnect(); } }, { threshold: .5 }).observe(memTile);
 
-  // Closing wordmark leans toward the pointer.
-  const word = $('#closing-word');
-  if (fine && !reduced) {
-    $('.closing').addEventListener('pointermove', e => { const r = word.getBoundingClientRect(); word.style.setProperty('--wy', (((e.clientX - r.left) / r.width - .5) * 14).toFixed(2) + 'deg'); word.style.setProperty('--wx', (-((e.clientY - r.top) / r.height - .5) * 14).toFixed(2) + 'deg'); });
-    $('.closing').addEventListener('pointerleave', () => { word.style.setProperty('--wx', '0deg'); word.style.setProperty('--wy', '0deg'); });
-  }
-
   // Liquid glass lenses (Chromium only: it is the one engine that runs SVG filters in backdrop-filter). Each glass
   // surface gets a displacement map shaped like its own rounded rectangle: the backdrop bends near the rim like a thick
   // lens, and red, green and blue bend by slightly different amounts, so edges pick up a faint spectrum.
@@ -154,3 +159,14 @@
   lensed.forEach(el => ro.observe(el));
   document.documentElement.classList.add('lens-on');
 })();
+
+// Palette chips: pick a colour, jump to its feature.
+document.querySelectorAll('.swatch').forEach((b) => b.addEventListener('click', () => {
+  const head = document.querySelectorAll('.feature-head')[+b.dataset.feature];
+  document.getElementById('features').scrollIntoView({ behavior: 'smooth' });
+  head?.click();
+}));
+// Footer word: the light follows the pointer.
+const fw = document.getElementById('footer-word');
+if (fw && matchMedia('(hover: none)').matches) new IntersectionObserver(([e]) => fw.parentElement.classList.toggle('in', e.isIntersecting), { threshold: .6 }).observe(fw);
+fw?.parentElement.addEventListener('pointermove', (e) => fw.style.setProperty('--fx', `${(e.clientX / innerWidth) * 100}%`));
