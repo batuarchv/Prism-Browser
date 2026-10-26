@@ -116,7 +116,9 @@ function readCards(){if(!fs.existsSync(walletFile))return [];return JSON.parse(s
 // A page that has just become a favorite (dragged onto Favorites, Add to Favorites, moved up from Pinned) gets its
 // preview card now instead of at its next visit (0.39.3).
 function queueMissingPreview(){try{const t=tabs.find(x=>x.id===activeId);if(t?.url&&!services?.images()?.[t.url]?.thumbnail)queueFavoriteThumbnail(t);}catch{}}
-let libraryTimer=null;function saveLibrary(){queueMissingPreview();if(smoke||libraryTimer)return;libraryTimer=setTimeout(()=>{flushLibrary();services?.warmIcons(library.bookmarks.map(b=>b.url)).catch(()=>{});},1500);}
+// Favorites and pinned bookmarks without a stored icon (also ones saved by an older Prism, or never opened) get it fetched.
+function warmFavoriteIcons(){return services?services.warmIcons(library.bookmarks.map(b=>b.url)).catch(()=>{}):Promise.resolve();}
+let libraryTimer=null;function saveLibrary(){queueMissingPreview();if(smoke||libraryTimer)return;libraryTimer=setTimeout(()=>{flushLibrary();warmFavoriteIcons();},1500);}
 function flushLibrary(){if(!libraryTimer)return;clearTimeout(libraryTimer);libraryTimer=null;fs.mkdirSync(path.dirname(libraryFile),{recursive:true});fs.writeFileSync(libraryFile+'.tmp',JSON.stringify(library),{mode:0o600});fs.renameSync(libraryFile+'.tmp',libraryFile);}
 function saveEncrypted(file,data){if(!safeStorage.isEncryptionAvailable())throw Error('macOS Keychain encryption is unavailable.');fs.mkdirSync(path.dirname(file),{recursive:true});fs.writeFileSync(file+'.tmp',safeStorage.encryptString(JSON.stringify(data)),{mode:0o600});fs.renameSync(file+'.tmp',file);}
 function readVault(){if(!fs.existsSync(vaultFile))return [];return JSON.parse(safeStorage.decryptString(fs.readFileSync(vaultFile)));}
@@ -157,12 +159,12 @@ function snapshot() {
 
     canBack: !!active?.view?.webContents.navigationHistory.canGoBack(), canForward: !!active?.view?.webContents.navigationHistory.canGoForward()};
 }
-const stateTransport=createStateTransport();let emitTimer=null,emitDue=0,lastEmit=0;
+const stateTransport=createStateTransport({held:true});let emitTimer=null,emitDue=0,lastEmit=0;
 // Page title changes (tickers, unread counters) reach the shell at most every 500 ms; everything else goes at once.
 function emit() { queueEmit(0); }
 function emitLazy() { queueEmit(500); }
 function queueEmit(gap) { const due=Math.max(Date.now(),lastEmit+gap);if(emitTimer&&emitDue<=due)return;if(emitTimer){clearTimeout(emitTimer.timeout);clearImmediate(emitTimer.immediate);}emitDue=due;const wait=due-Date.now();emitTimer=wait>0?{timeout:setTimeout(sendState,wait)}:{immediate:setImmediate(sendState)}; }
-function sendState() { emitTimer=null;lastEmit=Date.now();if(win&&!win.isDestroyed()&&!win.webContents.isDestroyed())win.webContents.send('state',stateTransport.prepare(snapshot()));toolWindows?.publish(); }
+function sendState() { emitTimer=null;lastEmit=Date.now();if(win&&!win.isDestroyed()&&!win.webContents.isDestroyed()&&!stateTransport.held)win.webContents.send('state',stateTransport.prepare(snapshot()));toolWindows?.publish(); }
 function persist() {
   if(restoringSession)return;
   sessionStore.schedule(captureSnapshot(tabs,activeId,selectedInSpace));if(!settings.privacyEverywhere)spectrum.moment(tabs);
@@ -935,6 +937,11 @@ app.whenReady().then(async()=>{
   peek=require('./peek.cjs').createPeek({BrowserWindow,WebContentsView,parent:()=>win,pageArea:()=>pageArea,webPreferences:tabSpace=>pageWebPreferences(tabSpace==='private'),surfaces,openTab:(url,tabSpace)=>makeTab(url,true,tabSpace),
    configure:(wc,tabSpace)=>{const isPrivate=tabSpace==='private';blocker?.attach(wc,isPrivate);wc.setZoomFactor(settings.pageZoom);applyPinch(wc);if(isPrivate)wc.setWebRTCIPHandlingPolicy('disable_non_proxied_udp');},
    reduceMotion:()=>!!settings.reduceMotion||systemPreferences.getAnimationSettings().prefersReducedMotion,dark:()=>nativeTheme.shouldUseDarkColors,language:()=>settings.language});
+  // The window gets state only once its page has loaded (0.39.4): from the start of each load of the shell until it
+  // finishes, nothing is sent, then the full state with every icon and card. These are set before the first load; set
+  // after it, as before, a state sent while the page was still loading was lost and favorites showed letters.
+  win.webContents.on('did-start-navigation',(details,url,inPlace,mainFrame)=>{if((details?.isMainFrame??mainFrame)&&!(details?.isSameDocument??inPlace))stateTransport.hold();});
+  win.webContents.on('did-finish-load',()=>{passwords?.closeManager();stateTransport.open();emit();});
   setupMenu(); await win.loadFile(path.join(__dirname,'index.html'));
   applyAppearance();
   nativeTheme.on('updated',()=>{applyAppearance();emit();});
@@ -956,11 +963,10 @@ app.whenReady().then(async()=>{
   win.on('closed',()=>{quitting=true;spectrum.flush();pip?.end('close').catch(()=>{});autofill?.destroy();updater?.close();toolWindows.destroy(); clearInterval(timer);clearInterval(scrollTimer);sessionStore.close();flushLibrary();for(const t of tabs)if(t.view&&!t.view.webContents.isDestroyed())t.view.webContents.close();win=null;app.quit();});
   let sweeping=false;timer=setInterval(async()=>{if(sweeping)return;sweeping=true;try{for(const t of [...tabs]){if(quitting)break;await sleepTab(t);}if(!quitting){await enforceAwakeBudget();await memoryManager?.sweep();archiveIdle();}}finally{sweeping=false;}},30000);
   scrollTimer=setInterval(()=>{captureScroll(tabs.find(t=>t.id===activeId));},5000);
-  win.webContents.on('did-finish-load',()=>{passwords?.closeManager();stateTransport.reset();emit();});
-  win.show();localUpdater?.healthy(); emit();if(!smoke)setTimeout(()=>services?.warmIcons(library.bookmarks.map(b=>b.url)).catch(()=>{}),3000).unref?.();if(!smoke&&settings.chromiumCheck!==false)setTimeout(()=>chromiumCheck.check().then(noteChromium).catch(()=>{}),6000).unref?.();if(!smoke)setTimeout(()=>toolWindows?.prewarm(),4000).unref?.();externalReady=true;for(const url of pendingExternal.splice(0))receiveExternal(url);
+  win.show();localUpdater?.healthy(); emit();if(!smoke)setTimeout(warmFavoriteIcons,3000).unref?.();if(!smoke&&settings.chromiumCheck!==false)setTimeout(()=>chromiumCheck.check().then(noteChromium).catch(()=>{}),6000).unref?.();if(!smoke)setTimeout(()=>toolWindows?.prewarm(),4000).unref?.();externalReady=true;for(const url of pendingExternal.splice(0))receiveExternal(url);
   if(process.argv.includes('--import-arc')&&!smoke) importArc().then(result=>console.log('Arc import:',JSON.stringify(result)));
   // PRISM_TEST_FLOW=<name> runs one flow from test/ on its own (development; smoke profile only).
-  if(smoke) require(process.env.PRISM_TEST_FLOW?'../test/'+path.basename(process.env.PRISM_TEST_FLOW):process.env.PRISM_TEST_PRIVATE_PUBLIC==='1'?'../test/private-public-flow.cjs':restartTest?'../test/restart-flow.cjs':process.env.PRISM_TEST_COMPATIBILITY==='1'?'../test/compatibility-flow.cjs':process.env.PRISM_PERFORMANCE==='1'?'../test/performance-flow.cjs':process.env.PRISM_TEST_CREDENTIALS==='1'?'../test/credentials-flow.cjs':process.env.PRISM_TEST_RECOVERY==='1'?'../test/recovery-flow.cjs':process.env.PRISM_TEST_BASICS==='1'?'../test/basics-flow.cjs':process.env.PRISM_BENCHMARK==='1'?'../test/benchmark.cjs':process.env.PRISM_TEST_STORE==='1'?'../test/store.cjs':'../test/smoke.cjs').run({app,win,makeTab,selectTab,sleepTab,archiveIdle,spectrum,pip:()=>pip,media:()=>media,commandBar:()=>commandBar,peek:()=>peek,library:()=>library,enforceAwakeBudget,action,snapshot,tabs,settings,services,passwords,autofill,wallet,ai,toolWindows,inspector,sessionStore,captureScroll,restoreSession,dispose,privateController:()=>privateNetwork,normalNetwork:()=>normalNetwork,sidePanels:()=>sidePanels,showWhatsNew,whatsNewWindow:()=>whatsNewWindow,checkWhatsNew,passkeys:()=>passkeys,setNaturalScroll:value=>{naturalScroll=value;emit();},setUpdateOverride:value=>{updateOverride=value;emit();}}).catch(error=>{console.error(error);app.exit(1);});
+  if(smoke) require(process.env.PRISM_TEST_FLOW?'../test/'+path.basename(process.env.PRISM_TEST_FLOW):process.env.PRISM_TEST_PRIVATE_PUBLIC==='1'?'../test/private-public-flow.cjs':restartTest?'../test/restart-flow.cjs':process.env.PRISM_TEST_COMPATIBILITY==='1'?'../test/compatibility-flow.cjs':process.env.PRISM_PERFORMANCE==='1'?'../test/performance-flow.cjs':process.env.PRISM_TEST_CREDENTIALS==='1'?'../test/credentials-flow.cjs':process.env.PRISM_TEST_RECOVERY==='1'?'../test/recovery-flow.cjs':process.env.PRISM_TEST_BASICS==='1'?'../test/basics-flow.cjs':process.env.PRISM_BENCHMARK==='1'?'../test/benchmark.cjs':process.env.PRISM_TEST_STORE==='1'?'../test/store.cjs':'../test/smoke.cjs').run({app,win,makeTab,selectTab,sleepTab,archiveIdle,spectrum,warmFavoriteIcons,pip:()=>pip,media:()=>media,commandBar:()=>commandBar,peek:()=>peek,library:()=>library,enforceAwakeBudget,action,snapshot,tabs,settings,services,passwords,autofill,wallet,ai,toolWindows,inspector,sessionStore,captureScroll,restoreSession,dispose,privateController:()=>privateNetwork,normalNetwork:()=>normalNetwork,sidePanels:()=>sidePanels,showWhatsNew,whatsNewWindow:()=>whatsNewWindow,checkWhatsNew,passkeys:()=>passkeys,setNaturalScroll:value=>{naturalScroll=value;emit();},setUpdateOverride:value=>{updateOverride=value;emit();}}).catch(error=>{console.error(error);app.exit(1);});
 });
 app.on('second-instance',()=>{if(win){if(win.isMinimized())win.restore();win.show();win.focus();}});
 app.on('window-all-closed',()=>app.quit());

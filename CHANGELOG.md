@@ -2,6 +2,17 @@
 
 All notable changes to Prism, newest first. Downloads are on the [Releases page](https://github.com/batuarchv/Prism-Browser/releases).
 
+## 0.39.4 — Favorite icons are back
+
+### New
+- **Favorites show their icons again.** The sidebar's Favorites could show just a letter for every site, even though Prism had their icons saved. When Prism was busy as it opened (Shield loading its lists, the bypass connecting, an update check), the icons were sent to the window before it was ready for them and never sent again. Prism now waits until the window has loaded, then sends all of them, so the icons are there every time you open Prism.
+
+### Improved
+- **Icons for every favorite, even ones you haven't opened.** Favorites saved by an older Prism, or never opened since, get their site's icon in the background. Sites that only name their icon inside the page (often on a separate server) now get it too, and a site that couldn't be reached when Prism opened is tried again later. A letter is only shown when a site really has no icon.
+
+### Install notes
+This beta is **ad-hoc signed and not notarized by Apple**. The first time you open it, macOS may say it can't verify the developer: right-click (or Control-click) Prism in Applications and choose **Open**, then **Open** again. Apple Silicon (arm64) only.
+
 ## 0.39.3 — Preview cards back, steadier swipes
 
 ### New

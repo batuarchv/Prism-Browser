@@ -14,8 +14,12 @@ function budgetCandidates(tabs,activeId,now=Date.now()){
 // Site icons and preview cards travel to the window only when they change, and since 0.35 only the ones that changed:
 // a new favicon or card no longer resends every stored picture. A change of space kind (normal / Private) or a reset
 // sends the full set.
-function createStateTransport(){let previous,sent=null;const kind=key=>String(key).split('-')[0];
- return {reset(){previous=undefined;sent=null;},prepare(state){const key=state.imageRevision;const {images,...rest}=state;if(previous===key)return rest;
+// A window's transport can start held (0.39.4): nothing is sent while its page loads, because a state that arrives
+// before the page listens is lost, yet counted as sent, so the window then got only later changes and every favorite
+// showed its letter. open() (on did-finish-load) sends the full set to the loaded page.
+function createStateTransport({held=false}={}){let previous,sent=null;const kind=key=>String(key).split('-')[0];
+ return {reset(){previous=undefined;sent=null;},hold(){held=true;previous=undefined;sent=null;},open(){held=false;previous=undefined;sent=null;},get held(){return held;},
+  prepare(state){if(held)return null;const key=state.imageRevision;const {images,...rest}=state;if(previous===key)return rest;
   const full=!sent||previous===undefined||kind(previous)!==kind(key);previous=key;
   if(full){sent={...images};return state;}
   const set={},del=[];for(const [k,v] of Object.entries(images||{}))if(sent[k]!==v)set[k]=v;for(const k of Object.keys(sent))if(!(k in (images||{})))del.push(k);sent={...images};
