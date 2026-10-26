@@ -4,10 +4,14 @@
 // Built into gesture-preload.cjs with swipe-tracker.js (scripts/build-preload.cjs); registered for normal and Private
 // tabs by main.cjs, which checks the setting, macOS "Swipe between pages" and the history, and navigates.
 // Nothing is exposed to the page (isolated world).
+// 0.39.3: follows the fingers whether or not natural scrolling is on, draws at most once per frame, and works over
+// iframes (a video, a map or a page that is all one frame): frame preloads only run in the top frame, so main.cjs adds
+// a small forwarder to each frame that passes its sideways wheel events up here.
 const {ipcRenderer}=require('electron');
 if(process.isMainFrame)(()=>{
  const THRESHOLD=80;
- let nav={enabled:false,back:false,forward:false,reduceMotion:false},host=null,bubble=null,shown=null;
+ let nav={enabled:false,back:false,forward:false,reduceMotion:false,natural:true},host=null,bubble=null,shown=null;
+ const sign=()=>nav.natural===false?-1:1; // DOM deltaX follows the content, not the fingers, when natural scrolling is off
  const paint=()=>{if(!host)return;if(/^#[0-9a-f]{6}$/i.test(nav.accent||''))host.style.setProperty('--accent',nav.accent);host.toggleAttribute('data-dark',!!nav.dark);};
  const refresh=()=>ipcRenderer.invoke('prism-swipe',{type:'query'}).then(r=>{if(r){nav=r;paint();}}).catch(()=>{});
  refresh();addEventListener('pageshow',refresh);addEventListener('popstate',refresh);addEventListener('hashchange',refresh);addEventListener('focus',refresh);
@@ -33,19 +37,25 @@ if(process.isMainFrame)(()=>{
   const ns='http://www.w3.org/2000/svg',svg=document.createElementNS(ns,'svg'),path=document.createElementNS(ns,'path');svg.setAttribute('viewBox','0 0 24 24');path.setAttribute('d','M15 5l-7 7 7 7');svg.append(path);bubble.append(svg);root.append(bubble);document.documentElement.append(host);}
  const reduced=()=>nav.reduceMotion||matchMedia('(prefers-reduced-motion: reduce)').matches;
  // The arrow slides in from its edge with the fingers and turns blue once releasing would navigate.
+ let frame=0,pendingOffset=0;
+ function draw(offset){pendingOffset=offset;if(!frame)frame=requestAnimationFrame(()=>{frame=0;render(pendingOffset);});}
  function render(offset){const dir=offset>0?'back':'forward';if(!nav.enabled||!nav[dir]||!offset){hide();return;}
   ensure();const p=Math.min(1,Math.abs(offset)/THRESHOLD),x=reduced()?0:-52+60*Math.min(1.15,p);
   if(shown!==dir){bubble.className='b '+dir;bubble.style.left=dir==='back'?'0':'';bubble.style.right=dir==='forward'?'0':'';shown=dir;}
   bubble.style.transform=`translateX(${dir==='back'?x:-x}px) scale(${.85+.15*p})`;bubble.style.opacity=String(reduced()?(p>=1?1:.6):Math.min(1,p*2));bubble.classList.toggle('on',p>=1);}
- function hide(){if(!bubble||!shown)return;bubble.classList.add('out');bubble.style.opacity='0';const back=shown==='back';if(!reduced())bubble.style.transform=`translateX(${back?-52:52}px) scale(.85)`;shown=null;setTimeout(()=>bubble?.classList.remove('out'),180);}
- let target=null;
+ function hide(){if(frame){cancelAnimationFrame(frame);frame=0;}if(!bubble||!shown)return;bubble.classList.add('out');bubble.style.opacity='0';const back=shown==='back';if(!reduced())bubble.style.transform=`translateX(${back?-52:52}px) scale(.85)`;shown=null;setTimeout(()=>bubble?.classList.remove('out'),180);}
+ // Where the wheel events come from: an element of this page, or a frame (which says whether it can scroll sideways).
+ let target=null,fromFrame=null;
  const swipe=PrismSwipe.createSwipe({threshold:THRESHOLD,
-  accept:dir=>nav.enabled&&!scrollsX(target,-dir),
-  move:render,
+  accept:dir=>{if(!nav.enabled)return false;const content=-dir*sign();return fromFrame?!(content>0?fromFrame.r:fromFrame.l):!scrollsX(target,content);},
+  move:draw,
   end:dir=>{const name=dir>0?'back':'forward';if(dir&&nav[name]){bubble?.classList.add('on');ipcRenderer.invoke('prism-swipe',{type:'go',dir:name}).catch(()=>{});}hide();setTimeout(refresh,300);}});
  addEventListener('wheel',event=>{
   if(!event.isTrusted||event.ctrlKey)return; // pinch-to-zoom arrives as ctrl+wheel
-  target=event.target;if(event.defaultPrevented&&swipe.state==='pending'){swipe.cancel();return;} // the page handles the gesture
-  swipe.feed(event);
+  target=event.target;fromFrame=null;if(event.defaultPrevented&&swipe.state==='pending'){swipe.cancel();return;} // the page handles the gesture
+  swipe.feed({deltaX:event.deltaX*sign(),deltaY:event.deltaY,timeStamp:event.timeStamp});
  },{passive:true});
+ addEventListener('message',event=>{const d=event.data;if(event.source===window||!d||d.prismSwipeWheel!==1||!Number.isFinite(d.dx)||!Number.isFinite(d.dy))return;
+  fromFrame={l:!!d.l,r:!!d.r};if(d.prevented&&swipe.state==='pending'){swipe.cancel();return;}
+  swipe.feed({deltaX:d.dx*sign(),deltaY:d.dy,timeStamp:performance.now()});});
 })();

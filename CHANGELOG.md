@@ -2,6 +2,33 @@
 
 All notable changes to Prism, newest first. Downloads are on the [Releases page](https://github.com/batuarchv/Prism-Browser/releases).
 
+## 0.39.4 — Favorite icons are back
+
+### New
+- **Favorites show their icons again.** The sidebar's Favorites could show just a letter for every site, even though Prism had their icons saved. When Prism was busy as it opened (Shield loading its lists, the bypass connecting, an update check), the icons were sent to the window before it was ready for them and never sent again. Prism now waits until the window has loaded, then sends all of them, so the icons are there every time you open Prism.
+
+### Improved
+- **Icons for every favorite, even ones you haven't opened.** Favorites saved by an older Prism, or never opened since, get their site's icon in the background. Sites that only name their icon inside the page (often on a separate server) now get it too, and a site that couldn't be reached when Prism opened is tried again later. A letter is only shown when a site really has no icon.
+
+### Install notes
+This beta is **ad-hoc signed and not notarized by Apple**. The first time you open it, macOS may say it can't verify the developer: right-click (or Control-click) Prism in Applications and choose **Open**, then **Open** again. Apple Silicon (arm64) only.
+
+## 0.39.3 — Preview cards back, steadier swipes
+
+### New
+- **Preview cards are back.** With Favorites set to Preview cards (Settings → Appearance), the new tab shows them again under the bar, with each page's picture from the top of the page. 0.39.0's quiet new tab had hidden them along with everything else. With Site icons the new tab stays quiet.
+- **A tab dragged onto Favorites gets its preview card at once**, instead of only after you visit it again.
+- **Swiping between spaces always lands.** A swipe on the sidebar sometimes slid the list away but stayed in the same space, when the window was busy or partly covered. The space now changes as soon as you let go, and the slide just follows.
+
+### Improved
+- **Swipe back and forward works over embedded frames.** Pages that are one big frame, or a video or map under the pointer, swipe like any other page. Sideways scrollers inside a frame still keep the swipe for themselves.
+- **One flick, one page.** The leftover momentum of a quick swipe no longer goes back a second time on the page it just went back to.
+- **Smoother and steadier.** The swipe arrow and the sidebar are drawn once per frame, a short hitch no longer ends a swipe halfway, and a very short swipe can't leave the arrow stuck on screen.
+- **Follows your fingers either way.** Swipes now go the right way when natural scrolling is turned off in macOS.
+
+### Install notes
+This beta is **ad-hoc signed and not notarized by Apple**. The first time you open it, macOS may say it can't verify the developer: right-click (or Control-click) Prism in Applications and choose **Open**, then **Open** again. Apple Silicon (arm64) only.
+
 ## 0.39.2 — Drag tabs to Favorites
 
 ### New
@@ -226,7 +253,7 @@ This release brings together everything from 0.25 to 0.31.
 - **Faster page loads from the address bar.** Prism connects to the site you're most likely going to while you type.
 - **Accessibility.** VoiceOver hears whether a popover is open, focus returns to its button after Esc, and the tab list works with the arrow keys and ⇧F10.
 
-### Fixed
+### New
 - **Swiping between spaces** is smooth again: a second swipe right after the first is no longer ignored, slowing down mid-swipe no longer snaps back, and the old space no longer flashes.
 - **Uploading files** on sites that use the newer file picker works again.
 - **Busy pages** that keep changing their title no longer make the sidebar redraw several times a second, and history is saved in batches.
@@ -259,7 +286,7 @@ This release brings together everything from 0.25 to 0.31.
 - **Space colours.** The current space's colour tints the accent and, faintly, the sidebar.
 - **The logo turns with you.** Each time you switch spaces, the glass logo in the corner turns 60° in 3D.
 
-### Fixed
+### New
 - **Uploading files.** Upload buttons on sites that use the newer file picker did nothing after you chose a file. They work now.
 
 ## 0.29.0 — Spaces you make your own
@@ -270,7 +297,7 @@ This release brings together everything from 0.25 to 0.31.
 - **Space colours.** The current space's colour tints the accent and, faintly, the sidebar.
 - **The logo turns with you.** Each time you switch spaces, the glass logo in the corner turns 60° in 3D.
 
-### Fixed
+### New
 - **Uploading files.** Upload buttons on sites that use the newer file picker did nothing after you chose a file. They work now.
 
 ## 0.28.1 — Picture in Picture in site controls
@@ -434,7 +461,7 @@ Validation: 115 unit tests and the isolated smoke suite pass; every new flow was
 
 ## 0.23.0 — working copy buttons, censorship bypass, quick feedback
 
-### Fixed
+### New
 - **Copy buttons on websites work.** Pages can write to the clipboard after a click, as in Chrome. Reading the clipboard asks first and is remembered per site (Settings → Site permissions).
 - **Instagram no longer crashes Prism.** Opening the Instagram app window crashed the whole browser; it now opens Instagram's mobile site normally.
 - **Bypass censorship (formerly "Zapret") works on DNS-blocked sites.** Private now looks up sites over encrypted DNS (Cloudflare, Google) while the bypass runs, so sites blocked by DNS — as well as by packet inspection — open in Private. Verified on a site blocked by both on a Turkish ISP connection.

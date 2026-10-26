@@ -98,10 +98,21 @@ const popupWindows=new Set();let lastEmit=0;
   try{const response=await ses.fetch(iconURL,{credentials:'omit',signal:AbortSignal.timeout(5000)});if(!response.ok)return;const reader=response.body.getReader();const parts=[];let size=0;while(true){const {done,value}=await reader.read();if(done)break;size+=value.byteLength;if(size>256000){await reader.cancel();return;}parts.push(Buffer.from(value));}storeIcon(url,Buffer.concat(parts));changedImages();emit();}catch{}finally{pendingIcons.delete(url);}
  }
  // Favorites and pinned bookmarks get their icon without waiting for a visit (0.35): the site's own favicon is asked
- // for in the background, two at a time, without cookies.
- const iconTried=new Set();
- async function warmIcons(urls){if(privateMode)return;const origins=[...new Set(urls.map(u=>{try{const x=new URL(u);return /^https?:$/.test(x.protocol)?x.origin:null;}catch{return null;}}).filter(o=>o&&!images[o]?.icon&&!iconTried.has(o)))].slice(0,60);for(const o of origins)iconTried.add(o);
-  const next=async()=>{while(origins.length){const origin=origins.shift();for(const file of ['/apple-touch-icon.png','/favicon.ico']){if(images[origin]?.icon)break;try{const response=await ses.fetch(origin+file,{credentials:'omit',signal:AbortSignal.timeout(5000)});const type=response.headers.get('content-type')||'';if(!response.ok||/text\/html/.test(type))continue;const buffer=Buffer.from(await response.arrayBuffer());if(buffer.length>256000)continue;const before=images[origin]?.icon;storeIcon(origin,buffer);if(images[origin]?.icon&&images[origin].icon!==before){changedImages();emit();}}catch{}}}};
+ // for in the background, two at a time, without cookies. Since 0.39.4 a site whose icon is not at a fixed address
+ // (only declared by <link rel=icon> in its page, often on a CDN) gets that one, and a site that failed (offline at
+ // launch) is tried again after 20 minutes instead of never again until Prism restarts.
+ const iconTried=new Map();
+ async function readIcon(url){const response=await ses.fetch(url,{credentials:'omit',signal:AbortSignal.timeout(5000)});const type=response.headers.get('content-type')||'';if(!response.ok||/text\/html/.test(type))return null;const buffer=Buffer.from(await response.arrayBuffer());return buffer.length&&buffer.length<=256000?buffer:null;}
+ async function declaredIcons(origin){const response=await ses.fetch(origin+'/',{credentials:'omit',signal:AbortSignal.timeout(6000)});if(!response.ok||!/text\/html/.test(response.headers.get('content-type')||''))return [];
+  const html=(await response.text()).slice(0,400000),found=[];
+  for(const tag of html.match(/<link\b[^>]*>/gi)||[]){const rel=/\brel\s*=\s*["']?([^"'>]+)/i.exec(tag)?.[1]?.toLowerCase()||'',href=/\bhref\s*=\s*(?:"([^"]*)"|'([^']*)'|([^\s>]+))/i.exec(tag);if(!/(^|\s)(icon|apple-touch-icon(-precomposed)?)(\s|$)/.test(rel)||!href)continue;
+   const value=(href[1]??href[2]??href[3]).replace(/&amp;/g,'&');if(/\.svg(\?|$)|^data:image\/svg/i.test(value))continue;try{const url=new URL(value,response.url||origin+'/');if(/^(https?|data):$/.test(url.protocol))found.push({url:url.href,touch:rel.includes('apple'),size:Math.max(0,...(/\bsizes\s*=\s*["']?(\d+)/i.exec(tag)?.slice(1).map(Number)||[0]))});}catch{}}
+  return found.sort((a,b)=>Number(b.touch)-Number(a.touch)||b.size-a.size).map(x=>x.url).slice(0,4);}
+ async function warmIcons(urls){if(privateMode)return;const now=Date.now();const origins=[...new Set(urls.map(u=>{try{const x=new URL(u);return /^https?:$/.test(x.protocol)?x.origin:null;}catch{return null;}}).filter(o=>o&&!images[o]?.icon&&now-(iconTried.get(o)||0)>20*60000))].slice(0,60);for(const o of origins)iconTried.set(o,now);
+  const store=(origin,buffer)=>{const before=images[origin]?.icon;storeIcon(origin,buffer);if(images[origin]?.icon&&images[origin].icon!==before){changedImages();emit();}};
+  const next=async()=>{while(origins.length){const origin=origins.shift();
+   for(const file of ['/apple-touch-icon.png','/favicon.ico']){if(images[origin]?.icon)break;try{const buffer=await readIcon(origin+file);if(buffer)store(origin,buffer);}catch{}}
+   if(!images[origin]?.icon)try{for(const url of await declaredIcons(origin)){if(images[origin]?.icon)break;try{const buffer=url.startsWith('data:')?nativeImage.createFromDataURL(url).toPNG():await readIcon(url);if(buffer?.length)store(origin,buffer);}catch{}}}catch{}}};
   await Promise.all([next(),next()]);}
  const thumbnailTimes=new Map(),pendingThumbnails=new Map();let imageGeneration=0;
  async function thumbnail(tab){if(settings.favoriteStyle!=='cards'||!tab.view||tab.loading||tab.space==='private')return;const url=tab.url,wc=tab.view.webContents,generation=imageGeneration;

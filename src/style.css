@@ -38,7 +38,12 @@ header{height:44px;display:flex;align-items:center;gap:5px;padding:0 17px 0 12px
 #welcome,#preferences{position:absolute;inset:44px 6px 6px 0;border:1px solid var(--line);border-radius:var(--panel-radius);background:var(--surface);overflow:hidden}
 #welcome{display:flex;align-items:center;justify-content:center;padding:36px;overflow-y:auto;scrollbar-width:thin;scrollbar-color:var(--line) transparent}
 .welcome-content{width:100%;max-width:700px;max-height:100%;margin:auto;text-align:center}.welcome-logo{width:104px;height:104px;object-fit:contain;margin:0 auto 10px;display:block}.welcome-wordmark{width:132px;height:32px;object-fit:contain;display:block;margin:0 auto 30px}
-.welcome-content h1,.ambient,.eyebrow,.welcome-content>p,.welcome-footer,.shortcuts,#welcome .home-favorites{display:none}
+.welcome-content h1,.ambient,.eyebrow,.welcome-content>p,.welcome-footer,.shortcuts{display:none}
+/* 0.39.0's quiet new tab keeps site icons in the sidebar only; Preview cards (Settings → Appearance) are the one place
+   page previews show, so the new tab keeps them, under the bar (0.39.3). */
+#welcome .home-favorites:not(.cards){display:none}
+#welcome .home-favorites.cards{grid-template-columns:repeat(auto-fit,minmax(150px,220px));justify-content:center;margin-top:22px}
+.favorite-preview>img:not(.site-icon){object-position:top}
 .search{display:flex;align-items:center;gap:12px;height:48px;width:100%;max-width:540px;margin:0 auto 32px;padding:0 10px 0 17px;text-align:left;background:var(--raised);border:1px solid var(--line);border-radius:12px;box-shadow:0 4px 18px #00000004}
 .search>span{display:flex;color:var(--muted)}.search input{border:0;background:transparent;flex:1;outline:none}.search:focus-within{border-color:var(--accent)}.search button{width:30px;height:30px;display:grid;place-items:center;color:var(--muted)}
 .home-favorites{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;width:100%;margin:0 auto;text-align:left}.home-favorites:empty{display:none}
