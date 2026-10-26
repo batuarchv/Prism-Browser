@@ -82,23 +82,30 @@
 // fingers 1:1 (with a rubber band past the first and last space); on release a long enough swipe or a flick slides on
 // to the neighbouring space (fingers left: the next one in the switcher, fingers right: the previous one), otherwise
 // it springs back. Vertical scrolling of the tab list is left alone; Trackpad gestures in Settings turns it off.
+// 0.39.3: a committed swipe switches at once instead of after the slide-out animation, which a busy or covered window
+// can pause or cancel (the space then never changed); the list is drawn once per frame and follows the fingers with
+// natural scrolling on or off.
 (()=>{if(new URLSearchParams(location.search).has('tool'))return;const side=document.getElementById('sidebar');if(!side)return;
- let state=null,list=null,width=260,pending=null;window.prism.onState(s=>{state=s;if(pending&&s.space===pending.id)pending=null;});
+ let state=null,list=null,width=260,pending=null,frame=0,offsetNow=0;window.prism.onState(s=>{state=s;if(pending&&s.space===pending.id)pending=null;});
  const here=()=>pending&&performance.now()-pending.at<1500?pending.id:state.space;
  const order=()=>[...$('space-picker').options].map(o=>o.value),neighbour=offset=>{const o=order();return o[o.indexOf(here())+(offset<0?1:-1)];};
  const reduced=()=>document.documentElement.dataset.motion==='reduced'||matchMedia('(prefers-reduced-motion: reduce)').matches;
  const place=offset=>{if(!list)return;const x=neighbour(offset)?offset:Math.sign(offset)*Math.pow(Math.abs(offset),.7)*1.6;list.style.transform=x?`translateX(${x}px)`:'';list.style.opacity=String(1-Math.min(.55,Math.abs(x)/width*.8));};
+ const draw=offset=>{offsetNow=offset;if(!frame)frame=requestAnimationFrame(()=>{frame=0;place(offsetNow);});};
  const swipe=PrismSwipe.createSwipe({threshold:70,
   accept:()=>!!state?.settings.trackpadGestures,
   start:()=>{list=document.querySelector('#sidebar .sidebar-scroll');width=side.clientWidth||260;for(const a of list?.getAnimations()||[])a.cancel();},
-  move:offset=>{if(!reduced())place(offset);},
-  end:(dir,offset)=>{const next=dir?neighbour(offset):null,el=list;list=null;if(!el)return;
-   const from=el.style.transform||'translateX(0)',fromOpacity=el.style.opacity||'1';el.style.transform='';el.style.opacity='';
+  move:offset=>{if(!reduced())draw(offset);},
+  end:(dir,offset)=>{if(frame){cancelAnimationFrame(frame);frame=0;}if(list&&!reduced())place(offset);const next=dir?neighbour(offset):null,el=list;list=null;
    if(next){window.prismSpaceSwipe={dir:Math.sign(offset),width:width*.6}; // the new space comes in from the side the fingers left
-    if(reduced()){act('space',next);return;}
-    pending={id:next,at:performance.now()};const out=el.animate([{transform:from,opacity:fromOpacity},{transform:`translateX(${Math.sign(offset)*width*.6}px)`,opacity:.2}],{duration:110,easing:'ease-in',fill:'forwards'});
-    out.finished.then(()=>{act('space',next);setTimeout(()=>{if(out.playState==='finished')out.cancel();},800);},()=>{pending=null;});}
-   else if(from!=='translateX(0)')el.animate([{transform:from,opacity:fromOpacity},{transform:'none',opacity:1}],{duration:240,easing:'cubic-bezier(.2,.9,.3,1.1)'});}});
+    pending={id:next,at:performance.now()};act('space',next);
+    if(!el||reduced()){if(el){el.style.transform='';el.style.opacity='';}return;}
+    // Slide on while the new space loads; its arrival (above) cancels this and slides the new list in.
+    const from=el.style.transform||'translateX(0)',fromOpacity=el.style.opacity||'1';el.style.transform='';el.style.opacity='';
+    const out=el.animate([{transform:from,opacity:fromOpacity},{transform:`translateX(${Math.sign(offset)*width*.6}px)`,opacity:.2}],{duration:110,easing:'ease-in',fill:'forwards'});
+    setTimeout(()=>{if(out.playState!=='idle')out.cancel();},700);return;}
+   if(!el)return;const from=el.style.transform||'translateX(0)',fromOpacity=el.style.opacity||'1';el.style.transform='';el.style.opacity='';
+   if(from!=='translateX(0)'&&!reduced())el.animate([{transform:from,opacity:fromOpacity},{transform:'none',opacity:1}],{duration:280,easing:'cubic-bezier(.2,.9,.3,1.1)'});}});
  side.addEventListener('wheel',event=>{if(event.ctrlKey||event.target.closest('input,textarea,select,[contenteditable]'))return;
-  if(swipe.feed(event)==='track')event.preventDefault();},{passive:false});
+  const natural=state?.naturalScroll!==false;if(swipe.feed({deltaX:natural?event.deltaX:-event.deltaX,deltaY:event.deltaY,timeStamp:event.timeStamp})==='track')event.preventDefault();},{passive:false});
 })();

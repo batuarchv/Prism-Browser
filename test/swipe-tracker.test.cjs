@@ -28,3 +28,14 @@ test('a second swipe right after the first one\'s momentum is picked up without 
 test('fingers that slow down briefly are not taken as lifted',()=>{
  const {ends}=run([-10,-12,-12,-11,-10,-9.5,-12,-12,-12]);assert.equal(ends.length,0);
 });
+test('the tail of an earlier swipe\'s momentum never commits on its own (no double back)',async()=>{
+ const tail=Array.from({length:30},(_,i)=>-22*Math.pow(.9,i));const {ends}=run(tail);await delay(150);assert.ok(ends.every(e=>e.dir===0),'momentum alone does not navigate');
+});
+test('a swipe that locks on its last event still ends, so nothing stays half-swiped',async()=>{
+ const {ends}=run([-3,-2,-30]);assert.equal(ends.length,0);await delay(160);assert.equal(ends.length,1);
+});
+test('a short stall in the event stream does not end the swipe halfway',async()=>{
+ const ends=[];const s=createSwipe({threshold:80,end:dir=>ends.push(dir)});let t=1000;
+ for(const d of [-10,-12,-12])s.feed({deltaX:d,timeStamp:t+=16});await delay(100);t+=100;for(const d of [-12,-12,-12,-12])s.feed({deltaX:d,timeStamp:t+=16});
+ assert.equal(ends.length,0,'still tracking after a 100 ms stall');await delay(160);assert.deepEqual(ends,[1]);
+});

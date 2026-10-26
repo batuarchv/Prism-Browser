@@ -3,30 +3,36 @@
 // Two-finger trackpad swipes from wheel events, shared by the page swipe (gesture-preload.cjs, built in by
 // scripts/build-preload.cjs) and the sidebar space swipe (sidebar-ui.js). Wheel events carry no finger phase, so:
 // a pause of GAP ms starts a new gesture; the first few pixels lock it to an axis; the content follows the fingers
-// (offset = −ΣdeltaX: positive when the fingers move right); and the fingers are taken as lifted when the deltas
-// start decaying like macOS momentum, or stop. It then commits on distance, or on a quick flick.
+// (offset = −ΣdeltaX: positive when the fingers move right; callers flip deltaX when natural scrolling is off); and the
+// fingers are taken as lifted when the deltas start decaying like macOS momentum, or stop. It then commits on distance,
+// or on a quick flick.
+// 0.39.3: a gesture that only ever decays is the tail of an earlier swipe's momentum (for instance arriving on the page
+// that swipe just went back to) and never commits, so one flick can't go back twice; and the fingers count as resting
+// only after QUIET ms without events, so a busy renderer doesn't end a swipe halfway.
 (function(root){
- const GAP=180,LOCK=6,QUIET=90;
+ const GAP=220,LOCK=6,QUIET=120;
  function createSwipe({threshold=90,flick=.9,accept=()=>true,start=()=>{},move=()=>{},end=()=>{}}={}){
-  let state='idle',ax=0,ay=0,offset=0,last=-Infinity,samples=[],timer=0,peak=0,lastAbs=0;
+  let state='idle',ax=0,ay=0,offset=0,last=-Infinity,samples=[],timer=0,peak=0,lastAbs=0,prevX=0,steady=0,fingers=false;
   function release(){if(state!=='track')return;clearTimeout(timer);state='done';
    const now=samples.length?samples[samples.length-1][0]:0,recent=samples.filter(([t])=>t>=now-70&&t<=now),v=recent.length>1?recent.reduce((s,[,d])=>s+d,0)/Math.max(16,now-recent[0][0]):0;
-   const dir=Math.sign(offset),commit=Math.abs(offset)>=threshold||(Math.abs(v)>flick&&Math.sign(v)===dir&&Math.abs(offset)>=threshold*.25);
+   const dir=Math.sign(offset),commit=fingers&&(Math.abs(offset)>=threshold||(Math.abs(v)>flick&&Math.sign(v)===dir&&Math.abs(offset)>=threshold*.25));
    end(commit?dir:0,offset,v);}
   // Momentum: the last five deltas shrink smoothly (each 60–98.5% of the one before) well below the peak, so fingers
   // that only slow down for a moment are not taken as lifted.
   function decaying(){if(samples.length<6)return false;const d=samples.slice(-5).map(([,x])=>Math.abs(x));
    for(let i=1;i<5;i++){const r=d[i]/(d[i-1]||1);if(!(r<.985&&r>.6))return false;}return d[4]<peak*.7;}
+  // Fingers on the trackpad: the deltas clearly grow at some point, or hold steady for a few events. Momentum only shrinks.
+  function note(dx){const a=Math.abs(dx);if(!a)return;if(prevX){if(a>prevX+Math.max(1,prevX*.05))fingers=true;steady=a>=prevX*.985?steady+1:0;if(steady>=3)fingers=true;}prevX=a;}
   function feed({deltaX=0,deltaY=0,timeStamp=performance.now()}={}){
    // A new swipe can start while the last one's momentum is still arriving (no pause between them): momentum only
    // ever shrinks, so deltas that suddenly grow again are fingers back on the trackpad.
    const abs=Math.abs(deltaX)+Math.abs(deltaY),regrow=state==='done'&&abs>=4&&abs>lastAbs*1.8;lastAbs=abs;
-   if(timeStamp-last>GAP||regrow){if(state==='track')release();state='pending';ax=ay=offset=peak=0;samples=[];}
+   if(timeStamp-last>GAP||regrow){if(state==='track')release();state='pending';ax=ay=offset=peak=prevX=steady=0;fingers=regrow;samples=[];}
    last=timeStamp;
-   if(state==='pending'){ax+=deltaX;ay+=deltaY;if(Math.abs(ax)+Math.abs(ay)<LOCK)return state;
-    if(Math.abs(ax)>Math.abs(ay)*1.2&&accept(Math.sign(-ax))){state='track';offset=-ax;peak=Math.abs(ax);samples=[[timeStamp,-ax]];start(offset);move(offset);}else state='skip';return state;}
+   if(state==='pending'){ax+=deltaX;ay+=deltaY;note(deltaX);if(Math.abs(ax)+Math.abs(ay)<LOCK)return state;
+    if(Math.abs(ax)>Math.abs(ay)*1.2&&accept(Math.sign(-ax))){state='track';offset=-ax;peak=Math.abs(ax);samples=[[timeStamp,-ax]];start(offset);move(offset);clearTimeout(timer);timer=setTimeout(release,QUIET);}else state='skip';return state;}
    if(state!=='track')return state;
-   offset-=deltaX;samples.push([timeStamp,-deltaX]);if(samples.length>24)samples.shift();peak=Math.max(peak,Math.abs(deltaX));move(offset);
+   offset-=deltaX;note(deltaX);samples.push([timeStamp,-deltaX]);if(samples.length>24)samples.shift();peak=Math.max(peak,Math.abs(deltaX));move(offset);
    clearTimeout(timer);if(decaying())release();else timer=setTimeout(release,QUIET);return state==='done'?'track':state;}
   return {feed,get state(){return state;},cancel(){clearTimeout(timer);state='done';}};
  }
@@ -40,10 +46,14 @@
 // Built into gesture-preload.cjs with swipe-tracker.js (scripts/build-preload.cjs); registered for normal and Private
 // tabs by main.cjs, which checks the setting, macOS "Swipe between pages" and the history, and navigates.
 // Nothing is exposed to the page (isolated world).
+// 0.39.3: follows the fingers whether or not natural scrolling is on, draws at most once per frame, and works over
+// iframes (a video, a map or a page that is all one frame): frame preloads only run in the top frame, so main.cjs adds
+// a small forwarder to each frame that passes its sideways wheel events up here.
 const {ipcRenderer}=require('electron');
 if(process.isMainFrame)(()=>{
  const THRESHOLD=80;
- let nav={enabled:false,back:false,forward:false,reduceMotion:false},host=null,bubble=null,shown=null;
+ let nav={enabled:false,back:false,forward:false,reduceMotion:false,natural:true},host=null,bubble=null,shown=null;
+ const sign=()=>nav.natural===false?-1:1; // DOM deltaX follows the content, not the fingers, when natural scrolling is off
  const paint=()=>{if(!host)return;if(/^#[0-9a-f]{6}$/i.test(nav.accent||''))host.style.setProperty('--accent',nav.accent);host.toggleAttribute('data-dark',!!nav.dark);};
  const refresh=()=>ipcRenderer.invoke('prism-swipe',{type:'query'}).then(r=>{if(r){nav=r;paint();}}).catch(()=>{});
  refresh();addEventListener('pageshow',refresh);addEventListener('popstate',refresh);addEventListener('hashchange',refresh);addEventListener('focus',refresh);
@@ -69,19 +79,25 @@ if(process.isMainFrame)(()=>{
   const ns='http://www.w3.org/2000/svg',svg=document.createElementNS(ns,'svg'),path=document.createElementNS(ns,'path');svg.setAttribute('viewBox','0 0 24 24');path.setAttribute('d','M15 5l-7 7 7 7');svg.append(path);bubble.append(svg);root.append(bubble);document.documentElement.append(host);}
  const reduced=()=>nav.reduceMotion||matchMedia('(prefers-reduced-motion: reduce)').matches;
  // The arrow slides in from its edge with the fingers and turns blue once releasing would navigate.
+ let frame=0,pendingOffset=0;
+ function draw(offset){pendingOffset=offset;if(!frame)frame=requestAnimationFrame(()=>{frame=0;render(pendingOffset);});}
  function render(offset){const dir=offset>0?'back':'forward';if(!nav.enabled||!nav[dir]||!offset){hide();return;}
   ensure();const p=Math.min(1,Math.abs(offset)/THRESHOLD),x=reduced()?0:-52+60*Math.min(1.15,p);
   if(shown!==dir){bubble.className='b '+dir;bubble.style.left=dir==='back'?'0':'';bubble.style.right=dir==='forward'?'0':'';shown=dir;}
   bubble.style.transform=`translateX(${dir==='back'?x:-x}px) scale(${.85+.15*p})`;bubble.style.opacity=String(reduced()?(p>=1?1:.6):Math.min(1,p*2));bubble.classList.toggle('on',p>=1);}
- function hide(){if(!bubble||!shown)return;bubble.classList.add('out');bubble.style.opacity='0';const back=shown==='back';if(!reduced())bubble.style.transform=`translateX(${back?-52:52}px) scale(.85)`;shown=null;setTimeout(()=>bubble?.classList.remove('out'),180);}
- let target=null;
+ function hide(){if(frame){cancelAnimationFrame(frame);frame=0;}if(!bubble||!shown)return;bubble.classList.add('out');bubble.style.opacity='0';const back=shown==='back';if(!reduced())bubble.style.transform=`translateX(${back?-52:52}px) scale(.85)`;shown=null;setTimeout(()=>bubble?.classList.remove('out'),180);}
+ // Where the wheel events come from: an element of this page, or a frame (which says whether it can scroll sideways).
+ let target=null,fromFrame=null;
  const swipe=PrismSwipe.createSwipe({threshold:THRESHOLD,
-  accept:dir=>nav.enabled&&!scrollsX(target,-dir),
-  move:render,
+  accept:dir=>{if(!nav.enabled)return false;const content=-dir*sign();return fromFrame?!(content>0?fromFrame.r:fromFrame.l):!scrollsX(target,content);},
+  move:draw,
   end:dir=>{const name=dir>0?'back':'forward';if(dir&&nav[name]){bubble?.classList.add('on');ipcRenderer.invoke('prism-swipe',{type:'go',dir:name}).catch(()=>{});}hide();setTimeout(refresh,300);}});
  addEventListener('wheel',event=>{
   if(!event.isTrusted||event.ctrlKey)return; // pinch-to-zoom arrives as ctrl+wheel
-  target=event.target;if(event.defaultPrevented&&swipe.state==='pending'){swipe.cancel();return;} // the page handles the gesture
-  swipe.feed(event);
+  target=event.target;fromFrame=null;if(event.defaultPrevented&&swipe.state==='pending'){swipe.cancel();return;} // the page handles the gesture
+  swipe.feed({deltaX:event.deltaX*sign(),deltaY:event.deltaY,timeStamp:event.timeStamp});
  },{passive:true});
+ addEventListener('message',event=>{const d=event.data;if(event.source===window||!d||d.prismSwipeWheel!==1||!Number.isFinite(d.dx)||!Number.isFinite(d.dy))return;
+  fromFrame={l:!!d.l,r:!!d.r};if(d.prevented&&swipe.state==='pending'){swipe.cancel();return;}
+  swipe.feed({deltaX:d.dx*sign(),deltaY:d.dy,timeStamp:performance.now()});});
 })();
