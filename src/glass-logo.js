@@ -17,7 +17,8 @@
  const BEAM_DIR=[1,0,.12].map(x=>x/Math.hypot(1,.12)),BEAM_FROM=[-1.4,0,.18];
  // The logo's face colours, next to this script (works from any page that loads it).
  const LOGO_URL=typeof document!=='undefined'&&document.currentScript?new URL('../assets/prism-mark-flat.png',document.currentScript.src).href:'';
- const reducedMotion=()=>document.documentElement.dataset.motion==='reduced'||matchMedia('(prefers-reduced-motion: reduce)').matches;
+ // Power saving (battery, Low Power Mode, a hot Mac; 0.40) rests the glass the same way Reduce Motion does.
+ const reducedMotion=()=>document.documentElement.dataset.motion==='reduced'||document.documentElement.dataset.power==='saving'||matchMedia('(prefers-reduced-motion: reduce)').matches;
  const isDark=()=>document.documentElement.dataset.theme==='dark';
 
  // ---- small vector/matrix helpers (column-major 4×4) ----
@@ -79,7 +80,7 @@
  const active=new Set();
  // Draws the glass on a canvas laid over the logo box `box` (the still image). Returns the controller.
  function mount(canvas,box,{intro=false,beam=true,yaw:startYaw=0,place='logo',interactive=true}={}){
-  const model=root.PrismGlassModel,gl=canvas.getContext('webgl2',{alpha:true,premultipliedAlpha:true,antialias:true});
+  const model=root.PrismGlassModel,gl=canvas.getContext('webgl2',{alpha:true,premultipliedAlpha:true,antialias:true,powerPreference:'low-power'});
   if(!gl||!gl.getExtension('EXT_color_buffer_float'))return null;
   const shader=(type,src)=>{const s=gl.createShader(type);gl.shaderSource(s,src);gl.compileShader(s);if(!gl.getShaderParameter(s,gl.COMPILE_STATUS))throw Error(gl.getShaderInfoLog(s));return s;};
   const program=(vs,fs)=>{const p=gl.createProgram();gl.attachShader(p,shader(gl.VERTEX_SHADER,vs));gl.attachShader(p,shader(gl.FRAGMENT_SHADER,fs));gl.linkProgram(p);if(!gl.getProgramParameter(p,gl.LINK_STATUS))throw Error(gl.getProgramInfoLog(p));return p;};
@@ -110,8 +111,11 @@
   let yaw=intro?-2.4:startYaw,offset=0,vel=0,dragging=null,lastUser=-1e9,beamOn=beam,beamAmount=beam?1:0,raf=0,visible=true,onScreen=true,destroyed=false,last=performance.now(),frames=0,since=performance.now(),fps=0;
   // The logo's camera: rotation (rows) and translation map the pyramid into camera space (y down, z forward).
   const cam=model.camera,Rc=m3T(cam.rotation),viewRot=m3m(FLIP,Rc),tg=m3v(FLIP,cam.translation),toWorld=m3m(ZUP_TO_YUP,m3T(viewRot)),camDepth=cam.translation[2];
-  function size(){const r=box.getBoundingClientRect(),dpr=Math.min(2,devicePixelRatio||1),cw=r.width*SX,ch=r.height*SY;
-   canvas.style.width=cw+'px';canvas.style.height=ch+'px';canvas.style.left=(box.offsetLeft+box.offsetWidth/2-cw/2)+'px';canvas.style.top=(box.offsetTop+box.offsetHeight/2-ch/2)+'px';
+  // Reads the box first, then writes only what changed (0.40): a write before the offset reads forced a layout on
+  // every frame of a turn.
+  let placed='';
+  function size(){const r=box.getBoundingClientRect(),dpr=Math.min(2,devicePixelRatio||1),cw=r.width*SX,ch=r.height*SY,left=box.offsetLeft+box.offsetWidth/2-cw/2,top=box.offsetTop+box.offsetHeight/2-ch/2;
+   const key=cw+' '+ch+' '+left+' '+top;if(key!==placed){placed=key;canvas.style.width=cw+'px';canvas.style.height=ch+'px';canvas.style.left=left+'px';canvas.style.top=top+'px';}
    const w=Math.max(1,Math.round(cw*dpr)),h=Math.max(1,Math.round(ch*dpr));if(w!==W||h!==H){W=canvas.width=w;H=canvas.height=h;targets();}}
   function frame(now){raf=0;if(destroyed)return;const dt=Math.min(.05,(now-last)/1000);last=now;size();
    const reduced=reducedMotion();

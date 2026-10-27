@@ -75,5 +75,5 @@
  document.addEventListener('pointerdown',e=>{if(!card.hidden&&!root.contains(e.target))closeCard();},true);
  window.addEventListener('blur',closeCard);
  window.prism.onState(s=>{language=s.settings.language||'en';if(s.space==='private'||s.spectrum==null){root.hidden=true;closeCard();return;}if(s.spectrum!==revision||s.space!==shownSpace){revision=s.spectrum;shownSpace=s.space;refresh();}});
- setInterval(refresh,60000);document.addEventListener('visibilitychange',()=>{if(!document.hidden)refresh();});
+ setInterval(()=>{if(!document.hidden&&!root.hidden)refresh();},60000);document.addEventListener('visibilitychange',()=>{if(!document.hidden)refresh();});
 })();

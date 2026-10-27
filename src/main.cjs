@@ -4,8 +4,14 @@ const {budgetCandidates,createStateTransport}=require('./performance.cjs');
 const {visit,closedTabs,cleanURL}=require('./browsing.cjs');
 const {createPermissions}=require('./site-permissions.cjs');
 const recentlyClosed=closedTabs();let permissions;
+// Startup marks (0.40, wall-clock ms) read by test/perf-audit-flow.cjs: when each step of a launch first happened.
+const bootMarks={main:Date.now()};const bootMark=name=>{bootMarks[name]??=Date.now();};
+// 0.39.5: answers from pages are awaited for a bounded time. A busy, frozen or hung page used to keep a tab from closing,
+// Prism from quitting, and the sleep sweep stuck for good (so no tab ever slept again and memory kept growing).
+const within=(work,ms,fallback=null)=>Promise.race([Promise.resolve(work).catch(()=>fallback),new Promise(resolve=>{const t=setTimeout(()=>resolve(fallback),ms);t.unref?.();})]);
+const pageState=wc=>within(wc&&!wc.isDestroyed()?wc.executeJavaScriptInIsolatedWorld(999,[{code:tracker}]):null,1500);
 let find={open:false,query:'',matches:0,active:0,requestId:0};
-const {autoUpdater, app, BrowserWindow, WebContentsView, webContents, nativeImage, ipcMain, session, Menu, dialog, safeStorage, nativeTheme, systemPreferences, shell, clipboard, screen} = require('electron');
+const {autoUpdater, app, BrowserWindow, WebContentsView, webContents, nativeImage, ipcMain, session, Menu, dialog, safeStorage, nativeTheme, systemPreferences, shell, clipboard, screen, powerMonitor} = require('electron');
 const path = require('node:path');
 const fs = require('node:fs');
 const {normalizeAddress, canSleep} = require('./policy.cjs');
@@ -83,7 +89,7 @@ const {hostOf}=require('./spectrum.cjs');const spectrum=require('./spectrum.cjs'
 // (0.33.1) and the chapters changed, at most every five minutes, and never for Private. Without it, chapters are named from what their sites are for.
 let spectrumAsking=null,spectrumAskedAt=0,spectrumAskedKey='';
 function spectrumInsights(view){
- if(spectrumAsking||!ai||!view.chapters.length||view.insightsFresh||view.insightsKey===spectrumAskedKey&&Date.now()-spectrumAskedAt<30*60000||Date.now()-spectrumAskedAt<5*60000)return;
+ if(power.saving||spectrumAsking||!ai||!view.chapters.length||view.insightsFresh||view.insightsKey===spectrumAskedKey&&Date.now()-spectrumAskedAt<30*60000||Date.now()-spectrumAskedAt<5*60000)return;
  const chapters=spectrum.chapters(view.space),offset=Math.max(0,chapters.length-24),key=view.insightsKey;spectrumAskedAt=Date.now();spectrumAskedKey=key;
  const language={en:'English',tr:'Turkish',es:'Spanish',pt:'Portuguese',fr:'French',uk:'Ukrainian'}[settings.language]||'English';
  spectrumAsking=ai.describeDay({language,chapters:chapters.slice(offset).map(c=>({minutes:Math.max(1,Math.round(c.active/60000)),sites:c.sites.slice(0,5).map(s=>s.host),titles:c.titles.slice(0,6).map(x=>x.slice(0,80))}))})
@@ -101,12 +107,12 @@ function spectrumAction(name,value){
 function readPasskeys(){try{return fs.existsSync(passkeyFile)?JSON.parse(safeStorage.decryptString(fs.readFileSync(passkeyFile))):[];}catch{return [];}}let split=null;let tidyUndo=null;
 const profileFile=path.join(app.getPath('userData'),'profile.json');let profileExists=!smoke&&fs.existsSync(profileFile);let profile={name:'',email:'',theme:'Glacier',createdAt:null};if(!smoke)try{profile=normalizeProfile(JSON.parse(fs.readFileSync(profileFile,'utf8')));}catch{}
 const accounts=require('./accounts.cjs').createAccounts({file:path.join(app.getPath('userData'),'account-session.enc'),safeStorage});
-let gmailTimer,gmailGeneration=0;let memoryManager;let services,resizeWidth=null,closingApproved=false,restartRequested=false;
+let gmailTimer,gmailGeneration=0;let memoryManager;let services,resizeWidth=null,closingApproved=false,closingWindow=false,restartRequested=false;
 let library={bookmarks:[],folders:[],history:[],theme:'light',importReport:null}, overlay=false, importing=false;
 let htmlFullscreen=null;
 function exitPageFullscreen(){const wc=htmlFullscreen;htmlFullscreen=null;if(wc&&!wc.isDestroyed())wc.executeJavaScript('document.fullscreenElement ? document.exitFullscreen() : undefined').catch(()=>{});layout();}
 function allowFullscreen(wc){return !!wc&&!wc.isDestroyed()&&!overlay&&tabs.some(t=>t.id===activeId&&t.view?.webContents===wc)&&/^https?:/.test(wc.getURL());}
-let win, tabs = [], activeId = null, nextId = 1, timer,scrollTimer,restoringSession=true, glass = 'Frosted glass', quitting = false, instagramApp;
+let win, tabs = [], activeId = null, nextId = 1, timer,restoringSession=true, glass = 'Frosted glass', quitting = false, instagramApp;
 const storeFile = path.join(app.getPath('userData'), 'tabs.json');
 const sessionStore=createSessionStore({file:storeFile,enabled:!smoke||restartTest||process.env.PRISM_TEST_RECOVERY==='1',onError:()=>{console.warn('Prism could not save the session; the previous snapshot is retained.');emit();}});
 const libraryFile=path.join(app.getPath('userData'),'library.json');
@@ -141,6 +147,21 @@ const tracker = `(() => { if (!globalThis.__prismTracking) { globalThis.__prismT
  return {frames:document.querySelectorAll('iframe,frame').length>0, dirty: [...globalThis.__prismTyped].some(kept), pip:!!document.pictureInPictureElement, media: [...document.querySelectorAll('audio,video')].some(m => !m.paused && !m.ended)}; })()`;
 function accent(){const colors={sage:'#65826e',blue:'#507fad',violet:'#9275b5',rose:'#ad737c',graphite:'#747c86'};return colors[settings.tint]||'#'+systemPreferences.getAccentColor().slice(0,6);}
 function accessibility(){return {reduceTransparency:settings.reduceTransparency||nativeTheme.prefersReducedTransparency,highContrast:settings.highContrast||nativeTheme.shouldUseHighContrastColors};}
+// Power saving (0.40): on battery, in Low Power Mode or while macOS is running hot, background tabs sleep after half
+// their usual time (at least a minute), the glass logo rests instead of turning, favorite preview cards are not
+// captured and Spectrum does not ask Apple Intelligence or Claude to name chapters. Everything returns on power.
+// Electron has no Low Power Mode API, so `pmset -g` is read when the power source changes and when Prism becomes
+// active (at most every 30 s); nothing polls.
+const power={battery:false,lowPower:false,thermal:'nominal',readAt:0};
+function powerSaving(){return power.battery||power.lowPower||power.thermal==='serious'||power.thermal==='critical';}
+function powerChanged(){const before=power.saving;power.saving=powerSaving();if(before!==power.saving&&win)emit();}
+function readLowPower(force=false){if(!force&&Date.now()-power.readAt<30000)return;power.readAt=Date.now();require('node:child_process').execFile('/usr/bin/pmset',['-g'],{timeout:3000},(error,out)=>{if(error)return;power.lowPower=/^\s*lowpowermode\s+1\b/m.test(String(out));powerChanged();});}
+// Smoke runs behave as if plugged in (PRISM_TEST_POWER=real keeps the Mac's real power state): Electron 45 reports
+// battery power correctly where 44 said "on AC", so flows that check previews or the turning logo would fail on battery.
+function watchPower(){if(smoke&&process.env.PRISM_TEST_POWER!=='real')return;try{power.battery=powerMonitor.isOnBatteryPower();power.thermal=powerMonitor.getCurrentThermalState?.()||'nominal';}catch{}powerChanged();
+ for(const event of ['on-battery','on-ac'])powerMonitor.on(event,()=>{power.battery=event==='on-battery';powerChanged();readLowPower(true);});
+ powerMonitor.on('thermal-state-change',details=>{power.thermal=details?.state||power.thermal;powerChanged();});
+ app.on('did-become-active',()=>readLowPower());readLowPower(true);}
 function applyAppearance(){
   if(nativeTheme.themeSource!==settings.theme)nativeTheme.themeSource=settings.theme;
   if(!win||win.isDestroyed())return;
@@ -154,7 +175,7 @@ function applyPrivacyEverywhere(){const on=!!settings.privacyEverywhere;syncDns(
 function snapshot() {
   const active = tabs.find(t => t.id === activeId);
   const privateMode=space==='private';
-  return {naturalScroll,popover:{open:toolWindows?.visible()?toolWindows.section():null,returnTo:popoverReturn},account:privateMode?null:accounts.snapshot(),profile:privateMode?null:profile,split,inspecting:!!inspector?.isOpen(),ai:privateMode?null:ai?.snapshot(),updates:updateOverride||updater?.snapshot(),version:require('../package.json').version,blocking:blocker?.snapshot(active?.url,privateMode,active?.view?.webContents.id),space,privateNetwork:privateNetwork?.snapshot(),normalNetwork:normalNetwork?{...normalNetwork.snapshot(),hosts:siteBypass.hosts().length}:null,tabs: tabs.filter(t=>inSpace(t,space)).map(({view,recovery,restoring,scrollCapturePending,returns,linkClick,openedBy, ...t}) => ({...t,title:t.customTitle||t.title, sleeping: !view && !!t.url})), activeId, glass,settings:{...settings,extensions:undefined},system:{...accessibility(),dark:nativeTheme.shouldUseDarkColors,accent:privateMode?'#9275b5':accent(),hardwareAcceleration:launchHardwareAcceleration,gpu:app.getGPUFeatureStatus(),restartRequired:settings.hardwareAcceleration!==launchHardwareAcceleration||settings.leanMemory!==launchLeanMemory},extensions:privateMode?[]:services?.extensionRows()||[],sidePanel:privateMode?null:sidePanels?.snapshot()||null,downloads:(privateMode?privateServices:services)?.downloads()||[],imageRevision:privateMode?'private':'normal-'+(services?.imageRevision()||0),images:privateMode?{}:services?.images()||{},passwords:privateMode&&!settings.privatePasswords?{message:'Password vault is disabled in Private.'}:passwords?.status()||{},browserPartition:privateMode?'private-disabled':browserPartition,activeWebContentsId:privateMode?-1:active?.view?.webContents.id||-1,bookmarks:privateMode?[]:library.bookmarks,folders:privateMode?[]:library.folders,folderIcons:privateMode?{}:library.folderIcons||{},theme:library.theme,importReport:privateMode?null:library.importReport,importing,sessionRecovery:sessionStore.status(),recentlyClosed:privateMode?[]:recentlyClosed.list(space),spaceTabs:tabs.reduce((n,t)=>{const k=t.space||'personal';n[k]=(n[k]||0)+1;return n;},{}),
+  return {naturalScroll,popover:{open:toolWindows?.visible()?toolWindows.section():null,returnTo:popoverReturn},account:privateMode?null:accounts.snapshot(),profile:privateMode?null:profile,split,inspecting:!!inspector?.isOpen(),ai:privateMode?null:ai?.snapshot(),updates:updateOverride||updater?.snapshot(),version:require('../package.json').version,blocking:blocker?.snapshot(active?.url,privateMode,active?.view?.webContents.id),space,privateNetwork:privateNetwork?.snapshot(),normalNetwork:normalNetwork?{...normalNetwork.snapshot(),hosts:siteBypass.hosts().length}:null,tabs: tabs.filter(t=>inSpace(t,space)).map(({view,recovery,restoring,scrollCapturePending,returns,linkClick,openedBy, ...t}) => ({...t,title:t.customTitle||t.title, sleeping: !view && !!t.url})), activeId, glass,settings:{...settings,extensions:undefined},system:{...accessibility(),powerSaving:!!power.saving,dark:nativeTheme.shouldUseDarkColors,accent:privateMode?'#9275b5':accent(),hardwareAcceleration:launchHardwareAcceleration,gpu:app.getGPUFeatureStatus(),restartRequired:settings.hardwareAcceleration!==launchHardwareAcceleration||settings.leanMemory!==launchLeanMemory},extensions:privateMode?[]:services?.extensionRows()||[],sidePanel:privateMode?null:sidePanels?.snapshot()||null,downloads:(privateMode?privateServices:services)?.downloads()||[],imageRevision:privateMode?'private':'normal-'+(services?.imageRevision()||0),images:privateMode?{}:services?.images()||{},passwords:privateMode&&!settings.privatePasswords?{message:'Password vault is disabled in Private.'}:passwords?.status()||{},browserPartition:privateMode?'private-disabled':browserPartition,activeWebContentsId:privateMode?-1:active?.view?.webContents.id||-1,bookmarks:privateMode?[]:library.bookmarks,folders:privateMode?[]:library.folders,folderIcons:privateMode?{}:library.folderIcons||{},theme:library.theme,importReport:privateMode?null:library.importReport,importing,sessionRecovery:sessionStore.status(),recentlyClosed:privateMode?[]:recentlyClosed.list(space),spaceTabs:tabs.reduce((n,t)=>{const k=t.space||'personal';n[k]=(n[k]||0)+1;return n;},{}),
     find,designTheme,chromium: process.versions.chrome,chromiumCheck:chromiumCheck.snapshot(), live: tabs.filter(t => t.view).length,archived:privateMode?0:(library.archive||[]).filter(e=>e.space===space).length,spectrum:privateMode?null:spectrum.revision(),media:privateMode?null:media?.snapshot()||null,compactReveal,pip:pip?.snapshot()||null,
 
     canBack: !!active?.view?.webContents.navigationHistory.canGoBack(), canForward: !!active?.view?.webContents.navigationHistory.canGoForward()};
@@ -192,13 +213,16 @@ function restoreSession(saved){
   if(tabs.length)selectTab(tabs[Math.max(0,Math.min(saved?.activeIndex||0,tabs.length-1))].id);else makeTab();
  }finally{restoringSession=false;persist();}
 }
-const preconnected=new Map();function preconnect(url){try{const {protocol,origin}=new URL(url);if(!/^https?:$/.test(protocol)||Date.now()-(preconnected.get(origin)||0)<30000)return;preconnected.set(origin,Date.now());session.fromPartition(browserPartition).preconnect({url:origin,numSockets:1});}catch{}}
+const preconnected=new Map();function preconnect(url){try{const {protocol,origin}=new URL(url);if(!/^https?:$/.test(protocol)||Date.now()-(preconnected.get(origin)||0)<30000)return;preconnected.delete(origin);preconnected.set(origin,Date.now());if(preconnected.size>100)preconnected.delete(preconnected.keys().next().value);session.fromPartition(browserPartition).preconnect({url:origin,numSockets:1});}catch{}}
 let pageArea=null,popoverReturn=null,popoverSeq=0;
 // With the address bar in the sidebar (0.32) there is no toolbar above the page; a collapsed sidebar brings the toolbar back.
 // Compact mode (0.32, compact-ui.js): no toolbar and no sidebar until the pointer reaches the window's left edge; the
 // sidebar (with the address bar in it) then slides back and leaves again when the pointer does.
 let compactReveal=false;
 function toolbarTop(){return settings.compactMode||settings.addressBar==='sidebar'&&!settings.sidebarCollapsed?6:44;}
+// 0.40.1: tabs stay in the window's view tree and are only hidden again. Taking hidden tabs out of the tree (0.40.0)
+// made Prism crash and quit on its own.
+function showTabView(view,visible){view.setVisible(visible);}
 function layout() {
  if(!win||win.isDestroyed())return;
  const [w,h]=win.getContentSize(),left=(settings.compactMode?!compactReveal:settings.sidebarCollapsed)?6:Math.min(resizeWidth??settings.sidebarWidth,w-400);
@@ -209,7 +233,7 @@ function layout() {
  const pair=split?splitBounds(area,split.mode,split.ratio):null;
  const buttonY=15;if(win._prismButtonY!==buttonY){win.setWindowButtonPosition?.({x:22,y:buttonY});win._prismButtonY=buttonY;}
  const buttons=!(settings.compactMode&&!compactReveal);if(win._prismButtons!==buttons){win.setWindowButtonVisibility?.(buttons);win._prismButtons=buttons;}
- for(const t of tabs)if(t.view&&!t.pip){const full=htmlFullscreen===t.view.webContents;const visible=!overlay&&(htmlFullscreen?full:split?split.ids.includes(t.id):t.id===activeId);const bounds=full?{x:0,y:0,width:w,height:h}:pair&&split.ids.includes(t.id)?pair[split.ids.indexOf(t.id)]:area;const radius=full?0:10;if(t.view._prismRadius!==radius){t.view.setBorderRadius(radius);t.view._prismRadius=radius;}const key=JSON.stringify(bounds);if(visible&&t.view._prismBounds!==key){t.view.setBounds(bounds);t.view._prismBounds=key;}if(t.view._prismVisible!==visible){t.view.setVisible(visible);t.view._prismVisible=visible;}}
+ for(const t of tabs)if(t.view&&!t.pip){const full=htmlFullscreen===t.view.webContents;const visible=!overlay&&(htmlFullscreen?full:split?split.ids.includes(t.id):t.id===activeId);const bounds=full?{x:0,y:0,width:w,height:h}:pair&&split.ids.includes(t.id)?pair[split.ids.indexOf(t.id)]:area;const radius=full?0:10;if(t.view._prismRadius!==radius){t.view.setBorderRadius(radius);t.view._prismRadius=radius;}const key=JSON.stringify(bounds);if(visible&&t.view._prismBounds!==key){t.view.setBounds(bounds);t.view._prismBounds=key;}if(t.view._prismVisible!==visible){showTabView(t.view,visible);t.view._prismVisible=visible;}}
  sidePanels?.place(area,!overlay&&!htmlFullscreen&&space!=='private');peek?.follow();
  inspector?.layout({x:w-inspectorWidth-6,y:top+bar,width:Math.max(1,inspectorWidth),height:Math.max(1,h-top-6-bar)},!overlay&&!htmlFullscreen);
 }
@@ -255,6 +279,11 @@ function swipeRequest(event,value){const t=tabs.find(t=>t.view?.webContents===ev
  if(value?.type==='query'){const sp=settings.spaces.find(x=>x.id===t.space),hex=/^#[0-9a-f]{6}$/i.test(sp?.color||'')?sp.color:t.space==='private'?'#9275b5':accent();return {accent:hex,dark:nativeTheme.shouldUseDarkColors,enabled:swipeEnabled(),natural:naturalScroll,back:history.canGoBack(),forward:history.canGoForward(),reduceMotion:!!settings.reduceMotion||systemPreferences.getAnimationSettings().prefersReducedMotion};}
  if(value?.type==='go'&&swipeEnabled()){if(value.dir==='back'&&history.canGoBack())history.goBack();else if(value.dir==='forward'&&history.canGoForward())history.goForward();}
  return null;}
+// The window opens where it was last closed (0.40), if that place is still on a connected display; else at 1240×820.
+const frameFile=path.join(app.getPath('userData'),'window-frame.json');let frameTimer=null;
+function windowFrame(){const fallback={width:1240,height:820};if(smoke)return fallback;try{const f=JSON.parse(fs.readFileSync(frameFile,'utf8'));if(![f.x,f.y,f.width,f.height].every(Number.isFinite)||f.width<760||f.height<560)return fallback;
+ const area=screen.getDisplayMatching(f).workArea,overlap=Math.min(f.x+f.width,area.x+area.width)-Math.max(f.x,area.x)>=200&&Math.min(f.y+f.height,area.y+area.height)-Math.max(f.y,area.y)>=100;return overlap?{x:Math.round(f.x),y:Math.round(f.y),width:Math.round(f.width),height:Math.round(f.height)}:fallback;}catch{return fallback;}}
+function saveFrame(now=false){if(smoke||!win||win.isDestroyed()||win.isFullScreen()||win.isMinimized())return;clearTimeout(frameTimer);frameTimer=null;const write=()=>{try{fs.writeFileSync(frameFile,JSON.stringify(win.getNormalBounds()),{mode:0o600});}catch{}};if(now)write();else{frameTimer=setTimeout(()=>{frameTimer=null;if(win&&!win.isDestroyed())write();},1000);frameTimer.unref?.();}}
 let whatsNewWindow=null;
 function showWhatsNew(){
  if(whatsNewWindow&&!whatsNewWindow.isDestroyed()){whatsNewWindow.focus();return;}
@@ -274,7 +303,7 @@ function checkWhatsNew(){
  if(decision.record){settings.whatsNewSeen=decision.record;saveSettings();}
  if(decision.show&&!smoke)setTimeout(()=>{if(win&&!win.isDestroyed())showWhatsNew();},900);
 }
-function queueFavoriteThumbnail(t){if(t&&t.space!=='private'&&settings.favoriteStyle==='cards'&&library.bookmarks.some(b=>b.favorite&&b.url===t.url))setImmediate(()=>services?.thumbnail(t));}
+function queueFavoriteThumbnail(t){if(t&&!power.saving&&t.space!=='private'&&settings.favoriteStyle==='cards'&&library.bookmarks.some(b=>b.favorite&&b.url===t.url))setImmediate(()=>services?.thumbnail(t));}
 let externalLinks=null;const externalLinkHooks={prompt:p=>externalPrompt(p),open:url=>smoke?Promise.resolve():shell.openExternal(url,{activate:true})};
 // Hands app links (a sign-in page returning to myapp://…) to macOS after the user agrees; never navigates the tab to them.
 function openExternalLink(wc,url,isPrivate){if(!externalLinks||wc.isDestroyed())return;externalLinks.request({url,from:wc.getURL(),isPrivate,source:wc.id}).catch(()=>{});}
@@ -332,11 +361,14 @@ function attach(t) {
   wc.on('will-redirect', (event,url,_inPlace,main) => {if (!allowedTabURL(url)) {event.preventDefault();if(main)openExternalLink(wc,url,isPrivate);}});
   wc.on('focus',()=>{if(split?.ids.includes(t.id)&&t.id!==activeId)selectTab(t.id);});
   wc.on('context-menu',(_event,params)=>{if(t.view!==view||t.id!==activeId)return;const items=pageMenu({wc,params,clipboard,inspect:()=>inspector.open(wc,params),pip:()=>pictureInPicture(t,params.frame),peek:link=>peek?.open(link,t.space),translate:isPrivate?null:()=>action('page-ai-open-selection'),openTab:(url,activate=true)=>activate?makeTab(url,true,t.space):openInBackground(url,t),bookmark:isPrivate?null:()=>{if(t.id===activeId)action('bookmark-current');},extensions:isPrivate?[]:extensionApi?.getContextMenuItems(wc,params)||[]});Menu.buildFromTemplate(items).popup({window:win});});
-  wc.on('page-title-updated', (_e,title) => {t.title=title;if(t.id===activeId)spectrum.presence(t.url,quiet(t.space),title);if(!isPrivate&&!settings.privacyEverywhere){const row=library.history.find(x=>x.url===cleanURL(wc.getURL()));if(row){row.title=String(title).slice(0,500);saveLibrary();}}emitLazy();});
-  wc.on('did-start-loading', () => {t.loading=true; t.error=''; emit();});
+  // Only a title that changed, on a tab of the space on screen, is sent to the window (0.40); tickers in other spaces and
+  // repeated titles used to re-send the whole state.
+  wc.on('page-title-updated', (_e,title) => {const changed=t.title!==title;t.title=title;if(t.id===activeId)spectrum.presence(t.url,quiet(t.space),title);if(!isPrivate&&!settings.privacyEverywhere){const row=library.history.find(x=>x.url===cleanURL(wc.getURL()));if(row){row.title=String(title).slice(0,500);saveLibrary();}}if(changed&&inSpace(t,space))emitLazy();});
+  wc.on('did-start-loading', () => {const changed=!t.loading||!!t.error;t.loading=true; t.error=''; if(changed)emit();});
   wc.on('did-start-navigation',(_event,_url,inPlace,main)=>{if(main){if(t.id===activeId){pageAssistant?.cancel();if(toolWindows?.section()==='page-assistant')toolWindows.closeAll();}if(htmlFullscreen===wc)exitPageFullscreen();if(t.id===activeId){passwords?.cancelPicker();autofill?.dismiss();}if(!inPlace)t.navigationVersion++;}});
   wc.on('did-frame-finish-load',(_event,isMain,processId,routingId)=>{if(!isMain&&swipeEnabled())try{require('electron').webFrameMain.fromId(processId,routingId)?.executeJavaScript(swipeForwarder).catch(()=>{});}catch{}});
-  wc.on('did-stop-loading', () => {t.loading=false; emit();if(!isPrivate&&t.id===activeId&&library.bookmarks.some(b=>b.favorite&&b.url===t.url))services?.thumbnail(t);});
+  wc.once('did-finish-load',()=>bootMark('first-tab-load'));
+  wc.on('did-stop-loading', () => {const changed=t.loading;t.loading=false; if(changed)emit();if(!isPrivate&&!power.saving&&t.id===activeId&&library.bookmarks.some(b=>b.favorite&&b.url===t.url))services?.thumbnail(t);});
   wc.on('page-favicon-updated',(_event,urls)=>{if(!isPrivate&&/^https?:/.test(t.url)&&library.bookmarks.some(b=>new URL(b.url).origin===new URL(t.url).origin)&&urls[0])services?.favicon(t.url,urls[0]);});
   wc.on('dom-ready', () => {applyPinch(wc);if(!isPrivate)wc.executeJavaScript(require('./media.cjs').TRACK).catch(()=>{});if(!isPrivate)siteControls?.apply(wc).catch(()=>{});wc.executeJavaScriptInIsolatedWorld(999,[{code:tracker}]).catch(()=>{});});
   const navigated = (_event,_url,main=true) => {if(!main)return;t.url=wc.getURL();t.dirty=false;captureNavigation(t);if(t.id===activeId)spectrum.presence(t.url,quiet(t.space));if(!isPrivate&&!settings.privacyEverywhere){library.history=visit(library.history,t);saveLibrary();}if(t.id===activeId)closeFind(false);emit();persist();};
@@ -345,6 +377,7 @@ function attach(t) {
   wc.on('media-started-playing', () => {t.audible=true; emit();media?.update(t);});
   wc.on('media-paused', () => {t.audible=wc.isCurrentlyAudible(); emit();media?.update(t);});
   wc.on('did-fail-load', (_e,code,description,_url,main) => {if (main && code!==-3) {t.error=description; emit();}});
+  wc.on('unresponsive',()=>{t.hung=true;});wc.on('responsive',()=>{t.hung=false;});
   wc.on('render-process-gone', (_e,details) => {t.error='Page stopped: '+details.reason; dispose(t); emit();});
   wc.on('before-input-event', (event,input) => {
     if(input.type==='keyDown'&&(input.meta||input.control)&&input.shift&&input.key.toLowerCase()==='c'){event.preventDefault();action('copy-page-url');return;}
@@ -368,7 +401,7 @@ function dispose(t) {
   const view=t.view; if (!view) return;media?.forget(t.id);
   t.view=null; t.loading=false; t.audible=false;
   win?.contentView.removeChildView(view);
-  if (!view.webContents.isDestroyed()) {if(t.space!=='private'){sidePanels?.forgetTab(view.webContents.id);extensionApi?.removeTab(view.webContents);}view.webContents.close();}
+  if (!view.webContents.isDestroyed()) {if(t.space!=='private'){sidePanels?.forgetTab(view.webContents.id);extensionApi?.removeTab(view.webContents);}if(t.hung){t.hung=false;try{view.webContents.forcefullyCrashRenderer();}catch{}}view.webContents.close();}
 }
 function selectTab(id) {
   if(id!==activeId){inspector?.close();peek?.close();if(split){const target=tabs.find(t=>t.id===id);if(!target?.url||!inSpace(target,space))split=null;else if(!split.ids.includes(id)){split.ids[split.ids.indexOf(activeId)===1?1:0]=id;}}gmailGeneration++;toolWindows?.closeAll();if(htmlFullscreen)exitPageFullscreen();}
@@ -384,12 +417,12 @@ function selectTab(id) {
 // keep coming back to (three times in the last hour) get four times the setting and at least 20 minutes, so the tabs
 // you live in are not reloaded every time you return to them. Real memory pressure can still put any of them to sleep.
 function returnsOften(t,now=Date.now()){return (t.returns||[]).filter(x=>now-x<3600000).length>=3;}
-function idleLimit(t){const base=settings.sleepMinutes*60000;return t.pinned||t.favoriteId||returnsOften(t)?Math.max(base*4,20*60000):base;}
+function idleLimit(t){const base=power.saving?Math.max(60000,settings.sleepMinutes*30000):settings.sleepMinutes*60000;return t.pinned||t.favoriteId||returnsOften(t)?Math.max(base*4,20*60000):base;}
 async function sleepTab(t, manual=false) {
   if (!t?.view||t.pip||t.id===activeId||split?.ids.includes(t.id)||t.keepAwake||t.loading||t.audible) return false;
   if(!manual&&Date.now()-t.lastUsed<idleLimit(t))return false;
   const view=t.view,wc=view.webContents,version=t.navigationVersion;
-  try {const state=await wc.executeJavaScriptInIsolatedWorld(999,[{code:tracker}]); if(state.pip)return false;t.dirty=state.dirty;t.frames=state.frames&&await framesHoldState(wc.mainFrame);t.capturing=wc.isBeingCaptured(); t.audible=state.media || wc.isCurrentlyAudible();} catch {return false;}
+  try {const state=await pageState(wc); if(!state||state.pip)return false;t.dirty=state.dirty;t.frames=state.frames&&await within(framesHoldState(wc.mainFrame),1500,true);t.capturing=wc.isBeingCaptured(); t.audible=state.media || wc.isCurrentlyAudible();} catch {return false;}
   if(t.view!==view||wc.isDestroyed()||t.navigationVersion!==version)return false;
   if (!manual && Date.now()-t.lastUsed<idleLimit(t))return false;
   if(split?.ids.includes(t.id))return false;
@@ -471,12 +504,12 @@ async function enforceAwakeBudget(){if(!settings.maxAwakeTabs)return;const kept=
 async function closeTab(id) {
   const t=tabs.find(t=>t.id===id); if (!t) return;
   if (t.view) {
-    try {const state=await t.view.webContents.executeJavaScriptInIsolatedWorld(999,[{code:tracker}]);
-      if (state.dirty) {const result=await dialog.showMessageBox(win,{type:'question',message:'Close this tab and discard your input?',buttons:['Keep tab','Discard input'],defaultId:0,cancelId:0}); if(result.response!==1)return;}
+    try {const state=await pageState(t.view.webContents);
+      if (state?.dirty) {const result=await dialog.showMessageBox(win,{type:'question',message:'Close this tab and discard your input?',buttons:['Keep tab','Discard input'],defaultId:0,cancelId:0}); if(result.response!==1)return;}
     } catch {}
   }
   if(!tabs.includes(t))return;
-  if(t.pip)await pip?.end('close');media?.forget(t.id);
+  if(t.pip)await within(pip?.end('close'),1500);media?.forget(t.id);
   recentlyClosed.push(t,tabs.indexOf(t));lastCloseAt=Date.now();if(t.pinned)feedback('pinned-removed');if(id===activeId)closeFind(false);
   if(split?.ids.includes(id))split=null;tabSelection.remove(id);const index=tabs.indexOf(t); dispose(t); tabs.splice(index,1);
   if(activeId===id){const remaining=tabs.filter(x=>inSpace(x,space));if(remaining.length)selectTab(tabSelection.previous(remaining).id);else makeTab();}
@@ -506,8 +539,8 @@ async function undoKey(){
 // Closing a pinned tab (0.33) keeps it in the sidebar: the page is unloaded and goes back to the address it was pinned
 // with. Its close button then removes it; ⌘Z puts a removed one back in place.
 async function parkTab(t){
- if(t.view){try{const state=await t.view.webContents.executeJavaScriptInIsolatedWorld(999,[{code:tracker}]);if(state.dirty){const result=await dialog.showMessageBox(win,{type:'question',message:translate(settings.language,'Close this tab and discard your input?'),buttons:[translate(settings.language,'Keep tab'),translate(settings.language,'Discard input')],defaultId:0,cancelId:0});if(result.response!==1)return;}}catch{}}
- if(!tabs.includes(t))return;if(t.pip)await pip?.end('close');media?.forget(t.id);if(split?.ids.includes(t.id))split=null;
+ if(t.view){try{const state=await pageState(t.view.webContents);if(state?.dirty){const result=await dialog.showMessageBox(win,{type:'question',message:translate(settings.language,'Close this tab and discard your input?'),buttons:[translate(settings.language,'Keep tab'),translate(settings.language,'Discard input')],defaultId:0,cancelId:0});if(result.response!==1)return;}}catch{}}
+ if(!tabs.includes(t))return;if(t.pip)await within(pip?.end('close'),1500);media?.forget(t.id);if(split?.ids.includes(t.id))split=null;
  const wasActive=t.id===activeId;if(wasActive)closeFind(false);dispose(t);
  if(t.home){t.url=t.home;t.title=t.homeTitle||t.title;}t.recovery=null;t.parked=true;t.error='';
  if(wasActive){const remaining=tabs.filter(x=>inSpace(x,space)&&x!==t&&!x.parked);if(remaining.length)selectTab(tabSelection.previous(remaining).id);else makeTab();}
@@ -826,16 +859,20 @@ function setupMenu() {
   Menu.setApplicationMenu(Menu.buildFromTemplate(localize([
     {label:'Prism',submenu:[{role:'about'},{label:'Check for Updates…',click:()=>{win.webContents.send('open-panel','updates');updater.check();}},{label:translate(settings.language,'What’s New'),click:()=>showWhatsNew()},{label:'Release Notes',click:()=>action('release-notes')},{label:'Settings…',accelerator:'CmdOrCtrl+,',click:()=>win.webContents.send('open-panel','appearance')},{type:'separator'},{role:'hide'},{role:'hideOthers'},{role:'unhide'},{type:'separator'},{role:'quit'}]},
     {label:'File',submenu:[{label:'New tab',accelerator:'CmdOrCtrl+K',click:()=>command('k')},{label:'Close tab',accelerator:'CmdOrCtrl+W',click:()=>command('w')},{label:'Reopen closed tab',accelerator:'CmdOrCtrl+Shift+T',click:()=>command('reopen')}]},
-    {label:'Edit',submenu:[{label:'Copy page link',accelerator:'Control+Shift+C',click:()=>action('copy-page-url')},{label:'Undo',accelerator:'CmdOrCtrl+Z',click:()=>undoKey()},{label:'Restore closed tab',accelerator:'Control+Z',visible:false,acceleratorWorksWhenHidden:true,click:()=>undoKey()},{role:'redo'},{type:'separator'},{role:'cut'},{role:'copy'},{role:'paste'},{role:'selectAll'}]},
+    {label:'Edit',submenu:[{label:'Copy page link',accelerator:'Control+Shift+C',click:()=>action('copy-page-url')},{label:'Undo',accelerator:'CmdOrCtrl+Z',click:()=>undoKey()},{label:'Restore closed tab',accelerator:'Control+Z',visible:false,acceleratorWorksWhenHidden:true,click:()=>undoKey()},{role:'redo'},{type:'separator'},{role:'cut'},{role:'copy'},{role:'paste'},{role:'pasteAndMatchStyle'},{role:'delete'},{role:'selectAll'}]},
     {label:'Bookmarks',submenu:[{label:'Bookmark this page',accelerator:'CmdOrCtrl+D',click:()=>action('bookmark-current')},{label:'Import from Arc…',click:()=>importArc()}]},
-    {label:'View',submenu:[{label:'Instagram Mobile App',click:()=>action('instagram-app-open')},{type:'separator'},{label:'Tabs & layout',click:()=>win.webContents.send('open-panel','workspace')},{label:'Profile',click:()=>win.webContents.send('open-panel','profile')},{label:'Inspect page',accelerator:'CmdOrCtrl+Alt+I',click:()=>action('inspect')},{label:'Picture in picture',click:()=>action('pip')},{label:'Translate selected text',click:()=>action('page-ai-open-selection')},{label:'Page assistant',click:()=>win.webContents.send('open-panel','page-assistant')},{label:'AI & assistants',click:()=>win.webContents.send('open-panel','ai')},{label:'Find in page',accelerator:'CmdOrCtrl+F',click:()=>command('f')},{label:'History',accelerator:'CmdOrCtrl+Y',click:()=>command('y')},{label:'Site permissions',click:()=>win.webContents.send('open-panel','permissions')},{label:'Address bar',accelerator:'CmdOrCtrl+L',click:()=>command('l')},{label:'Beam',accelerator:'CmdOrCtrl+T',click:()=>commandBar?.open()},{label:'Clear view',accelerator:'CmdOrCtrl+Alt+S',click:()=>action('set-setting',{key:'compactMode',value:!settings.compactMode})},{label:'Reload page',accelerator:'CmdOrCtrl+R',click:()=>command('r')},{label:'Reload without cache',accelerator:'CmdOrCtrl+Shift+R',click:()=>command('R')},{type:'separator'},{label:'Zoom in',accelerator:'CmdOrCtrl+Plus',click:()=>zoomActive(1)},{label:'Zoom in',accelerator:'CmdOrCtrl+=',visible:false,acceleratorWorksWhenHidden:true,click:()=>zoomActive(1)},{label:'Zoom out',accelerator:'CmdOrCtrl+-',click:()=>zoomActive(-1)},{label:'Actual size',accelerator:'CmdOrCtrl+0',click:()=>zoomActive(0)},{role:'togglefullscreen'}]},
+    {label:'View',submenu:[{label:'Instagram Mobile App',click:()=>action('instagram-app-open')},{type:'separator'},{label:'Tabs & layout',click:()=>win.webContents.send('open-panel','workspace')},{label:'Profile',click:()=>win.webContents.send('open-panel','profile')},{label:'Inspect page',accelerator:'CmdOrCtrl+Alt+I',click:()=>action('inspect')},{label:'Picture in picture',click:()=>action('pip')},{label:'Translate selected text',click:()=>action('page-ai-open-selection')},{label:'Page assistant',click:()=>win.webContents.send('open-panel','page-assistant')},{label:'AI & assistants',click:()=>win.webContents.send('open-panel','ai')},{label:'Find in page',accelerator:'CmdOrCtrl+F',click:()=>command('f')},{label:'Site permissions',click:()=>win.webContents.send('open-panel','permissions')},{label:'Address bar',accelerator:'CmdOrCtrl+L',click:()=>command('l')},{label:'Beam',accelerator:'CmdOrCtrl+T',click:()=>commandBar?.open()},{label:'Clear view',accelerator:'CmdOrCtrl+Alt+S',click:()=>action('set-setting',{key:'compactMode',value:!settings.compactMode})},{label:'Reload page',accelerator:'CmdOrCtrl+R',click:()=>command('r')},{label:'Reload without cache',accelerator:'CmdOrCtrl+Shift+R',click:()=>command('R')},{type:'separator'},{label:'Zoom in',accelerator:'CmdOrCtrl+Plus',click:()=>zoomActive(1)},{label:'Zoom in',accelerator:'CmdOrCtrl+=',visible:false,acceleratorWorksWhenHidden:true,click:()=>zoomActive(1)},{label:'Zoom out',accelerator:'CmdOrCtrl+-',click:()=>zoomActive(-1)},{label:'Actual size',accelerator:'CmdOrCtrl+0',click:()=>zoomActive(0)},{role:'togglefullscreen'}]},
     // Spaces: ⌃1…⌃9 go to the first nine (as in the spaces popover), named after them.
     {label:'Spaces',submenu:[{label:'Show all spaces',click:()=>win?.webContents.send('open-panel','quick-spaces')},{type:'separator'},...settings.spaces.slice(0,9).map((s,i)=>({label:s.name,accelerator:'Control+'+(i+1),click:()=>action('space',s.id).catch(()=>{})})),{label:'Private',click:()=>action('space','private').catch(()=>{})}]},
+    // History, Window and Help as in Safari (0.40): ⌘[ and ⌘] go back and forward, the Window menu is macOS's own
+    // (Minimize, Zoom, Bring All to Front and the window list) and Help has macOS's menu search.
+    {label:'History',submenu:[{label:'Back',accelerator:'CmdOrCtrl+[',click:()=>action('back')},{label:'Forward',accelerator:'CmdOrCtrl+]',click:()=>action('forward')},{type:'separator'},{label:'Reopen closed tab',click:()=>command('reopen')},{label:'Show All History',accelerator:'CmdOrCtrl+Y',click:()=>command('y')}]},
     {label:'Downloads',submenu:[{label:'Show downloads',accelerator:'CmdOrCtrl+J',click:()=>win.webContents.send('open-panel','downloads')}]},
-    {label:'Window',submenu:[{role:'minimize'},{role:'zoom'}]}
+    {label:'Window',role:'windowMenu'},
+    {label:'Help',role:'help',submenu:[{label:'Release Notes',click:()=>action('release-notes')},{label:'What’s New',click:()=>showWhatsNew()}]}
   ])));
 }
-app.whenReady().then(async()=>{
+app.whenReady().then(async()=>{bootMark('ready');
   app.setAboutPanelOptions({applicationName:'Prism',applicationVersion:require('../package.json').version,iconPath:path.join(__dirname,'..','assets','prism-glass.png')});
   if(!smoke){localUpdater=require('./local-updater.cjs').createLocalUpdater({app,config:require('./local-update-config.json'),onChange:()=>{if(win)emit();}});if(settings.automaticUpdates&&await localUpdater.startup()){app.exit(0);return;}}
   if(!smoke){try{library={...library,...JSON.parse(fs.readFileSync(libraryFile,'utf8'))};}catch{}}library.archive=normalizeArchive(library.archive);library.folderIcons=require('./folders.cjs').normalizeFolderIcons(library.folderIcons);
@@ -908,9 +945,9 @@ app.whenReady().then(async()=>{
   ipcMain.handle('prism-shield-dom',(event,value)=>{const request=shieldFrame(event,value);return request?blocker.dom({...request,classes:value.classes,ids:value.ids,hrefs:value.hrefs}):'';});
   ipcMain.on('prism-login-submitted',(event,value)=>{const t=tabs.find(t=>t.view?.webContents===event.sender);if(!t||t.space==='private'||t.id!==activeId||!event.senderFrame||event.senderFrame.top!==event.sender.mainFrame)return;passwords.offer(t,value,event.senderFrame.url).catch(()=>{});});
   await installChromeWebStore({session:ses,extensionsPath:path.join(app.getPath('userData'),'store-extensions'),loadExtensions:false,autoUpdate:false,beforeInstall:async details=>({action:await services.reviewExtension(details.manifest,details.localizedName)?'allow':'deny'})});
-  win=new BrowserWindow({width:1240,height:820,minWidth:760,minHeight:560,title:'Prism',titleBarStyle:'hiddenInset',trafficLightPosition:{x:22,y:15},transparent:true,backgroundColor:'#00000000',show:false,webPreferences:{preload:path.join(__dirname,'preload.cjs'),nodeIntegration:false,contextIsolation:true,sandbox:true}});
+  win=new BrowserWindow({...windowFrame(),minWidth:760,minHeight:560,title:'Prism',titleBarStyle:'hiddenInset',trafficLightPosition:{x:22,y:15},transparent:true,backgroundColor:'#00000000',show:false,webPreferences:{preload:path.join(__dirname,'preload.cjs'),nodeIntegration:false,contextIsolation:true,sandbox:true}});
   instagramApp=createInstagramApp({BrowserWindow,parent:win,chromeVersion:process.versions.chrome,onExternal:(url,isPrivate,tabSpace)=>{makeTab(url,true,isPrivate?'private':tabSpace);if(win?.isMinimized())win.restore();win?.show();win?.focus();}});
-  win.webContents.setWindowOpenHandler(()=>({action:'deny'}));
+  win.webContents.setWindowOpenHandler(()=>({action:'deny'}));bootMark('window');win.once('ready-to-show',()=>bootMark('ready-to-show'));
   // Right-click editing in Prism's own fields (0.37, edit-menu.cjs).
   const editMenu=wc=>require('./edit-menu.cjs').attachEditMenu(wc,{Menu,window:()=>win,translate:menuLabel});editMenu(win.webContents);
   win.webContents.on('will-navigate',event=>event.preventDefault());
@@ -941,10 +978,13 @@ app.whenReady().then(async()=>{
   // finishes, nothing is sent, then the full state with every icon and card. These are set before the first load; set
   // after it, as before, a state sent while the page was still loading was lost and favorites showed letters.
   win.webContents.on('did-start-navigation',(details,url,inPlace,mainFrame)=>{if((details?.isMainFrame??mainFrame)&&!(details?.isSameDocument??inPlace))stateTransport.hold();});
-  win.webContents.on('did-finish-load',()=>{passwords?.closeManager();stateTransport.open();emit();});
+  win.webContents.on('did-finish-load',()=>{bootMark('shell-loaded');passwords?.closeManager();stateTransport.open();emit();});
   setupMenu(); await win.loadFile(path.join(__dirname,'index.html'));
   applyAppearance();
   nativeTheme.on('updated',()=>{applyAppearance();emit();});
+  // The system accent colour follows System Settings live (0.40), where Prism uses it (no tint and no space colour).
+  try{systemPreferences.subscribeNotification('AppleColorPreferencesChangedNotification',()=>setTimeout(()=>{applyAppearance();emit();},50));}catch{}
+  watchPower();
   await services.restoreExtensions();
   if(!smoke)services.importArcIcons(library.bookmarks);
   win.setWindowButtonVisibility?.(true);
@@ -953,20 +993,28 @@ app.whenReady().then(async()=>{
   win.on('enter-full-screen',layout);
   // Three-finger swipe (when macOS uses three fingers to swipe between pages): right goes back, left forward.
   win.on('swipe',(_event,direction)=>{if(swipeEnabled()&&(direction==='right'||direction==='left'))action(direction==='right'?'back':'forward');});
-  win.on('resize',()=>{autofill?.dismiss();layout();toolWindows?.layout();});
+  win.on('resize',()=>{autofill?.dismiss();layout();toolWindows?.layout();saveFrame();});win.on('move',()=>saveFrame());
+  // The Dock menu (0.40): a new tab or a Private tab without going to the window first.
+  app.dock?.setMenu(Menu.buildFromTemplate([{label:menuLabel('New tab'),click:()=>{if(!win)return;win.show();win.focus();makeTab();command('l');}},{label:menuLabel('New Private tab'),click:()=>{if(!win)return;win.show();win.focus();action('space','private').then(()=>{makeTab();command('l');}).catch(()=>{});}}]));
   win.on('close',async event=>{
-    if(closingApproved||smoke)return;event.preventDefault();
-    let dirty=false;for(const t of tabs){if(t.view)try{const status=await t.view.webContents.executeJavaScriptInIsolatedWorld(999,[{code:tracker}]);dirty ||= status.dirty;}catch{}}
+    saveFrame(true);if(closingApproved||smoke)return;event.preventDefault();if(closingWindow)return;closingWindow=true;try{
+    const dirty=(await Promise.all(tabs.filter(t=>t.view).map(t=>pageState(t.view.webContents)))).some(s=>s?.dirty);
     if(dirty||services.hasActiveDownloads()||privateServices.hasActiveDownloads()){const answer=await dialog.showMessageBox(win,{type:'question',message:'Close Prism?',detail:dirty?'Some tabs contain unsaved input. Closing will discard it.':'Downloads are still running. Closing will interrupt them.',buttons:['Keep browsing','Close Prism'],defaultId:0,cancelId:0});if(answer.response!==1){restartRequested=false;installUpdateRequested=false;return;}}
-    for(const t of tabs){captureNavigation(t);await captureScroll(t);}persist();sessionStore.flush();flushLibrary();if(installUpdateRequested&&localUpdater?.snapshot().configured){if(await localUpdater.install()){services.close();privateServices.close();await privateNetwork.close().catch(()=>{});await normalNetwork?.close().catch(()=>{});app.exit(0);return;}installUpdateRequested=false;emit();return;}closingApproved=true;services.close();privateServices.close();await privateNetwork.close();await normalNetwork?.close().catch(()=>{});if(installUpdateRequested){updater.install();return;}if(restartRequested)app.relaunch();win.close();
+    for(const t of tabs)captureNavigation(t);await within(Promise.all(tabs.map(t=>captureScroll(t))),1500);persist();sessionStore.flush();flushLibrary();if(installUpdateRequested&&localUpdater?.snapshot().configured){if(await localUpdater.install()){services.close();privateServices.close();await privateNetwork.close().catch(()=>{});await normalNetwork?.close().catch(()=>{});app.exit(0);return;}installUpdateRequested=false;emit();return;}closingApproved=true;setTimeout(()=>app.exit(0),8000).unref?.();services.close();privateServices.close();await within(Promise.all([privateNetwork.close(),normalNetwork?.close()]),2500);if(installUpdateRequested){updater.install();return;}if(restartRequested)app.relaunch();win.close();
+    }finally{closingWindow=false;}
   });
-  win.on('closed',()=>{quitting=true;spectrum.flush();pip?.end('close').catch(()=>{});autofill?.destroy();updater?.close();toolWindows.destroy(); clearInterval(timer);clearInterval(scrollTimer);sessionStore.close();flushLibrary();for(const t of tabs)if(t.view&&!t.view.webContents.isDestroyed())t.view.webContents.close();win=null;app.quit();});
-  let sweeping=false;timer=setInterval(async()=>{if(sweeping)return;sweeping=true;try{for(const t of [...tabs]){if(quitting)break;await sleepTab(t);}if(!quitting){await enforceAwakeBudget();await memoryManager?.sweep();archiveIdle();}}finally{sweeping=false;}},30000);
-  scrollTimer=setInterval(()=>{captureScroll(tabs.find(t=>t.id===activeId));},5000);
-  win.show();localUpdater?.healthy(); emit();if(!smoke)setTimeout(warmFavoriteIcons,3000).unref?.();if(!smoke&&settings.chromiumCheck!==false)setTimeout(()=>chromiumCheck.check().then(noteChromium).catch(()=>{}),6000).unref?.();if(!smoke)setTimeout(()=>toolWindows?.prewarm(),4000).unref?.();externalReady=true;for(const url of pendingExternal.splice(0))receiveExternal(url);
+  win.on('closed',()=>{quitting=true;spectrum.flush();pip?.end('close').catch(()=>{});autofill?.destroy();updater?.close();toolWindows.destroy(); clearInterval(timer);sessionStore.close();flushLibrary();for(const t of tabs)if(t.view&&!t.view.webContents.isDestroyed())t.view.webContents.close();win=null;app.quit();setTimeout(()=>app.exit(0),5000).unref?.();});
+  // The sleep sweep (every 30 s) does nothing while no background tab is awake (0.40): no page is asked anything and
+  // macOS's memory pressure is not read; only tabs past their archive time are filed away.
+  let sweeping=false;timer=setInterval(async()=>{if(sweeping)return;if(!tabs.some(t=>t.view&&t.id!==activeId&&!t.pip)){archiveIdle();return;}sweeping=true;try{for(const t of [...tabs]){if(quitting)break;await sleepTab(t);}if(!quitting){await enforceAwakeBudget();await memoryManager?.sweep();archiveIdle();}}finally{sweeping=false;}},30000);
+  // Scroll positions for session restore arrive from the page when a scroll ends (page-preload.cjs, 0.40). They used to
+  // be asked for every 5 s, forever, even with the window hidden; tab switches, sleep and quit still ask directly.
+  ipcMain.on('prism-scrolled',(event,value)=>{const t=tabs.find(x=>x.view?.webContents===event.sender);if(!t||event.senderFrame!==event.sender.mainFrame||t.space==='private'||t.loading||t.restoring)return;
+   const scroll=scrollRecord(value,recoveryURL(t.url));if(!scroll||t.recovery?.scroll&&scroll.x===t.recovery.scroll.x&&scroll.y===t.recovery.scroll.y&&scroll.url===t.recovery.scroll.url)return;captureNavigation(t);t.recovery={...t.recovery,scroll};persist();});
+  win.show();bootMark('shown');localUpdater?.healthy(); emit();if(!smoke)setTimeout(warmFavoriteIcons,3000).unref?.();if(!smoke&&settings.chromiumCheck!==false)setTimeout(()=>chromiumCheck.check().then(noteChromium).catch(()=>{}),6000).unref?.();externalReady=true;for(const url of pendingExternal.splice(0))receiveExternal(url);
   if(process.argv.includes('--import-arc')&&!smoke) importArc().then(result=>console.log('Arc import:',JSON.stringify(result)));
   // PRISM_TEST_FLOW=<name> runs one flow from test/ on its own (development; smoke profile only).
-  if(smoke) require(process.env.PRISM_TEST_FLOW?'../test/'+path.basename(process.env.PRISM_TEST_FLOW):process.env.PRISM_TEST_PRIVATE_PUBLIC==='1'?'../test/private-public-flow.cjs':restartTest?'../test/restart-flow.cjs':process.env.PRISM_TEST_COMPATIBILITY==='1'?'../test/compatibility-flow.cjs':process.env.PRISM_PERFORMANCE==='1'?'../test/performance-flow.cjs':process.env.PRISM_TEST_CREDENTIALS==='1'?'../test/credentials-flow.cjs':process.env.PRISM_TEST_RECOVERY==='1'?'../test/recovery-flow.cjs':process.env.PRISM_TEST_BASICS==='1'?'../test/basics-flow.cjs':process.env.PRISM_BENCHMARK==='1'?'../test/benchmark.cjs':process.env.PRISM_TEST_STORE==='1'?'../test/store.cjs':'../test/smoke.cjs').run({app,win,makeTab,selectTab,sleepTab,archiveIdle,spectrum,warmFavoriteIcons,pip:()=>pip,media:()=>media,commandBar:()=>commandBar,peek:()=>peek,library:()=>library,enforceAwakeBudget,action,snapshot,tabs,settings,services,passwords,autofill,wallet,ai,toolWindows,inspector,sessionStore,captureScroll,restoreSession,dispose,privateController:()=>privateNetwork,normalNetwork:()=>normalNetwork,sidePanels:()=>sidePanels,showWhatsNew,whatsNewWindow:()=>whatsNewWindow,checkWhatsNew,passkeys:()=>passkeys,setNaturalScroll:value=>{naturalScroll=value;emit();},setUpdateOverride:value=>{updateOverride=value;emit();}}).catch(error=>{console.error(error);app.exit(1);});
+  if(smoke) require(process.env.PRISM_TEST_FLOW?'../test/'+path.basename(process.env.PRISM_TEST_FLOW):process.env.PRISM_TEST_PRIVATE_PUBLIC==='1'?'../test/private-public-flow.cjs':restartTest?'../test/restart-flow.cjs':process.env.PRISM_TEST_COMPATIBILITY==='1'?'../test/compatibility-flow.cjs':process.env.PRISM_PERFORMANCE==='1'?'../test/performance-flow.cjs':process.env.PRISM_TEST_CREDENTIALS==='1'?'../test/credentials-flow.cjs':process.env.PRISM_TEST_RECOVERY==='1'?'../test/recovery-flow.cjs':process.env.PRISM_TEST_BASICS==='1'?'../test/basics-flow.cjs':process.env.PRISM_BENCHMARK==='1'?'../test/benchmark.cjs':process.env.PRISM_TEST_STORE==='1'?'../test/store.cjs':'../test/smoke.cjs').run({app,win,bootMarks,makeTab,selectTab,sleepTab,archiveIdle,spectrum,warmFavoriteIcons,pip:()=>pip,media:()=>media,commandBar:()=>commandBar,peek:()=>peek,library:()=>library,enforceAwakeBudget,action,snapshot,tabs,settings,services,passwords,autofill,wallet,ai,toolWindows,inspector,sessionStore,captureScroll,restoreSession,dispose,privateController:()=>privateNetwork,normalNetwork:()=>normalNetwork,sidePanels:()=>sidePanels,showWhatsNew,whatsNewWindow:()=>whatsNewWindow,checkWhatsNew,passkeys:()=>passkeys,setNaturalScroll:value=>{naturalScroll=value;emit();},setUpdateOverride:value=>{updateOverride=value;emit();}}).catch(error=>{console.error(error);app.exit(1);});
 });
 app.on('second-instance',()=>{if(win){if(win.isMinimized())win.restore();win.show();win.focus();}});
 app.on('window-all-closed',()=>app.quit());

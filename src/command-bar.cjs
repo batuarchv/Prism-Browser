@@ -1,7 +1,8 @@
 // Command bar (0.32, ⌘K): one glass field that finds open tabs, favorites, bookmarks, history, archived tabs and
 // Prism's own actions. Results are ranked here in the browser; the bar's page only shows them. The bar is a child
-// window (native material and shadow); it stays loaded for a short while after closing so ⌘K opens it at once.
-const WIDTH=640,KEEP_WARM_MS=2*60*1000,MAX=9;
+// window (native material and shadow); it stays loaded for 20 s after closing (0.40; was 2 minutes) so ⌘T opens it
+// again at once, then its renderer ends.
+const WIDTH=640,KEEP_WARM_MS=20*1000,MAX=9;
 function words(text){return String(text||'').toLowerCase();}
 // Higher is better; 0 means no match. Title matches beat address matches; word starts beat anywhere.
 function score(query,title,detail='',keywords=''){
