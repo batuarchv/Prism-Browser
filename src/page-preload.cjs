@@ -82,3 +82,9 @@ if(process.isMainFrame){addEventListener('click',event=>{
  let url;try{url=new URL(a.href,location.href).href;}catch{return;}if(!/^https?:/.test(url))return;
  if(event.shiftKey&&!event.metaKey&&!event.altKey&&!event.ctrlKey){event.preventDefault();ipcRenderer.send('prism-peek',url);return;}
  if(!event.metaKey&&!event.altKey&&!event.ctrlKey&&!event.shiftKey)ipcRenderer.send('prism-link',url);},true);}
+// Scroll position for session restore (0.40): sent when the page stops scrolling, at most once a second, instead of
+// the browser asking every 5 s. Only the top frame's own scroll counts; the browser checks the address it belongs to.
+if(process.isMainFrame){let last=0,timer=null;
+ const report=()=>{timer=null;last=Date.now();ipcRenderer.send('prism-scrolled',{url:location.href,x:scrollX,y:scrollY});};
+ addEventListener('scrollend',event=>{if(event.target!==document||timer)return;timer=setTimeout(report,Math.max(0,1000-(Date.now()-last)));},{passive:true});
+ addEventListener('pagehide',()=>{clearTimeout(timer);timer=null;});}

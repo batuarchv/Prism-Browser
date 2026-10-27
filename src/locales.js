@@ -1,5 +1,19 @@
 (function(root){
 const catalog={
+ "Help": {
+  "tr": "Yardım",
+  "es": "Ayuda",
+  "pt": "Ajuda",
+  "fr": "Aide",
+  "uk": "Довідка"
+ },
+ "Show All History": {
+  "tr": "Tüm geçmişi göster",
+  "es": "Mostrar todo el historial",
+  "pt": "Mostrar todo o histórico",
+  "fr": "Afficher tout l’historique",
+  "uk": "Показати всю історію"
+ },
  "What’s New": {
   "tr": "Yenilikler",
   "es": "Novedades",

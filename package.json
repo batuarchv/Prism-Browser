@@ -1,7 +1,7 @@
 {
   "name": "prism-browser",
   "productName": "Prism",
-  "version": "0.39.4",
+  "version": "0.41.0",
   "description": "A glass Chromium browser prototype with sleeping tabs",
   "main": "src/main.cjs",
   "scripts": {
@@ -25,7 +25,7 @@
   },
   "devDependencies": {
     "@electron/packager": "19.0.1",
-    "electron": "44.9.3",
+    "electron": "45.0.0",
     "lintapple": "0.1.19",
     "node-api-headers": "1.9.0"
   },

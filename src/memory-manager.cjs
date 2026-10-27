@@ -18,6 +18,7 @@ function createMemoryManager({app,session,settings,tabs,activeId,sleepTab,system
  let busy=false;
  const underPressure=async()=>{const system=systemPressure?await systemPressure():null;return system===null||system===undefined?pressure(app.getAppMetrics()):system;};
  async function release(limit,automatic=false){let released=0;for(const tab of rankedCandidates(tabs(),activeId(),app.getAppMetrics())){if(released>=limit)break;if(automatic&&released&&!await underPressure())break;if(await sleepTab(tab,true))released++;}return released;}
- return {underPressure,async sweep(){if(busy||!settings.leanMemory||!await underPressure())return;busy=true;try{return await release(4,true);}finally{busy=false;}},async trim(){if(busy)return;busy=true;try{const released=await release(8);await session.clearCache();return released;}finally{busy=false;}}};
+ // Nothing to release means nothing to ask macOS about (0.40): the pressure read spawns sysctl, so it waits for a candidate.
+ return {underPressure,async sweep(){if(busy||!settings.leanMemory||!budgetCandidates(tabs(),activeId()).length||!await underPressure())return;busy=true;try{return await release(4,true);}finally{busy=false;}},async trim(){if(busy)return;busy=true;try{const released=await release(8);await session.clearCache();return released;}finally{busy=false;}}};
 }
 module.exports={createMemoryManager,pressure,readSystemPressure,rankedCandidates};

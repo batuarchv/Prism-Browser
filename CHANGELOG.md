@@ -2,6 +2,52 @@
 
 All notable changes to Prism, newest first. Downloads are on the [Releases page](https://github.com/batuarchv/Prism-Browser/releases).
 
+## 0.41.0 — Chromium 156
+
+### New
+- **Prism now runs on Chromium 156.** The engine underneath Prism moves from Electron 44 (Chromium 152) to Electron 45 (Chromium 156.0.8078.48), with the latest web platform features and security fixes from Chrome. Prism looks the same as before.
+- **Battery saving now works on battery.** Electron 44 told Prism your Mac was plugged in even when it ran on battery, so the battery saving added in 0.40.0 only kicked in with Low Power Mode. With Electron 45, Prism sees battery power correctly: on battery, background tabs sleep sooner, the glass logo rests and favorite preview cards wait until you plug in.
+
+### Install notes
+This beta is **ad-hoc signed and not notarized by Apple**. The first time you open it, macOS may say it can't verify the developer: right-click (or Control-click) Prism in Applications and choose **Open**, then **Open** again. Apple Silicon (arm64) only.
+
+## 0.40.1 — Stable again
+
+### Fixed
+- **Prism no longer crashes or quits on its own.** 0.40.0 took tabs you couldn't see (and closed popovers) out of the window entirely; that is undone, so they are only hidden again, as in 0.39.5. Saving your session is back to the proven 0.39.5 way too. Everything else from 0.40.0 stays.
+
+## 0.40.0 — Lighter and more at home on your Mac
+
+### New
+- **Smoother when you move around.** Switching spaces, opening Beam and opening Settings drop far fewer frames: switching spaces went from 52 late frames to 21, opening Beam from 19 to 11. Tabs you can't see are now taken off the screen entirely instead of just being hidden, so the window has less to draw.
+- **Memory comes back after you're done.** Beam and the Settings and popover surface now let go of their memory 20 seconds after they close (it used to be 2 minutes and 90 seconds). In our test Prism used about 290 MB less half a minute after using them, and about 140 MB less with one tab open.
+- **Quieter while you read.** The window no longer redraws its whole tab list every time a page changes its title (unread counters, tickers). It now updates only the row that changed, and ignores tabs in other spaces. With ten busy tabs open, the window used about 15% less energy at rest.
+- **Easy on the battery.** On battery, in Low Power Mode or when your Mac runs hot, background tabs sleep sooner, the glass logo rests instead of turning, favorite preview cards wait, and Spectrum doesn't ask for chapter names. Everything returns when you plug in.
+- **Feels like a Mac app.** New History menu (⌘[ back, ⌘] forward, ⌘Y all history), the standard Window and Help menus with menu search, Paste and Match Style, and a Dock menu with New tab and New Private tab. Buttons show the normal arrow pointer, text in the toolbar and sidebar can't be selected by accident, and the accent colour follows System Settings right away.
+- **Opens where you left it.** Prism remembers the size and place of its window and opens there next time, as long as that display is still connected.
+
+### Improved
+- **No more busy work in the background.** Prism no longer asks the open page for its scroll position every five seconds forever: the page tells Prism when you stop scrolling. Saving your session no longer pauses Prism for a moment after every page you open, the YouTube ad skipper only looks while an ad is showing, and the sleep check does nothing when there's nothing to put to sleep.
+- **Starts with less work.** Claude's support code is loaded only when you first use a Claude feature, instead of at every launch.
+
+Prism looks exactly as before: screenshots of the sidebar, Settings and popovers in light and dark are identical to 0.39.5.
+
+### Install notes
+This beta is **ad-hoc signed and not notarized by Apple**. The first time you open it, macOS may say it can't verify the developer: right-click (or Control-click) Prism in Applications and choose **Open**, then **Open** again. Apple Silicon (arm64) only.
+
+## 0.39.5 — Tabs close, Prism quits, lighter in the background
+
+### New
+- **Tabs always close.** Before closing a tab, Prism asks the page whether you typed something you'd lose. A page that was busy, stuck or asleep never answered, so the tab stayed open no matter how often you clicked. Prism now waits at most a moment and then closes it. A page that has stopped responding has its process ended, instead of being left running in the background.
+- **Prism always quits.** Quitting asked every tab the same question one at a time, and then waited without limit for its network services to stop, so one stuck tab kept Prism open. The tabs are now asked all at once with a short limit, shutdown has a time limit, and Prism always exits a few seconds after you confirm. Pressing ⌘Q twice no longer starts two shutdowns.
+
+### Improved
+- **Stays light the longer you use it.** Prism puts tabs you aren't using to sleep every 30 seconds. One stuck page could stall this for good: no tab slept again, and memory kept growing until Prism felt slow. The check now skips a page that doesn't answer and moves on.
+- **Lighter at launch.** The Settings and popover surface is no longer loaded a few seconds after Prism opens. It still loads ahead of time when the pointer reaches a button that opens it, and is let go 90 seconds (was 5 minutes) after it closes.
+
+### Install notes
+This beta is **ad-hoc signed and not notarized by Apple**. The first time you open it, macOS may say it can't verify the developer: right-click (or Control-click) Prism in Applications and choose **Open**, then **Open** again. Apple Silicon (arm64) only.
+
 ## 0.39.4 — Favorite icons are back
 
 ### New

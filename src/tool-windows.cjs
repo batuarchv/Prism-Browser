@@ -5,9 +5,10 @@ const {createStateTransport}=require('./performance.cjs');
 // A compact popover right-aligned under its toolbar icon, kept inside the window.
 function anchoredBelow(anchor,width,height,w,h){return {x:Math.max(8,Math.min(w-width-8,Math.round(anchor.x-width))),y:Math.max(44,Math.min(h-height-8,Math.round(anchor.y+6)))};}
 function panelSize(w,h){return {width:Math.min(1100,Math.max(780,Math.round(w*0.72)),w-32),height:Math.min(800,Math.max(620,Math.round(h*0.8)),h-76)};}
-// The surface stays loaded (hidden) for a while after it closes, and is loaded ahead of time when the pointer reaches a
-// button that opens it, so popovers appear at once instead of waiting for a fresh renderer.
-const KEEP_WARM_MS=5*60*1000;
+// The surface stays loaded for a short while after it closes, and is loaded ahead of time when the pointer reaches a
+// button that opens it, so popovers appear at once instead of waiting for a fresh renderer. Closed, it is hidden and
+// its renderer ends 20 s later (0.40; was 90 s), so nothing stays alive at idle.
+const KEEP_WARM_MS=20*1000;
 function createToolWindows({WebContentsView,parent,snapshot,onClosed=()=>{},keepWarmMs=KEEP_WARM_MS,decorate=()=>{}}){
  let record=null,idle,sequence=0,lastHide=null;
  function publish(){if(record?.ready&&!record.view.webContents.isDestroyed())record.view.webContents.send('state',record.transport.prepare({...snapshot(),images:{},imageRevision:'panel',bookmarks:[],folders:[]}));}
