@@ -47,6 +47,9 @@ em { font-family: var(--serif); font-style: italic; font-weight: 400; letter-spa
 
 /* ---------- Atmosphere ---------- */
 .sky { position: fixed; inset: 0; z-index: -3; overflow: hidden; pointer-events: none; }
+/* The underwater logo loop sits under the orbs; the veil keeps text readable over its brightest faces. */
+.sky-video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: .85; background: var(--bg) url("assets/video/prism-bg-poster.jpg") center / cover no-repeat; }
+.sky::after { content: ""; position: absolute; inset: 0; background: radial-gradient(ellipse 90% 75% at 50% 45%, transparent 35%, rgba(0, 0, 0, .55) 100%), linear-gradient(180deg, rgba(0, 0, 0, .1), rgba(0, 0, 0, .35)); }
 .orb { position: absolute; border-radius: 50%; filter: blur(90px); opacity: .4; will-change: transform; }
 .o1 { width: 46vw; height: 46vw; left: -12vw; top: 30vh; background: radial-gradient(circle, var(--red), transparent 65%); animation: drift1 26s ease-in-out infinite alternate; }
 .o2 { width: 40vw; height: 40vw; right: -10vw; top: -8vh; background: radial-gradient(circle, var(--indigo), transparent 65%); animation: drift2 30s ease-in-out infinite alternate; }
