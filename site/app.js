@@ -11,6 +11,10 @@
   }, { threshold: .18 });
   $$('.reveal, .strike-list, .tile-memory').forEach(el => io.observe(el));
   
+  // Background loop: plays unless the visitor asked for less motion or less data; the poster frame stands in otherwise.
+  const sky = $('#sky-video');
+  if (sky && !reduced && !navigator.connection?.saveData) sky.play().catch(() => {});
+
   // The logo: the same live WebGL glass prism that Prism draws on its new tab. Drag to turn it, click to switch the light.
   const still = $('#logo-still');
   let logoStarted = false, logo = null;
