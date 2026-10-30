@@ -3,8 +3,9 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <meta name="theme-color" content="#e8e8e7">
-  <meta name="color-scheme" content="light">
+  <meta name="theme-color" content="#e8e8e7" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#121214" media="(prefers-color-scheme: dark)">
+  <meta name="color-scheme" content="light dark">
   <meta name="description" content="Release notes for Prism, a quiet, fast browser for Mac. Every version, newest first.">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Prism Browser">
@@ -24,6 +25,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..800&family=Inter+Tight:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
+  <script>(() => { const r = document.documentElement, q = matchMedia("(prefers-color-scheme: dark)"); window.prismTheme = () => q.matches ? "dark" : "light"; r.dataset.theme = prismTheme(); q.addEventListener("change", () => { if (!r.classList.contains("intro")) r.dataset.theme = prismTheme(); }); })();</script>
 </head>
 <body class="notes-page">
   <div class="sky" aria-hidden="true">

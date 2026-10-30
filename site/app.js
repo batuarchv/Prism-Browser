@@ -45,7 +45,7 @@
     startLogo();
     setTimeout(() => { aimBeam(); root.classList.add('beam'); }, 500);
     setTimeout(() => root.classList.add('prism'), 760);
-    setTimeout(() => { root.classList.remove('intro', 'beam'); root.dataset.theme = 'light'; }, 1260);
+    setTimeout(() => { root.classList.remove('intro', 'beam'); root.dataset.theme = window.prismTheme?.() || 'light'; }, 1260);
   } else {
     root.classList.add('prism');
     if (still.complete) startLogo(); else still.addEventListener('load', startLogo, { once: true });
@@ -83,6 +83,8 @@
     placeThumb();
   });
   addEventListener('resize', placeThumb); document.fonts?.ready.then(placeThumb); placeThumb();
+  // In dark mode the window starts in its dark appearance too.
+  if (window.prismTheme?.() === 'dark') $('button[data-look="dark"]', sw).click();
 
   // Features: seven colours, one at a time. They advance on their own while in view; a click picks one and holds it.
   const list = $$('.feature'), shots = $$('.fshot');

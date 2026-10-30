@@ -9,6 +9,7 @@
   --ink-2: rgba(18, 18, 19, .62);
   --ink-3: rgba(18, 18, 19, .4);
   --line: rgba(18, 18, 19, .1);
+  --card: rgba(255, 255, 255, .55);
   --red: #ff4d5e;
   --orange: #ff8a3d;
   --yellow: #ffd23f;
@@ -61,7 +62,7 @@ h1, h2, h3 { margin: 0; }
 .sky { position: fixed; inset: 0; z-index: -3; overflow: hidden; pointer-events: none; transition: opacity 1.6s var(--ease); }
 .sky-video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: .5; mix-blend-mode: multiply; filter: invert(1) grayscale(.7) contrast(.85) brightness(1.04); }
 /* The first slide keeps its single object clean: a pale fade over the top of the page scrolls away, the loop stays put. */
-body::before { content: ""; position: absolute; top: 0; left: 0; right: 0; height: 120svh; z-index: -2; pointer-events: none; background: linear-gradient(180deg, var(--bg-hi) 0%, rgba(240, 240, 239, .96) 45%, rgba(236, 236, 235, .6) 75%, transparent 100%); transition: opacity 1.2s var(--ease); }
+body::before { content: ""; position: absolute; top: 0; left: 0; right: 0; height: 120svh; z-index: -2; pointer-events: none; background: linear-gradient(180deg, var(--bg-hi) 0%, color-mix(in srgb, var(--bg-hi) 96%, transparent) 45%, color-mix(in srgb, var(--bg) 60%, transparent) 75%, transparent 100%); transition: opacity 1.2s var(--ease); }
 
 /* ---------- Liquid glass (tuned for a pale backdrop) ---------- */
 .glass {
@@ -102,8 +103,8 @@ body::before { content: ""; position: absolute; top: 0; left: 0; right: 0; heigh
 }
 .btn:hover { transform: translateY(-2px); }
 .btn:active { transform: scale(.97); transition-duration: .12s; }
-.btn-solid { color: #fff; background: var(--ink); box-shadow: 0 14px 34px -14px rgba(0, 0, 0, .55); }
-.btn-sub { font: 700 9.5px/1.3 var(--sans); letter-spacing: .06em; text-transform: uppercase; color: rgba(255, 255, 255, .55); margin-top: 2px; }
+.btn-solid { color: var(--bg-hi); background: var(--ink); box-shadow: 0 14px 34px -14px rgba(0, 0, 0, .55); }
+.btn-sub { font: 700 9.5px/1.3 var(--sans); letter-spacing: .06em; text-transform: uppercase; color: var(--bg-hi); opacity: .6; margin-top: 2px; }
 .btn-small { min-height: 34px; padding: 0 16px; font-size: 13px; }
 .btn-glass { color: var(--ink); }
 
@@ -168,7 +169,7 @@ body::before { content: ""; position: absolute; top: 0; left: 0; right: 0; heigh
 .shot.is-on { opacity: 1; }
 .look-switch { position: relative; display: flex; padding: 4px; border-radius: 999px; }
 .look-switch button { position: relative; z-index: 3; border: 0; background: none; padding: 9px 15px; border-radius: 999px; cursor: pointer; font: 700 10.5px/1 var(--sans); letter-spacing: .07em; text-transform: uppercase; color: var(--ink-2); transition: color .3s; }
-.look-switch button[aria-selected="true"] { color: #fff; }
+.look-switch button[aria-selected="true"] { color: var(--bg-hi); }
 .look-thumb { position: absolute; z-index: 2; top: 4px; bottom: 4px; left: 0; border-radius: 999px; background: var(--ink); transition: transform .5s var(--spring), width .5s var(--spring); }
 
 /* ---------- 03 · Features ---------- */
@@ -176,7 +177,7 @@ body::before { content: ""; position: absolute; top: 0; left: 0; right: 0; heigh
 .feature-frame { aspect-ratio: 16 / 10; padding: 7px; border-radius: 20px; box-shadow: inset 0 1px 0 rgba(255, 255, 255, .95), 0 40px 80px -50px var(--glow, transparent), 0 26px 60px -26px rgba(20, 24, 28, .38); transition: box-shadow .8s var(--ease); }
 .fshot { position: absolute; inset: 7px; width: calc(100% - 14px); height: calc(100% - 14px); object-fit: cover; border-radius: 14px; opacity: 0; transform: scale(.985); transition: opacity .6s var(--ease), transform .8s var(--ease); }
 .fshot.is-on { opacity: 1; transform: none; }
-.memory-card { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 14px; background: rgba(255, 255, 255, .55); color: var(--ink-2); text-align: center; }
+.memory-card { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 14px; background: var(--card); color: var(--ink-2); text-align: center; }
 .mem-big { margin: 0; font: 800 clamp(70px, 12vw, 170px)/.85 var(--display); font-stretch: 72%; color: var(--ink); font-variant-numeric: tabular-nums; }
 .mem-big small { font-size: .32em; margin-left: .12em; color: var(--green); }
 .memory-card .tiny { margin: 0; }
@@ -205,6 +206,31 @@ body::before { content: ""; position: absolute; top: 0; left: 0; right: 0; heigh
 .orb:hover { transform: scale(1.04); }
 .orb:active { transform: scale(.98); transition-duration: .12s; }
 
+/* ---------- Dark: the same room with the lights down, following the Mac's appearance ---------- */
+:root[data-theme="dark"] {
+  --bg: #121214;
+  --bg-hi: #1c1c1f;
+  --outer: #050506;
+  --rim: #26262a;
+  --ink: #f1f1ef;
+  --ink-2: rgba(241, 241, 239, .64);
+  --ink-3: rgba(241, 241, 239, .4);
+  --line: rgba(255, 255, 255, .1);
+  --card: rgba(22, 22, 26, .6);
+  color-scheme: dark;
+}
+:root[data-theme="dark"] body { background: radial-gradient(120% 90% at 50% 38%, var(--bg-hi), var(--bg) 60%, #0c0c0e); background-attachment: fixed; }
+/* In the dark the underwater loop plays as it was shot. */
+:root[data-theme="dark"] .sky-video { mix-blend-mode: screen; filter: none; opacity: .75; }
+:root[data-theme="dark"] .glass {
+  background: linear-gradient(180deg, rgba(255, 255, 255, .13), rgba(255, 255, 255, .035) 42%, rgba(255, 255, 255, .06));
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .38), inset 0 -1px 0 rgba(255, 255, 255, .08), inset 1px 0 0 rgba(255, 255, 255, .1), inset -1px 0 0 rgba(255, 255, 255, .06), 0 1px 1px rgba(0, 0, 0, .2), 0 26px 60px -24px rgba(0, 0, 0, .7);
+}
+:root[data-theme="dark"] .glass::before { background: linear-gradient(135deg, rgba(255, 255, 255, .5), rgba(255, 255, 255, .06) 30%, rgba(255, 255, 255, 0) 55%, rgba(255, 255, 255, .2)); }
+:root[data-theme="dark"] .glass::after { background: radial-gradient(220px circle at var(--mx, 30%) var(--my, -20%), rgba(255, 255, 255, .14), transparent 60%); }
+:root[data-theme="dark"] .feature-frame { box-shadow: inset 0 1px 0 rgba(255, 255, 255, .38), 0 40px 80px -50px var(--glow, transparent), 0 26px 60px -24px rgba(0, 0, 0, .7); }
+:root[data-theme="dark"] .frame { box-shadow: 0 0 0 6px var(--rim), 0 0 0 200vmax var(--outer), inset 0 0 0 1px rgba(255, 255, 255, .05); }
+
 /* ---------- Release notes page ---------- */
 .notes-head { padding: calc(var(--inset) + 150px) calc(var(--inset) + var(--gutter)) 70px; max-width: 1240px; margin: 0 auto; }
 .notes-head .title { font-size: clamp(44px, 7vw, 104px); }
@@ -229,7 +255,7 @@ body::before { content: ""; position: absolute; top: 0; left: 0; right: 0; heigh
 .note-body li { position: relative; padding-left: 18px; margin: 6px 0; }
 .note-body li::before { content: ""; position: absolute; left: 2px; top: .62em; width: 5px; height: 5px; border-radius: 50%; background: var(--c); }
 .note-body strong { color: var(--ink); font-weight: 600; }
-.note-body code { font: 13px ui-monospace, "SF Mono", Menlo, monospace; background: rgba(0, 0, 0, .06); padding: 2px 6px; border-radius: 6px; }
+.note-body code { font: 13px ui-monospace, "SF Mono", Menlo, monospace; background: var(--line); padding: 2px 6px; border-radius: 6px; }
 .note-body a, .note-foot a { color: var(--ink); }
 .note-foot { margin: 26px 0 0; position: relative; z-index: 3; }
 .notes-page .footer { display: flex; justify-content: space-between; gap: 20px; flex-wrap: wrap; padding: 26px calc(var(--inset) + var(--gutter)) calc(var(--inset) + 34px); color: var(--ink-3); }
@@ -301,7 +327,7 @@ html.prism .logo-stage::after { animation: wake 1.4s var(--ease) forwards; }
   .dots { bottom: calc(var(--inset) + 22px); }
   .sky-video { opacity: .28; }
   .notes { grid-template-columns: 1fr; gap: 18px; }
-  .notes-rail { top: 70px; z-index: 5; flex-direction: row; overflow-x: auto; max-height: none; padding: 6px; border-radius: 999px; background: rgba(246, 246, 245, .85); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); }
+  .notes-rail { top: 70px; z-index: 5; flex-direction: row; overflow-x: auto; max-height: none; padding: 6px; border-radius: 999px; background: color-mix(in srgb, var(--bg-hi) 85%, transparent); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); }
   .notes-rail a { flex: none; border-radius: 999px; }
   .notes-head { padding-top: calc(var(--inset) + 110px); }
 }
