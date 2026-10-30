@@ -1,4 +1,4 @@
-/* Prism site interactions: links, the live glass logo, liquid glass lenses, the feature spectrum and scroll reveals. */
+/* Prism site interactions: the lander, liquid glass lenses, the slides and their dots, the feature spectrum. */
 (() => {
   const $ = (s, el = document) => el.querySelector(s);
   const $$ = (s, el = document) => [...el.querySelectorAll(s)];
@@ -9,7 +9,7 @@
   const io = new IntersectionObserver(entries => {
     for (const e of entries) if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); }
   }, { threshold: .18 });
-  $$('.reveal, .strike-list, .tile-memory').forEach(el => io.observe(el));
+  $$('.reveal').forEach(el => io.observe(el));
   
   // Background loop: plays unless the visitor asked for less motion or less data; the poster frame stands in otherwise.
   const sky = $('#sky-video');
@@ -26,7 +26,7 @@
   };
 
   // Intro: the dark page shows only "light."; at 0.5 s a beam of light crosses to the prism, which wakes as it is hit;
-  // half a second later the rest of the page arrives.
+  // half a second later the page fills with light and the rest of it arrives.
   const root = document.documentElement;
   // The intro's beam is laid exactly over the beam the logo draws, so the light that arrives first is the light the prism
   // catches. The logo is mounted (still hidden) straight away so its beam can be measured.
@@ -45,7 +45,7 @@
     startLogo();
     setTimeout(() => { aimBeam(); root.classList.add('beam'); }, 500);
     setTimeout(() => root.classList.add('prism'), 760);
-    setTimeout(() => { root.classList.remove('intro', 'beam'); }, 1260);
+    setTimeout(() => { root.classList.remove('intro', 'beam'); root.dataset.theme = window.prismTheme?.() || 'light'; }, 1260);
   } else {
     root.classList.add('prism');
     if (still.complete) startLogo(); else still.addEventListener('load', startLogo, { once: true });
@@ -59,26 +59,19 @@
     }, { passive: true });
   }
 
-  // Nav tightens once the page scrolls.
-  const nav = $('#nav');
-  const onScroll = () => nav.classList.toggle('is-scrolled', scrollY > 40);
-  addEventListener('scroll', onScroll, { passive: true }); onScroll();
+  // Slide dots: the one for the slide in view fills in.
+  const dots = $$('#dots a');
+  const slideIO = new IntersectionObserver(entries => {
+    for (const e of entries) if (e.isIntersecting) dots.forEach(d => d.classList.toggle('on', d.hash === '#' + e.target.id));
+  }, { rootMargin: '-50% 0px -50% 0px' });
+  $$('.slide').forEach(s => slideIO.observe(s));
 
-  // Hero window: it tips up to face you as it scrolls in, and leans a little toward the pointer.
+  // The window leans a little toward the pointer.
   const device = $('#device');
-  let lean = 0;
-  const tilt = () => {
-    const r = device.getBoundingClientRect(), vh = innerHeight;
-    const p = Math.max(0, Math.min(1, (vh - r.top) / (vh * .75)));
-    device.style.setProperty('--rx', ((1 - p) * 16).toFixed(2) + 'deg');
-    device.style.setProperty('--s', (.92 + p * .08).toFixed(3));
-    device.style.setProperty('--ry', lean.toFixed(2) + 'deg');
-  };
-  if (!reduced) {
-    addEventListener('scroll', tilt, { passive: true }); addEventListener('resize', tilt); tilt();
-    if (fine) device.addEventListener('pointermove', e => { const r = device.getBoundingClientRect(); lean = ((e.clientX - r.left) / r.width - .5) * 5; tilt(); });
-    device.addEventListener('pointerleave', () => { lean = 0; tilt(); });
-  } else { device.style.setProperty('--rx', '0deg'); device.style.setProperty('--s', '1'); }
+  if (fine && !reduced) {
+    device.addEventListener('pointermove', e => { const r = device.getBoundingClientRect(); device.style.setProperty('--ry', (((e.clientX - r.left) / r.width - .5) * 4).toFixed(2) + 'deg'); device.style.setProperty('--rx', (((e.clientY - r.top) / r.height - .5) * -3).toFixed(2) + 'deg'); });
+    device.addEventListener('pointerleave', () => { device.style.setProperty('--ry', '0deg'); device.style.setProperty('--rx', '0deg'); });
+  }
 
   // Light / Dark / Top bar.
   const sw = $('.look-switch'), thumb = $('.look-thumb');
@@ -90,42 +83,37 @@
     placeThumb();
   });
   addEventListener('resize', placeThumb); document.fonts?.ready.then(placeThumb); placeThumb();
-
-  // Marquee.
-  const words = [['Prism Shield', 'red'], ['Bypass censorship', 'orange'], ['Spectrum', 'yellow'], ['Sleeping tabs', 'green'], ['Clear view', 'blue'], ['Lens', 'indigo'], ['Beam', 'violet'], ['Chromium 152', 'red'], ['Split view', 'orange'], ['Picture in Picture', 'yellow'], ['40 spaces', 'green'], ['Touch ID passwords', 'blue'], ['Chrome extensions', 'indigo'], ['GPL-3.0', 'violet']];
-  const run = words.map(([w, c]) => `<span><i style="--c:var(--${c})"></i>${w}</span>`).join('');
-  $('.marquee-track').innerHTML = run + run;
+  // In dark mode the window starts in its dark appearance too.
+  if (window.prismTheme?.() === 'dark') $('button[data-look="dark"]', sw).click();
 
   // Features: seven colours, one at a time. They advance on their own while in view; a click picks one and holds it.
-  const list = $$('.feature'), shots = $$('.fshot'), rails = $$('.spectrum-rail i');
+  const list = $$('.feature'), shots = $$('.fshot');
+  const title = $('#feature-title'), tag = $('#feature-tag'), dot = $('.spec-dot', title);
   let index = 0, timer = 0, held = false, visible = false;
-  const DWELL = 5200;
-  const countUp = (el, from, to, decimals = 0, ms = 1400) => {
-    if (reduced) { el.textContent = (+to).toFixed(decimals); return; }
+  const DWELL = 4800;
+  const countDown = el => {
+    if (reduced) return;
     const t0 = performance.now();
-    const step = now => { const k = Math.min(1, (now - t0) / ms), e = 1 - Math.pow(1 - k, 3); el.textContent = (from + (to - from) * e).toFixed(decimals); if (k < 1) requestAnimationFrame(step); };
+    const step = now => { const k = Math.min(1, (now - t0) / 1400), e = 1 - Math.pow(1 - k, 3); el.textContent = (2 - 1.2 * e).toFixed(1); if (k < 1) requestAnimationFrame(step); };
     requestAnimationFrame(step);
   };
   const show = i => {
     index = (i + list.length) % list.length;
-    list.forEach((li, k) => { li.classList.toggle('is-on', k === index); $('.feature-head', li).setAttribute('aria-expanded', k === index); });
-    const key = list[index].dataset.shot;
+    const li = list[index], key = li.dataset.shot;
+    list.forEach((x, k) => { x.classList.toggle('is-on', k === index); $('button', x).setAttribute('aria-pressed', k === index); });
     shots.forEach(s => s.classList.toggle('is-on', s.dataset.shot === key));
-    rails.forEach((r, k) => r.classList.toggle('is-on', k === index));
-    $('#chip-name').textContent = $('.feature-name', list[index]).textContent;
-    if (key === 'memory') countUp($('.memory-card .count'), 0, 60);
-    $('#feature-frame').style.setProperty('--glow', getComputedStyle(list[index]).getPropertyValue('--c'));
+    title.firstChild.textContent = $('button', li).textContent;
+    tag.textContent = li.dataset.tag;
+    const c = getComputedStyle(li).getPropertyValue('--c');
+    dot.style.background = c; $('#feature-frame').style.setProperty('--glow', c);
+    if (key === 'memory') countDown($('.memory-card .count'));
     schedule();
   };
   const section = $('#features');
   const schedule = () => { section.classList.toggle('autoplay', !held && !reduced); clearTimeout(timer); if (!held && visible && !reduced) timer = setTimeout(() => show(index + 1), DWELL); };
-  list.forEach((li, k) => $('.feature-head', li).addEventListener('click', () => { held = true; show(k); }));
-  new IntersectionObserver(([e]) => { visible = e.isIntersecting; schedule(); }, { threshold: .35 }).observe($('#spectrum-stage'));
+  list.forEach((li, k) => $('button', li).addEventListener('click', () => { held = true; show(k); }));
+  new IntersectionObserver(([e]) => { visible = e.isIntersecting; schedule(); }, { threshold: .4 }).observe(section);
   show(0);
-
-  // Memory tile counts down from 2.0 GB once it is on screen.
-  const memTile = $('.tile-memory .count');
-  new IntersectionObserver(([e], obs) => { if (e.isIntersecting) { countUp(memTile, 2, .8, 1, 2000); obs.disconnect(); } }, { threshold: .5 }).observe(memTile);
 
   // Liquid glass lenses (Chromium only: it is the one engine that runs SVG filters in backdrop-filter). Each glass
   // surface gets a displacement map shaped like its own rounded rectangle: the backdrop bends near the rim like a thick
@@ -172,14 +160,3 @@
   lensed.forEach(el => ro.observe(el));
   document.documentElement.classList.add('lens-on');
 })();
-
-// Palette chips: pick a colour, jump to its feature.
-document.querySelectorAll('.swatch').forEach((b) => b.addEventListener('click', () => {
-  const head = document.querySelectorAll('.feature-head')[+b.dataset.feature];
-  document.getElementById('features').scrollIntoView({ behavior: 'smooth' });
-  head?.click();
-}));
-// Footer word: the light follows the pointer.
-const fw = document.getElementById('footer-word');
-if (fw && matchMedia('(hover: none)').matches) new IntersectionObserver(([e]) => fw.parentElement.classList.toggle('in', e.isIntersecting), { threshold: .6 }).observe(fw);
-fw?.parentElement.addEventListener('pointermove', (e) => fw.style.setProperty('--fx', `${(e.clientX / innerWidth) * 100}%`));
