@@ -1,10 +1,10 @@
 <!doctype html>
-<html lang="en" data-theme="dark">
+<html lang="en" data-theme="light">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <meta name="theme-color" content="#000000">
-  <meta name="color-scheme" content="dark">
+  <meta name="theme-color" content="#e8e8e7">
+  <meta name="color-scheme" content="light">
   <meta name="description" content="Release notes for Prism, a quiet, fast browser for Mac. Every version, newest first.">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Prism Browser">
@@ -22,7 +22,7 @@
   <link rel="apple-touch-icon" href="apple-touch-icon.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700;800&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..800&family=Inter+Tight:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
 </head>
 <body class="notes-page">
@@ -32,38 +32,33 @@
       <source src="assets/video/prism-bg.mp4" type="video/mp4">
     </video>
   </div>
-  <div class="grain" aria-hidden="true"></div>
+  <div class="frame" aria-hidden="true"></div>
 
   <header class="nav" id="nav">
-    <div class="nav-pill glass">
-      <a class="brand" href="index.html" aria-label="Prism home"><img src="assets/prism-mark.png" alt="" width="26" height="26"><span>Prism</span></a>
-      <nav aria-label="Sections">
-        <a href="index.html#features">Features</a><a href="index.html#light">Lightness</a><a href="releases.html" aria-current="page">Releases</a><a data-link="repo" href="https://github.com/batuarchv/Prism-Browser">GitHub</a>
-      </nav>
-      <a class="btn btn-solid btn-small" data-link="download" href="https://github.com/batuarchv/Prism-Browser/releases/latest">Download</a>
-    </div>
+    <a class="brand" href="index.html" aria-label="Prism home"><b>Prism</b><span>Browser</span></a>
+    <nav aria-label="Sections">
+      <a href="index.html#window">Window</a><a href="index.html#features">Features</a><a href="releases.html" aria-current="page">Releases</a><a data-link="repo" href="https://github.com/batuarchv/Prism-Browser">GitHub</a>
+    </nav>
+    <a class="nav-cta glass" data-link="download" href="https://github.com/batuarchv/Prism-Browser/releases/latest">Download <span aria-hidden="true">↓</span></a>
   </header>
 
   <main id="top">
     <section class="notes-head">
-      <p class="kicker mono"><span>↓</span>Release notes</p>
-      <h1>Every release,<br><em>newest first.</em></h1>
-      <p class="section-lede">What changed in each version of Prism. Installed copies update on their own, so you only need a download the first time.</p>
+      <p class="slide-no tiny">Release notes</p>
+      <h1 class="title">Every release<i class="spec-dot"></i></h1>
     </section>
 
     <section class="notes">
       <nav class="notes-rail" id="notes-rail" aria-label="Versions"></nav>
       <div class="notes-list" id="notes-list" aria-live="polite">
-        <article class="note glass note-loading"><p class="mono">Loading releases from GitHub…</p></article>
+        <article class="note glass note-loading"><p class="tiny">Loading releases from GitHub…</p></article>
       </div>
     </section>
   </main>
 
-  <footer class="footer">
-    <p class="footer-word" id="footer-word" aria-hidden="true">Prism</p>
-    <a class="brand" href="index.html"><img src="assets/prism-mark.png" alt="" width="22" height="22"><span>Prism</span></a>
-    <span class="mono">See the web in a new light.</span>
-    <span class="mono">GPL-3.0 · <a data-link="repo" href="https://github.com/batuarchv/Prism-Browser">Source</a></span>
+  <footer class="footer tiny">
+    <a href="index.html">Prism Browser</a>
+    <span>GPL-3.0 · <a data-link="repo" href="https://github.com/batuarchv/Prism-Browser">Source</a></span>
   </footer>
 
   <script src="config.js"></script>

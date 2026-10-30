@@ -50,14 +50,14 @@
       card.innerHTML = `
         <header class="note-head">
           <div>
-            <p class="mono note-meta"><span class="note-dot"></span>${esc(date(r.published_at || r.created_at))}${i === 0 ? ' · <b>Latest</b>' : ''}${r.prerelease ? ' · Pre-release' : ''}</p>
+            <p class="tiny note-meta"><span class="note-dot"></span>${esc(date(r.published_at || r.created_at))}${i === 0 ? ' · <b>Latest</b>' : ''}${r.prerelease ? ' · Pre-release' : ''}</p>
             <h2 class="note-version">Prism ${esc(version)}</h2>
             ${title ? `<p class="note-title">${inline(title)}</p>` : ''}
           </div>
           ${dmg ? `<a class="btn ${i === 0 ? 'btn-solid' : 'btn-glass glass'} btn-small" href="${esc(dmg.browser_download_url)}" download>Download ${esc(version)}</a>` : ''}
         </header>
         <div class="note-body">${markdown(body)}</div>
-        <p class="note-foot mono"><a href="${esc(r.html_url)}" rel="noopener">View on GitHub ↗</a></p>`;
+        <p class="note-foot tiny"><a href="${esc(r.html_url)}" rel="noopener">View on GitHub ↗</a></p>`;
       list.append(card);
       const a = document.createElement('a');
       a.href = `#${id}`; a.style.setProperty('--c', `var(--${c})`);
@@ -83,8 +83,4 @@
     .then(render)
     .catch(fail);
 
-  // Footer word: the light follows the pointer.
-  const fw = document.getElementById('footer-word');
-  if (fw && matchMedia('(hover: none)').matches) new IntersectionObserver(([e]) => fw.parentElement.classList.toggle('in', e.isIntersecting), { threshold: .6 }).observe(fw);
-  fw?.parentElement.addEventListener('pointermove', (e) => fw.style.setProperty('--fx', `${(e.clientX / innerWidth) * 100}%`));
 })();
