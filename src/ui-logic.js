@@ -13,5 +13,7 @@
  }
  // Toolbar Extensions lists only loaded extensions that have their own panel (action popup or side panel).
  function panelExtensions(list){return (Array.isArray(list)?list:[]).filter(e=>e&&e.loaded&&(e.hasPopup||e.hasSidePanel));}
- const api={iconTone,panelExtensions};if(typeof module!=='undefined'&&module.exports)module.exports=api;else root.PrismUI=api;
+ // The toolbar popover lists every turned-on extension (0.43); those without a panel run their own click.
+ function toolbarExtensions(list){return (Array.isArray(list)?list:[]).filter(e=>e&&e.loaded);}
+ const api={iconTone,panelExtensions,toolbarExtensions};if(typeof module!=='undefined'&&module.exports)module.exports=api;else root.PrismUI=api;
 })(globalThis);

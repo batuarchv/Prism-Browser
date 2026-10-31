@@ -1,0 +1,18 @@
+<!doctype html>
+<html><head><meta charset="UTF-8"><meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self'; img-src https: http: data:; font-src 'self'">
+<meta name="referrer" content="no-referrer"><title>Reader</title><link rel="stylesheet" href="reader.css"></head>
+<body>
+<div id="reader-bar" role="toolbar" aria-label="Reader">
+ <button id="reader-done" class="rb" data-i18n="Done">Done</button>
+ <span class="rb-gap"></span>
+ <button id="reader-smaller" class="rb" title="Smaller text" aria-label="Smaller text">A</button><button id="reader-larger" class="rb big" title="Larger text" aria-label="Larger text">A</button>
+ <button id="reader-style" class="rb" title="Reader appearance" aria-label="Reader appearance" aria-haspopup="true" aria-expanded="false">Aa</button>
+</div>
+<div id="reader-menu" role="menu" hidden>
+ <div class="rm-row" id="reader-themes" role="group" aria-label="Theme"></div>
+ <div class="rm-list" id="reader-fonts" role="group" aria-label="Font"></div>
+ <div class="rm-row" id="reader-widths" role="group" aria-label="Line width"></div>
+</div>
+<main id="reader-scroll"><article id="reader-article"><header id="reader-head"><p id="reader-site"></p><h1 id="reader-title"></h1><p id="reader-meta"></p></header><div id="reader-body"></div></article></main>
+<script src="locales.js"></script><script src="surface-ui.js"></script><script src="reader.js"></script>
+</body></html>

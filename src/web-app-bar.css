@@ -1,0 +1,15 @@
+/* A web app's title bar: Safari web app style, quiet, draggable, buttons only where needed. */
+:root{--ink:#1d1d1f;--muted:#6e6e73;--bar:#f6f6f7;--rule:#0000001a;--hover:#0000000f;color-scheme:light}
+:root[data-dark]{--ink:#ececf0;--muted:#98989d;--bar:#1e1e20;--rule:#ffffff1a;--hover:#ffffff14;color-scheme:dark}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%;background:var(--bar);color:var(--ink);overflow:hidden;font:13px/1 -apple-system,BlinkMacSystemFont,"SF Pro Text",sans-serif;-webkit-font-smoothing:antialiased;user-select:none}
+#bar{height:38px;display:flex;align-items:center;gap:2px;padding:0 8px;border-bottom:1px solid var(--rule);-webkit-app-region:drag}
+.lights{width:72px;flex:none}
+.b{-webkit-app-region:no-drag;width:28px;height:26px;border:0;border-radius:7px;background:transparent;color:var(--ink);display:grid;place-items:center;padding:0;transition:background .12s,opacity .12s}
+.b:hover:not(:disabled){background:var(--hover)}.b:active:not(:disabled){background:var(--rule)}
+.b:disabled{opacity:.3}.b svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+.b[hidden]{display:none}
+#title{flex:1;min-width:0;display:flex;align-items:baseline;justify-content:center;gap:6px;padding:0 12px;white-space:nowrap}
+#name{font-weight:600;overflow:hidden;text-overflow:ellipsis}
+#host{color:var(--muted);font-size:12px;overflow:hidden;text-overflow:ellipsis}
+#host:empty{display:none}

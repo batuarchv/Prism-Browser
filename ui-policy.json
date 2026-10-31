@@ -52,5 +52,20 @@
   "colorSchemes": [
     "light"
   ],
-  "exceptions": []
+  "exceptions": [
+    {
+      "selector": "html",
+      "rules": [
+        "root-background"
+      ],
+      "reason": "The browser window is transparent macOS glass; the page background is painted by the window."
+    },
+    {
+      "selector": "button[title]",
+      "rules": [
+        "icon-button-tooltip"
+      ],
+      "reason": "Prism uses native macOS title tooltips, which lintapple cannot see as role=tooltip elements."
+    }
+  ]
 }

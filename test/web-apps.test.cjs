@@ -1,0 +1,15 @@
+const test=require('node:test'),assert=require('node:assert/strict'),fs=require('node:fs'),path=require('node:path'),os=require('node:os');
+const {plist,readPlist,safeName,nameFrom}=require('../src/web-apps.cjs');
+const {sameSite,signIn}=require('../src/web-app.cjs');
+test('a web app Info.plist round-trips its keys and escapes text',()=>{const file=path.join(fs.mkdtempSync(path.join(os.tmpdir(),'plist-')),'Info.plist');
+ fs.writeFileSync(file,plist({exe:'Prism',id:'abc123',name:'Tom & Jerry <Mail>',url:'https://mail.example.com/?a=1&b=2',hostBundle:'/Applications/Prism.app',data:'/tmp/x',version:'0.45.0'}));
+ const info=readPlist(file);assert.equal(info.PrismWebAppID,'abc123');assert.equal(info.PrismWebAppName,'Tom & Jerry <Mail>');assert.equal(info.PrismWebAppURL,'https://mail.example.com/?a=1&b=2');assert.equal(info.PrismHostApp,'/Applications/Prism.app');assert.equal(info.CFBundleExecutable,'Prism');
+ assert.match(fs.readFileSync(file,'utf8'),/<key>CFBundleIdentifier<\/key><string>local\.prism\.webapp\.abc123<\/string>/);});
+test('web app names are safe file names and come from the site',()=>{assert.equal(safeName('a/b:c'),'a b c');assert.equal(safeName(''),'Web App');assert.equal(safeName('x'.repeat(90)).length,60);
+ assert.equal(nameFrom({manifest:{short_name:'Glass',name:'Glass for Teams'},page:{},url:'https://g.example'}),'Glass');
+ assert.equal(nameFrom({page:{title:'Inbox (3) - me@x.com - Gmail'},url:'https://mail.google.com/'}),'Gmail');
+ assert.equal(nameFrom({page:{site:'The Verge',title:'A story'},url:'https://www.theverge.com/x'}),'The Verge');
+ assert.equal(nameFrom({page:{title:'Home'},url:'https://www.notion.so/'}),'Notion');});
+test('a web app keeps its own site and sign-in pages, and sends other sites to Prism',()=>{assert.ok(sameSite('https://mail.google.com/a','https://www.google.com/b'));assert.ok(!sameSite('https://mail.google.com/','https://example.org/'));
+ for(const url of ['https://accounts.google.com/o/oauth2/auth','https://appleid.apple.com/auth/authorize','https://login.microsoftonline.com/common','https://github.com/login/oauth/authorize'])assert.ok(signIn(url),url);
+ assert.ok(!signIn('https://example.org/news'));});

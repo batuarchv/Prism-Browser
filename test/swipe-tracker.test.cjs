@@ -39,3 +39,5 @@ test('a short stall in the event stream does not end the swipe halfway',async()=
  for(const d of [-10,-12,-12])s.feed({deltaX:d,timeStamp:t+=16});await delay(100);t+=100;for(const d of [-12,-12,-12,-12])s.feed({deltaX:d,timeStamp:t+=16});
  assert.equal(ends.length,0,'still tracking after a 100 ms stall');await delay(160);assert.deepEqual(ends,[1]);
 });
+test('a swipe clearly past the line goes back while the fingers are still moving (0.44)',()=>{
+ const {ends}=run([-8,-12,-14,-16,-16,-16,-16,-16,-16,-16,-16,-16,-16]);assert.equal(ends.length,1,'ended without waiting');assert.equal(ends[0].dir,1);assert.ok(ends[0].offset>=140);});

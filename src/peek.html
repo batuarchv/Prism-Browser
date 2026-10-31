@@ -4,9 +4,12 @@
 <body class="peek">
 <header class="peek-bar">
  <button id="peek-close" class="glass-icon" aria-label="Close" title="Close (Esc)"></button>
- <button id="peek-back" class="glass-icon" aria-label="Back" title="Back" hidden></button>
- <span class="peek-site"><img id="peek-icon" alt="" hidden><span class="peek-text"><strong id="peek-title"></strong><small id="peek-host"></small></span></span>
+ <span class="peek-nav"><button id="peek-back" class="glass-icon" aria-label="Back" title="Back (⌘[)" disabled></button><button id="peek-forward" class="glass-icon" aria-label="Forward" title="Forward (⌘])" disabled></button><button id="peek-reload" class="glass-icon" aria-label="Reload" title="Reload (⌘R)"></button></span>
+ <form id="peek-form" class="peek-field" autocomplete="off"><img id="peek-icon" alt="" hidden><span id="peek-lock" hidden></span><input id="peek-address" spellcheck="false" autocapitalize="off" aria-label="Address" data-i18n-placeholder="Search or enter address" placeholder="Search or enter address"></form>
+ <button id="peek-copy" class="glass-icon" aria-label="Copy link" title="Copy link (⇧⌘C)"></button>
+ <button id="peek-detach" class="glass-icon" aria-label="Keep open" title="Keep open in a Lens window"></button>
  <button id="peek-tab" class="glass-pill" title="Open as tab (⌘↩)"><span id="peek-tab-icon"></span><span data-i18n="Open as tab">Open as tab</span></button>
 </header>
+<p id="peek-empty" hidden data-i18n="Type an address or a search, then press Return.">Type an address or a search, then press Return.</p>
 <script src="locales.js"></script><script src="icons.js"></script><script src="surface-ui.js"></script><script src="peek.js"></script>
 </body></html>

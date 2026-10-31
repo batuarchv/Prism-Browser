@@ -17,12 +17,14 @@
  bar.addEventListener('keydown',e=>{if(e.key==='ArrowLeft'||e.key==='ArrowRight'){e.preventDefault();surface.send('skip',e.key==='ArrowLeft'?-5:5);}});
  // Moving the window: the page reports screen positions and the browser moves it; letting go snaps to a corner.
  document.addEventListener('pointerdown',e=>{if(e.button!==0||e.target.closest('button,#pip-bar'))return;drag={id:e.pointerId,moved:false};document.body.setPointerCapture(e.pointerId);surface.send('drag-start',{x:e.screenX,y:e.screenY});});
- document.addEventListener('pointermove',e=>{if(drag&&e.pointerId===drag.id){drag.moved=true;surface.send('drag',{x:e.screenX,y:e.screenY});}});
- const release=e=>{if(!drag||e.pointerId!==drag.id)return;const moved=drag.moved;drag=null;surface.send('drag-end');if(!moved&&e.target===document.body||!moved&&e.target.classList?.contains('pip-scrim')){play.click();}};
+ // The last few positions give the release velocity, so a flick carries the window on (0.47).
+ document.addEventListener('pointermove',e=>{if(drag&&e.pointerId===drag.id){drag.moved=true;const now=performance.now();drag.trail=[...(drag.trail||[]).filter(p=>now-p.t<90),{x:e.screenX,y:e.screenY,t:now}];surface.send('drag',{x:e.screenX,y:e.screenY});}});
+ const release=e=>{if(!drag||e.pointerId!==drag.id)return;const moved=drag.moved,trail=drag.trail||[],a=trail[0],b=trail.at(-1),dt=a&&b?(b.t-a.t)/1000:0;drag=null;surface.send('drag-end',dt>.01?{vx:(b.x-a.x)/dt,vy:(b.y-a.y)/dt}:{});if(status.stashed&&!moved){surface.send('unstash');return;}if(!moved&&e.target===document.body||!moved&&e.target.classList?.contains('pip-scrim')){play.click();}};
  document.addEventListener('pointerup',release);document.addEventListener('pointercancel',release);
  document.addEventListener('dblclick',e=>{if(!e.target.closest('button,#pip-bar'))surface.send('return');});
  document.addEventListener('keydown',e=>{if(e.key===' '){e.preventDefault();play.click();}else if(e.key==='Escape')surface.send('close');else if(e.key==='ArrowLeft')surface.send('skip',-10);else if(e.key==='ArrowRight')surface.send('skip',10);});
- surface.on(s=>{applySurfaceTheme({...s,dark:true});status={...status,...s};if(typeof s.playing==='boolean')setPlay(s.playing);if(typeof s.muted==='boolean')setMute(s.muted);
+ surface.on(s=>{applySurfaceTheme({...s,dark:true});status={...status,...s};if(status.stashed)document.body.dataset.stashed=status.stashed;else delete document.body.dataset.stashed;if(typeof s.playing==='boolean')setPlay(s.playing);if(typeof s.muted==='boolean')setMute(s.muted);
   if(s.duration>0){$('pip-time').textContent=fmt(s.time);$('pip-left').textContent='-'+fmt(s.duration-s.time);$('pip-fill').style.width=(Math.min(1,s.time/s.duration)*100)+'%';document.body.classList.remove('live');}else document.body.classList.add('live');});
+ document.body.append(Object.assign(document.createElement('div'),{className:'pip-stash',ariaHidden:'true'}));
  surface.send('ready');
 })();
