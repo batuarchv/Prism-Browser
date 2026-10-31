@@ -2,6 +2,11 @@
 
 All notable changes to Prism, newest first. Downloads are on the [Releases page](https://github.com/batuarchv/Prism-Browser/releases).
 
+## 0.47.3 — Google sign-in
+
+### New
+- **Bring your Google sign-in.** Google doesn't allow signing in inside browsers built on Electron, like Prism, and shows "Couldn't sign you in". When that happens, Prism now offers to bring over the Google sign-in you already have in Arc, Chrome or another Chromium browser on this Mac, or to open Google in Safari. You can also do it any time from File → Import From → Google Sign-in…. Only Google's sign-in is copied, after macOS asks, and nothing in the other browser changes.
+
 ## 0.47.2 — A calmer Imports
 
 ### New
