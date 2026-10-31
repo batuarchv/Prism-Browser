@@ -174,4 +174,4 @@ function mergeHistory(current,incoming,limit=HISTORY_LIMIT){
  const merged=[...map.values()].sort((a,b)=>b.visitedAt-a.visitedAt).slice(0,limit);const known=new Set(current.map(r=>r.url));
  return {history:merged,added:merged.filter(r=>!known.has(r.url)).length};
 }
-module.exports={CHROMIUM,detect,collect,keychainKey,decryptLogins,addCredentials,mergeHistory,parseBinaryPlist,safariBookmarks,chromeTime,safariTime};
+module.exports={CHROMIUM,rootOf,detect,collect,keychainKey,decryptLogins,addCredentials,mergeHistory,parseBinaryPlist,safariBookmarks,chromeTime,safariTime};
