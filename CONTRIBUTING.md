@@ -21,6 +21,17 @@ When changing the AppKit bridge, rebuild it with `pnpm run build:native`. The op
 - Do not include browser profiles, credentials, local logs, personal browsing data, or screenshots containing signed-in content.
 - Never commit API keys, signing keys, certificates, or tokens.
 
+## Signed releases
+
+`node scripts/release-local.cjs --dmg` signs with a **Developer ID Application** certificate when one is in the keychain, then notarizes and staples both the app and the DMG, so downloads open without the "can't be opened" warning. Without a certificate it falls back to ad-hoc signing. One-time setup on the release Mac:
+
+1. Join the Apple Developer Program and create a *Developer ID Application* certificate (Xcode → Settings → Accounts → Manage Certificates, or developer.apple.com → Certificates).
+2. Create an app-specific password at account.apple.com, then store it for notarytool:
+   `xcrun notarytool store-credentials prism-notary --apple-id <email> --team-id <TEAMID> --password <app-specific password>`
+3. Check the setup with `node scripts/sign-mac.cjs --check`.
+
+Credentials stay in the macOS keychain; set `PRISM_SIGN_IDENTITY` or `PRISM_NOTARY_PROFILE` to use a different certificate or profile.
+
 ## Scope
 
 Prism is currently an Apple Silicon macOS prototype. Extension compatibility is best effort. Changes should preserve Private session isolation, explicit user consent for credential filling, and Chromium's web security settings.
