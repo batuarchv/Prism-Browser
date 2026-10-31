@@ -16,4 +16,9 @@ function normalizeArchive(list){
  if(!Array.isArray(list))return [];
  return list.filter(e=>e&&typeof e.id==='string'&&e.id.length<=64&&typeof e.url==='string'&&/^https?:\/\//i.test(e.url)&&e.url.length<=8192&&Number.isFinite(e.at)).map(e=>({id:e.id,url:e.url,title:String(e.title||e.url).slice(0,300),space:typeof e.space==='string'&&/^[a-z0-9][a-z0-9-]{0,39}$/.test(e.space)?e.space:'personal',at:e.at})).slice(0,LIMIT);
 }
-module.exports={AFTER,LIMIT,archiveCandidates,addToArchive,normalizeArchive};
+// Tidy (0.46, ⌥⌘K or Beam): the tabs of this space you haven't looked at for half an hour go to the Archive at once,
+// awake or asleep. What Tidy never takes: the tab you're on, split, pinned, favorites, kept-awake, playing, Private.
+function tidyCandidates(tabs,{activeId,split=[],space,idle=30*60000,now=Date.now()}){
+ return tabs.filter(t=>t.url&&t.space===space&&!t.pinned&&!t.favoriteId&&!t.keepAwake&&!t.audible&&t.space!=='private'&&t.id!==activeId&&!split.includes(t.id)&&now-(Number.isFinite(t.lastUsed)?t.lastUsed:0)>=idle);
+}
+module.exports={AFTER,LIMIT,archiveCandidates,addToArchive,normalizeArchive,tidyCandidates};

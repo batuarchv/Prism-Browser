@@ -6,7 +6,7 @@ function readJSON(file,fallback){try{return JSON.parse(fs.readFileSync(file,'utf
 function uniqueFile(directory,filename){const base=path.basename(filename).replace(/[\x00-\x1f]/g,'')||'Download';const ext=path.extname(base);const stem=base.slice(0,base.length-ext.length);let file=path.join(directory,base),i=1;while(fs.existsSync(file))file=path.join(directory,`${stem} (${i++})${ext}`);return file;}
 function createServices({app,ses,window,settings,saveSettings,emit,smoke,privateMode=false,onDownloadComplete=()=>{}}){
  const downloadsFile=path.join(app.getPath('userData'),'downloads.json');const imagesFile=path.join(app.getPath('userData'),'site-images.json');
- const live=new Map();let downloads=(privateMode?[]:readJSON(downloadsFile,[])).map(d=>({...d,active:false,state:['progressing','paused'].includes(d.state)?'interrupted':d.state}));
+ const live=new Map();let downloads=(privateMode?[]:readJSON(downloadsFile,[])).map(d=>({...d,active:false,naming:false,state:['progressing','paused'].includes(d.state)?'interrupted':d.state}));
  let images=privateMode?{}:trimImages(readJSON(imagesFile,{}),settings.leanMemory?2*1024*1024:4*1024*1024),imageRevision=0;
  // Icons and preview cards are written a moment after they change, off the main thread, instead of rewriting the
  // whole file synchronously for each one (0.35); anything pending is written when Prism closes.
@@ -30,6 +30,19 @@ const popupWindows=new Set();let lastEmit=0;
   const permissions=[...(manifest.permissions||[]),...(manifest.host_permissions||[]),...(manifest.content_scripts||[]).flatMap(x=>x.matches||[])];
   const answer=await dialog.showMessageBox(window(),{type:'question',message:`Add ${name}?`,detail:'Requested access:\n'+([...new Set(permissions)].join('\n').slice(0,3000)||'No permissions declared')+'\n\nSome Chrome APIs are not available in Prism. Native messaging may let this extension communicate with installed desktop applications. Apple Passwords could not connect to its native helper in this Prism build.',buttons:['Cancel','Add extension'],defaultId:0,cancelId:0});return answer.response===1;
  }
+ // activeTab (0.44): in Chrome, clicking an extension's button, its right-click item or its shortcut lets it read and
+ // change the page you are on. Electron has no such per-click grant, so extensions built on it (Save to Cosmos, Google
+ // Translate, clippers, readers) failed with "Cannot access contents of the page". Prism gives an extension that asks for
+ // activeTab access to pages instead: its manifest copy in Prism's own folder gains <all_urls> and it is loaded again.
+ const ACTIVE_TAB_MARK='prism_active_tab_hosts';
+ function grantActiveTab(extension){try{const m=extension.manifest||{},perms=Array.isArray(m.permissions)?m.permissions:[],hosts=m.manifest_version===3?(Array.isArray(m.host_permissions)?m.host_permissions:[]):perms;
+  if(!perms.includes('activeTab')||m[ACTIVE_TAB_MARK]||hosts.some(h=>h==='<all_urls>'||h==='*://*/*'))return false;const own=[path.join(app.getPath('userData'),'store-extensions'),path.join(app.getPath('userData'),'extensions')].some(dir=>extension.path.startsWith(dir+path.sep));if(!own)return false;
+  const file=path.join(extension.path,'manifest.json'),raw=JSON.parse(fs.readFileSync(file,'utf8'));raw[ACTIVE_TAB_MARK]=true;
+  if(raw.manifest_version===3)raw.host_permissions=[...new Set([...(raw.host_permissions||[]),'<all_urls>'])];else raw.permissions=[...new Set([...(raw.permissions||[]),'<all_urls>'])];
+  fs.writeFileSync(file,JSON.stringify(raw,null,1));return true;}catch{return false;}}
+ const regranting=new Set();
+ ses.extensions.on('extension-loaded',(_event,extension)=>{if(regranting.has(extension.id)||!grantActiveTab(extension))return;regranting.add(extension.id);
+  setTimeout(async()=>{try{if(ses.extensions.getExtension(extension.id)){ses.extensions.removeExtension(extension.id);await ses.extensions.loadExtension(extension.path,{allowFileAccess:false});}}catch{}finally{regranting.delete(extension.id);}},0);});
  ses.extensions.on('extension-loaded',(_event,extension)=>{const store=path.join(app.getPath('userData'),'store-extensions')+path.sep;if(extension.path.startsWith(store)){const existing=settings.extensions.find(e=>e.id===extension.id);const record={id:extension.id,path:extension.path,source:'Chrome Web Store',name:extension.name,version:extension.version,enabled:true,error:''};if(existing)Object.assign(existing,record);else settings.extensions.push(record);saveSettings();emit();}});
  async function installExtension(directory,review=true){
   const manifestFile=path.join(directory,'manifest.json');if(!fs.existsSync(manifestFile)||fs.statSync(manifestFile).size>1024*1024)throw Error('Choose an unpacked extension folder containing manifest.json.');
@@ -68,7 +81,9 @@ const popupWindows=new Set();let lastEmit=0;
   const record={id:randomUUID(),name:item.getFilename(),pageTitle:privateMode?'':String(source?.getTitle()||'').slice(0,250),mime:item.getMimeType(),url:item.getURL(),path:'',received:0,total:item.getTotalBytes(),state:'progressing',active:true,startedAt:Date.now()};downloads.unshift(record);downloads=downloads.slice(0,150);live.set(record.id,item);
   const directory=settings.downloadDirectory||app.getPath('downloads');fs.mkdirSync(directory,{recursive:true});
   const proposed=uniqueFile(directory,item.getFilename());
-  if(settings.askDownloadLocation||privateMode)item.setSaveDialogOptions({defaultPath:proposed,title:privateMode?'Save Private download — file remains after Private ends':'Save download'});else item.setSavePath(proposed);
+  // Files go straight to Downloads (0.44, like Safari), Private too; "Ask where to save each file" is off unless chosen.
+  // The old askDownloadLocation key (on by default before 0.44) is dropped, so it no longer asks for existing profiles.
+  if(settings.askWhereToSave&&!privateMode)item.setSaveDialogOptions({defaultPath:proposed,title:'Save download'});else item.setSavePath(proposed);
   const update=()=>{record.received=item.getReceivedBytes();record.total=item.getTotalBytes();record.path=item.getSavePath();record.state=item.isPaused()?'paused':item.getState();record.canResume=item.canResume();};
   item.on('updated',()=>{update();const now=Date.now();if(now-lastEmit>150){lastEmit=now;emit();}});
   item.once('done',(_e,state)=>{update();record.state=state;record.active=false;record.finishedAt=Date.now();live.delete(record.id);persistDownloads();emit();if(state==='completed'&&!privateMode)onDownloadComplete(record.id);if(!window()?.isDestroyed())window()?.setProgressBar(-1);});

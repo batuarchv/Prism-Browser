@@ -2,7 +2,8 @@
 #   /Applications/Blender.app/Contents/MacOS/Blender -b -P scripts/blender/prism-logo.py -- <out> [options]
 # Options: --size N  --samples N  --dark  --turn DEG (spin about the vertical axis)  --frames N --sweep DEG (turntable
 # sequence <out>-00.png …)  --webp (WebP frames)  --model PATH (write the bevelled mesh as src/glass-model.js for the
-# live WebGL logo, without rendering)  --glb PATH (also export the mesh).
+# live WebGL logo, without rendering)  --glb PATH (also export the mesh)  --blend PATH (save the scene as a .blend to
+# open in Blender, without rendering).
 #
 # Geometry: the Prism logo is a right square pyramid seen through a perspective camera; assets/prism-pyramid.json
 # holds both (solved from the original artwork) and scripts/draw-mark.cjs draws the 2D logo from the same data, so
@@ -105,6 +106,10 @@ try:
     scene.cycles.device = 'GPU'
 except Exception: pass
 
+blend = opt('--blend')
+if blend:
+    bpy.ops.wm.save_as_mainfile(filepath=os.path.abspath(blend), relative_remap=True)
+    print('PRISM_BLEND', blend); sys.exit(0)
 model = opt('--model')
 if model:
     # The live logo (src/glass-logo.js) draws this exact mesh: bevelled, triangulated, with Blender's corner normals and

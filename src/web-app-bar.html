@@ -1,0 +1,15 @@
+<!doctype html>
+<html><head><meta charset="UTF-8"><meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self'">
+<title>Toolbar</title><link rel="stylesheet" href="web-app-bar.css"></head>
+<body>
+<div id="bar" role="toolbar">
+ <span class="lights"></span>
+ <button id="back" class="b" data-command="back" aria-label="Back" title="Back" disabled></button>
+ <button id="forward" class="b" data-command="forward" aria-label="Forward" title="Forward" disabled></button>
+ <button id="reload" class="b" data-command="reload" aria-label="Reload" title="Reload"></button>
+ <div id="title"><span id="name"></span><span id="host"></span></div>
+ <button id="home" class="b" data-command="home" aria-label="Home" title="Home" hidden></button>
+ <button id="prism" class="b" data-command="prism" aria-label="Open in Prism" title="Open in Prism"></button>
+</div>
+<script src="web-app-bar.js"></script>
+</body></html>

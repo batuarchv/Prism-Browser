@@ -27,7 +27,7 @@ function eraseScript(labels){return `new Promise(done=>{if(window.__prismErase)r
  addEventListener('mousemove',move,true);addEventListener('click',click,true);addEventListener('keydown',key,true);addEventListener('keyup',key,true);for(const t of ['mousedown','mouseup','pointerdown','pointerup'])addEventListener(t,block,true);addEventListener('pagehide',finish);
 })`;}
 
-function createSiteControls({permissions,activeTab,settings,saveSettings,readHidden,writeHidden,confirm,translate=t=>t,defaultZoom=()=>1}){
+function createSiteControls({permissions,devices=null,activeTab,settings,saveSettings,readHidden,writeHidden,confirm,translate=t=>t,defaultZoom=()=>1}){
  let hidden=readHidden()||{};const applied=new WeakMap();
  const siteOf=t=>t?.view?.webContents&&!t.view.webContents.isDestroyed()?origin(t.view.webContents.getURL()):null;
  const zoomFor=site=>{const z=settings.siteZoom?.[site];return Number.isFinite(z)?z:defaultZoom();};
@@ -37,7 +37,7 @@ function createSiteControls({permissions,activeTab,settings,saveSettings,readHid
   const css=(hidden[site]||[]).map(s=>s+'{display:none!important}').join('\n');const old=applied.get(wc);if(old){wc.removeInsertedCSS(old).catch(()=>{});applied.delete(wc);}
   if(css)applied.set(wc,await wc.insertCSS(css,{cssOrigin:'user'}).catch(()=>null));}
  async function info(){const t=activeTab(),site=siteOf(t);if(!site||t.space==='private')return {site:null,private:t?.space==='private'};const wc=t.view.webContents;
-  return {site,host:new URL(site).host,secure:site.startsWith('https:'),permissions:permissions.forSite(site),cookies:(await cookies(wc,site)).length,zoom:Math.round(wc.getZoomFactor()*100),hidden:(hidden[site]||[]).length};}
+  return {site,host:new URL(site).host,secure:site.startsWith('https:'),permissions:permissions.forSite(site),cookies:(await cookies(wc,site)).length,zoom:Math.round(wc.getZoomFactor()*100),hidden:(hidden[site]||[]).length,devices:devices?.forSite(site)||[]};}
  async function handle(name,value){const t=activeTab(),site=siteOf(t);if(!site||t.space==='private')return {error:'Site settings are unavailable here.'};const wc=t.view.webContents;
   if(name==='site-permission'){permissions.set(site,value?.permission,value?.decision);return info();}
   if(name==='site-permissions-reset'){permissions.resetSite(site);return info();}

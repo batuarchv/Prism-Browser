@@ -2,6 +2,100 @@
 
 All notable changes to Prism, newest first. Downloads are on the [Releases page](https://github.com/batuarchv/Prism-Browser/releases).
 
+## 0.47.2 — A calmer Imports
+
+### New
+- **Imports, simplified.** Settings → Imports and the welcome guide show your browsers as one clean list: the browser, small checkboxes for bookmarks, passwords and history, and Import. The extra buttons became quiet links.
+
+### Install notes
+This beta is **ad-hoc signed and not notarized by Apple**. The first time you open it, macOS may say it can't verify the developer: right-click (or Control-click) Prism in Applications and choose **Open**, then **Open** again. Apple Silicon (arm64) only.
+
+## 0.47.1 — Imports, sorted out
+
+### New
+- **Import from the menu bar.** File → Import From has Another Browser…, Bookmarks File… and Passwords File…. Bookmarks → Import from Another Browser… replaces the old Arc-only item.
+- **Opera, Opera GX and Vivaldi.** Imports now reads them too.
+
+### Improved
+- **See every browser Prism can import from.** Settings → Imports lists the supported browsers that aren't on this Mac yet (such as ChatGPT Atlas, Dia and Helium), and tells you when one is installed but has nothing to bring over.
+- **Clearer choices.** Bookmarks, Passwords and History show a check mark when they're included.
+
+## 0.47.0 — Feels faster under your fingers
+
+### New
+- **Force click opens Lens.** Press firmly on a link with your trackpad to preview it in Lens, with a light tap you can feel. Turn it off in Settings → Accessibility.
+- **Readable downloads, with invisible ink.** While Prism works out a clear name for a download, the name sits under shimmering ink, like Messages' invisible ink, then sharpens into the new name.
+- **Each space suggests its own pages.** The address bar and Beam suggest pages you opened in the space you're in. Passwords, bookmarks and extensions stay shared.
+- **Picture in Picture, the macOS way.** Flick the video and it glides to that corner. Throw it past the left or right edge to tuck it away with just a sliver showing, and click the sliver to bring it back. It opens where you last left it.
+- **Switch from Atlas, Dia and Helium.** Imports now finds ChatGPT Atlas, Dia and Helium too, and "All profiles (merge)" brings every profile of a browser over in one go.
+- **Apple Passwords.** Settings → Passwords → "Move to Apple Passwords…" hands your saved logins to the Passwords app after Touch ID. "Use Apple Passwords in Prism…" adds Apple's iCloud Passwords extension, which can now talk to macOS.
+
+### Improved
+- **Instant highlights.** Sidebar rows and Beam results light up the moment the pointer arrives, and one highlight glides between them on a spring.
+
+## 0.46.0 — Lens, now a quick browser
+
+### New
+- **Lens is a quick browser.** Lens now has its own address field: click it to see and edit the full address, type a new one or a search and press Return. Back, Forward, Reload and a clean Copy link sit beside it, and ⌘L, ⌘[ ⌘], ⌘R and ⇧⌘C work inside Lens too.
+- **Lens windows.** Keep open lifts a Lens off the page into a small glass window that stays when you click elsewhere. Move it, resize it, open several, and Open as tab whenever you want it in the sidebar. File → New Lens Window (⌥⌘N) opens a blank one, ready for an address. Prism remembers where you put it.
+- **Links from other apps in Lens.** Turn it on in Settings and links from Mail, Slack and other apps open in a Lens window instead of a new tab.
+- **Show me around.** After the welcome guide, a short tour points at the real controls one by one: the address bar, Prism Shield, Beam, Favorites, tabs, spaces, Lens, extensions, downloads and Settings. Help → Show Me Around or Settings → Show me around brings it back.
+- **Tidy tabs.** File → Tidy Tabs (⌥⌘K) archives tabs in this space you haven't used for half an hour. Pinned, favorite, playing and kept-awake tabs stay. Undo brings them all back.
+- **Sums in Beam.** Type 12*(3+4), 2^10 or 15% of 80 in Beam to see the answer; Return copies it.
+
+### Improved
+- The welcome guide ends with the shortcuts worth knowing.
+- Copy Link Address in the right-click menu copies a clean link, without tracking tags.
+
+## 0.45.0 — Read it clean, keep it in the Dock
+
+### New
+- **Reader.** On an article, a Reader button appears in the address bar (or press ⇧⌘R). The story opens on a quiet page without menus, sidebars, ads or comments. Pick White, Sepia, Gray or Night, choose New York, San Francisco, Charter or Iowan, change the text size and line width; Prism remembers your choices. Links open in the tab, Esc or Done goes back.
+- **Web apps in the Dock.** File → Add to Dock… turns the site you're on into its own Mac app in your Applications folder, with the site's icon and name. It opens in its own window with its own sign-ins, shows unread counts on its Dock icon, and links to other sites open in Prism. Right-click its Dock icon and choose Options → Keep in Dock to keep it there.
+
+### Improved
+- **⌘⌥R** now reloads without cache (⇧⌘R is Reader).
+
+## 0.44.1 — Quicker to find, quicker to go
+
+### New
+- **Beam knows where you go.** ⌘T now lists the tabs you were just in and the pages you visited recently before you type. As you type, the sites you use most come first, and the start of a site you visit often ("gith", "yo") completes to that site above the web search, so Return takes you straight there. Several words match in any order ("review pull github").
+- **Downloads go straight to Downloads.** Files save to your Downloads folder without asking, Private included. Settings → Downloads can still ask each time if you prefer.
+
+### Improved
+- **Snappier swipes.** A two-finger swipe goes back or forward as soon as it is clearly past the line, and a flick is recognised sooner.
+- **Extension right-click items stay.** Items such as Save to Cosmos no longer disappear after Prism restarts.
+- **Extensions can act on the page you're on.** Extensions that work on the current page when you click them (Save to Cosmos, Google Translate, clippers and readers) can now reach the page instead of failing silently.
+- **Extensions update themselves.** Chrome Web Store extensions now get their updates automatically.
+- **Address bar suggestions** use the same ranking as Beam.
+- **Popovers hand the keyboard back.** Closing a popover returns typing to the window, and popovers close when the window goes to the Dock.
+
+## 0.43.0 — Glass, devices and the missing pieces
+
+### New
+- **Liquid Glass popovers.** Settings, site settings, Spaces, Extensions, Downloads and Prism's other popovers now sit on real macOS glass (Liquid Glass on macOS 26, frosted glass before), with softer 16-point corners. Reduce Transparency, the Solid window material and high contrast keep them opaque.
+- **Site settings, redone.** The lock in the address bar opens a simpler, Mac-like panel: each permission has a coloured symbol and a compact Allow / Ask / Block menu, zoom is a small − 100% + control, and cookies, cache and Erase elements sit together under This site.
+- **Connect devices to web apps.** Keyboard and mouse configurators (VIA, Keychron Launcher and others), controllers, microcontrollers and 3D printers can now reach USB, HID, serial and Bluetooth devices. When a site asks, Prism lists the devices it found and you pick one; the site keeps it until you remove it in its site settings or in Settings → Site permissions, where you can also turn device access off. Private never gets devices.
+- **Screen sharing.** Meet, Zoom, Teams, Discord and other sites can share your screen or a window using macOS's own picker.
+- **Print and Save Page.** File → Print… (⌘P) and Save Page As… (⌘S), as in Safari and Chrome. Sites that use these shortcuts themselves still get them first.
+- **Sign in to protected sites.** Routers, staging sites and other pages that ask for a user name and password now show a small sign-in sheet instead of failing to load.
+- **Extension right-click menu.** Right-click an extension in the toolbar popover for its own menu items, Options, Reload, Turn off, Manage extensions and Remove. Every turned-on extension now appears there, and extensions without a popup run their own action when clicked.
+
+### Improved
+- **Copy page link strips trackers.** ⌃⇧C copies the page address without utm_*, fbclid, YouTube's si and other tracking parameters.
+- **Extensions that open their own panel work.** Menu items and shortcuts that open an extension's popup (chrome.action.openPopup) now open it under the Extensions button; before, nothing appeared.
+- **Clearer permission prompts.** Prompts name the site and what it wants in plain words ("example.com wants to use your camera"), in your language. MIDI devices now ask like camera and microphone.
+
+## 0.42.0 — Bring your browser with you
+
+### New
+- **Import from Chrome, Arc and Safari in one click.** Settings → Imports (and the welcome guide) now lists the browsers on your Mac. Pick a profile, choose Bookmarks, Passwords and History, and press Import: one confirmation shows exactly what comes over. Chrome, Arc, Brave and Edge bring bookmarks, saved passwords and history; Arc keeps its pinned tabs, favorites and folders. Safari brings bookmarks (with Favorites and Reading List) and history; its passwords come from the Passwords app export. Prism reads a copy, so nothing in the other browser changes, logins you already saved in Prism are never replaced, and Undo is in Settings → Imports.
+
+### Improved
+- **Ready for the next Electron.** Saved passwords, cards, passkeys, import Undo, your account and AI keys now use macOS Keychain encryption through Electron's newer asynchronous API, which Electron 46 requires. Everything you saved before opens as it did, and any change still being saved finishes before Prism quits.
+- **More of Prism speaks your language.** About 150 labels, settings descriptions and tooltips that stayed in English (AI, profile, split view, Siri & Shortcuts, Gmail, memory and more) are now translated into Turkish, Spanish, Portuguese, French and Ukrainian.
+- **Easier to read.** Shortcut hints, settings headings and search placeholders have more contrast, small text uses whole sizes from Prism's type scale (and still follows your text size setting), and the close and search buttons gained tooltips. The tab list reads correctly to VoiceOver.
+
 ## 0.41.0 — Chromium 156
 
 ### New
