@@ -2,6 +2,8 @@ const fs=require('node:fs'),path=require('node:path'),os=require('node:os'),{exe
 const root=path.resolve(__dirname,'..'),stage=fs.mkdtempSync(path.join(os.tmpdir(),'prism-local-release-'));
 const run=(exe,args,extra={})=>execFileSync(exe,args,{cwd:root,stdio:'inherit',...extra});
 (async()=>{
+// The in-app release notes (prism-notes://release) come from CHANGELOG.md: add this version's section first (0.49.1).
+run(process.execPath,['scripts/changelog.cjs']);
 run(process.execPath,['scripts/package.cjs'],{env:{...process.env,PRISM_PACKAGE_OUT:stage}});
 // With a Developer ID certificate in the keychain the app is signed, notarized and stapled (scripts/sign-mac.cjs);
 // without one it stays ad-hoc signed, and macOS warns on first open.

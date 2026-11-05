@@ -22,7 +22,7 @@ test('gesture-preload.cjs is built from its sources',()=>{
  assert.ok(built.includes(fs.readFileSync(path.join(root,'src/swipe-tracker.js'),'utf8')));assert.ok(built.includes(fs.readFileSync(path.join(root,'src/gesture-preload-source.cjs'),'utf8')));
 });
 test('a second swipe right after the first one\'s momentum is picked up without a pause',()=>{
- const momentum=Array.from({length:14},(_,i)=>-14*Math.pow(.88,i)),second=[-2,-5,-10,-14,-16,-14,...Array.from({length:30},(_,i)=>-14*Math.pow(.9,i))];
+ const momentum=Array.from({length:30},(_,i)=>-14*Math.pow(.88,i)),second=[-2,-5,-10,-14,-16,-14,...Array.from({length:30},(_,i)=>-14*Math.pow(.9,i))];
  const {ends}=run([-6,-12,-16,-14,...momentum,...second]);assert.deepEqual(ends.map(e=>e.dir),[1,1],'both swipes commit');
 });
 test('fingers that slow down briefly are not taken as lifted',()=>{
@@ -41,3 +41,9 @@ test('a short stall in the event stream does not end the swipe halfway',async()=
 });
 test('a swipe clearly past the line goes back while the fingers are still moving (0.44)',()=>{
  const {ends}=run([-8,-12,-14,-16,-16,-16,-16,-16,-16,-16,-16,-16,-16]);assert.equal(ends.length,1,'ended without waiting');assert.equal(ends[0].dir,1);assert.ok(ends[0].offset>=140);});
+test('one swipe goes at most one page: fingers that keep moving after it went never start a second one (0.50)',()=>{
+ const {ends}=run([-6,-12,-16,-14,-18,-22,-30,-40,-25,-35,-45,-30,-50,-20,-40,...Array.from({length:20},(_,i)=>-20*Math.pow(.88,i))]);assert.deepEqual(ends.map(e=>e.dir),[1]);
+});
+test('equal one-pixel deltas at the end of momentum are not fingers (0.50)',async()=>{
+ const {ends}=run([...Array.from({length:20},(_,i)=>-24*Math.pow(.86,i)),...Array(80).fill(-1.2)]);await delay(150);assert.ok(ends.every(e=>e.dir===0));
+});

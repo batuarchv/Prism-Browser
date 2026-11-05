@@ -29,3 +29,20 @@ test('Spectrum follows the space and All usage shows every space (0.39.1)',()=>{
  assert.deepEqual(personal.segments.map(x=>x.host),['github.com']);assert.deepEqual(work.segments.map(x=>x.host),['slack.com','github.com']);assert.equal(all.segments.length,3);
  assert.equal(work.space,'work');assert.notEqual(personal.insightsKey,all.insightsKey);
  s.setInsights(work.insightsKey,{titles:['Team chat'],summary:'Work day'},'work');assert.equal(s.view({space:'work'}).chapters[0].title,'Team chat');assert.equal(s.view({space:'personal'}).summary,'');});
+test('0.49: the day at a glance, a record per finished day and notes against your usual day',()=>{const S=require('../src/spectrum.cjs');
+ const st=S.statsOf([{from:new Date(2026,10,2,9).getTime(),to:new Date(2026,10,2,9,40).getTime(),host:'github.com'},{from:new Date(2026,10,2,9,41).getTime(),to:new Date(2026,10,2,10,10).getTime(),host:'stackoverflow.com'},{from:new Date(2026,10,2,10,11).getTime(),to:new Date(2026,10,2,10,20).getTime(),host:'youtube.com'}],new Date(2026,10,2,10,30).getTime());
+ assert.equal(Math.round(st.active/60000),78);assert.equal(st.hours[9],59);assert.equal(st.hours[10],19);assert.equal(st.kinds[0].kind,'code');assert.equal(st.switches,2);assert.equal(st.recentSwitches,2);
+ assert.equal(st.focus.kind,'code');assert.equal(Math.round(st.focus.ms/60000),69);assert.equal(st.focus.host,'github.com');
+ // Three earlier weekdays of about an hour each by 10:30, then a much longer morning.
+ let t=new Date(2026,10,2,8).getTime();let saved=null;const s=S.createSpectrum({now:()=>t,save:d=>{saved=d;}});
+ for(let day=0;day<3;day++){t=new Date(2026,10,2+day,9).getTime();s.focus(true,'https://github.com/','personal');t+=60*60000;s.presence('https://x.com/','personal');t+=10*60000;s.focus(false,'','personal');}
+ t=new Date(2026,10,5,8).getTime();s.focus(true,'https://github.com/','personal');t+=2*60*60000;s.presence('https://youtube.com/','personal');t+=30*60000;
+ const v=s.view({space:'personal'});assert.equal(v.glance.typical.days,3);assert.equal(Math.round(v.glance.typical.soFar/60000),65);
+ assert.equal(v.notes[0].type,'pace');assert.equal(v.notes[0].tone,'up');assert.equal(v.notes[1].type,'focus');assert.ok(v.notes[1].record);assert.ok(v.notes.some(n=>n.type==="kind"&&n.kind==="video"));
+ assert.equal(v.week.length,7);assert.equal(v.week.at(-1).active,150);assert.equal(v.week.at(-2).active,70);
+ // Records keep minutes only, survive a restart and come from a day Prism was closed over.
+ s.flush();const rec=saved.history.at(-1);assert.deepEqual(Object.keys(rec.by).sort(),['','personal']);assert.ok(!JSON.stringify(saved.history).includes('github'));
+ const later=S.normalize(saved,new Date(2026,10,6,9).getTime());assert.equal(later.history.length,4);assert.equal(later.history.at(-1).by[''].active,150);
+ assert.deepEqual(S.normalizeHistory([{day:'2026-11-1',by:{'':{active:5,hours:Array(24).fill(1),kinds:{code:5,evil:3}}}},{day:'bad',by:{}}]).map(h=>Object.keys(h.by[''].kinds)),[['code']]);
+ // Only a day or two of history: no comparisons yet.
+ const fresh=S.createSpectrum({now:()=>t});fresh.presence('https://github.com/','personal');t+=30*60000;assert.equal(fresh.view({}).glance.typical,null);assert.ok(!fresh.view({}).notes.some(n=>n.type==='pace'));});

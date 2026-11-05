@@ -12,22 +12,25 @@
 (function(root){
  const GAP=220,LOCK=6,QUIET=120,EAGER=1.75;
  function createSwipe({threshold=90,flick=.9,accept=()=>true,start=()=>{},move=()=>{},end=()=>{}}={}){
-  let state='idle',ax=0,ay=0,offset=0,last=-Infinity,samples=[],timer=0,peak=0,lastAbs=0,prevX=0,steady=0,fingers=false;
+  let committedAt=-Infinity,state='idle',ax=0,ay=0,offset=0,last=-Infinity,samples=[],timer=0,peak=0,lastAbs=0,prevX=0,steady=0,fingers=false;
   function release(){if(state!=='track')return;clearTimeout(timer);state='done';
    const now=samples.length?samples[samples.length-1][0]:0,recent=samples.filter(([t])=>t>=now-70&&t<=now),v=recent.length>1?recent.reduce((s,[,d])=>s+d,0)/Math.max(16,now-recent[0][0]):0;
    const dir=Math.sign(offset),commit=fingers&&(Math.abs(offset)>=threshold||(Math.abs(v)>flick&&Math.sign(v)===dir&&Math.abs(offset)>=threshold*.25));
-   end(commit?dir:0,offset,v);}
+   if(commit)committedAt=now;end(commit?dir:0,offset,v);}
   // Momentum: the last five deltas shrink smoothly (each 60–98.5% of the one before) well below the peak, so fingers
   // that only slow down for a moment are not taken as lifted.
   // 0.44: four shrinking deltas are enough (was five), so a flick goes about 16 ms sooner.
   function decaying(){if(samples.length<5)return false;const d=samples.slice(-4).map(([,x])=>Math.abs(x));
    for(let i=1;i<4;i++){const r=d[i]/(d[i-1]||1);if(!(r<.985&&r>.6))return false;}return d[3]<peak*.7;}
   // Fingers on the trackpad: the deltas clearly grow at some point, or hold steady for a few events. Momentum only shrinks.
-  function note(dx){const a=Math.abs(dx);if(!a)return;if(prevX){if(a>prevX+Math.max(1,prevX*.05))fingers=true;steady=a>=prevX*.985?steady+1:0;if(steady>=3)fingers=true;}prevX=a;}
+  // 0.50: tiny equal deltas at the end of momentum (1, 1, 1…) are not fingers holding steady, so they never count.
+  function note(dx){const a=Math.abs(dx);if(!a)return;if(prevX){if(a>prevX+Math.max(1.5,prevX*.08)&&a>=3)fingers=true;steady=a>=4&&a>=prevX*.985?steady+1:0;if(steady>=4)fingers=true;}prevX=a;}
   function feed({deltaX=0,deltaY=0,timeStamp=performance.now()}={}){
    // A new swipe can start while the last one's momentum is still arriving (no pause between them): momentum only
    // ever shrinks, so deltas that suddenly grow again are fingers back on the trackpad.
-   const abs=Math.abs(deltaX)+Math.abs(deltaY),regrow=state==='done'&&abs>=4&&abs>lastAbs*1.8;lastAbs=abs;
+   // 0.50: one swipe goes at most one page. After a swipe commits, the rest of that movement (fingers still moving, or
+   // momentum) can't start a new one: a new swipe needs a pause, or 450 ms and a clear regrowth.
+   const abs=Math.abs(deltaX)+Math.abs(deltaY),regrow=state==='done'&&timeStamp-committedAt>450&&abs>=6&&abs>lastAbs*1.8;lastAbs=abs;
    if(timeStamp-last>GAP||regrow){if(state==='track')release();state='pending';ax=ay=offset=peak=prevX=steady=0;fingers=regrow;samples=[];}
    last=timeStamp;
    if(state==='pending'){ax+=deltaX;ay+=deltaY;note(deltaX);if(Math.abs(ax)+Math.abs(ay)<LOCK)return state;

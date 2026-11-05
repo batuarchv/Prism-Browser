@@ -36,6 +36,8 @@ exports.run=async({setNaturalScroll,library,app,win,makeTab,selectTab,sleepTab,a
   assert.equal(await sleepTab(dirty,true),false,'draft protected');
   a.keepAwake=true;assert.equal(await sleepTab(a,true),false,'pinned awake');a.keepAwake=false;
   const wc=a.view.webContents;assert.equal(await sleepTab(a,true),true);await delay(500);assert.equal(wc.isDestroyed(),true,'renderer destroyed');
+  // Never sleep this tab (0.48): turning it on for a sleeping background tab wakes it, and no sleep path takes it.
+  assert.equal((await action('protect',a.id)).keepAwake,true);assert.ok(a.view,'never sleep wakes the tab');await loaded(a);assert.equal(await sleepTab(a,true),false,'never sleep');assert.equal((await action('protect',a.id)).keepAwake,false);
   selectTab(a.id);await loaded(a);assert.equal(a.view.webContents.getURL(),base+'/');
   await action('navigate','javascript:alert(1)');assert.equal(a.view.webContents.getURL(),base+'/');
   await a.view.webContents.executeJavaScript(`window.open('/popup', '_blank')`,true);await delay(400);assert.equal(tabs.length,5,'popup becomes a sandboxed tab');
@@ -58,6 +60,9 @@ exports.run=async({setNaturalScroll,library,app,win,makeTab,selectTab,sleepTab,a
   await action('set-setting',{key:'material',value:'clear'});assert.equal(snapshot().glass,'Native Liquid Glass');
   await action('set-setting',{key:'material',value:'solid'});assert.equal(snapshot().glass,'Solid');
   await action('set-setting',{key:'material',value:'regular'});
+  // Liquid Glass slider (0.49): every step from Clear to Tinted keeps the native glass, and the shell follows it.
+  for(const value of [0,1,.5]){await action('set-setting',{key:'liquidGlass',value});assert.equal(snapshot().settings.liquidGlass,value);if(process.platform==='darwin')assert.equal(snapshot().glass,'Native Liquid Glass');}
+  await assert.rejects(()=>action('set-setting',{key:'liquidGlass',value:'max'}));
   const initialHardware=snapshot().system.hardwareAcceleration;
   await action('set-setting',{key:'hardwareAcceleration',value:!initialHardware});assert.equal(snapshot().system.restartRequired,true);
   await action('set-setting',{key:'hardwareAcceleration',value:initialHardware});

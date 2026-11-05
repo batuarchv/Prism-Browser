@@ -1,5 +1,5 @@
 /* Prism 0.6: one shell layout and semantic palette. */
-:root{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;font-size:calc(13px * var(--text-scale,1));color-scheme:light;--sidebar-width:260px;--panel-radius:16px;--text-scale:1;--glass-opacity:.36;--accent-tint:#627da4;--ink:var(--prism-text,#23252c);--muted:var(--prism-textSecondary,#626875);--surface:var(--prism-canvas,#f4f5f7);--raised:var(--prism-surface,#fff);--line:color-mix(in srgb,var(--prism-border,#ccd2dc) 62%,transparent);--accent:var(--space-accent,var(--prism-accent,#507fad));--hover:color-mix(in srgb,var(--ink) 6%,transparent);--selected:color-mix(in srgb,var(--accent) 12%,var(--raised));--chrome:color-mix(in srgb,var(--prism-sidebar,#e9ecf0) calc(48% + var(--glass-opacity)*52%),transparent);--row:var(--prism-row-height,36px)}
+:root{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;font-size:calc(13px * var(--text-scale,1));color-scheme:light;--sidebar-width:260px;--panel-radius:16px;--text-scale:1;--glass-opacity:.36;--accent-tint:#627da4;--ink:var(--prism-text,#23252c);--muted:var(--prism-textSecondary,#626875);--surface:var(--prism-canvas,#f4f5f7);--raised:var(--prism-surface,#fff);--line:color-mix(in srgb,var(--prism-border,#ccd2dc) 62%,transparent);--accent:var(--space-accent,var(--prism-accent,#507fad));--hover:color-mix(in srgb,var(--ink) 6%,transparent);--selected:color-mix(in srgb,var(--accent) 12%,var(--raised));--glass-tint:.5;--glass-less:calc(max(0,.5 - var(--glass-tint))*2);--glass-more:calc(max(0,var(--glass-tint) - .5)*2);--chrome:color-mix(in srgb,var(--prism-sidebar,#e9ecf0) calc(48% + var(--glass-opacity)*52% - var(--glass-less)*34% + var(--glass-more)*29%),transparent);--row:var(--prism-row-height,36px)}
 :root[data-theme=dark]{color-scheme:dark}*{box-sizing:border-box}[hidden]{display:none!important}
 html,body{width:100%;height:100%}
 body{margin:0;overflow:hidden;color:var(--ink);background:transparent;font-size:1rem}
@@ -26,7 +26,7 @@ summary{list-style:none;cursor:default;color:var(--ink);padding-left:6px}summary
 .empty-bookmarks{font-size:calc(10rem / 13);color:var(--muted);padding:0 9px;line-height:1.6}
 .tab{display:flex;align-items:center;min-height:var(--row);margin:2px 0;border-radius:8px;border:1px solid transparent}.tab:hover{background:var(--hover)}.tab.selected{background:var(--selected);border-color:var(--line)}
 .tab-main{display:flex;align-items:center;gap:9px;min-width:0;flex:1;min-height:var(--row);padding:7px 9px;text-align:left;font-size:calc(12rem / 13);background:transparent}.tab-main:hover{background:transparent}
-.tab-close{display:grid;place-items:center;width:25px;height:25px;margin-right:5px;flex-shrink:0;opacity:0;color:var(--muted)}.tab-close .icon{width:13px;height:13px}.tab:hover .tab-close,.tab:focus-within .tab-close,.tab.selected .tab-close{opacity:1}.tab.sleeping .tab-icon{opacity:.6}.tab.pinned .tab-title:before{content:'• ';color:var(--accent)}
+.tab-close{display:grid;place-items:center;width:25px;height:25px;margin-right:5px;flex-shrink:0;opacity:0;color:var(--muted)}.tab-close .icon{width:13px;height:13px}.tab-awake{display:inline-grid;place-items:center;flex-shrink:0;margin-left:auto;padding-left:4px;color:var(--accent);opacity:.8}.tab-awake .icon{width:11px;height:11px}.tab:hover .tab-close,.tab:focus-within .tab-close,.tab.selected .tab-close{opacity:1}.tab.sleeping .tab-icon{opacity:.6}.tab.pinned .tab-title:before{content:'• ';color:var(--accent)}
 .sidebar-bottom{flex-shrink:0;padding-top:7px}.memory,.sleep,.footnote,.profile,#theme,#import-arc{display:none}.utilities{display:flex;align-items:center;gap:4px}.utilities button{display:grid;place-items:center;width:32px;height:32px;color:var(--muted)}.utilities #downloads{margin-left:auto}
 #sidebar-resize{position:absolute;left:calc(min(var(--sidebar-width),calc(100vw - 400px)) - 3px);top:52px;bottom:0;width:6px;z-index:20;cursor:col-resize;touch-action:none}#sidebar-resize:hover,#sidebar-resize:focus-visible{background:color-mix(in srgb,var(--accent) 35%,transparent)}.resizing,.resizing *{cursor:col-resize!important;user-select:none!important}
 main{position:absolute;inset:0 0 0 min(var(--sidebar-width),calc(100vw - 400px));background:var(--chrome);min-width:0}
@@ -1167,10 +1167,10 @@ input,textarea,[contenteditable]:not([contenteditable=false]),#pa-result,.select
    a native NSGlassEffectView (macOS 26; frosted NSVisualEffectView before) placed under the popover by glass.node.
    data-glass is set only while that glass is really there, so without it every surface stays opaque. */
 :root[data-tool] #preferences{border-radius:16px}
-:root[data-tool][data-glass] #preferences{--set-fill:color-mix(in srgb,var(--raised) 46%,transparent);--set-hair:color-mix(in srgb,var(--ink) 10%,transparent);background:color-mix(in srgb,var(--surface) 38%,transparent);border:.5px solid color-mix(in srgb,var(--ink) 14%,transparent);box-shadow:inset 0 .5px 0 rgb(255 255 255/.5),inset 0 0 0 .5px rgb(255 255 255/.12)}
-:root[data-tool][data-glass][data-theme=dark] #preferences{--set-fill:color-mix(in srgb,var(--ink) 7%,transparent);background:color-mix(in srgb,var(--surface) 30%,transparent);box-shadow:inset 0 .5px 0 rgb(255 255 255/.16)}
+:root[data-tool][data-glass] #preferences{--set-fill:color-mix(in srgb,var(--raised) calc(46% - var(--glass-less)*22% + var(--glass-more)*38%),transparent);--set-hair:color-mix(in srgb,var(--ink) 10%,transparent);background:color-mix(in srgb,var(--surface) calc(38% - var(--glass-less)*24% + var(--glass-more)*50%),transparent);border:.5px solid color-mix(in srgb,var(--ink) 14%,transparent);box-shadow:inset 0 .5px 0 rgb(255 255 255/.5),inset 0 0 0 .5px rgb(255 255 255/.12)}
+:root[data-tool][data-glass][data-theme=dark] #preferences{--set-fill:color-mix(in srgb,var(--ink) 7%,transparent);background:color-mix(in srgb,var(--surface) calc(30% - var(--glass-less)*18% + var(--glass-more)*56%),transparent);box-shadow:inset 0 .5px 0 rgb(255 255 255/.16)}
 :root[data-tool][data-glass] #preferences :is(.prefs-heading,.prefs-layout,#prefs-content,.prefs-footer){background:transparent}
-:root[data-tool][data-glass] #preferences #prefs-nav{background:color-mix(in srgb,var(--surface) 22%,transparent)}
+:root[data-tool][data-glass] #preferences #prefs-nav{background:color-mix(in srgb,var(--surface) calc(22% - var(--glass-less)*14% + var(--glass-more)*40%),transparent)}
 :root[data-tool][data-glass] #preferences :is(.settings-group,.settings-card,.manager-card,.info-card,.list-row,.empty-state){background:var(--set-fill)}
 :root[data-tool][data-glass] #preferences :is(input:not([type=checkbox]):not([type=range]),select,textarea){background-color:color-mix(in srgb,var(--raised) 60%,transparent)}
 :root[data-tool][data-glass][data-contrast=high] #preferences{background:var(--surface)}
@@ -1213,3 +1213,88 @@ input,textarea,[contenteditable]:not([contenteditable=false]),#pa-result,.select
 .has-hit-pill :is(.tab,.bookmark-row){position:relative;z-index:1}
 .has-hit-pill .tab:hover,.has-hit-pill .bookmark-row:hover{background:transparent}
 .has-hit-pill .tab{transition:border-color 150ms ease,opacity 150ms ease,transform 150ms cubic-bezier(.2,.7,.2,1)}
+
+/* Liquid Glass slider (0.49, Settings → Appearance): Clear to Tinted, like macOS. The fill follows the value (--fill set
+   by renderer.js); the swatches at the ends show the two looks over a striped backdrop. */
+.glass-setting .glass-slider{display:grid;gap:5px;width:190px;flex-shrink:0}
+.glass-slider input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:20px;margin:0;background:transparent}
+.glass-slider input[type=range]::-webkit-slider-runnable-track{height:4px;border-radius:2px;background:linear-gradient(90deg,var(--accent) var(--fill,50%),color-mix(in srgb,var(--ink) 14%,transparent) var(--fill,50%))}
+.glass-slider input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:20px;height:20px;margin-top:-8px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgb(0 0 0/.28),0 0 0 .5px rgb(0 0 0/.14),inset 0 -1px 0 rgb(0 0 0/.04);transition:transform .12s}
+.glass-slider input[type=range]:active::-webkit-slider-thumb{transform:scale(1.08)}
+.glass-slider input[type=range]:focus-visible{outline:none}.glass-slider input[type=range]:focus-visible::-webkit-slider-thumb{box-shadow:0 1px 3px rgb(0 0 0/.28),0 0 0 3px color-mix(in srgb,var(--accent) 45%,transparent)}
+.glass-slider input[type=range]:disabled{opacity:.45}
+.glass-ends{display:grid;grid-template-columns:auto 1fr 1fr auto;align-items:center;gap:6px;font-size:calc(10rem / 13);color:var(--muted)}.glass-ends span:last-of-type{text-align:right}
+.glass-swatch{display:block;width:22px;height:15px;border-radius:5px;position:relative;overflow:hidden;background:repeating-linear-gradient(135deg,var(--accent) 0 3px,color-mix(in srgb,var(--accent) 35%,#fff) 3px 6px);box-shadow:inset 0 0 0 .5px color-mix(in srgb,var(--ink) 18%,transparent)}
+.glass-swatch:after{content:'';position:absolute;inset:3px;border-radius:3px;box-shadow:inset 0 .5px 0 rgb(255 255 255/.7),0 0 0 .5px rgb(255 255 255/.35)}
+.glass-swatch.clear:after{background:rgb(255 255 255/.08)}.glass-swatch.tinted:after{background:color-mix(in srgb,var(--surface) 90%,transparent)}
+.setting-row.is-off .glass-ends{opacity:.5}
+/* Spectrum at a glance (0.49, spectrum-ui.js): the total against your usual day, minutes per hour with the usual hours
+   behind, what the time went to, a few notes, chapters with their times and sites, and the last seven days. */
+.spectrum-card{gap:12px;max-height:min(640px,calc(100vh - 120px));padding:14px 12px 12px}
+.spectrum-card-head{margin:0 4px}.spectrum-card-head .spectrum-day{font-size:12px;font-weight:600;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.spectrum-card-head .spectrum-scope{margin-left:auto;flex:none}
+.spectrum-hero{display:flex;align-items:baseline;flex-wrap:wrap;gap:4px 8px;margin:-4px 4px 0}
+.spectrum-total{font-size:24px;font-weight:650;letter-spacing:-.4px;font-variant-numeric:tabular-nums;color:var(--ink)}
+.spectrum-pace{height:20px;display:inline-flex;align-items:center;padding:0 8px;border-radius:999px;font-size:11px;font-weight:600;font-variant-numeric:tabular-nums;color:var(--muted);background:color-mix(in srgb,var(--ink) 6%,transparent)}
+.spectrum-pace.up{color:var(--accent);background:color-mix(in srgb,var(--accent) 14%,transparent)}
+.spectrum-pace[hidden]{display:none}
+.spectrum-summary{margin:-8px 4px 0}.spectrum-summary.ai{color:var(--ink)}
+.spectrum-hours{position:relative;margin:0 4px;padding-bottom:14px}
+.spectrum-hour-bars{display:grid;grid-template-columns:repeat(24,1fr);align-items:end;gap:2px;height:38px}
+.spectrum-hour{position:relative;display:block;height:100%;border-radius:2px}
+.spectrum-hour:before,.spectrum-hour:after{content:'';position:absolute;left:0;right:0;bottom:0;border-radius:2px}
+.spectrum-hour:before{height:max(2px,calc(var(--u,0)*100%));background:color-mix(in srgb,var(--ink) 9%,transparent)}
+.spectrum-hour:after{height:calc(var(--h,0)*100%);background:color-mix(in srgb,var(--accent) 70%,transparent)}
+.spectrum-hour.now:after{background:var(--accent)}
+.spectrum-hour.now{box-shadow:0 2px 0 -0.5px var(--accent)}
+.spectrum-hour.later:before{opacity:.55}
+.spectrum-hour-axis{position:absolute;left:0;right:0;bottom:0;height:12px;font-size:9.5px;color:var(--muted);font-variant-numeric:tabular-nums}
+.spectrum-hour-axis span{position:absolute;top:0;white-space:nowrap}
+.spectrum-mix{display:grid;gap:7px;margin:0 4px}.spectrum-mix[hidden]{display:none}
+.spectrum-mix-bar{display:flex;gap:2px;height:6px;border-radius:3px;overflow:hidden}.spectrum-mix-bar i{display:block;min-width:3px}
+.spectrum-mix-legend{display:grid;gap:3px}
+.spectrum-mix-item{display:grid;grid-template-columns:7px 1fr auto 30px;align-items:center;gap:6px;font-size:11px;min-width:0}
+.spectrum-mix-item i{width:7px;height:7px;border-radius:50%}.spectrum-mix-item span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.spectrum-mix-item small{color:var(--muted);font-variant-numeric:tabular-nums;font-size:10.5px}
+.spectrum-notes{display:grid;gap:2px;padding:4px;border-radius:12px;background:color-mix(in srgb,var(--ink) 4%,transparent)}.spectrum-notes[hidden]{display:none}
+.spectrum-note{display:grid;grid-template-columns:22px 1fr;align-items:start;gap:8px;padding:6px 6px}
+.spectrum-note-mark{display:grid;place-items:center;width:22px;height:22px;border-radius:7px;font-size:12px;font-weight:700;line-height:1;color:var(--accent);background:color-mix(in srgb,var(--accent) 14%,transparent)}
+.spectrum-note.pace.down .spectrum-note-mark,.spectrum-note.pace.even .spectrum-note-mark{color:var(--muted);background:color-mix(in srgb,var(--ink) 7%,transparent)}
+.spectrum-note-text{display:grid;gap:1px;min-width:0}.spectrum-note-text strong{font-size:12px;font-weight:550;line-height:1.35}.spectrum-note-text small{font-size:10.5px;line-height:1.35;color:var(--muted);overflow-wrap:anywhere}
+.spectrum-label{margin:0 4px -6px;font-size:10.5px;font-weight:600;letter-spacing:.02em;color:var(--muted)}
+.spectrum-chapter-row{grid-template-columns:10px 1fr auto;min-height:40px;padding:4px 8px}
+.spectrum-chapter-words{display:grid;gap:1px;min-width:0}.spectrum-chapter-words strong{font-size:12.5px;font-weight:550;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.spectrum-chapter-words small{font-size:10.5px;color:var(--muted);font-variant-numeric:tabular-nums;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.spectrum-chapter-time{font-size:10.5px;color:var(--muted);font-variant-numeric:tabular-nums;white-space:nowrap}
+.spectrum-usual{display:grid;gap:10px;padding:10px 0 0;border-top:.5px solid var(--line)}.spectrum-usual .spectrum-label{margin-bottom:-4px}
+.spectrum-chips{display:flex;flex-wrap:wrap;gap:5px;padding:0 4px}
+.spectrum-week{display:grid;gap:8px;padding:10px 4px 0;border-top:.5px solid var(--line)}.spectrum-week[hidden]{display:none}
+.spectrum-week-head{display:flex;align-items:baseline;justify-content:space-between}.spectrum-week-head .spectrum-label{margin:0}.spectrum-week-head small{font-size:10.5px;color:var(--muted);font-variant-numeric:tabular-nums}
+.spectrum-week-bars{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;align-items:end}
+.spectrum-day-col{display:grid;justify-items:center;gap:4px}
+.spectrum-day-col i{display:block;width:100%;max-width:22px;height:30px;border-radius:4px;background:linear-gradient(to top,color-mix(in srgb,var(--ink) 18%,transparent) calc(var(--h,0)*100%),color-mix(in srgb,var(--ink) 5%,transparent) calc(var(--h,0)*100%))}
+.spectrum-day-col.today i{background:linear-gradient(to top,var(--accent) calc(var(--h,0)*100%),color-mix(in srgb,var(--accent) 10%,transparent) calc(var(--h,0)*100%))}
+.spectrum-day-col small{font-size:9.5px;color:var(--muted)}.spectrum-day-col.today small{color:var(--accent);font-weight:650}
+.spectrum-glance-foot{margin-top:6px;padding-top:5px;border-top:.5px solid var(--line);font-size:10.5px;color:var(--muted);font-variant-numeric:tabular-nums;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+:root[data-contrast=high] .spectrum-hour:before{background:color-mix(in srgb,var(--ink) 25%,transparent)}
+.spectrum-mix-share{text-align:right;opacity:.75}
+
+/* 0.50: an open pinned tab always shows its close button on the right (the pin stays); hover brings it to full strength. */
+.bookmark-row.open>.tab-close,.tab.pinned:not(.parked)>.tab-close{opacity:.55}
+.bookmark-row.open:hover>.tab-close,.tab.pinned:not(.parked):hover>.tab-close,.bookmark-row.open.selected>.tab-close{opacity:1}
+.download-fly{position:fixed;left:0;top:0;z-index:60;display:grid;place-items:center;width:26px;height:26px;border-radius:9px;color:#fff;background:var(--accent);box-shadow:0 6px 18px color-mix(in srgb,var(--accent) 40%,transparent),inset 0 1px 0 rgba(255,255,255,.35);pointer-events:none;will-change:transform,opacity}
+.download-fly .icon{width:15px;height:15px}
+.download-row:focus-visible{outline:none;border-color:color-mix(in srgb,var(--accent) 55%,var(--line));box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 22%,transparent)}
+/* Tab groups (0.50): a quiet header that folds, members inset under a thin guide line. */
+.tab-group-head{display:flex;align-items:center;min-height:26px;margin:6px 0 1px}
+.tab-group-head .group-toggle{display:flex;align-items:center;gap:6px;width:100%;min-width:0;padding:3px 8px;border-radius:7px;color:var(--muted);font-size:12px;font-weight:600;text-align:left;background:transparent}
+.tab-group-head .group-toggle:hover{background:var(--hover);color:var(--ink)}
+.tab-group-head .group-chevron{display:grid;place-items:center;width:12px;height:12px;transition:transform 180ms cubic-bezier(.2,.8,.2,1)}
+.tab-group-head .group-chevron .icon{width:11px;height:11px;transform:rotate(90deg)}
+.tab-group-head.folded .group-chevron{transform:rotate(-90deg)}
+.tab-group-head .group-name{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.tab-group-head .group-count{font-weight:500;font-variant-numeric:tabular-nums;opacity:.7}
+.tab-group-head .group-rename{width:100%;font:inherit;color:var(--ink);background:var(--raised,transparent);border:1px solid color-mix(in srgb,var(--accent) 55%,var(--line));border-radius:5px;padding:1px 5px;outline:none}
+.tab.in-group{margin-left:10px;position:relative}
+.tab.in-group:before{content:'';position:absolute;left:-6px;top:4px;bottom:4px;width:2px;border-radius:2px;background:color-mix(in srgb,var(--muted) 22%,transparent)}
+.tab.group-folded{display:none}
+.tab.group-target{background:color-mix(in srgb,var(--accent) 14%,transparent);box-shadow:inset 0 0 0 1.5px color-mix(in srgb,var(--accent) 55%,transparent)}
+.tab-group-head.group-target .group-toggle{color:var(--accent);background:color-mix(in srgb,var(--accent) 12%,transparent)}
+@media (prefers-reduced-motion:reduce){.tab-group-head .group-chevron{transition:none}}

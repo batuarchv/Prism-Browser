@@ -37,7 +37,7 @@ const {normalTabs,inSpace,validSpace,fallbackSpace,addSpace,updateSpace,removeSp
 const {favoriteTab,opensNewFavoriteTab}=require('./favorite-tabs.cjs');
 const {pageMenu}=require('./page-menu.cjs');
 const {createSessionStore,captureSnapshot,navigationRecord,scrollRecord,url:recoveryURL}=require('./session-recovery.cjs');
-const {bookmarkFile}=require('./browser-import.cjs');const migrate=require('./browser-migrate.cjs');
+const {bookmarkFile}=require('./browser-import.cjs');const migrate=require('./browser-migrate.cjs');const googleSignin=require('./google-signin.cjs');
 const {randomUUID}=require('node:crypto');
 const {commitWithUndo,restoreCheckpoint}=require('./import-checkpoint.cjs');
 const {defaults:defaultTheme,validateTheme}=require('./theme-tokens.cjs');
@@ -164,9 +164,16 @@ function accent(){const colors={sage:'#65826e',blue:'#507fad',violet:'#9275b5',r
 // native Liquid Glass behind them (0.43): Chromium draws every web view of a window into one layer, so glass inside the
 // main window could only cover them. The surface turns translucent only once the glass is there (panelGlass).
 let panelGlass=false;
+// Liquid Glass (0.49, Settings → Appearance): one slider from Clear to Tinted for every glass surface, the window and
+// its sidebar, the popover panels and Lens. glass.node turns it into the glass style and tint (see glass.mm) and the
+// pages follow --glass-tint. Moving the slider re-tints every open surface at once; hosts leave the set when closed.
+const glassHosts=new Map();
+function surfaceGlass(host,radius,again=()=>surfaceGlass(host,radius)){if(!host||host.isDestroyed?.())return 'none';if(!glassHosts.has(host)){glassHosts.set(host,again);host.once?.('closed',()=>glassHosts.delete(host));}
+ const solid=accessibility().reduceTransparency||settings.material==='solid';
+ try{const result=require('./native/glass.node').configure(host.getNativeWindowHandle(),solid?'solid':'regular',accent(),radius,settings.liquidGlass);return solid?'none':result;}catch{return 'none';}}
 function panelHost(host){let result='none';
  try{const kind=require('./native/glass.node').popover?.(host.getNativeWindowHandle());if(smoke)console.log('popover window: '+kind);}catch{}
- try{const material=accessibility().reduceTransparency||settings.material==='solid'?'solid':settings.material==='clear'?'clear':'regular';if(material!=='solid')result=require('./native/glass.node').configure(host.getNativeWindowHandle(),material,accent(),16);}catch{result='none';}
+ result=surfaceGlass(host,16,()=>panelHost(host));
  // Test runs on other systems can pretend the glass is there to check the translucent styles.
  if(smoke&&process.env.PRISM_TEST_PANEL_GLASS)result='Native Liquid Glass';
  const on=/^Native/.test(result);if(on!==panelGlass){panelGlass=on;toolWindows?.publish();}}
@@ -189,7 +196,8 @@ function watchPower(){if(smoke&&process.env.PRISM_TEST_POWER!=='real')return;try
 function applyAppearance(){
   if(nativeTheme.themeSource!==settings.theme)nativeTheme.themeSource=settings.theme;
   if(!win||win.isDestroyed())return;
-  try{glass=require('./native/glass.node').configure(win.getNativeWindowHandle(),accessibility().reduceTransparency?'solid':settings.material,accent(),settings.radius);}catch{glass='Native frosted glass';win.setVibrancy(accessibility().reduceTransparency?'under-window':'sidebar');}
+  try{glass=require('./native/glass.node').configure(win.getNativeWindowHandle(),accessibility().reduceTransparency?'solid':settings.material,accent(),settings.radius,settings.liquidGlass);}catch{glass='Native frosted glass';win.setVibrancy(accessibility().reduceTransparency?'under-window':'sidebar');}
+  for(const [host,again] of glassHosts)if(host.isDestroyed())glassHosts.delete(host);else again();
 }
 // Private protections everywhere (0.35, Settings → Prism Shield): ordinary spaces keep no history and no Spectrum, hide
 // this Mac's local network address from WebRTC and look names up over encrypted DNS. Cookies and sign-ins stay.
@@ -233,12 +241,13 @@ async function captureScroll(t){
 function restoreSession(saved){
  restoringSession=true;
  try{
-  if(saved)for(const item of saved.tabs){const t=makeTab(item.url,false,validSpace(settings.spaces,item.space)?item.space:homeSpace());t.title=item.title;t.customTitle=item.customTitle||'';t.keepAwake=item.keepAwake;t.pinned=item.pinned;if(t.pinned){t.home=item.home||item.url;t.homeTitle=item.homeTitle||item.title;t.parked=!!item.parked;}if(Number.isFinite(item.lastUsed)&&item.lastUsed<=Date.now())t.lastUsed=item.lastUsed;t.recovery={navigation:item.navigation,scroll:item.scroll};if(item.favoriteId&&library.bookmarks.some(b=>b.id===item.favoriteId))t.favoriteId=item.favoriteId;}
+  if(saved)for(const item of saved.tabs){const t=makeTab(item.url,false,validSpace(settings.spaces,item.space)?item.space:homeSpace());t.title=item.title;t.customTitle=item.customTitle||'';t.keepAwake=item.keepAwake;t.pinned=item.pinned;if(item.group&&!item.pinned){t.group=item.group;t.groupName=item.groupName||'Group';}if(t.pinned){t.home=item.home||item.url;t.homeTitle=item.homeTitle||item.title;t.parked=!!item.parked;}if(Number.isFinite(item.lastUsed)&&item.lastUsed<=Date.now())t.lastUsed=item.lastUsed;t.recovery={navigation:item.navigation,scroll:item.scroll};if(item.favoriteId&&library.bookmarks.some(b=>b.id===item.favoriteId))t.favoriteId=item.favoriteId;}
   if(tabs.length)selectTab(tabs[Math.max(0,Math.min(saved?.activeIndex||0,tabs.length-1))].id);else makeTab();
  }finally{restoringSession=false;persist();}
+ tabs.filter(t=>t.keepAwake&&!t.view).forEach((t,i)=>setTimeout(()=>{if(tabs.includes(t)&&!t.view){wakeKeptAwake(t);emit();}},4000+i*1500));
 }
 const preconnected=new Map();function preconnect(url){try{const {protocol,origin}=new URL(url);if(!/^https?:$/.test(protocol)||Date.now()-(preconnected.get(origin)||0)<30000)return;preconnected.delete(origin);preconnected.set(origin,Date.now());if(preconnected.size>100)preconnected.delete(preconnected.keys().next().value);session.fromPartition(browserPartition).preconnect({url:origin,numSockets:1});}catch{}}
-let pageArea=null,popoverReturn=null,popoverSeq=0;
+let pageArea=null,popoverReturn=null,popoverSeq=0,savePrompt=null;
 // With the address bar in the sidebar (0.32) there is no toolbar above the page; a collapsed sidebar brings the toolbar back.
 // Compact mode (0.32, compact-ui.js): no toolbar and no sidebar until the pointer reaches the window's left edge; the
 // sidebar (with the address bar in it) then slides back and leaves again when the pointer does.
@@ -258,7 +267,7 @@ function layout() {
  if(split&&!split.ids.every(id=>tabs.some(t=>t.id===id&&inSpace(t,space))))split=null;
  const bar=split||inspector?.isOpen()?34:0,extra=find.open?42:0,inspectorWidth=0,top=toolbarTop();
  const panelWidth=space==='private'?0:sidePanels?.reserve()||0;
- const area={x:left,y:top+bar+extra,width:Math.max(1,w-left-6-panelWidth-(inspectorWidth?inspectorWidth+8:0)),height:Math.max(1,h-top-6-bar-extra)};pageArea=area;
+ const area={x:left,y:top+bar+extra,width:Math.max(1,w-left-6-panelWidth-(inspectorWidth?inspectorWidth+8:0)),height:Math.max(1,h-top-6-bar-extra)};pageArea=area;if(savePrompt?.visible())savePrompt.place();
  const pair=split?splitBounds(area,split.mode,split.ratio):null;
  const buttonY=15;if(win._prismButtonY!==buttonY){win.setWindowButtonPosition?.({x:22,y:buttonY});win._prismButtonY=buttonY;}
  const buttons=!(settings.compactMode&&!compactReveal);if(win._prismButtons!==buttons){win.setWindowButtonVisibility?.(buttons);win._prismButtons=buttons;}
@@ -307,8 +316,8 @@ function swipeRequest(event,value){const t=tabs.find(t=>t.view?.webContents===ev
  // The arrow wears the space's colour (or the theme's accent) and follows light/dark (0.38.2).
  if(value?.type==='query'){const sp=settings.spaces.find(x=>x.id===t.space),hex=/^#[0-9a-f]{6}$/i.test(sp?.color||'')?sp.color:t.space==='private'?'#9275b5':accent();return {accent:hex,dark:nativeTheme.shouldUseDarkColors,enabled:swipeEnabled(),natural:naturalScroll,back:history.canGoBack(),forward:history.canGoForward(),reduceMotion:!!settings.reduceMotion||systemPreferences.getAnimationSettings().prefersReducedMotion};}
  // A swipe now goes as soon as it is clearly past the line (0.44), so the rest of the same finger movement lands on the
- // page it went to; a second swipe within 700 ms is taken as that remainder and ignored.
- if(value?.type==='go'&&swipeEnabled()){const now=Date.now();if(now-(t.swipedAt||0)<700)return null;t.swipedAt=now;if(value.dir==='back'&&history.canGoBack())history.goBack();else if(value.dir==='forward'&&history.canGoForward())history.goForward();}
+ // page it went to; a second swipe within 1 s (0.50, was 700 ms) is taken as that remainder or its momentum and ignored.
+ if(value?.type==='go'&&swipeEnabled()){const now=Date.now();if(now-(t.swipedAt||0)<1000)return null;t.swipedAt=now;if(value.dir==='back'&&history.canGoBack())history.goBack();else if(value.dir==='forward'&&history.canGoForward())history.goForward();}
  return null;}
 // The window opens where it was last closed (0.40), if that place is still on a connected display; else at 1240×820.
 const frameFile=path.join(app.getPath('userData'),'window-frame.json');let frameTimer=null;
@@ -393,7 +402,7 @@ function attach(t) {
   wc.on('focus',()=>{if(split?.ids.includes(t.id)&&t.id!==activeId)selectTab(t.id);});
   // Force click (0.47): the link under the pointer arms the native deep-press hook; see forceClickLens().
   wc.on('update-target-url',(_e,url)=>{if(t.id!==activeId&&!split?.ids.includes(t.id))return;hoverLink={url:/^https?:\/\//i.test(url||'')?url:'',space:t.space,tab:t.id};armForceClick();});
-  wc.on('context-menu',(_event,params)=>{if(t.view!==view||t.id!==activeId)return;const items=pageMenu({wc,params,clipboard,inspect:()=>inspector.open(wc,params),pip:()=>pictureInPicture(t,params.frame),peek:link=>peek?.open(link,t.space),translate:isPrivate?null:()=>action('page-ai-open-selection'),openTab:(url,activate=true)=>activate?makeTab(url,true,t.space):openInBackground(url,t),bookmark:isPrivate?null:()=>{if(t.id===activeId)action('bookmark-current');},extensions:isPrivate?[]:extensionApi?.getContextMenuItems(wc,params)||[]});Menu.buildFromTemplate(items).popup({window:win});});
+  wc.on('context-menu',(_event,params)=>{if(t.view!==view||t.id!==activeId)return;const items=pageMenu({wc,params,clipboard,inspect:()=>inspector.open(wc,params),pip:()=>pictureInPicture(t,params.frame),peek:link=>peek?.open(link,t.space),translate:isPrivate?null:()=>action('page-ai-open-selection'),openTab:(url,activate=true)=>activate?makeTab(url,true,t.space):openInBackground(url,t),bookmark:isPrivate?null:()=>{if(t.id===activeId)action('bookmark-current');},passwords:isPrivate&&!settings.privatePasswords?null:{accounts:()=>passwords?.accountsFor(t)||[],fill:pick=>{if(!win.isDestroyed())win.webContents.executeJavaScript(`act('fill-password',${JSON.stringify(pick)})`).catch(()=>{});},open:()=>win.webContents.send('open-panel','passwords')},extensions:isPrivate?[]:extensionApi?.getContextMenuItems(wc,params)||[]});Menu.buildFromTemplate(items).popup({window:win});});
   // Only a title that changed, on a tab of the space on screen, is sent to the window (0.40); tickers in other spaces and
   // repeated titles used to re-send the whole state.
   wc.on('page-title-updated', (_e,title) => {const changed=t.title!==title;t.title=title;if(t.id===activeId)spectrum.presence(t.url,quiet(t.space),title);if(!isPrivate&&!settings.privacyEverywhere){const row=library.history.find(x=>x.url===cleanURL(wc.getURL()));if(row){row.title=String(title).slice(0,500);saveLibrary();}}if(changed&&inSpace(t,space))emitLazy();});
@@ -405,7 +414,7 @@ function attach(t) {
   wc.on('page-favicon-updated',(_event,urls)=>{if(!isPrivate&&/^https?:/.test(t.url)&&library.bookmarks.some(b=>new URL(b.url).origin===new URL(t.url).origin)&&urls[0])services?.favicon(t.url,urls[0]);});
   wc.on('dom-ready', () => {applyPinch(wc);if(!isPrivate)wc.executeJavaScript(require('./media.cjs').TRACK).catch(()=>{});if(!isPrivate)siteControls?.apply(wc).catch(()=>{});wc.executeJavaScriptInIsolatedWorld(999,[{code:tracker}]).catch(()=>{});});
   const navigated = (_event,_url,main=true) => {if(!main)return;// A new page leaves Reader (0.45); an in-page change only when it moves to another path (a single-page site's next article).
-    {let moved=_event===undefined;if(!moved)try{moved=new URL(wc.getURL()).pathname!==new URL(t.url||wc.getURL()).pathname;}catch{}if(moved){reader?.close(t.id);t.readerable=false;readerProbe(t);}}t.url=wc.getURL();t.dirty=false;captureNavigation(t);if(t.id===activeId)spectrum.presence(t.url,quiet(t.space));if(!isPrivate&&!settings.privacyEverywhere){library.history=visit(library.history,t);saveLibrary();}if(t.id===activeId)closeFind(false);emit();persist();};
+    {let moved=_event===undefined;if(!moved)try{moved=new URL(wc.getURL()).pathname!==new URL(t.url||wc.getURL()).pathname;}catch{}if(moved){reader?.close(t.id);t.readerable=false;readerProbe(t);}}t.url=wc.getURL();t.dirty=false;captureNavigation(t);if(t.id===activeId)spectrum.presence(t.url,quiet(t.space));if(!isPrivate&&!settings.privacyEverywhere){library.history=visit(library.history,t);saveLibrary();}if(t.id===activeId)closeFind(false);if(!isPrivate&&googleSignin.isRejected(t.url))offerGoogleSignin(t);emit();persist();};
   wc.on('did-navigate',()=>navigated());wc.on('did-finish-load',()=>readerProbe(t)); wc.on('did-navigate-in-page', navigated);
   wc.on('found-in-page',(_event,result)=>{if(t.id===activeId&&find.open&&result.requestId===find.requestId){find.matches=result.matches;find.active=result.activeMatchOrdinal;emit();}});
   wc.on('media-started-playing', () => {t.audible=true; emit();media?.update(t);});
@@ -438,7 +447,7 @@ function dispose(t) {
   if (!view.webContents.isDestroyed()) {if(t.space!=='private'){sidePanels?.forgetTab(view.webContents.id);extensionApi?.removeTab(view.webContents);}if(t.hung){t.hung=false;try{view.webContents.forcefullyCrashRenderer();}catch{}}view.webContents.close();}
 }
 function selectTab(id) {
-  if(id!==activeId){inspector?.close();peek?.close();if(split){const target=tabs.find(t=>t.id===id);if(!target?.url||!inSpace(target,space))split=null;else if(!split.ids.includes(id)){split.ids[split.ids.indexOf(activeId)===1?1:0]=id;}}gmailGeneration++;toolWindows?.closeAll();if(htmlFullscreen)exitPageFullscreen();}
+  if(id!==activeId){savePrompt?.close('tab');inspector?.close();peek?.close();if(split){const target=tabs.find(t=>t.id===id);if(!target?.url||!inSpace(target,space))split=null;else if(!split.ids.includes(id)){split.ids[split.ids.indexOf(activeId)===1?1:0]=id;}}gmailGeneration++;toolWindows?.closeAll();if(htmlFullscreen)exitPageFullscreen();}
   autofill?.dismiss();
   const t=tabs.find(t=>t.id===id); if (!t) return;
   const old=tabs.find(t=>t.id===activeId); if (old){old.lastUsed=Date.now();captureScroll(old);}
@@ -463,6 +472,10 @@ async function sleepTab(t, manual=false) {
   if (!canSleep(t, activeId, Date.now(), true)) return false;
   await captureScroll(t);if(t.view!==view||t.id===activeId||split?.ids.includes(t.id)||t.navigationVersion!==version)return false;dispose(t);persist();emit();return true;
 }
+// Never sleep this tab (0.48): a kept-awake tab is skipped by the idle timer, the awake budget, memory pressure, power
+// saving and Tidy. Turning it on wakes the tab if it was asleep, and kept-awake tabs wake again after a restart, one by one.
+function wakeKeptAwake(t){if(!t||t.view||!t.url||t.parked||quitting||!win||win.isDestroyed())return;warming=t;try{attach(t);}finally{warming=null;}const front=tabs.find(x=>x.id===activeId);if(front?.view&&front.space!=='private')extensionApi?.selectTab(front.view.webContents);}
+function toggleKeepAwake(t){if(!t?.url)return null;t.keepAwake=!t.keepAwake;if(t.keepAwake&&t.id!==activeId)wakeKeptAwake(t);persist();emit();feedback(t.keepAwake?'never-sleep':'may-sleep');return t.keepAwake;}
 const {archiveCandidates,addToArchive,normalizeArchive}=require('./archive.cjs');
 function archiveIdle(){const idle=archiveCandidates(tabs,{activeId,split:split?.ids,after:settings.archiveAfter});if(!idle.length)return;library.archive=addToArchive(library.archive,idle);for(const t of idle){tabSelection.remove(t.id);tabs.splice(tabs.indexOf(t),1);}saveLibrary();persist();emit();}
 function archiveAction(name,value){
@@ -491,6 +504,7 @@ function commandActions(){
   ['split','Split view','sidebar','side by side two pages',panel('workspace')],
   ['tidy','Organize tabs by site','sort','tidy group',()=>action('tabs-tidy')],
   ['sleep','Sleep background tabs','moon','memory free',()=>action('sleep')],
+  ...(tabs.find(t=>t.id===activeId)?.url?[['never-sleep',tabs.find(t=>t.id===activeId).keepAwake?'Let this tab sleep':'Never sleep this tab','sun','keep awake protect always on stay',()=>action('protect')]]:[]),
   ['history','History','history','',()=>command('y')],
   ['downloads','Downloads','download','files',panel('downloads')],
   ['settings','Settings','settings','preferences',panel('appearance')],
@@ -647,15 +661,33 @@ async function action(name,value) {
  if(name==='profile-save'){if(space==='private')return {error:'Profile is unavailable in Private.'};const next=normalizeProfile({...value,createdAt:profile.createdAt||(profileExists?null:new Date().toISOString())});if(!smoke){fs.mkdirSync(path.dirname(profileFile),{recursive:true});fs.writeFileSync(profileFile+'.tmp',JSON.stringify(next),{mode:0o600});fs.renameSync(profileFile+'.tmp',profileFile);}profile=next;profileExists=true;const {prismPresets,presetTheme}=require('./theme-presets.js');saveDesign(presetTheme(prismPresets.find(p=>p.name===profile.theme)),true);emit();return {message:'Profile saved on this Mac.'};}
  if(name==='profile-open'){if(space==='private')return {error:'Profile connections are unavailable in Private.'};const urls={gmail:'https://mail.google.com/',chatgpt:'https://chatgpt.com/',gemini:'https://gemini.google.com/'};if(urls[value]){const home=homeSpace(),existing=tabs.find(t=>t.space===home&&t.url.startsWith(urls[value]));if(existing)selectTab(existing.id);else makeTab(urls[value],true,home);}return;}
  if(name==='tab-rename'){const target=tabs.find(t=>t.id===value?.id&&inSpace(t,space));if(!target)return;target.customTitle=cleanTitle(value.title);persist();emit();return;}
+ // 0.50: right-click on the sidebar's empty space or headers, and on the new tab page.
+ if(name==='surface-menu'){const where=value?.where==='newtab'?'newtab':'sidebar',set=(key,v)=>action('set-setting',{key,value:v}),click=id=>()=>{if(!win.isDestroyed())win.webContents.executeJavaScript(`document.getElementById(${JSON.stringify(id)})?.click()`).catch(()=>{});},text=clipboard.readText().trim().slice(0,8192),openTabs=tabs.filter(t=>inSpace(t,space)&&!t.pinned&&!library.bookmarks.some(b=>b.id===t.favoriteId));
+  const common=[{label:'New Tab',accelerator:'CmdOrCtrl+T',click:()=>action('new')},{label:'Reopen Closed Tab',enabled:space!=='private',click:()=>action('reopen')}];
+  const items=where==='newtab'?[...common,...(text?[{label:'Paste and Go',click:()=>action('navigate',text)}]:[]),{type:'separator'},{label:'Add Favorite…',enabled:space!=='private',click:click('add-bookmark')},{label:'Favorites',submenu:[{label:'Icons',type:'radio',checked:settings.favoriteStyle!=='cards',click:()=>set('favoriteStyle','icons')},{label:'Cards',type:'radio',checked:settings.favoriteStyle==='cards',click:()=>set('favoriteStyle','cards')}]},{type:'separator'},{label:'Customize Space…',enabled:space!=='private',click:()=>action('space-customize')},{label:'Settings…',accelerator:'CmdOrCtrl+,',click:()=>win.webContents.send('open-panel','appearance')}]
+   :[...common,{type:'separator'},{label:'New Folder…',enabled:space!=='private',click:click('add-folder')},{label:'Add Pinned Tab…',enabled:space!=='private',click:click('add-bookmark')},{type:'separator'},{label:'Organize Tabs by Site',enabled:openTabs.length>1,click:()=>action('tabs-tidy')},{label:'Close All Tabs',enabled:openTabs.length>0,click:()=>action('tabs-close',{mode:'all'})},{type:'separator'},{label:'Address Bar',submenu:[{label:'At the Top',type:'radio',checked:settings.addressBar!=='sidebar',click:()=>set('addressBar','top')},{label:'In the Sidebar',type:'radio',checked:settings.addressBar==='sidebar',click:()=>set('addressBar','sidebar')}]},{label:'Clear View',type:'checkbox',checked:!!settings.compactMode,click:()=>set('compactMode',!settings.compactMode)},{label:'Customize Space…',enabled:space!=='private',click:()=>action('space-customize')}];
+  Menu.buildFromTemplate(localizedMenu(items)).popup({window:win});return;}
+ // Tab groups (0.50, tab-groups.cjs).
+ if(['tab-group','tab-group-new','tab-ungroup','group-rename','group-ungroup','group-close','group-menu'].includes(name)){const G=require('./tab-groups.cjs'),commit=next=>{if(next&&next!==tabs)tabs.splice(0,tabs.length,...next);persist();emit();};
+  if(name==='tab-group'){const a=tabs.find(x=>x.id===value?.id&&inSpace(x,space)),b=tabs.find(x=>x.id===value?.target&&inSpace(x,space));if(!a||!b)return;const next=G.join(tabs,a.id,b.id);if(next){commit(next);feedback('note',{message:translate(settings.language,'Added to group')+' · '+b.groupName});}return;}
+  if(name==='tab-group-new'){const a=tabs.find(x=>x.id===value&&inSpace(x,space));if(a&&G.create(tabs,a.id)){commit();win.webContents.executeJavaScript(`window.prismRenameGroup?.(${JSON.stringify(a.group)})`).catch(()=>{});}return;}
+  if(name==='tab-ungroup'){const a=tabs.find(x=>x.id===value&&inSpace(x,space));if(a)commit(G.leave(tabs,a.id)||tabs);return;}
+  const members=tabs.filter(x=>x.group&&x.group===value?.group&&inSpace(x,space));if(!members.length)return;
+  if(name==='group-rename'){if(G.rename(members,value.group,value.name))commit();return;}
+  if(name==='group-ungroup'){G.ungroup(members,value.group);commit();return;}
+  if(name==='group-close'){for(const m of [...members].sort((x,y)=>(x.id===activeId)-(y.id===activeId)))await closeTab(m.id);persist();emit();return;}
+  if(name==='group-menu'){Menu.buildFromTemplate(localizedMenu([{label:'Rename Group…',click:()=>win.webContents.executeJavaScript(`window.prismRenameGroup?.(${JSON.stringify(value.group)})`).catch(()=>{})},{label:'New Tab in Group',click:()=>{const t=makeTab('',true,space);G.join(tabs,t.id,members.at(-1).id);commit();command('l');}},{type:'separator'},{label:'Ungroup',click:()=>action('group-ungroup',{group:value.group})},{label:'Close Group',click:()=>action('group-close',{group:value.group})}])).popup({window:win});return;}}
  if(name==='tab-menu'){const target=tabs.find(t=>t.id===value&&inSpace(t,space));if(!target)return;const favoriteIds=new Set(library.bookmarks.map(b=>b.id));const others=sidebarEdit.closeTargets(tabs,target.id,'others',space,favoriteIds),below=sidebarEdit.closeTargets(tabs,target.id,'below',space,favoriteIds);
   Menu.buildFromTemplate(localizedMenu([
    {label:'Rename tab…',click:()=>win.webContents.send('rename-tab',target.id)},
    {label:'Use page title',enabled:!!target.customTitle,click:()=>action('tab-rename',{id:target.id,title:''})},
+   ...(!target.pinned&&!target.favoriteId?[target.group?{label:'Remove from Group',click:()=>action('tab-ungroup',target.id)}:{label:'Add to New Group',click:()=>action('tab-group-new',target.id)}]:[]),
    {type:'separator'},
    {label:target.pinned?'Unpin tab':'Pin tab',click:()=>action('pin-tab',target.id)},
    {label:'Duplicate tab',enabled:!!target.url,click:()=>action('tab-duplicate',target.id)},
    {label:'Add to folder',enabled:!!target.url&&space!=='private',submenu:[{label:'Pinned',click:()=>action('tab-to-folder',{id:target.id,folder:''})},...(library.folders.length?[{type:'separator'}]:[]),...library.folders.map(folder=>({label:folder,click:()=>action('tab-to-folder',{id:target.id,folder})}))]},
    {label:'Split with current tab',enabled:target.id!==activeId&&!!target.url,click:()=>action('split-start',{id:target.id,mode:'vertical'})},
+   {label:'Never sleep this tab',type:'checkbox',checked:!!target.keepAwake,enabled:!!target.url,...(target.id===activeId?{accelerator:'CmdOrCtrl+Alt+A',registerAccelerator:false}:{}),click:()=>action('protect',target.id)},
    {type:'separator'},
    ...(target.pinned?[...(!target.parked?[{label:'Close tab',click:()=>action('tab-park',target.id)}]:[]),{label:'Remove pinned tab',click:()=>action('close',target.id)}]:[{label:'Close tab',click:()=>action('close',target.id)}]),
    {label:'Close other tabs',enabled:others.length>0,click:()=>action('tabs-close',{id:target.id,mode:'others'})},
@@ -794,11 +826,11 @@ async function action(name,value) {
   if(name==='undo-import')return undoImported('bookmarks');
   if(name==='undo-password-import')return undoImported('passwords');
   if(name==='import-native')return importNative();
-  if(name==='set-setting'&&value&&typeof value.key==='string'){const valid=setting(value.key,value.value);if(valid===undefined)throw Error('Invalid setting');settings[value.key]=valid;if(value.key==='theme')library.theme=valid;saveSettings();if(value.key==='autofillSuggestions')autofill?.dismiss();if(value.key==='privacyEverywhere')applyPrivacyEverywhere();if(['bypassNormal','bypassProfile','bypassSites'].includes(value.key))applyBypass();if(value.key==='language')setupMenu();if(value.key==='automaticUpdates')updater?.schedule(valid);if(['theme','material','tint','radius','reduceTransparency','highContrast'].includes(value.key))applyAppearance();if(value.key==='pageZoom')for(const tab of tabs)tab.view?.webContents.setZoomFactor(valid);if(value.key==='trackpadGestures')for(const tab of tabs)applyPinch(tab.view?.webContents);layout();emit();if(value.key==='favoriteStyle')queueFavoriteThumbnail(t);return;}
+  if(name==='set-setting'&&value&&typeof value.key==='string'){const valid=setting(value.key,value.value);if(valid===undefined)throw Error('Invalid setting');settings[value.key]=valid;if(value.key==='theme')library.theme=valid;saveSettings();if(value.key==='autofillSuggestions')autofill?.dismiss();if(value.key==='privacyEverywhere')applyPrivacyEverywhere();if(['bypassNormal','bypassProfile','bypassSites'].includes(value.key))applyBypass();if(value.key==='language')setupMenu();if(value.key==='automaticUpdates')updater?.schedule(valid);if(['theme','material','tint','radius','reduceTransparency','highContrast','liquidGlass'].includes(value.key))applyAppearance();if(value.key==='pageZoom')for(const tab of tabs)tab.view?.webContents.setZoomFactor(valid);if(value.key==='trackpadGestures')for(const tab of tabs)applyPinch(tab.view?.webContents);layout();emit();if(value.key==='favoriteStyle')queueFavoriteThumbnail(t);return;}
   if(name==='begin-resize'){const image=t?.view?await t.view.webContents.capturePage():null;overlay=true;layout();return image&&!image.isEmpty()?image.resize({width:1000}).toDataURL():null;}
   if(name==='resize-sidebar'&&typeof value==='number'){resizeWidth=setting('sidebarWidth',value);layout();return;}
   if(name==='finish-resize'){if(resizeWidth!==null)settings.sidebarWidth=resizeWidth;resizeWidth=null;saveSettings();layout();emit();return;}
-  if(name==='tab-reorder'&&value){const moved=tabs.find(x=>x.id===value.id),before=tabs.find(x=>x.id===value.beforeId);if(!moved||!inSpace(moved,space)||(before&&!inSpace(before,space)))return;if(before)moved.pinned=!!before.pinned;tabs.splice(0,tabs.length,...moveBefore(tabs,value.id,value.beforeId));persist();emit();return;}
+  if(name==='tab-reorder'&&value){const moved=tabs.find(x=>x.id===value.id),before=tabs.find(x=>x.id===value.beforeId);if(!moved||!inSpace(moved,space)||(before&&!inSpace(before,space)))return;if(before)moved.pinned=!!before.pinned;tabs.splice(0,tabs.length,...moveBefore(tabs,value.id,value.beforeId));require('./tab-groups.cjs').normalize(tabs);persist();emit();return;}
   if(name==='bookmark-move'&&value){const b=library.bookmarks.find(x=>x.id===value.id);if(!b)return;if(typeof value.favorite==='boolean')b.favorite=value.favorite;if(typeof value.folder==='string'&&(value.folder===''||library.folders.includes(value.folder))){b.folder=value.folder;b.favorite=false;}library.bookmarks=moveBefore(library.bookmarks,b.id,value.beforeId);saveLibrary();emit();return;}
   // Options pages open as tabs, as in Chrome; many expect chrome.tabs.getCurrent() and a full-size page.
   if(name==='extension'&&value?.command==='options'){const url=services.extensionPage(value.id,'options');toolWindows.closeAll();makeTab(url,true,space==='private'?homeSpace():space);return;}
@@ -857,8 +889,9 @@ async function action(name,value) {
     {type:'separator'},{label:'Remove bookmark',click:()=>{const before=sidebarEdit.snapshotLibrary(library);library.bookmarks=library.bookmarks.filter(x=>x.id!==b.id);saveLibrary();emit();offerUndo('Bookmark removed',()=>{sidebarEdit.restoreLibrary(library,before);saveLibrary();emit();});}}
   ])).popup({window:win});return;}
   if (name==='import-arc') return importArc();
-  if (name==='fill-password') return passwords.fill(t);
+  if (name==='fill-password') return passwords.fill(t,value&&typeof value==='object'&&typeof value.origin==='string'?{origin:value.origin,username:String(value.username||'')}:undefined);
   if(name==='save-password')return passwords.saveCurrent(t);
+  if(name==='never-save-reset'){settings.neverSavePasswords=[];saveSettings();emit();return {message:'Prism will offer to save passwords on every site again.'};}
   if(name==='import-passwords')return passwords.importCSV();
   if(name==='apple-passwords'){const error=await shell.openPath('/System/Applications/Passwords.app');if(error)throw Error(error);return;}
   // Apple Passwords (0.47). Apple's iCloud Passwords extension fills and saves through Apple Passwords over native
@@ -890,6 +923,7 @@ async function action(name,value) {
   // The address field's own menu (0.37): Paste and Go, then the usual editing commands.
   if(name==='address-menu'){const text=clipboard.readText().trim().slice(0,8192),edit=require('./edit-menu.cjs').editItems({isEditable:true,editFlags:{canUndo:true,canRedo:true,canCut:true,canCopy:true,canPaste:!!text,canSelectAll:true}},{translate:menuLabel});
    Menu.buildFromTemplate([...(text?[{label:menuLabel(normalizeAddress(text)?.startsWith('https://www.google.com/search?')?'Paste and Search':'Paste and Go'),click:()=>{const t=tabs.find(x=>x.id===activeId);if(t?.url)action('navigate',text);else{const url=normalizeAddress(text);if(url){makeTab(url,true,space);persist();}}}},{type:'separator'}]:[]),...edit]).popup({window:win});return;}
+  if(name==='moving-from-arc'){const url=require('./arc-move.cjs').URL,target=space==='private'?homeSpace():space,open=tabs.find(t=>t.space===target&&t.url===url);if(open)selectTab(open.id);else{const t=makeTab(url,true,target);t.title=translate(settings.language,'Moving from Arc');}return;}
   if(name==='release-notes'){const url=require('./release-notes.cjs').URL,target=space==='private'?homeSpace():space,open=tabs.find(t=>t.space===target&&t.url===url);if(open)selectTab(open.id);else{const t=makeTab(url,true,target);t.title=translate(settings.language,'Release notes');}return;}
   // Pointing at a sleeping tab starts waking it (0.33.2), so it is usually ready by the time the click lands; never in
   // Private, for a closed pinned tab, or while macOS is short of memory.
@@ -905,7 +939,7 @@ async function action(name,value) {
   if (name==='back' && t?.view?.webContents.navigationHistory.canGoBack()) t.view.webContents.navigationHistory.goBack();
   if (name==='forward' && t?.view?.webContents.navigationHistory.canGoForward()) t.view.webContents.navigationHistory.goForward();
   if (name==='reload') {if(t?.view)t.view.webContents.reload();else if(t)attach(t);}
-  if (name==='protect' && t) {t.keepAwake=!t.keepAwake;emit();persist();}
+  if (name==='protect') {const target=Number.isInteger(value)?tabs.find(x=>x.id===value&&inSpace(x,space)):t;return {keepAwake:toggleKeepAwake(target)};}
   if (name==='sleep') {let count=0; for (const tab of [...tabs]) if(await sleepTab(tab,true))count++;return {message:count ? `${count} background tab${count===1?'':'s'} put to sleep.` : 'No eligible background tabs. Playing media, edited forms, and protected tabs stay awake.'};}
 }
 async function importBookmarks(items,source){
@@ -961,6 +995,29 @@ async function importBrowser(value={}){
  finally{importing=false;emit();}
 }
 async function importArc(){return importBrowser({browser:'arc'});}
+// Google refuses sign-in inside Electron-based browsers (src/google-signin.cjs). When its "Couldn't sign you in" page
+// shows up, or from File → Import From → Google Sign-in…, Prism offers to bring the Google sign-in the person already
+// has in Chrome, Arc or another Chromium browser, or to open Google in Safari.
+let googleOffer=0;
+async function offerGoogleSignin(t,manual=false){
+ if(smoke||space==='private'||(!manual&&Date.now()-googleOffer<15000))return;googleOffer=Date.now();
+ let found=[];try{found=(await googleSignin.sources(importHome())).slice(0,2);}catch{}
+ const wc=t?.view?.webContents&&!t.view.webContents.isDestroyed()?t.view.webContents:null;
+ const detail=found.length?'Google blocks sign-in inside browsers built on Electron, like Prism. You can bring over the Google sign-in you already have in '+found.map(f=>f.label).join(' or ')+'. Prism copies only Google’s sign-in cookies, after macOS asks to let Prism read that browser’s key. Nothing in that browser changes.':
+  'Google blocks sign-in inside browsers built on Electron, like Prism. Sign in to Google in Chrome, Arc or another Chromium browser on this Mac, then choose File → Import From → Google Sign-in… to bring it over.';
+ const buttons=['Not Now','Open in Safari',...found.map(f=>'Use '+f.label)];
+ const choice=await dialog.showMessageBox(win,{type:'info',message:'Google doesn’t allow signing in here',detail,buttons,defaultId:found.length?2:1,cancelId:0});
+ if(choice.response===1){const target=wc&&googleSignin.isRejected(wc.getURL())?'https://accounts.google.com/':wc?.getURL()||'https://accounts.google.com/';require('node:child_process').execFile('/usr/bin/open',['-a','Safari',/^https:/.test(target)?target:'https://accounts.google.com/'],()=>{});return;}
+ const pick=found[choice.response-2];if(!pick)return;
+ try{
+  const ses=wc?.session||session.fromPartition(browserPartition);const result=await googleSignin.bring({browser:pick.browser,profile:pick.profile,ses,home:importHome()});
+  if(wc&&!wc.isDestroyed()){// Back to the page that asked for sign-in, else Google's account page.
+   const entries=wc.navigationHistory.getAllEntries().map(e=>e.url).filter(u=>{try{return /^https:/.test(u)&&new URL(u).hostname!=='accounts.google.com';}catch{return false;}});
+   wc.loadURL(entries.at(-1)||'https://myaccount.google.com/').catch(()=>{});}
+  else makeTab('https://myaccount.google.com/',true,space);
+  feedback('note',{message:result.cookies?'Signed in to Google with your '+pick.label+' sign-in.':'Nothing was brought over from '+pick.label+'.'});
+ }catch(error){feedback('note',{message:/Keychain|password key/i.test(error.message)?'Prism couldn’t read '+pick.name+'’s key. Choose Allow when macOS asks, then try again.':error.message});}
+}
 async function importNative(){
  const file=path.join(app.getPath('appData'),'Prism Native Preview','session-v2.json');
  const document=JSON.parse(fs.readFileSync(file,'utf8'));
@@ -1014,7 +1071,7 @@ function setupMenu() {
   const localize=items=>items.map(item=>({...item,...(item.label?{label:translate(settings.language,item.label)}:{}),...(item.submenu?{submenu:localize(item.submenu)}:{})}));
   Menu.setApplicationMenu(Menu.buildFromTemplate(localize([
     {label:'Prism',submenu:[{role:'about'},{label:'Check for Updates…',click:()=>{win.webContents.send('open-panel','updates');updater.check();}},{label:translate(settings.language,'What’s New'),click:()=>showWhatsNew()},{label:'Release Notes',click:()=>action('release-notes')},{label:'Settings…',accelerator:'CmdOrCtrl+,',click:()=>win.webContents.send('open-panel','appearance')},{type:'separator'},{role:'hide'},{role:'hideOthers'},{role:'unhide'},{type:'separator'},{role:'quit'}]},
-    {label:'File',submenu:[{label:'New tab',accelerator:'CmdOrCtrl+K',click:()=>command('k')},{label:'New Lens Window',accelerator:'CmdOrCtrl+Alt+N',click:()=>action('lens-window')},{label:'Tidy Tabs',accelerator:'CmdOrCtrl+Alt+K',click:()=>action('tidy').then(r=>{if(r?.message)feedback('note',{message:r.message});})},{label:'Close tab',accelerator:'CmdOrCtrl+W',click:()=>command('w')},{label:'Reopen closed tab',accelerator:'CmdOrCtrl+Shift+T',click:()=>command('reopen')},{type:'separator'},{label:'Save Page As…',accelerator:'CmdOrCtrl+S',click:()=>action('save-page')},{label:'Print…',accelerator:'CmdOrCtrl+P',click:()=>action('print')},{type:'separator'},{label:'Import From',submenu:[{label:'Another Browser…',click:()=>action('open-tool',{section:'imports'})},{type:'separator'},{label:'Bookmarks File…',click:()=>action('import-bookmark-file').then(r=>{if(r?.error||r?.message)feedback('note',{message:r.error||r.message});},e=>feedback('note',{message:e.message}))},{label:'Passwords File…',click:()=>action('import-passwords').then(r=>{if(r?.error||r?.message)feedback('note',{message:r.error||r.message});},e=>feedback('note',{message:e.message}))}]},{label:'Add to Dock…',click:()=>action('add-to-dock').then(r=>{if(r?.error)feedback('note',{message:r.error});})}]},
+    {label:'File',submenu:[{label:'New tab',accelerator:'CmdOrCtrl+K',click:()=>command('k')},{label:'New Lens Window',accelerator:'CmdOrCtrl+Alt+N',click:()=>action('lens-window')},{label:'Tidy Tabs',accelerator:'CmdOrCtrl+Alt+K',click:()=>action('tidy').then(r=>{if(r?.message)feedback('note',{message:r.message});})},{label:'Never Sleep This Tab',accelerator:'CmdOrCtrl+Alt+A',click:()=>action('protect')},{label:'Close tab',accelerator:'CmdOrCtrl+W',click:()=>command('w')},{label:'Reopen closed tab',accelerator:'CmdOrCtrl+Shift+T',click:()=>command('reopen')},{type:'separator'},{label:'Save Page As…',accelerator:'CmdOrCtrl+S',click:()=>action('save-page')},{label:'Print…',accelerator:'CmdOrCtrl+P',click:()=>action('print')},{type:'separator'},{label:'Import From',submenu:[{label:'Another Browser…',click:()=>action('open-tool',{section:'imports'})},{type:'separator'},{label:'Bookmarks File…',click:()=>action('import-bookmark-file').then(r=>{if(r?.error||r?.message)feedback('note',{message:r.error||r.message});},e=>feedback('note',{message:e.message}))},{label:'Google Sign-in…',click:()=>offerGoogleSignin(tabs.find(x=>x.id===activeId),true)},{label:'Passwords File…',click:()=>action('import-passwords').then(r=>{if(r?.error||r?.message)feedback('note',{message:r.error||r.message});},e=>feedback('note',{message:e.message}))}]},{label:'Add to Dock…',click:()=>action('add-to-dock').then(r=>{if(r?.error)feedback('note',{message:r.error});})}]},
     {label:'Edit',submenu:[{label:'Copy page link',accelerator:'Control+Shift+C',click:()=>action('copy-page-url')},{label:'Undo',accelerator:'CmdOrCtrl+Z',click:()=>undoKey()},{label:'Restore closed tab',accelerator:'Control+Z',visible:false,acceleratorWorksWhenHidden:true,click:()=>undoKey()},{role:'redo'},{type:'separator'},{role:'cut'},{role:'copy'},{role:'paste'},{role:'pasteAndMatchStyle'},{role:'delete'},{role:'selectAll'}]},
     {label:'Bookmarks',submenu:[{label:'Bookmark this page',accelerator:'CmdOrCtrl+D',click:()=>action('bookmark-current')},{type:'separator'},{label:'Import from Another Browser…',click:()=>action('open-tool',{section:'imports'})}]},
     {label:'View',submenu:[{label:'Instagram Mobile App',click:()=>action('instagram-app-open')},{type:'separator'},{label:'Tabs & layout',click:()=>win.webContents.send('open-panel','workspace')},{label:'Profile',click:()=>win.webContents.send('open-panel','profile')},{label:'Inspect page',accelerator:'CmdOrCtrl+Alt+I',click:()=>action('inspect')},{label:'Picture in picture',click:()=>action('pip')},{label:'Translate selected text',click:()=>action('page-ai-open-selection')},{label:'Page assistant',click:()=>win.webContents.send('open-panel','page-assistant')},{label:'AI & assistants',click:()=>win.webContents.send('open-panel','ai')},{label:'Find in page',accelerator:'CmdOrCtrl+F',click:()=>command('f')},{label:'Site permissions',click:()=>win.webContents.send('open-panel','permissions')},{label:'Address bar',accelerator:'CmdOrCtrl+L',click:()=>command('l')},{label:'Beam',accelerator:'CmdOrCtrl+T',click:()=>commandBar?.open()},{label:'Clear view',accelerator:'CmdOrCtrl+Alt+S',click:()=>action('set-setting',{key:'compactMode',value:!settings.compactMode})},{label:'Reload page',accelerator:'CmdOrCtrl+R',click:()=>command('r')},{label:'Reload without cache',accelerator:'CmdOrCtrl+Alt+R',click:()=>command('R')},{label:'Show Reader',accelerator:'CmdOrCtrl+Shift+R',click:()=>action('reader-toggle').then(r=>{if(r?.error)feedback('note',{message:r.error});})},{type:'separator'},{label:'Zoom in',accelerator:'CmdOrCtrl+Plus',click:()=>zoomActive(1)},{label:'Zoom in',accelerator:'CmdOrCtrl+=',visible:false,acceleratorWorksWhenHidden:true,click:()=>zoomActive(1)},{label:'Zoom out',accelerator:'CmdOrCtrl+-',click:()=>zoomActive(-1)},{label:'Actual size',accelerator:'CmdOrCtrl+0',click:()=>zoomActive(0)},{role:'togglefullscreen'}]},
@@ -1025,7 +1082,7 @@ function setupMenu() {
     {label:'History',submenu:[{label:'Back',accelerator:'CmdOrCtrl+[',click:()=>action('back')},{label:'Forward',accelerator:'CmdOrCtrl+]',click:()=>action('forward')},{type:'separator'},{label:'Reopen closed tab',click:()=>command('reopen')},{label:'Show All History',accelerator:'CmdOrCtrl+Y',click:()=>command('y')}]},
     {label:'Downloads',submenu:[{label:'Show downloads',accelerator:'CmdOrCtrl+J',click:()=>win.webContents.send('open-panel','downloads')}]},
     {label:'Window',role:'windowMenu'},
-    {label:'Help',role:'help',submenu:[{label:'Release Notes',click:()=>action('release-notes')},{label:'What’s New',click:()=>showWhatsNew()},{type:'separator'},{label:'Show Me Around',click:()=>action('tour')}]}
+    {label:'Help',role:'help',submenu:[{label:'Release Notes',click:()=>action('release-notes')},{label:'Moving from Arc…',click:()=>action('moving-from-arc')},{label:'What’s New',click:()=>showWhatsNew()},{type:'separator'},{label:'Show Me Around',click:()=>action('tour')}]}
   ])));
 }
 app.on('login',(event,wc,details,authInfo,callback)=>{event.preventDefault();signInPrompt(authInfo,wc).then(answer=>answer?callback(answer.username,answer.password):callback(),()=>callback());});
@@ -1108,10 +1165,11 @@ app.whenReady().then(async()=>{bootMark('ready');for(const file of [vaultFile,wa
   sidePanels.setOpenTab(url=>makeTab(url,true,space==='private'?homeSpace():space));
   ElectronChromeExtensions.handleCRXProtocol(session.defaultSession);
   services=createServices({app,ses,window:()=>win,settings,saveSettings,emit,smoke,onDownloadComplete:id=>ai?.enqueue(id)});
-  blocker=new Blocker({file:path.join(app.getPath('userData'),'blocking.json'),changed:emit});blocker.bind(ses,false,details=>siteBypass.observe(details));normalNetwork=new PrivateNetwork({session:ses,gate:false,direct:true,label:'normal',helper:tpwsHelper,route:siteBypass.route,changed:emit,secureDns:on=>{dnsWants.normal=on;syncDns();}});if(settings.bypassNormal!=='off')applyBypass();require('./release-notes.cjs').register(ses,{root:path.join(__dirname,'..'),version:require('../package.json').version});
+  blocker=new Blocker({file:path.join(app.getPath('userData'),'blocking.json'),changed:emit});blocker.bind(ses,false,details=>siteBypass.observe(details));normalNetwork=new PrivateNetwork({session:ses,gate:false,direct:true,label:'normal',helper:tpwsHelper,route:siteBypass.route,changed:emit,secureDns:on=>{dnsWants.normal=on;syncDns();}});if(settings.bypassNormal!=='off')applyBypass();require('./release-notes.cjs').register(ses,{root:path.join(__dirname,'..'),version:require('../package.json').version,t:k=>translate(settings.language,k),run:cmd=>{const report=r=>{if(r?.error||r?.message)feedback('note',{message:r.error||r.message});};if(cmd==='import-arc')importArc().then(report,e=>report({error:e.message}));else if(cmd==='google-signin')offerGoogleSignin(tabs.find(x=>x.id===activeId),true);else if(cmd==='default-browser')Promise.resolve(action('make-default-browser')).then(report,()=>{});else if(cmd==='tour')action('tour');}});
   setupPrivate();if(settings.privacyEverywhere)applyPrivacyEverywhere();
   ai=require('./ai.cjs').createAI({app,safeStorage,settings,emit,downloads:()=>services.downloads(),saveDownloads:()=>services.persistDownloads(),isPrivate:()=>space==='private'});
-  passwords=createPasswords({app,window:()=>win,settings,readVault,writeVault:entries=>saveEncrypted(vaultFile,entries),importVault:next=>commitWithUndo({...importStore('passwords'),next}),activeTab:()=>tabs.find(t=>t.id===activeId),emit,customPicker:true,confirm:confirmOwner});
+  savePrompt=require('./password-save.cjs').createSavePrompt({BrowserWindow,ipcMain,parent:()=>win,area:()=>pageArea,glass:host=>{try{require('./native/glass.node').popover?.(host.getNativeWindowHandle());}catch{}return surfaceGlass(host,16);}});
+  passwords=createPasswords({ask:details=>savePrompt.ask({...details,reduceMotion:settings.reduceMotion||false,labels:Object.fromEntries(Object.entries({save:'Save password?',update:'Update password?',username:'Username',password:'Password',never:'Never for This Site',later:'Not Now',saveButton:'Save',updateButton:'Update',note:'Encrypted on this Mac with Keychain',saved:'Password saved',updated:'Password updated',show:'Show password'}).map(([k,v])=>[k,menuLabel(v)]))}),never:origin=>{settings.neverSavePasswords=[...new Set([...(settings.neverSavePasswords||[]),origin])].slice(-500);saveSettings();emit();},app,window:()=>win,settings,readVault,writeVault:entries=>saveEncrypted(vaultFile,entries),importVault:next=>commitWithUndo({...importStore('passwords'),next}),activeTab:()=>tabs.find(t=>t.id===activeId),emit,customPicker:true,confirm:confirmOwner});
   pageAssistant=require('./page-assistant.cjs').createPageAssistant({activeTab:()=>tabs.find(t=>t.id===activeId),isPrivate:()=>space==='private',getKey:()=>ai.pageKey(),getProvider:()=>ai.provider()});
   // Web Share from the active tab's main frame: re-validated here, then shown in the native macOS share menu.
   passkeys=require('./passkeys.cjs').createPasskeys({read:readPasskeys,write:rows=>{if(!secureFile(passkeyFile).loaded())throw Error('Passkeys are still unlocking. Try again in a moment.');return saveEncrypted(passkeyFile,rows);},confirmOwner,tabFor:wc=>tabs.find(t=>t.view?.webContents===wc),emit});
@@ -1132,7 +1190,19 @@ app.whenReady().then(async()=>{bootMark('ready');for(const file of [vaultFile,wa
   const shieldFrame=(event,value)=>{const wc=event.sender;if(!blocker||!value||typeof value.url!=='string'||value.url.length>8192)return null;const privateMode=wc.session===privateSession;return {url:value.url,main:!!value.main,top:value.main?value.url:wc.getURL(),privateMode};};
   ipcMain.on('prism-shield-frame',(event,value)=>{const request=shieldFrame(event,value);try{event.returnValue=request?blocker.frame(request):null;}catch{event.returnValue=null;}});
   ipcMain.handle('prism-shield-dom',(event,value)=>{const request=shieldFrame(event,value);return request?blocker.dom({...request,classes:value.classes,ids:value.ids,hrefs:value.hrefs}):'';});
-  ipcMain.on('prism-login-submitted',(event,value)=>{const t=tabs.find(t=>t.view?.webContents===event.sender);if(!t||t.space==='private'||t.id!==activeId||!event.senderFrame||event.senderFrame.top!==event.sender.mainFrame)return;passwords.offer(t,value,event.senderFrame.url).catch(()=>{});});
+  // Save password (0.50): a sign-in is offered once it went through. The page reports the login when it is sent; the
+  // panel waits for the frame to leave the page, or for the password field to go away, and skips a sign-in that stays
+  // on the form (a wrong password). A username from an earlier step of the same site fills in a password-only step.
+  ipcMain.on('prism-login-username',(event,value)=>{const t=tabs.find(t=>t.view?.webContents===event.sender);if(!t||t.space==='private'||!event.senderFrame||typeof value?.username!=='string')return;let origin;try{origin=new URL(event.senderFrame.url).origin;}catch{return;}t.loginUsername={origin,username:value.username.slice(0,320),at:Date.now()};});
+  ipcMain.on('prism-login-submitted',(event,value)=>{const t=tabs.find(t=>t.view?.webContents===event.sender);if(!t||t.space==='private'||t.id!==activeId||!event.senderFrame||event.senderFrame.top!==event.sender.mainFrame)return;
+   const frame=event.senderFrame,url=frame.url;let origin;try{origin=new URL(url).origin;}catch{return;}
+   if(!value?.username&&t.loginUsername?.origin===origin&&Date.now()-t.loginUsername.at<5*60*1000)value={...value,username:t.loginUsername.username};
+   const wc=event.sender,started=Date.now(),seq=(t.loginSeq=(t.loginSeq||0)+1);
+   const check=async()=>{if(t.loginSeq!==seq||wc.isDestroyed())return;let still=false;
+    try{still=frame.isDestroyed()||frame.url!==url?false:await frame.executeJavaScript(`[...document.querySelectorAll('input[type=password]')].some(e=>e.value&&e.getClientRects().length)`);}catch{still=false;}
+    if(t.loginSeq!==seq)return;if(still){if(Date.now()-started<7000)setTimeout(check,700);return;}
+    if(t.id===activeId)passwords.offer(t,value,url).catch(()=>{});};
+   setTimeout(check,900);});
   // Chrome Web Store extensions update themselves (0.44; checked when Prism becomes active, at most every 3 hours), so
   // they keep up with the sites they work on. An update reloads the extension and its record follows (extension-loaded).
   await installChromeWebStore({session:ses,extensionsPath:path.join(app.getPath('userData'),'store-extensions'),loadExtensions:false,autoUpdate:!smoke,beforeInstall:async details=>({action:await services.reviewExtension(details.manifest,details.localizedName)?'allow':'deny'})});
@@ -1163,13 +1233,13 @@ app.whenReady().then(async()=>{bootMark('ready');for(const file of [vaultFile,wa
   webApps=require('./web-apps.cjs').createWebApps({dir:process.env.PRISM_WEB_APPS_DIR||undefined,data:process.env.PRISM_WEB_APPS_DATA||null,version:app.getVersion(),appPath:app.isPackaged?null:app.getAppPath()});
   // After an update the launcher copied into each web app is copied again, so they keep starting.
   if(!smoke)setTimeout(()=>webApps.refresh().catch(()=>{}),8000).unref?.();
-  commandBar=require('./command-bar.cjs').createCommandBar({BrowserWindow,parent:()=>win,surfaces,entries:commandEntries,run:commandRun,suggest:searchSuggestions,decorate:editMenu,ask:beamAsk,image:bytes=>action('image-search',{bytes}),look:()=>({dark:nativeTheme.shouldUseDarkColors,language:settings.language,reduceMotion:!!settings.reduceMotion||systemPreferences.getAnimationSettings().prefersReducedMotion})});
+  commandBar=require('./command-bar.cjs').createCommandBar({BrowserWindow,parent:()=>win,surfaces,glass:host=>surfaceGlass(host,14),entries:commandEntries,run:commandRun,suggest:searchSuggestions,decorate:editMenu,ask:beamAsk,image:bytes=>action('image-search',{bytes}),look:()=>({dark:nativeTheme.shouldUseDarkColors,language:settings.language,reduceMotion:!!settings.reduceMotion||systemPreferences.getAnimationSettings().prefersReducedMotion})});
   media=require('./media.cjs').createMedia({tabs:()=>tabs,visibleIds:()=>split?split.ids:[activeId],emit});
   pip=require('./pip.cjs').createPip({BrowserWindow,WebContentsView,screen,parent:()=>win,surfaces,language:()=>settings.language,savedPlace:()=>settings.pipPlace,savePlace:place=>{settings.pipPlace=place;saveSettings();},onChange:()=>{layout();emit();},reduceMotion:()=>!!settings.reduceMotion||systemPreferences.getAnimationSettings().prefersReducedMotion,
    detach:t=>{win.contentView.removeChildView(t.view);t.view.setVisible(true);t.view._prismVisible=null;t.view._prismBounds=null;t.view._prismRadius=null;},
    attachBack:(t,show)=>{if(!win||win.isDestroyed()||!t.view)return;win.contentView.addChildView(t.view);t.view._prismVisible=null;t.view._prismBounds=null;t.view._prismRadius=null;if(show&&tabs.includes(t))selectTab(t.id);else layout();}});
   peek=require('./peek.cjs').createPeek({BrowserWindow,WebContentsView,parent:()=>win,pageArea:()=>pageArea,webPreferences:tabSpace=>pageWebPreferences(tabSpace==='private'),surfaces,openTab:(url,tabSpace)=>{makeTab(url,true,tabSpace);if(win&&!win.isDestroyed()){win.show();win.focus();}},screen,normalize:normalizeAddress,cleanLink:url=>require('./blocker.cjs').cleanLink(url),copy:text=>{clipboard.writeText(text);feedback('link-copied');},
-   glass:host=>{try{if(!accessibility().reduceTransparency&&settings.material!=='solid')require('./native/glass.node').configure(host.getNativeWindowHandle(),settings.material==='clear'?'clear':'regular',accent(),12);}catch{}},
+   glass:host=>{surfaceGlass(host,12);},
    savedBounds:()=>{try{return JSON.parse(fs.readFileSync(path.join(app.getPath('userData'),'lens-window.json'),'utf8'));}catch{return null;}},saveBounds:b=>{try{fs.writeFileSync(path.join(app.getPath('userData'),'lens-window.json'),JSON.stringify(b));}catch{}},
    configure:(wc,tabSpace)=>{const isPrivate=tabSpace==='private';blocker?.attach(wc,isPrivate);wc.setZoomFactor(settings.pageZoom);applyPinch(wc);if(isPrivate)wc.setWebRTCIPHandlingPolicy('disable_non_proxied_udp');},
    reduceMotion:()=>!!settings.reduceMotion||systemPreferences.getAnimationSettings().prefersReducedMotion,dark:()=>nativeTheme.shouldUseDarkColors,language:()=>settings.language});
@@ -1216,7 +1286,7 @@ app.whenReady().then(async()=>{bootMark('ready');for(const file of [vaultFile,wa
   win.show();bootMark('shown');localUpdater?.healthy(); emit();if(!smoke)setTimeout(warmFavoriteIcons,3000).unref?.();if(!smoke&&settings.chromiumCheck!==false)setTimeout(()=>chromiumCheck.check().then(noteChromium).catch(()=>{}),6000).unref?.();externalReady=true;for(const url of pendingExternal.splice(0))receiveExternal(url);
   if(process.argv.includes('--import-arc')&&!smoke) importArc().then(result=>console.log('Arc import:',JSON.stringify(result)));
   // PRISM_TEST_FLOW=<name> runs one flow from test/ on its own (development; smoke profile only).
-  if(smoke) require(process.env.PRISM_TEST_FLOW?'../test/'+path.basename(process.env.PRISM_TEST_FLOW):process.env.PRISM_TEST_PRIVATE_PUBLIC==='1'?'../test/private-public-flow.cjs':restartTest?'../test/restart-flow.cjs':process.env.PRISM_TEST_COMPATIBILITY==='1'?'../test/compatibility-flow.cjs':process.env.PRISM_PERFORMANCE==='1'?'../test/performance-flow.cjs':process.env.PRISM_TEST_CREDENTIALS==='1'?'../test/credentials-flow.cjs':process.env.PRISM_TEST_RECOVERY==='1'?'../test/recovery-flow.cjs':process.env.PRISM_TEST_BASICS==='1'?'../test/basics-flow.cjs':process.env.PRISM_BENCHMARK==='1'?'../test/benchmark.cjs':process.env.PRISM_TEST_STORE==='1'?'../test/store.cjs':'../test/smoke.cjs').run({app,win,bootMarks,makeTab,selectTab,sleepTab,archiveIdle,spectrum,warmFavoriteIcons,pip:()=>pip,media:()=>media,commandBar:()=>commandBar,peek:()=>peek,library:()=>library,enforceAwakeBudget,action,snapshot,tabs,settings,services,passwords,autofill,wallet,ai,toolWindows,inspector,sessionStore,captureScroll,restoreSession,dispose,privateController:()=>privateNetwork,normalNetwork:()=>normalNetwork,sidePanels:()=>sidePanels,showWhatsNew,whatsNewWindow:()=>whatsNewWindow,checkWhatsNew,passkeys:()=>passkeys,secureFile,devices:()=>devices,setDeviceChooser:f=>{deviceChooser=f;},extensionMenuTemplate:id=>extensionMenuTemplate(id),extensionApi:()=>extensionApi,reader:()=>reader,webApps:()=>webApps,setNaturalScroll:value=>{naturalScroll=value;emit();},setUpdateOverride:value=>{updateOverride=value;emit();}}).catch(error=>{console.error(error);app.exit(1);});
+  if(smoke) require(process.env.PRISM_TEST_FLOW?'../test/'+path.basename(process.env.PRISM_TEST_FLOW):process.env.PRISM_TEST_PRIVATE_PUBLIC==='1'?'../test/private-public-flow.cjs':restartTest?'../test/restart-flow.cjs':process.env.PRISM_TEST_COMPATIBILITY==='1'?'../test/compatibility-flow.cjs':process.env.PRISM_PERFORMANCE==='1'?'../test/performance-flow.cjs':process.env.PRISM_TEST_CREDENTIALS==='1'?'../test/credentials-flow.cjs':process.env.PRISM_TEST_RECOVERY==='1'?'../test/recovery-flow.cjs':process.env.PRISM_TEST_BASICS==='1'?'../test/basics-flow.cjs':process.env.PRISM_BENCHMARK==='1'?'../test/benchmark.cjs':process.env.PRISM_TEST_STORE==='1'?'../test/store.cjs':'../test/smoke.cjs').run({app,win,savePrompt:()=>savePrompt,bootMarks,makeTab,selectTab,sleepTab,archiveIdle,spectrum,warmFavoriteIcons,pip:()=>pip,media:()=>media,commandBar:()=>commandBar,peek:()=>peek,library:()=>library,enforceAwakeBudget,action,snapshot,tabs,settings,services,passwords,autofill,wallet,ai,toolWindows,inspector,sessionStore,captureScroll,restoreSession,dispose,privateController:()=>privateNetwork,normalNetwork:()=>normalNetwork,sidePanels:()=>sidePanels,showWhatsNew,whatsNewWindow:()=>whatsNewWindow,checkWhatsNew,passkeys:()=>passkeys,secureFile,devices:()=>devices,setDeviceChooser:f=>{deviceChooser=f;},extensionMenuTemplate:id=>extensionMenuTemplate(id),extensionApi:()=>extensionApi,reader:()=>reader,webApps:()=>webApps,setNaturalScroll:value=>{naturalScroll=value;emit();},setUpdateOverride:value=>{updateOverride=value;emit();}}).catch(error=>{console.error(error);app.exit(1);});
 });
 app.on('second-instance',()=>{if(win){if(win.isMinimized())win.restore();win.show();win.focus();}});
 app.on('window-all-closed',()=>app.quit());

@@ -5,9 +5,11 @@
 static const char associatedGlass=0;
 static std::string str(napi_env e,napi_value v){size_t n=0;napi_get_value_string_utf8(e,v,nullptr,0,&n);std::string s(n+1,0);napi_get_value_string_utf8(e,v,s.data(),s.size(),&n);s.resize(n);return s;}
 static napi_value Configure(napi_env env,napi_callback_info info){
-  size_t argc=4;napi_value argv[4];napi_get_cb_info(env,info,&argc,argv,nullptr,nullptr);
+  size_t argc=5;napi_value argv[5];napi_get_cb_info(env,info,&argc,argv,nullptr,nullptr);
   void* bytes=nullptr;size_t length=0;bool isBuffer=false;if(argc<4||napi_is_buffer(env,argv[0],&isBuffer)!=napi_ok||!isBuffer||napi_get_buffer_info(env,argv[0],&bytes,&length)!=napi_ok||length<sizeof(void*)){napi_throw_type_error(env,nullptr,"Expected a native window handle");return nullptr;}
   const std::string mode=str(env,argv[1]),tint=str(env,argv[2]);double radius=18;napi_get_value_double(env,argv[3],&radius);
+  // Liquid Glass amount (0.49, Settings → Appearance): 0 is Clear, 1 is Tinted, 0.5 the regular glass of earlier builds.
+  double amount=0.5;if(argc>4)napi_get_value_double(env,argv[4],&amount);if(!(amount>=0&&amount<=1))amount=0.5;
   NSView* root=(__bridge NSView*)(*reinterpret_cast<void**>(bytes));__block NSString* result=@"Solid";
   void (^apply)(void)=^{
     NSView* current=objc_getAssociatedObject(root,&associatedGlass);
@@ -18,9 +20,18 @@ static napi_value Configure(napi_env env,napi_callback_info info){
         NSGlassEffectView* glass;
         if([current isKindOfClass:[NSGlassEffectView class]])glass=(NSGlassEffectView*)current;
         else{[current removeFromSuperview];glass=[[NSGlassEffectView alloc] initWithFrame:root.bounds];glass.autoresizingMask=NSViewWidthSizable|NSViewHeightSizable;[root addSubview:glass positioned:NSWindowBelow relativeTo:nil];objc_setAssociatedObject(root,&associatedGlass,glass,OBJC_ASSOCIATION_RETAIN_NONATOMIC);}
-        glass.style=mode=="clear"?NSGlassEffectViewStyleClear:NSGlassEffectViewStyleRegular;
+        // Below a fifth the glass is Apple's clear style; above, regular glass. Up to the middle a faint accent tint
+        // grows to the 0.12 of earlier builds; from there the tint moves towards the window colour (light or dark) and
+        // grows to 0.6, so Tinted reads like frosted glass that keeps text calm over busy pages.
+        const double a=mode=="clear"?0:amount;
+        glass.style=a<0.2?NSGlassEffectViewStyleClear:NSGlassEffectViewStyleRegular;
         glass.cornerRadius=radius;unsigned rgb=0;NSString* hex=[NSString stringWithUTF8String:tint.c_str()];[[NSScanner scannerWithString:[hex stringByReplacingOccurrencesOfString:@"#" withString:@""]] scanHexInt:&rgb];
-        glass.tintColor=[NSColor colorWithSRGBRed:((rgb>>16)&255)/255.0 green:((rgb>>8)&255)/255.0 blue:(rgb&255)/255.0 alpha:0.12];
+        NSColor* accent=[NSColor colorWithSRGBRed:((rgb>>16)&255)/255.0 green:((rgb>>8)&255)/255.0 blue:(rgb&255)/255.0 alpha:1];
+        const double more=a>0.5?(a-0.5)/0.5:0;const CGFloat alpha=a<=0.5?0.03+0.09*(a/0.5):0.12+0.48*more;
+        glass.tintColor=[NSColor colorWithName:nil dynamicProvider:^NSColor*(NSAppearance* appearance){
+          BOOL dark=[[appearance bestMatchFromAppearancesWithNames:@[NSAppearanceNameAqua,NSAppearanceNameDarkAqua]] isEqualToString:NSAppearanceNameDarkAqua];
+          NSColor* base=dark?[NSColor colorWithSRGBRed:0.11 green:0.115 blue:0.13 alpha:1]:[NSColor colorWithSRGBRed:0.965 green:0.97 blue:0.975 alpha:1];
+          NSColor* mixed=[accent blendedColorWithFraction:more*0.8 ofColor:base];return [(mixed?mixed:accent) colorWithAlphaComponent:alpha];}];
         result=@"Native Liquid Glass";return;
       }
     }

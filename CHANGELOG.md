@@ -2,6 +2,62 @@
 
 All notable changes to Prism, newest first. Downloads are on the [Releases page](https://github.com/batuarchv/Prism-Browser/releases).
 
+## 0.50.0 — Right-click everywhere, tab groups and Moving from Arc
+
+### New
+- **Prism saves your passwords.** After you sign in, a Liquid Glass panel offers to save the login. You can change the username or password first, update a changed one, or choose Never for This Site. It now works with sign-in buttons, Return and two-step sign-ins, not only plain forms.
+- **Tab groups.** Hold a tab over another tab and they become a group with a small header that folds. Right-click a tab for Add to New Group, or the header to rename, ungroup or close the group.
+- **Right-click on the sidebar and the new tab page.** New tab, reopen closed tab, new folder, organize or close tabs, address bar position, Clear view, favorites style and more.
+- **Fill Password in the right-click menu.** Sign-in fields list the saved accounts for the site, suggest a strong password and open Passwords.
+- **Save As asks where.** Save Link, Image and Media As… open the save window. Regular downloads still go straight to Downloads.
+- **Download animation.** A new download flies into the Downloads button, which dips as it lands.
+- **Close button on pinned tabs.** An open pinned tab always shows its close button on the right; the pin stays. A closed one offers − to remove it.
+- **Moving from Arc.** Help → Moving from Arc… imports Arc, brings your Google sign-in, makes Prism the default browser and shows where Arc's features live.
+- **Quick Look in Downloads.** Select a finished file and press Space.
+- **Beam is Liquid Glass.** The Liquid Glass slider in Settings now tints Beam too.
+
+### Fixes
+- **One swipe, one page.** A swipe never goes back two pages: the rest of the movement and its momentum are ignored after a swipe lands.
+
+### Install notes
+This beta is **ad-hoc signed and not notarized by Apple**. Apple Silicon (arm64) only.
+
+## 0.49.1 — Release notes, up to date
+
+### New
+- **Release notes are complete again.** Help → Release Notes (and the link in What's New) stopped at 0.41.0. They now list every release up to this one, and each new release adds itself automatically.
+
+### Install notes
+This beta is **ad-hoc signed and not notarized by Apple**. Apple Silicon (arm64) only.
+
+## 0.49.0 — Liquid Glass slider and a smarter Spectrum
+
+### New
+- **Liquid Glass, your way.** Settings → Appearance has a Liquid Glass slider, from Clear to Tinted, like the one in macOS. It changes every glass surface in Prism at once: the window and sidebar, Settings and the other popovers, and Lens. Move it and you see the change right away.
+- **Spectrum at a glance.** Click the band at the foot of the sidebar to see your day: the time so far and how it compares with your usual day by this hour, minutes per hour with your usual hours behind them, and what the time went to.
+- **Insights in Spectrum.** Up to three short notes about your day: your pace against your usual day, your longest stretch of focus, what's up compared with usual, a busy, scattered hour and your busiest hour.
+- **Your week in Spectrum.** The last seven days as small bars, with your daily average. Each finished day keeps only minutes per hour and per kind of site on this Mac, never sites, pages or titles.
+- **Clearer chapters.** Each chapter shows its time range and length; hovering the band also shows today's total.
+
+### Install notes
+This beta is **ad-hoc signed and not notarized by Apple**. Apple Silicon (arm64) only.
+
+## 0.48.0 — Never sleep this tab
+
+### New
+- **Never sleep this tab.** Right-click any tab and choose Never sleep this tab, or press ⌥⌘A for the tab you're on. That tab then stays awake for good: idle sleep, the awake-tab limit, low memory, battery saving and Tidy all leave it alone, and it stays that way after you restart Prism. A small sun on the tab shows it never sleeps. It's also in File → Never Sleep This Tab, in Beam, and on the moon button in the toolbar.
+
+### Install notes
+This beta is **ad-hoc signed and not notarized by Apple**. Apple Silicon (arm64) only.
+
+## 0.47.3 — Google sign-in
+
+### New
+- **Bring your Google sign-in.** Google doesn't allow signing in inside browsers built on Electron, like Prism, and shows "Couldn't sign you in". When that happens, Prism now offers to bring over the Google sign-in you already have in Arc, Chrome or another Chromium browser on this Mac, or to open Google in Safari. You can also do it any time from File → Import From → Google Sign-in…. Only Google's sign-in is copied, after macOS asks, and nothing in the other browser changes.
+
+### Install notes
+This beta is **ad-hoc signed and not notarized by Apple**. Apple Silicon (arm64) only.
+
 ## 0.47.2 — A calmer Imports
 
 ### New
