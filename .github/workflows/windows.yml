@@ -24,8 +24,11 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
+      # The Mac build uses pnpm; here npm installs a flat node_modules, and electron-builder would otherwise see
+      # pnpm-lock.yaml and look for pnpm.
       - name: Install dependencies
-        run: npm install --no-audit --no-fund
+        shell: bash
+        run: rm -f pnpm-lock.yaml && npm install --no-audit --no-fund
       - name: Install electron-builder
         run: npm install --no-save --no-audit --no-fund electron-builder@26.0.12
       - name: Unpack the Electron binary (for its licence notices)
