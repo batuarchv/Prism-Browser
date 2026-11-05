@@ -3,7 +3,7 @@
 // `npm install --no-save electron-builder`. The Mac-only helpers in src/native (Liquid Glass, Apple Intelligence,
 // the tpws bypass) are left out; the app falls back to solid surfaces and a direct connection without them.
 // Output: dist/windows/Prism-<version>-Windows-x64-Setup.exe
-const path=require('node:path');
+const path=require('node:path'),fs=require('node:fs');
 require('./prepare-extensions.cjs');
 (async()=>{
  const root=path.resolve(__dirname,'..');const {build,Platform}=require('electron-builder');
@@ -13,7 +13,8 @@ require('./prepare-extensions.cjs');
   directories:{output:'dist/windows',buildResources:'scripts/windows'},
   asar:false,npmRebuild:false,
   files:['package.json','src/**/*','!src/native/**','assets/**/*','!assets/Prism.iconset/**','!assets/Prism.icon/**','!assets/*.icns','!assets/blocker/lists/**','!assets/blocker/*.txt','LICENSE','THIRD-PARTY-NOTICES.md','CHANGELOG.md','!**/*.map','!**/*.d.ts'],
-  extraResources:[{from:path.join(electronDist,'LICENSE'),to:'ELECTRON-LICENSE'},{from:path.join(electronDist,'LICENSES.chromium.html'),to:'LICENSES.chromium.html'}],
+  // Electron's and Chromium's licence notices, when the electron package has its binary unpacked locally.
+  extraResources:[['LICENSE','ELECTRON-LICENSE'],['LICENSES.chromium.html','LICENSES.chromium.html']].filter(([from])=>fs.existsSync(path.join(electronDist,from))).map(([from,to])=>({from:path.join(electronDist,from),to})),
   win:{target:[{target:'nsis',arch:['x64']}],icon:'assets/Prism.ico',artifactName:'Prism-${version}-Windows-x64-Setup.${ext}',executableName:'Prism'},
   nsis:{oneClick:false,perMachine:false,allowToChangeInstallationDirectory:true,createDesktopShortcut:true,createStartMenuShortcut:true,shortcutName:'Prism',installerIcon:'assets/Prism.ico',uninstallerIcon:'assets/Prism.ico',include:'scripts/windows/installer.nsh',deleteAppDataOnUninstall:false,license:'LICENSE'}
  }});

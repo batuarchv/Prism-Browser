@@ -28,6 +28,9 @@ jobs:
         run: npm install --no-audit --no-fund
       - name: Install electron-builder
         run: npm install --no-save --no-audit --no-fund electron-builder@26.0.12
+      - name: Unpack the Electron binary (for its licence notices)
+        run: npx --no-install install-electron --no
+        continue-on-error: true
       - name: Unit tests
         run: node --test test/default-browser.test.cjs test/window-look.test.cjs
       - name: Build installer
