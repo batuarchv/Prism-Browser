@@ -9,7 +9,7 @@ function createSavePrompt({BrowserWindow,ipcMain,parent,area,glass=()=>'none',ti
  function place(){if(!host||host.isDestroyed())return;const w=parent();if(!w||w.isDestroyed())return;const c=w.getContentBounds(),a=area()||{x:0,y:0,width:c.width,height:c.height};
   const x=c.x+Math.max(8,Math.round(a.x+a.width-WIDTH-12)),y=c.y+Math.round(a.y+10);host.setBounds({x,y,width:WIDTH,height});}
  function create(){
-  host=new BrowserWindow({parent:parent(),show:false,frame:false,transparent:true,backgroundColor:'#00000000',hasShadow:true,resizable:false,movable:false,minimizable:false,maximizable:false,fullscreenable:false,skipTaskbar:true,hiddenInMissionControl:true,roundedCorners:true,acceptFirstMouse:true,focusable:true,width:WIDTH,height,...(process.platform==='darwin'?{type:'panel'}:{}),
+  host=new BrowserWindow({parent:parent(),show:false,frame:false,...require('./window-look.cjs').windowLook(),hasShadow:true,resizable:false,movable:false,minimizable:false,maximizable:false,fullscreenable:false,skipTaskbar:true,hiddenInMissionControl:true,roundedCorners:true,acceptFirstMouse:true,focusable:true,width:WIDTH,height,...(process.platform==='darwin'?{type:'panel'}:{}),
    webPreferences:{preload:path.join(__dirname,'password-save-preload.cjs'),sandbox:true,contextIsolation:true,nodeIntegration:false}});
   host.setAlwaysOnTop(false);host.webContents.setWindowOpenHandler(()=>({action:'deny'}));host.webContents.on('will-navigate',e=>e.preventDefault());
   host.on('closed',()=>{host=null;ready=null;if(current){const c=current;current=null;c.resolve({action:'dismiss'});}});

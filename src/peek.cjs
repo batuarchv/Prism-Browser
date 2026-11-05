@@ -34,7 +34,7 @@ function createPeek({BrowserWindow,WebContentsView,screen,parent,pageArea,webPre
   const work=screen.getDisplayMatching(l.win.getBounds()).workArea,to=windowBounds(work,savedBounds(),windows.size-1);l.win.setBounds(to,!reduceMotion());setTimeout(()=>place(l),220);state(l);l.win.focus();return l;}
  function make(kind,space,bounds,url){
   const owner=parent();
-  const win=new BrowserWindow({...(kind==='peek'&&owner?{parent:owner}:{}),...bounds,show:false,frame:false,transparent:true,backgroundColor:'#00000000',vibrancy:'popover',visualEffectState:'active',roundedCorners:true,hasShadow:true,resizable:kind==='window',movable:kind==='window',minimizable:kind==='window',maximizable:false,fullscreenable:false,skipTaskbar:kind==='peek',minWidth:360,minHeight:300,webPreferences:{preload:surfaces.preload,sandbox:true,contextIsolation:true,nodeIntegration:false}});
+  const win=new BrowserWindow({...(kind==='peek'&&owner?{parent:owner}:{}),...bounds,show:false,frame:false,...require('./window-look.cjs').windowLook(),vibrancy:'popover',visualEffectState:'active',roundedCorners:true,hasShadow:true,resizable:kind==='window',movable:kind==='window',minimizable:kind==='window',maximizable:false,fullscreenable:false,skipTaskbar:kind==='peek',minWidth:360,minHeight:300,webPreferences:{preload:surfaces.preload,sandbox:true,contextIsolation:true,nodeIntegration:false}});
   const view=new WebContentsView({webPreferences:webPreferences(space)});view.setBorderRadius(10);view.setBackgroundColor('#ffffff');win.contentView.addChildView(view);
   const l={kind,win,view,space,icon:''};place(l);glass(win);
   surfaces.register(win.webContents,{command:(name,value)=>{if(!all().includes(l))return;const nav=view.webContents.navigationHistory;

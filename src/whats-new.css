@@ -32,3 +32,7 @@ h1{font-size:22px;font-weight:700;letter-spacing:-.01em;margin:4px 0 2px}
 #wn-notes:hover{text-decoration:underline}
 .sequence .wn-actions{opacity:0;transform:translateY(8px)}
 .sequence.revealed .wn-actions{opacity:1;transform:none;transition:opacity 380ms cubic-bezier(.2,.7,.2,1) 300ms,transform 420ms cubic-bezier(.2,.8,.25,1) 300ms}
+
+/* Windows and Linux (Windows build, platform.js): no glass behind the window, so the surface is solid. */
+html:not([data-platform=mac]),html:not([data-platform=mac]) body{background:#f6f6f7}
+@media (prefers-color-scheme:dark){html:not([data-platform=mac]),html:not([data-platform=mac]) body{background:#1f1f1f}}

@@ -92,3 +92,7 @@ body.enter .command-field,body.enter #command-list{animation:commandIn .18s cubi
 .pip[data-stashed=right] .pip-stash{left:0;border-radius:12px 0 0 12px}.pip[data-stashed=left] .pip-stash{right:0;border-radius:0 12px 12px 0}
 .pip[data-stashed=right] .pip-stash::after{content:'‹'}.pip[data-stashed=left] .pip-stash::after{content:'›'}
 .pip[data-stashed] .pip-scrim,.pip[data-stashed] .pip-top,.pip[data-stashed] .pip-center,.pip[data-stashed] .pip-bottom{opacity:0!important;pointer-events:none}
+
+/* Windows and Linux (Windows build, platform.js): no glass behind the window, so the surface is solid. */
+html:not([data-platform=mac]),html:not([data-platform=mac]) body{background:#f6f6f7}
+@media (prefers-color-scheme:dark){html:not([data-platform=mac]),html:not([data-platform=mac]) body{background:#1f1f1f}}

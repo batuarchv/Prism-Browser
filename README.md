@@ -6,10 +6,11 @@
   **A liquid-glass Chromium browser for macOS, while keeping memory usage down.**
 
   <a href="https://github.com/batuarchv/Prism-Browser/releases/latest"><b>⬇︎ Download for Mac</b></a>
+  &nbsp;·&nbsp; <a href="https://github.com/batuarchv/Prism-Browser/releases/latest"><b>Download for Windows</b></a>
   &nbsp;·&nbsp; <a href="https://batuarchv.github.io/Prism-Browser/">Website</a>
   &nbsp;·&nbsp; <a href="CHANGELOG.md">What's new</a>
 
-  <sub>Apple Silicon · macOS · free and open source (GPL-3.0)</sub>
+  <sub>macOS on Apple Silicon · Windows 10 and 11 (x64) · free and open source (GPL-3.0)</sub>
 </div>
 
 <p align="center">
@@ -47,6 +48,14 @@ Prism is a personal browser project built on Electron and Chromium. Tabs live in
    Prism is not notarized by Apple yet, so macOS can't verify the developer and blocks a normal double-click the first time.
 
 Prism needs an Apple Silicon Mac. Updates after that are automatic (Settings → Updates).
+
+### Windows
+
+1. Download **Prism-x.y.z-Windows-x64-Setup.exe** from the [releases](https://github.com/batuarchv/Prism-Browser/releases).
+2. Run it. Prism isn't code-signed yet, so Windows SmartScreen may say it protected your PC: choose **More info → Run anyway**.
+3. To make Prism your default browser, open **Settings → Default apps → Prism** in Windows (Prism's own setup button takes you there).
+
+The Windows build uses solid surfaces instead of Liquid Glass and leaves out the Mac-only parts: Touch ID (Prism asks you to confirm instead), Apple Intelligence, web apps in the Dock, the censorship bypass helper and importing from Safari or the Mac Keychain. It doesn't update itself yet; download the newer installer from the releases page.
 
 ## Build from source
 
