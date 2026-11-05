@@ -50,7 +50,7 @@ function createCommandBar({BrowserWindow,parent,surfaces,entries,run,look,decora
  function destroy(){clearTimeout(idle);const c=current;current=null;if(c&&!c.win.isDestroyed())c.win.destroy();}
  function hide(){if(!current||current.win.isDestroyed())return;current.visible=false;current.win.hide();surfaces.send(current.win.webContents,{type:'reset'});clearTimeout(idle);idle=setTimeout(destroy,KEEP_WARM_MS);idle.unref?.();}
  function create(){
-  const win=new BrowserWindow({parent:parent(),...bounds(64),show:false,frame:false,transparent:true,backgroundColor:'#00000000',vibrancy:'popover',visualEffectState:'active',roundedCorners:true,hasShadow:true,resizable:false,movable:false,minimizable:false,maximizable:false,fullscreenable:false,skipTaskbar:true,webPreferences:{preload:surfaces.preload,sandbox:true,contextIsolation:true,nodeIntegration:false}});
+  const win=new BrowserWindow({parent:parent(),...bounds(64),show:false,frame:false,...require('./window-look.cjs').windowLook(),vibrancy:'popover',visualEffectState:'active',roundedCorners:true,hasShadow:true,resizable:false,movable:false,minimizable:false,maximizable:false,fullscreenable:false,skipTaskbar:true,webPreferences:{preload:surfaces.preload,sandbox:true,contextIsolation:true,nodeIntegration:false}});
   // 0.50: Beam sits on the same native Liquid Glass as Lens and the popovers, so the Settings slider tints it too.
   const record={win,visible:false,ready:null};current=record;decorate(win.webContents);try{glass(win);}catch{}
   surfaces.register(win.webContents,{

@@ -1,0 +1,66 @@
+# Prism for Windows: builds the x64 installer on a Windows runner.
+# - Every push to a branch that changes the app, and every pull request, builds it and keeps it as a workflow artifact.
+# - Run it by hand with a release tag (Actions → Windows build → Run workflow) to attach the installer to that
+#   GitHub release, replacing an older Windows installer there.
+name: Windows build
+on:
+  push:
+    paths: ['src/**', 'assets/**', 'scripts/package-windows.cjs', 'scripts/windows/**', 'package.json', '.github/workflows/windows.yml']
+  pull_request:
+    paths: ['src/**', 'assets/**', 'scripts/package-windows.cjs', 'scripts/windows/**', 'package.json', '.github/workflows/windows.yml']
+  workflow_dispatch:
+    inputs:
+      release_tag:
+        description: 'Release tag to attach the installer to (for example v0.50.0). Leave empty to only build.'
+        required: false
+        default: ''
+permissions:
+  contents: write
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Install dependencies
+        run: npm install --no-audit --no-fund
+      - name: Install electron-builder
+        run: npm install --no-save --no-audit --no-fund electron-builder@26.0.12
+      - name: Unit tests
+        run: node --test test/default-browser.test.cjs test/window-look.test.cjs
+      - name: Build installer
+        run: node scripts/package-windows.cjs
+      - name: Start the packaged app and take a screenshot
+        shell: pwsh
+        run: |
+          $p = Start-Process -FilePath 'dist/windows/win-unpacked/Prism.exe' -PassThru
+          Start-Sleep -Seconds 25
+          if ($p.HasExited) { Write-Error "Prism quit on its own with code $($p.ExitCode)"; exit 1 }
+          try {
+            Add-Type -AssemblyName System.Windows.Forms,System.Drawing
+            $b = [System.Windows.Forms.Screen]::PrimaryScreen.Bounds
+            $bmp = New-Object System.Drawing.Bitmap $b.Width, $b.Height
+            [System.Drawing.Graphics]::FromImage($bmp).CopyFromScreen($b.Location, [System.Drawing.Point]::Empty, $b.Size)
+            New-Item -ItemType Directory -Force -Path dist/check | Out-Null
+            $bmp.Save('dist/check/prism-windows.png')
+          } catch { Write-Warning "Screenshot failed: $_" }
+          Stop-Process -Id $p.Id -Force
+          Write-Output 'Prism stayed up for 25 seconds.'
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Prism-Windows-screenshot
+          path: dist/check/
+          if-no-files-found: ignore
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Prism-Windows-x64
+          path: dist/windows/*.exe
+          if-no-files-found: error
+      - name: Attach to release
+        if: github.event_name == 'workflow_dispatch' && inputs.release_tag != ''
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh release upload "${{ inputs.release_tag }}" dist/windows/*.exe --clobber --repo "${{ github.repository }}"
