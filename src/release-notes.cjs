@@ -31,7 +31,10 @@ h2{margin:6px 0 4px;font-size:24px;letter-spacing:-.01em;line-height:1.25}h3{mar
 ul{margin:0;padding-left:20px}li{margin:6px 0}li strong{font-weight:600}code{font:13px ui-monospace,Menlo,monospace;padding:1px 5px;border-radius:5px;background:#8881}
 footer{text-align:center;color:var(--muted);font-size:13px;padding-bottom:40px}
 </style></head><body><div class="hero">${logo?`<img src="${logo}" alt="">`:''}<h1>What’s new in Prism</h1><p>Everything since Prism ${BASE}, newest first. You have Prism ${esc(version)}.</p></div><main>${cards}</main><footer>Prism is free software under the GPL-3.0.</footer></body></html>`;}
-function register(session,{root,version}){
- session.protocol.handle('prism-notes',()=>{let markdown='',logo='';try{markdown=fs.readFileSync(path.join(root,'CHANGELOG.md'),'utf8');}catch{}try{logo='data:image/png;base64,'+fs.readFileSync(path.join(root,'assets','prism-glass.png')).toString('base64');}catch{}
+// 0.50: prism-notes://arc is the Moving from Arc page; prism-notes://do/<command> runs one of its buttons.
+function register(session,{root,version,run=()=>{},t=k=>k}){
+ session.protocol.handle('prism-notes',request=>{let host='';try{host=new URL(request.url).host;}catch{}
+  if(host==='do'){const cmd=new URL(request.url).pathname.replace(/^\//,'');if(require('./arc-move.cjs').COMMANDS.includes(cmd))setImmediate(()=>run(cmd));return new Response(null,{status:204});}
+  if(host==='arc'){let logo='';try{logo='data:image/png;base64,'+fs.readFileSync(path.join(root,'assets','prism-glass.png')).toString('base64');}catch{}return new Response(require('./arc-move.cjs').render({logo,t}),{headers:{'content-type':'text/html; charset=utf-8'}});}let markdown='',logo='';try{markdown=fs.readFileSync(path.join(root,'CHANGELOG.md'),'utf8');}catch{}try{logo='data:image/png;base64,'+fs.readFileSync(path.join(root,'assets','prism-glass.png')).toString('base64');}catch{}
   return new Response(render({markdown,logo,version}),{headers:{'content-type':'text/html; charset=utf-8'}});});}
 module.exports={register,render,parse,URL:'prism-notes://release'};

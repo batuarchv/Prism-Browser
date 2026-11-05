@@ -32,6 +32,7 @@ function tabRecord(tab){
  const safe=tab.url===''?'':url(tab.url);if(safe===null)return null;
  const record={customTitle:text(tab.customTitle).slice(0,200),url:safe,title:text(tab.title)||'New tab',space:tab.space||'personal',pinned:!!tab.pinned,keepAwake:!!tab.keepAwake};
  if(Number.isFinite(tab.lastUsed))record.lastUsed=Math.round(tab.lastUsed);
+ if(typeof tab.group==='string'&&/^g[0-9a-z]{1,24}$/.test(tab.group)&&!record.pinned){record.group=tab.group;record.groupName=text(tab.groupName).slice(0,60)||'Group';}
  if(typeof tab.favoriteId==='string'&&tab.favoriteId.length<=500)record.favoriteId=tab.favoriteId;
  if(record.pinned){const home=url(tab.home);if(home)record.home=home;if(tab.homeTitle)record.homeTitle=text(tab.homeTitle).slice(0,200);if(tab.parked)record.parked=true;}
  const source=tab.recovery||tab;

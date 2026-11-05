@@ -6,7 +6,7 @@ const fs=require('node:fs'),path=require('node:path'),{execFileSync}=require('no
 const {digest,verifyManifest,feedDirectory}=require('../src/local-updater.cjs'),config=require('../src/local-update-config.json'),{repositoryOf}=require('../src/github-update-source.cjs');
 (async()=>{
  const version=require('../package.json').version,repo=repositoryOf(config.github?.repository);if(!repo)throw Error('Set github.repository in src/local-update-config.json first.');
- const file=`Prism-Electron-${version}.zip`,archive=path.resolve(__dirname,'../..',file),manifestFile=path.join(feedDirectory(config.directory),'latest.json'),notes=path.resolve(__dirname,'..',`RELEASE-${version}.md`);
+ const file=`Prism-Electron-${version}.zip`,archive=path.resolve(__dirname,'../..',file),manifestFile=path.join(feedDirectory(config.directory),'latest.json'),notes=[`GITHUB-RELEASE-${version}.md`,`RELEASE-${version}.md`].map(f=>path.resolve(__dirname,'..',f)).find(f=>fs.existsSync(f))||'';
  // Upload exactly what the local feed published, after re-checking it against the pinned key.
  const envelope=JSON.parse(fs.readFileSync(manifestFile,'utf8')),m=verifyManifest(envelope,config.publicKey,'0.0.0');
  if(!m||m.version!==version||m.file!==file||fs.statSync(archive).size!==m.size||await digest(archive)!==m.sha256)throw Error('Signed manifest does not match the archive for '+version+'.');

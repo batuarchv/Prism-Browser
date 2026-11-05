@@ -1,0 +1,11 @@
+const test=require('node:test'),assert=require('node:assert/strict');const g=require('../src/tab-groups.cjs');
+const tabs=()=>[1,2,3,4].map(id=>({id,space:'personal',url:`https://www.site${id}.com/x`,group:'',groupName:''}));
+let n=0;const makeId=()=>'g'+(++n);
+test('dropping a tab on another makes a group named after the site, and puts them together',()=>{const t=tabs();const out=g.join(t,4,1,{makeId});
+ assert.deepEqual(out.map(x=>x.id),[1,4,2,3]);assert.equal(out[0].group,out[1].group);assert.equal(out[0].groupName,'Site1');assert.equal(out[2].group,'');});
+test('a third tab joins at the end of the group; leaving puts it after the group',()=>{let t=g.join(tabs(),3,1,{makeId});t=g.join(t,4,3,{makeId});
+ assert.deepEqual(t.map(x=>x.id),[1,3,4,2]);t=g.leave(t,1);assert.deepEqual(t.map(x=>[x.id,!!x.group]),[[3,true],[4,true],[1,false],[2,false]]);});
+test('a member dragged away from its group leaves it; rename and ungroup reach every member',()=>{let t=g.join(tabs(),2,1,{makeId});const id=t[0].group;
+ assert.ok(g.rename(t,id,'  Work '));assert.ok(t.filter(x=>x.group===id).every(x=>x.groupName==='Work'));
+ t=[t[0],t[2],t[1],t[3]];g.normalize(t);assert.equal(t[2].group,'');g.ungroup(t,id);assert.ok(t.every(x=>!x.group));});
+test('pinned tabs, favorites and other spaces never join',()=>{const t=tabs();t[1].pinned=true;assert.equal(g.join(t,2,1,{makeId}),null);t[2].space='work';assert.equal(g.join(t,3,1,{makeId}),null);});

@@ -1,17 +1,25 @@
 const {ipcRenderer}=require('electron');
 // No bridge is exposed to websites. Only user-submitted HTTPS forms qualify, on the page or in a sign-in frame (Apple
 // Account's form lives in a frame from idmsa.apple.com); the login is saved for that frame's own origin.
-{addEventListener('submit',event=>{
- if(!event.isTrusted||location.protocol!=='https:'||!(event.target instanceof HTMLFormElement))return;
- const form=event.target;const visible=el=>el.getClientRects().length&&!el.disabled;
- if(new URL(form.action||location.href,location.href).origin!==location.origin)return;
- const passwords=[...form.querySelectorAll('input[type="password"]')].filter(visible);
- if(passwords.length!==1||passwords[0].autocomplete==='new-password'||!passwords[0].value)return;
- const preferred=[...form.querySelectorAll('input[autocomplete="username"],input[type="email"]')].filter(visible);
- const users=preferred.length?preferred:[...form.querySelectorAll('input[type="text"],input:not([type])')].filter(visible);
- if(users.length>1)return;const username=users[0];
- ipcRenderer.send('prism-login-submitted',{origin:location.origin,username:username?.value||'',password:passwords[0].value});
-},true);}
+{const visible=el=>!!el.getClientRects().length&&!el.disabled&&getComputedStyle(el).visibility!=='hidden';
+ // A sign-in counts when the form is submitted, or (0.50) when Return is pressed in it or its sign-in button is clicked:
+ // many sites sign in with script and never fire submit. A step that only asks for the username (Google, Apple) is
+ // remembered by Prism for the password step that follows.
+ const scopeOf=el=>el?.closest?.('form')||document;let last='',lastAt=0;
+ function capture(scope,trusted){if(!trusted||location.protocol!=='https:')return;
+  if(scope instanceof HTMLFormElement&&new URL(scope.action||location.href,location.href).origin!==location.origin)return;
+  const passwords=[...scope.querySelectorAll('input[type="password"]')].filter(visible);
+  const preferred=[...scope.querySelectorAll('input[autocomplete~="username"],input[autocomplete~="email"],input[type="email"]')].filter(visible);
+  const users=preferred.length?preferred:[...scope.querySelectorAll('input[type="text"],input:not([type])')].filter(visible).filter(e=>!/search|query|code|otp/i.test(e.name+' '+e.id+' '+e.placeholder));
+  if(!passwords.length){if(preferred.length===1&&preferred[0].value&&preferred[0].value.length<=320)ipcRenderer.send('prism-login-username',{origin:location.origin,username:preferred[0].value});return;}
+  if(passwords.length!==1||/new-password|one-time-code/.test(passwords[0].autocomplete)||!passwords[0].value)return;
+  if(users.length>1)return;const username=users[0];const key=(username?.value||'')+'\n'+passwords[0].value;if(key===last&&Date.now()-lastAt<3000)return;last=key;lastAt=Date.now();
+  ipcRenderer.send('prism-login-submitted',{origin:location.origin,username:username?.value||'',password:passwords[0].value});}
+ addEventListener('submit',event=>{if(event.target instanceof HTMLFormElement)capture(event.target,event.isTrusted);},true);
+ addEventListener('keydown',event=>{if(event.key!=='Enter'||!(event.target instanceof HTMLInputElement))return;const t=event.target;if(t.type==='password'||/email|text|^$/.test(t.type)&&scopeOf(t).querySelector('input[type="password"],input[autocomplete~="username"],input[type="email"]'))capture(scopeOf(t),event.isTrusted);},true);
+ addEventListener('click',event=>{const b=event.target?.closest?.('button,input[type="submit"],input[type="button"],[role="button"]');if(!b||b.type==='reset')return;const scope=scopeOf(b);if(!scope.querySelector('input[type="password"],input[autocomplete~="username"],input[type="email"]'))return;
+  // Outside a form, only a button that reads like signing in or going on counts (not "show password" and such).
+  if(scope===document&&!/sign|log|continue|next|submit|giriş|devam|ileri|oturum|connex|entrar|iniciar|weiter|увійти|далі/i.test((b.textContent||b.value||b.getAttribute('aria-label')||'').trim()))return;capture(scope,event.isTrusted);},true);}
 // Focus suggestions are requested only following a real pointer/keyboard interaction.
 // Websites receive no account metadata and have no IPC bridge.
 if(process.isMainFrame){

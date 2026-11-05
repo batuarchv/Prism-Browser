@@ -4,12 +4,23 @@
 // had open then. Clicking opens the day in a glass card with a rainbow edge: a line about the day, its chapters (named
 // by the AI chosen in Settings, or by what their sites are for) and the sites you usually open now. Choosing a chapter
 // shows its tabs and brings them back. A click anywhere else, Esc, or leaving the window closes it.
+// 0.49: the card opens with the day at a glance: the time so far against your usual day by now, minutes per hour with
+// your usual hours behind them, what the time went to, up to three plain notes (pace, longest focus, what is up, busy
+// switching, the busiest hour) and the last seven days. Chapters show their times, length and sites. The hover glance
+// over the band also gives today's total.
 (()=>{if(toolMode)return;
  const t=key=>window.prismLocale?.t?.(key)||key;
  const root=document.createElement('div');root.id='spectrum';root.hidden=true;
- root.innerHTML='<div class="spectrum-glance" aria-hidden="true" hidden><div class="spectrum-glance-head"><strong></strong><small></small></div><div class="spectrum-glance-tabs"></div></div>'
+ root.innerHTML='<div class="spectrum-glance" aria-hidden="true" hidden><div class="spectrum-glance-head"><strong></strong><small></small></div><div class="spectrum-glance-tabs"></div><div class="spectrum-glance-foot"></div></div>'
   +'<div class="spectrum-band" role="slider" tabindex="0" aria-label="Spectrum" aria-valuemin="0" aria-valuemax="100"><div class="spectrum-track"></div><div class="spectrum-cursor"></div></div>'
-  +'<div class="spectrum-card" role="dialog" aria-label="Spectrum" hidden><div class="spectrum-card-head"><strong class="spectrum-day"></strong><small class="spectrum-total"></small><button type="button" class="spectrum-scope" aria-pressed="false"></button></div><p class="spectrum-summary"></p><div class="spectrum-chapters" role="list"></div><div class="spectrum-usual" hidden></div></div>';
+  +'<div class="spectrum-card" role="dialog" aria-label="Spectrum" hidden><div class="spectrum-card-head"><strong class="spectrum-day"></strong><button type="button" class="spectrum-scope" aria-pressed="false"></button></div>'
+  +'<div class="spectrum-hero"><span class="spectrum-total"></span><span class="spectrum-pace" hidden></span></div><p class="spectrum-summary"></p>'
+  +'<div class="spectrum-hours" role="img"><div class="spectrum-hour-bars"></div><div class="spectrum-hour-axis"></div></div>'
+  +'<div class="spectrum-mix"><div class="spectrum-mix-bar"></div><div class="spectrum-mix-legend"></div></div>'
+  +'<div class="spectrum-notes" role="list"></div>'
+  +'<div class="spectrum-label spectrum-chapters-label"></div><div class="spectrum-chapters" role="list"></div>'
+  +'<div class="spectrum-usual" hidden><div class="spectrum-label"></div><div class="spectrum-chips"></div></div>'
+  +'<div class="spectrum-week" hidden><div class="spectrum-week-head"><span class="spectrum-label"></span><small></small></div><div class="spectrum-week-bars"></div></div></div>';
  document.querySelector('#sidebar .sidebar-bottom').prepend(root);
  const $s=sel=>root.querySelector(sel),band=$s('.spectrum-band'),track=$s('.spectrum-track'),cursor=$s('.spectrum-cursor'),glance=$s('.spectrum-glance'),card=$s('.spectrum-card');
  // 0.39.1: Spectrum follows the space you are in; the card's All usage button shows every space together.
@@ -46,18 +57,50 @@
  let glanceFor=0;
  async function point(x){if(!view||!map)return;const time=timeOf(x);cursorTime=time;cursor.style.left=(x*100)+'%';const seg=view.segments.find(s=>time>=s.from&&time<=s.to),chapter=chapterAt(time);
   band.setAttribute('aria-valuenow',String(Math.round(x*100)));band.setAttribute('aria-valuetext',clock(time)+' · '+(seg?seg.host:t('Away')));
-  if(!card.hidden)return;glance.hidden=false;glance.style.setProperty('--x',(x*100)+'%');glance.querySelector('strong').textContent=clock(time);glance.querySelector('small').textContent=chapter?title(chapter):seg?seg.host:t('Away');
+  if(!card.hidden)return;glance.hidden=false;{const foot=glance.querySelector('.spectrum-glance-foot'),typical=view.glance?.typical;foot.textContent=t('Today {time}').replace('{time}',duration(view.active))+(typical&&typical.soFar>=600000?' · '+paceText(view.active-typical.soFar):'');}glance.style.setProperty('--x',(x*100)+'%');glance.querySelector('strong').textContent=clock(time);glance.querySelector('small').textContent=chapter?title(chapter):seg?seg.host:t('Away');
   const ticket=++glanceFor,moment=await momentAt(time);if(ticket!==glanceFor)return;const tabs=moment?.tabs||[],row=glance.querySelector('.spectrum-glance-tabs');
   row.replaceChildren(...tabs.slice(0,6).map(x=>{const b=badge(x.url,x.title);b.title=x.title||x.url;return b;}),...(tabs.length>6?[Object.assign(document.createElement('small'),{textContent:'+'+(tabs.length-6)})]:[]));row.hidden=!tabs.length;}
+ const lower=text=>text.toLocaleLowerCase(language);
+ const hourName=h=>{const d=new Date();d.setHours(h,0,0,0);return new Intl.DateTimeFormat(language,{hour:'numeric'}).format(d);};
+ const paceText=diff=>Math.abs(diff)<Math.max(600000,(view.glance?.typical?.soFar||0)*.15)?t('about usual'):(diff>0?'+':'−')+duration(Math.abs(diff))+' '+t('vs usual');
+ const range=(a,b)=>{const f=new Intl.DateTimeFormat(language,{hour:'numeric',minute:'2-digit'});try{return f.formatRange(a,b);}catch{return clock(a)+'–'+clock(b);}};
+ const el=(tag,cls,text)=>{const e=document.createElement(tag);if(cls)e.className=cls;if(text!=null)e.textContent=text;return e;};
+ const RANK=[100,68,44,26,14];
+ // A note as one line with a small mark; times are in milliseconds.
+ function noteOf(n){const row=el('div','spectrum-note '+n.type+(n.tone?' '+n.tone:''));row.setAttribute('role','listitem');const mark=el('span','spectrum-note-mark');mark.setAttribute('aria-hidden','true');let text='',sub='';
+  if(n.type==='pace'){mark.textContent=n.tone==='up'?'↑':n.tone==='down'?'↓':'≈';text=n.tone==='even'?t('Right at your usual pace'):(n.tone==='up'?t('{time} more than usual'):t('{time} less than usual')).replace('{time}',duration(n.time));sub=t('By this time on your last {count} days').replace('{count}',view.glance?.typical?.days||0);}
+  else if(n.type==='focus'){mark.textContent='◎';text=t('{time} focused on {activity}').replace('{time}',duration(n.time)).replace('{activity}',lower(t(KIND[n.kind]||'Browsing')));sub=(n.record?t('Longest in a while')+' · ':'')+n.host+' · '+range(n.from,n.to);}
+  else if(n.type==='kind'){mark.textContent='▲';text=t('More {activity} than usual').replace('{activity}',lower(t(KIND[n.kind]||'Browsing')));sub=(n.usual>=60000?t('{time} so far, usually {usual}'):t('{time} so far')).replace('{time}',duration(n.time)).replace('{usual}',duration(n.usual));}
+  else if(n.type==='switching'){mark.textContent='⇄';text=t('{count} site switches in the last hour').replace('{count}',n.count);sub=t('A scattered hour');}
+  else if(n.type==='peak'){mark.textContent='◆';text=t('Busiest hour: {hour}').replace('{hour}',hourName(n.hour));sub=t('{time} that hour').replace('{time}',duration(n.minutes*60000));}
+  const words=el('span','spectrum-note-text');words.append(el('strong','',text));if(sub)words.append(el('small','',sub));row.append(mark,words);return row;}
  function fillCard(){
-  {const name=state?.settings?.spaces?.find?.(x=>x.id===state.space)?.name||state?.space||'';$s('.spectrum-day').textContent=all?t('Today · all spaces'):name?t('Today')+' · '+name:t('Today');const scope=$s('.spectrum-scope');scope.textContent=all?t('This space'):t('All usage');scope.setAttribute('aria-pressed',String(all));scope.title=all?t('Show only this space'):t('Show every space together');}$s('.spectrum-total').textContent=duration(view.active);
+  {const name=state?.settings?.spaces?.find?.(x=>x.id===state.space)?.name||state?.space||'';$s('.spectrum-day').textContent=all?t('Today · all spaces'):name?t('Today')+' · '+name:t('Today');const scope=$s('.spectrum-scope');scope.textContent=all?t('This space'):t('All usage');scope.setAttribute('aria-pressed',String(all));scope.title=all?t('Show only this space'):t('Show every space together');}
+  const g=view.glance||{hours:Array(24).fill(0),kinds:[],typical:null},typical=g.typical;
+  $s('.spectrum-total').textContent=duration(view.active);
+  {const pace=$s('.spectrum-pace');pace.hidden=!(typical&&typical.soFar>=600000);if(!pace.hidden){const diff=view.active-typical.soFar,even=Math.abs(diff)<Math.max(600000,typical.soFar*.15);pace.textContent=paceText(diff);pace.className='spectrum-pace '+(even?'even':diff>0?'up':'down');pace.title=t('Your usual day by now: {time}').replace('{time}',duration(typical.soFar));}}
   const top=[...view.chapters].sort((a,b)=>b.active-a.active)[0],summary=$s('.spectrum-summary');
-  summary.textContent=view.summary||(top?(view.chapters.length>1?t('Mostly {activity}, across {count} chapters').replace('{count}',view.chapters.length):t('Mostly {activity}')).replace('{activity}',title(top).toLocaleLowerCase(language)):'');summary.classList.toggle('ai',!!view.summary);
-  $s('.spectrum-chapters').replaceChildren(...[...view.chapters].reverse().slice(0,5).map(c=>{const item=document.createElement('div');item.className='spectrum-chapter'+(chosen===c.from?' chosen':'');item.setAttribute('role','listitem');
-   const row=document.createElement('button');row.type='button';row.className='spectrum-chapter-row';const dot=document.createElement('span');dot.className='spectrum-dot';dot.style.background=`linear-gradient(135deg,${c.sites.slice(0,3).map(s=>colour(s.host)).join(',')}${c.sites.length<2?','+colour(c.sites[0]?.host||'web'):''})`;
-   const name=document.createElement('strong');name.textContent=title(c);const when=document.createElement('small');when.textContent=clock(c.from);row.append(dot,name,when);row.title=clock(c.from)+' – '+clock(c.to)+' · '+duration(c.active)+'\n'+c.sites.slice(0,4).map(s=>s.host).join(', ');
+  summary.textContent=view.summary||(top?(view.chapters.length>1?t('Mostly {activity}, across {count} chapters').replace('{count}',view.chapters.length):t('Mostly {activity}')).replace('{activity}',lower(title(top))):'');summary.classList.toggle('ai',!!view.summary);
+  // Minutes per hour, a full hour reaching the top, with your usual hour as a soft bar behind; the hour now is marked.
+  {const now=new Date(view.now).getHours(),bars=$s('.spectrum-hour-bars'),usualHours=typical?.hours||[];bars.replaceChildren(...g.hours.map((m,h)=>{const bar=el('i','spectrum-hour'+(h===now?' now':'')+(h>now?' later':''));bar.style.setProperty('--h',Math.min(1,m/60).toFixed(3));bar.style.setProperty('--u',Math.min(1,(usualHours[h]||0)/60).toFixed(3));bar.title=hourName(h)+' · '+(m>=1?duration(m*60000):t('Away'))+(usualHours[h]>=1?' · '+t('usually {time}').replace('{time}',duration(usualHours[h]*60000)):'');return bar;}));
+   $s('.spectrum-hour-axis').replaceChildren(...[0,6,12,18].map(h=>{const x=el('span','',hourName(h));x.style.left=(h/24*100)+'%';return x;}));
+   $s('.spectrum-hours').setAttribute('aria-label',t('Minutes per hour today'));}
+  // What the time went to: one bar in the accent at falling strengths, and the largest parts named.
+  {const total=g.kinds.reduce((n,k)=>n+k.ms,0)||1,mix=$s('.spectrum-mix');mix.hidden=!g.kinds.length;
+   $s('.spectrum-mix-bar').replaceChildren(...g.kinds.map((k,i)=>{const part=el('i');part.style.flexGrow=String(k.ms/total);part.style.background=`color-mix(in srgb,var(--accent) ${RANK[i]}%,transparent)`;part.title=t(KIND[k.kind]||'Browsing')+' · '+duration(k.ms);return part;}));
+   $s('.spectrum-mix-legend').replaceChildren(...g.kinds.slice(0,4).map((k,i)=>{const item=el('span','spectrum-mix-item');const dot=el('i');dot.style.background=`color-mix(in srgb,var(--accent) ${RANK[i]}%,transparent)`;item.append(dot,el('span','',t(KIND[k.kind]||'Browsing')),el('small','',duration(k.ms)),el('small','spectrum-mix-share',Math.round(k.ms/total*100)+'%'));return item;}));}
+  {const notes=$s('.spectrum-notes'),list=view.notes||[];notes.hidden=!list.length;notes.replaceChildren(...list.map(noteOf));}
+  $s('.spectrum-chapters-label').textContent=view.chapters.length>5?t('Latest chapters'):t('Chapters');
+  $s('.spectrum-chapters').replaceChildren(...[...view.chapters].reverse().slice(0,5).map(c=>{const item=el('div','spectrum-chapter'+(chosen===c.from?' chosen':''));item.setAttribute('role','listitem');
+   const row=el('button','spectrum-chapter-row');row.type='button';row.setAttribute('aria-expanded',String(chosen===c.from));const dot=el('span','spectrum-dot');dot.style.background=`linear-gradient(135deg,${c.sites.slice(0,3).map(s=>colour(s.host)).join(',')}${c.sites.length<2?','+colour(c.sites[0]?.host||'web'):''})`;
+   const words=el('span','spectrum-chapter-words');words.append(el('strong','',title(c)),el('small','',range(c.from,c.to)));
+   row.append(dot,words,el('small','spectrum-chapter-time',duration(c.active)));row.title=c.sites.slice(0,4).map(s=>s.host).join(', ');
    row.onclick=()=>{chosen=chosen===c.from?null:c.from;fillCard();};item.append(row);if(chosen===c.from)item.append(chapterTabs(c));return item;}));
-  const usual=$s('.spectrum-usual');usual.hidden=!view.usual?.length;usual.replaceChildren(...(view.usual||[]).map(u=>{const chip=document.createElement('button');chip.type='button';chip.className='spectrum-chip';chip.append(badge(u.url,u.host),Object.assign(document.createElement('span'),{textContent:u.host.replace(/^www\./,'')}));chip.title=t('You usually open around now');chip.onclick=()=>{closeCard();act('spectrum-open',{url:u.url});};return chip;}));}
+  const usual=$s('.spectrum-usual');usual.hidden=!view.usual?.length;usual.querySelector('.spectrum-label').textContent=t('Usually around now');usual.querySelector('.spectrum-chips').replaceChildren(...(view.usual||[]).map(u=>{const chip=el('button','spectrum-chip');chip.type='button';chip.append(badge(u.url,u.host),el('span','',u.host.replace(/^www\./,'')));chip.title=t('You usually open around now');chip.onclick=()=>{closeCard();act('spectrum-open',{url:u.url});};return chip;}));
+  // The last seven days, today in full accent; shown once there is an earlier day to compare with.
+  {const week=$s('.spectrum-week'),days=view.week||[],past=days.filter(d=>!d.today&&d.active>0);week.hidden=!past.length;if(!week.hidden){const most=Math.max(60,...days.map(d=>d.active)),day=new Intl.DateTimeFormat(language,{weekday:'narrow'});
+   week.querySelector('.spectrum-label').textContent=t('Last 7 days');week.querySelector('small').textContent=t('Average {time}').replace('{time}',duration(past.reduce((n,d)=>n+d.active,0)/past.length*60000));
+   week.querySelector('.spectrum-week-bars').replaceChildren(...days.map(d=>{const col=el('span','spectrum-day-col'+(d.today?' today':''));const bar=el('i');bar.style.setProperty('--h',(d.active/most).toFixed(3));const [y,m,dd]=d.day.split('-').map(Number);col.title=new Intl.DateTimeFormat(language,{weekday:'long'}).format(new Date(y,m-1,dd))+' · '+(d.active?duration(d.active*60000):t('Away'));col.append(bar,el('small','',day.format(new Date(y,m-1,dd))));return col;}));}}}
  // A chapter's tabs, as they were at its end, with one button to bring them back.
  function chapterTabs(c){const box=document.createElement('div');box.className='spectrum-chapter-tabs';momentAt(Math.min(c.to,view.now)).then(moment=>{const tabs=moment?.tabs||[];if(!tabs.length){box.remove();return;}
   const icons=document.createElement('div');icons.className='spectrum-chapter-icons';icons.append(...tabs.slice(0,8).map(x=>{const b=badge(x.url,x.title);b.title=x.title||x.url;return b;}));

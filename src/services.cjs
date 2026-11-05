@@ -83,7 +83,8 @@ const popupWindows=new Set();let lastEmit=0;
   const proposed=uniqueFile(directory,item.getFilename());
   // Files go straight to Downloads (0.44, like Safari), Private too; "Ask where to save each file" is off unless chosen.
   // The old askDownloadLocation key (on by default before 0.44) is dropped, so it no longer asks for existing profiles.
-  if(settings.askWhereToSave&&!privateMode)item.setSaveDialogOptions({defaultPath:proposed,title:'Save download'});else item.setSavePath(proposed);
+  const askThis=require('./save-as.cjs').take(item.getURLChain?.()||[item.getURL()]);
+  if(askThis||settings.askWhereToSave&&!privateMode)item.setSaveDialogOptions({defaultPath:proposed,title:'Save download'});else item.setSavePath(proposed);
   const update=()=>{record.received=item.getReceivedBytes();record.total=item.getTotalBytes();record.path=item.getSavePath();record.state=item.isPaused()?'paused':item.getState();record.canResume=item.canResume();};
   item.on('updated',()=>{update();const now=Date.now();if(now-lastEmit>150){lastEmit=now;emit();}});
   item.once('done',(_e,state)=>{update();record.state=state;record.active=false;record.finishedAt=Date.now();live.delete(record.id);persistDownloads();emit();if(state==='completed'&&!privateMode)onDownloadComplete(record.id);if(!window()?.isDestroyed())window()?.setProgressBar(-1);});
@@ -97,6 +98,7 @@ const popupWindows=new Set();let lastEmit=0;
   if(command==='cancel'&&item)item.cancel();
   if(command==='retry'&&!item&&/^https?:\/\//.test(d.url))ses.downloadURL(d.url);
   if(command==='reveal'&&d.path&&fs.existsSync(d.path))shell.showItemInFolder(d.path);
+  if(command==='quicklook'&&d.state==='completed'&&d.path&&fs.existsSync(d.path))window()?.previewFile(d.path,d.name);
   if(command==='open'&&d.state==='completed'){if(!fs.existsSync(d.path))throw Error('This file has been moved or deleted.');const error=await shell.openPath(d.path);if(error)throw Error(error);}
   emit();persistDownloads();
  }

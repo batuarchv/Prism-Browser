@@ -1,0 +1,15 @@
+const test=require('node:test'),assert=require('node:assert/strict');
+const {pageMenu}=require('../src/page-menu.cjs'),saveAs=require('../src/save-as.cjs');
+test('Save Link As marks only that address to ask where to save, once',()=>{const calls=[],wc={isDestroyed:()=>false,downloadURL:u=>calls.push(u),navigationHistory:{canGoBack:()=>false,canGoForward:()=>false}};
+ const items=pageMenu({wc,params:{linkURL:'https://example.com/file.zip'},clipboard:{writeText(){}},openTab(){}});items.find(i=>i.label==='Save Link As…').click();
+ assert.deepEqual(calls,['https://example.com/file.zip']);assert.equal(saveAs.take(['https://other.example/x']),false);
+ assert.equal(saveAs.take(['https://example.com/file.zip','https://cdn.example.com/file.zip']),true);assert.equal(saveAs.take(['https://example.com/file.zip']),false);});
+test('a mark expires after a minute',()=>{saveAs.askNext('https://a.example/1',0);assert.equal(saveAs.take(['https://a.example/1'],61000),false);});
+test('sign-in fields get Fill Password with saved account names; other fields do not',()=>{const calls=[],wc={isDestroyed:()=>false,focus(){},insertText:t=>calls.push(['insert',t]),navigationHistory:{canGoBack:()=>false,canGoForward:()=>false}};
+ const passwords={accounts:()=>[{origin:'https://a.example',username:'batu'}],fill:a=>calls.push(['fill',a.username]),open:()=>calls.push('open')};
+ const menu=params=>pageMenu({wc,params:{isEditable:true,editFlags:{},...params},clipboard:{writeText(){}},openTab(){},passwords});
+ const fill=menu({inputFieldType:'password',formControlType:'input-password'}).find(i=>i.label==='Fill Password');assert.ok(fill);
+ fill.submenu.find(i=>i.label==='batu').click();fill.submenu.find(i=>i.label==='Suggest Strong Password').click();fill.submenu.find(i=>i.label==='Passwords…').click();
+ assert.deepEqual(calls[0],['fill','batu']);assert.match(calls[1][1],/^[a-zA-Z2-9]{6}-[a-zA-Z2-9]{6}-[a-zA-Z2-9]{6}$/);assert.equal(calls[2],'open');
+ assert.ok(menu({formControlType:'input-email'}).some(i=>i.label==='Fill Password'));assert.ok(!menu({formControlType:'text-area'}).some(i=>i.label==='Fill Password'));
+ assert.ok(!pageMenu({wc,params:{isEditable:true,inputFieldType:'password',editFlags:{}},clipboard:{writeText(){}},openTab(){}}).some(i=>i.label==='Fill Password'));});

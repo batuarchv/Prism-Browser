@@ -35,7 +35,19 @@
 
  // Reordering.
  let drag=null,suppressClick=false;
- const rows=()=>[...list.querySelectorAll(':scope > .tab')];
+ const rows=()=>[...list.querySelectorAll(':scope > .tab:not(.group-folded)')];
+ // 0.50: hold a dragged tab over the middle of another tab (or over a group's header) and it joins that tab's group.
+ let groupTimer=0;
+ function clearGroupTarget(){clearTimeout(groupTimer);groupTimer=0;if(!drag)return;drag.pendingGroup=null;if(drag.groupTarget){drag.groupTarget.classList.remove('group-target');drag.groupTarget=null;}}
+ function groupHover(x,y){if(!drag||drag.row.closest('.tab')?.classList.contains('pinned'))return false;
+  const head=[...list.querySelectorAll(':scope > .tab-group-head')].find(h=>{const r=h.getBoundingClientRect();return y>=r.top&&y<=r.bottom;});
+  if(head){const members=rows().filter(r=>r.classList.contains('in-group')&&state.tabs.find(t=>t.id===Number(r.dataset.tabId))?.group===head.dataset.group);const last=[...list.querySelectorAll(':scope > .tab.in-group')].filter(r=>state.tabs.find(t=>t.id===Number(r.dataset.tabId))?.group===head.dataset.group).at(-1);
+   if(last&&last!==drag.row){if(drag.groupTarget!==head){clearGroupTarget();resetOthers();head.classList.add('group-target');drag.groupTarget=head;drag.groupId=Number(last.dataset.tabId);}return true;}}
+  const over=rows().find(r=>{if(r===drag.row||r.classList.contains('pinned'))return false;const b=r.getBoundingClientRect();return y>=b.top+b.height*.28&&y<=b.bottom-b.height*.28;});
+  if(!over){clearGroupTarget();return false;}
+  if(drag.groupTarget===over)return true;
+  if(drag.pendingGroup!==over){clearGroupTarget();drag.pendingGroup=over;groupTimer=setTimeout(()=>{if(!drag||drag.pendingGroup!==over)return;resetOthers();over.classList.add('group-target');drag.groupTarget=over;drag.groupId=Number(over.dataset.tabId);},380);}
+  return !!drag.groupTarget;}
  function slotFor(y){let best=0,dist=Infinity;drag.rects.forEach((r,i)=>{const d=Math.abs(r.top+r.height/2-y);if(d<dist){dist=d;best=i;}});return best;}
  function layout(target){const order=drag.items.filter(el=>el!==drag.row);order.splice(target,0,drag.row);
   order.forEach((el,i)=>{if(el===drag.row)return;el.style.transform=`translateY(${drag.rects[i].top-drag.rects[drag.items.indexOf(el)].top}px)`;});drag.target=target;drag.order=order;}
@@ -47,6 +59,7 @@
  async function finish(commit){const d=drag;drag=null;if(!d)return;
   if(d.splitting){const opened=commit&&await drop();if(!opened)cancel();clear(d);return;}
   if(d.favorite){if(commit)await act('tab-to-favorite',{id:Number(d.row.dataset.tabId),index:d.favoriteIndex});clear(d);return;}
+  if(d.groupTarget){const target=d.groupId;d.groupTarget.classList.remove('group-target');clearTimeout(groupTimer);if(commit)await act('tab-group',{id:Number(d.row.dataset.tabId),target});clear(d);return;}
   const slot=commit?d.rects[d.target]:d.rects[d.start],from=d.rects[d.start];if(!commit)for(const el of d.items)if(el!==d.row)el.style.transform='';
   d.row.classList.remove('lifted');d.row.classList.add('settling');d.row.style.setProperty('--lift',`translate(0px,${slot.top-from.top}px)`);
   const done=()=>{if(commit&&d.target!==d.start){const next=d.order[d.target+1];for(const el of d.order)list.append(el);act('tab-reorder',{id:Number(d.row.dataset.tabId),beforeId:next?Number(next.dataset.tabId):null});}clear(d);};
@@ -61,7 +74,7 @@
   if(drag.splitting){drag.splitting=false;drag.row.classList.remove('to-split');cancel();}
   if(overFavorites(event.clientX,event.clientY)){if(!drag.favorite){drag.favorite=true;resetOthers();favorites.classList.add('tab-drop-over');drag.row.classList.add('to-favorite');}drag.favoriteIndex=favoriteIndex(event.clientX);drag.row.style.setProperty('--lift',`translate(${dx}px,${dy}px) scale(.9)`);return;}
   if(drag.favorite){drag.favorite=false;favorites.classList.remove('tab-drop-over');drag.row.classList.remove('to-favorite');}
-  drag.row.style.setProperty('--lift',`translate(${Math.max(-12,Math.min(12,dx))}px,${dy}px)`);const target=slotFor(event.clientY);if(target!==drag.target)layout(target);});
+  drag.row.style.setProperty('--lift',`translate(${Math.max(-12,Math.min(12,dx))}px,${dy}px)`);if(groupHover(event.clientX,event.clientY)&&drag.groupTarget)return;const target=slotFor(event.clientY);if(target!==drag.target&&!drag.pendingGroup)layout(target);});
  const end=event=>{if(!drag||event.pointerId!==drag.pointer)return;if(drag.started){suppressClick=true;finish(event.type==='pointerup');}else drag=null;};
  // Window-level, because hiding the page for the drop zones can take the pointer capture away mid-drag.
  window.addEventListener('pointerup',end);window.addEventListener('pointercancel',end);window.addEventListener('blur',()=>{if(drag?.started)finish(false);});

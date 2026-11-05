@@ -1,5 +1,516 @@
 (function(root){
 const catalog={
+ "Save password?": {
+  "tr": "Parola kaydedilsin mi?",
+  "es": "¿Guardar contraseña?",
+  "pt": "Salvar senha?",
+  "fr": "Enregistrer le mot de passe ?",
+  "uk": "Зберегти пароль?"
+ },
+ "Update password?": {
+  "tr": "Parola güncellensin mi?",
+  "es": "¿Actualizar contraseña?",
+  "pt": "Atualizar senha?",
+  "fr": "Mettre à jour le mot de passe ?",
+  "uk": "Оновити пароль?"
+ },
+ "Never for This Site": {
+  "tr": "Bu sitede asla",
+  "es": "Nunca en este sitio",
+  "pt": "Nunca neste site",
+  "fr": "Jamais pour ce site",
+  "uk": "Ніколи для цього сайту"
+ },
+ "Not Now": {
+  "tr": "Şimdi değil",
+  "es": "Ahora no",
+  "pt": "Agora não",
+  "fr": "Pas maintenant",
+  "uk": "Не зараз"
+ },
+ "Update": {
+  "tr": "Güncelle",
+  "es": "Actualizar",
+  "pt": "Atualizar",
+  "fr": "Mettre à jour",
+  "uk": "Оновити"
+ },
+ "Encrypted on this Mac with Keychain": {
+  "tr": "Bu Mac'te Anahtar Zinciri ile şifrelenir",
+  "es": "Cifrada en este Mac con Llavero",
+  "pt": "Criptografada neste Mac com o Porta-Chaves",
+  "fr": "Chiffré sur ce Mac avec le trousseau",
+  "uk": "Зашифровано на цьому Mac за допомогою Keychain"
+ },
+ "Password saved": {
+  "tr": "Parola kaydedildi",
+  "es": "Contraseña guardada",
+  "pt": "Senha salva",
+  "fr": "Mot de passe enregistré",
+  "uk": "Пароль збережено"
+ },
+ "Password updated": {
+  "tr": "Parola güncellendi",
+  "es": "Contraseña actualizada",
+  "pt": "Senha atualizada",
+  "fr": "Mot de passe mis à jour",
+  "uk": "Пароль оновлено"
+ },
+ "Show password": {
+  "tr": "Parolayı göster",
+  "es": "Mostrar contraseña",
+  "pt": "Mostrar senha",
+  "fr": "Afficher le mot de passe",
+  "uk": "Показати пароль"
+ },
+ "Never offered on": {
+  "tr": "Hiç sorulmayan siteler",
+  "es": "Nunca se ofrece en",
+  "pt": "Nunca oferecido em",
+  "fr": "Jamais proposé sur",
+  "uk": "Ніколи не пропонується на"
+ },
+ "After you sign in on an HTTPS website, ask to save the login in Prism.": {
+  "tr": "HTTPS bir sitede oturum açtıktan sonra girişi Prism'e kaydetmeyi sor.",
+  "es": "Después de iniciar sesión en un sitio HTTPS, pregunta si guardar el acceso en Prism.",
+  "pt": "Depois de entrar em um site HTTPS, pergunta se deve salvar o login no Prism.",
+  "fr": "Après une connexion sur un site HTTPS, propose d’enregistrer l’identifiant dans Prism.",
+  "uk": "Після входу на сайт HTTPS пропонує зберегти дані входу в Prism."
+ },
+ "Prism will offer to save passwords on every site again.": {
+  "tr": "Prism artık her sitede parolaları kaydetmeyi yeniden soracak.",
+  "es": "Prism volverá a ofrecer guardar contraseñas en todos los sitios.",
+  "pt": "O Prism voltará a oferecer salvar senhas em todos os sites.",
+  "fr": "Prism proposera de nouveau d’enregistrer les mots de passe sur tous les sites.",
+  "uk": "Prism знову пропонуватиме зберігати паролі на всіх сайтах."
+ },
+ "Fill Password": {
+  "tr": "Parolayı doldur",
+  "es": "Rellenar contraseña",
+  "pt": "Preencher senha",
+  "fr": "Remplir le mot de passe",
+  "uk": "Заповнити пароль"
+ },
+ "No Saved Passwords for This Site": {
+  "tr": "Bu site için kayıtlı parola yok",
+  "es": "No hay contraseñas guardadas para este sitio",
+  "pt": "Nenhuma senha salva para este site",
+  "fr": "Aucun mot de passe enregistré pour ce site",
+  "uk": "Немає збережених паролів для цього сайту"
+ },
+ "Suggest Strong Password": {
+  "tr": "Güçlü parola öner",
+  "es": "Sugerir contraseña segura",
+  "pt": "Sugerir senha forte",
+  "fr": "Suggérer un mot de passe fort",
+  "uk": "Запропонувати надійний пароль"
+ },
+ "Passwords…": {
+  "tr": "Parolalar…",
+  "es": "Contraseñas…",
+  "pt": "Senhas…",
+  "fr": "Mots de passe…",
+  "uk": "Паролі…"
+ },
+ "Reopen Closed Tab": {
+  "tr": "Kapatılan sekmeyi geri aç",
+  "es": "Reabrir pestaña cerrada",
+  "pt": "Reabrir aba fechada",
+  "fr": "Rouvrir l’onglet fermé",
+  "uk": "Відкрити закриту вкладку"
+ },
+ "New Tab": {
+  "tr": "Yeni sekme",
+  "es": "Nueva pestaña",
+  "pt": "Nova aba",
+  "fr": "Nouvel onglet",
+  "uk": "Нова вкладка"
+ },
+ "Add Favorite…": {
+  "tr": "Favori ekle…",
+  "es": "Añadir favorito…",
+  "pt": "Adicionar favorito…",
+  "fr": "Ajouter un favori…",
+  "uk": "Додати в обране…"
+ },
+ "Icons": {
+  "tr": "Simgeler",
+  "es": "Iconos",
+  "pt": "Ícones",
+  "fr": "Icônes",
+  "uk": "Значки"
+ },
+ "Cards": {
+  "tr": "Kartlar",
+  "es": "Tarjetas",
+  "pt": "Cartões",
+  "fr": "Cartes",
+  "uk": "Картки"
+ },
+ "Customize Space…": {
+  "tr": "Space'i özelleştir…",
+  "es": "Personalizar espacio…",
+  "pt": "Personalizar espaço…",
+  "fr": "Personnaliser l’espace…",
+  "uk": "Налаштувати простір…"
+ },
+ "New Folder…": {
+  "tr": "Yeni klasör…",
+  "es": "Nueva carpeta…",
+  "pt": "Nova pasta…",
+  "fr": "Nouveau dossier…",
+  "uk": "Нова папка…"
+ },
+ "Add Pinned Tab…": {
+  "tr": "Sabit sekme ekle…",
+  "es": "Añadir pestaña fijada…",
+  "pt": "Adicionar aba fixada…",
+  "fr": "Ajouter un onglet épinglé…",
+  "uk": "Додати закріплену вкладку…"
+ },
+ "Organize Tabs by Site": {
+  "tr": "Sekmeleri siteye göre düzenle",
+  "es": "Organizar pestañas por sitio",
+  "pt": "Organizar abas por site",
+  "fr": "Organiser les onglets par site",
+  "uk": "Упорядкувати вкладки за сайтом"
+ },
+ "Close All Tabs": {
+  "tr": "Tüm sekmeleri kapat",
+  "es": "Cerrar todas las pestañas",
+  "pt": "Fechar todas as abas",
+  "fr": "Fermer tous les onglets",
+  "uk": "Закрити всі вкладки"
+ },
+ "Address Bar": {
+  "tr": "Adres çubuğu",
+  "es": "Barra de direcciones",
+  "pt": "Barra de endereço",
+  "fr": "Barre d’adresse",
+  "uk": "Адресний рядок"
+ },
+ "At the Top": {
+  "tr": "Üstte",
+  "es": "Arriba",
+  "pt": "No topo",
+  "fr": "En haut",
+  "uk": "Угорі"
+ },
+ "In the Sidebar": {
+  "tr": "Kenar çubuğunda",
+  "es": "En la barra lateral",
+  "pt": "Na barra lateral",
+  "fr": "Dans la barre latérale",
+  "uk": "На бічній панелі"
+ },
+ "Clear View": {
+  "tr": "Clear view",
+  "es": "Clear view",
+  "pt": "Clear view",
+  "fr": "Clear view",
+  "uk": "Clear view"
+ },
+ "Press Space for Quick Look": {
+  "tr": "Hızlı Bakış için boşluk tuşuna bas",
+  "es": "Pulsa espacio para Vista rápida",
+  "pt": "Pressione espaço para Visualização rápida",
+  "fr": "Appuyez sur Espace pour Coup d’œil",
+  "uk": "Натисніть пробіл для швидкого перегляду"
+ },
+ "Moving from Arc…": {
+  "tr": "Arc'tan geçiş…",
+  "es": "Pasarse desde Arc…",
+  "pt": "Mudando do Arc…",
+  "fr": "Passer d’Arc à Prism…",
+  "uk": "Перехід з Arc…"
+ },
+ "Moving from Arc": {
+  "tr": "Arc'tan geçiş",
+  "es": "Pasarse desde Arc",
+  "pt": "Mudando do Arc",
+  "fr": "Passer d’Arc à Prism",
+  "uk": "Перехід з Arc"
+ },
+ "Remove from Group": {
+  "tr": "Gruptan çıkar",
+  "es": "Quitar del grupo",
+  "pt": "Remover do grupo",
+  "fr": "Retirer du groupe",
+  "uk": "Вилучити з групи"
+ },
+ "Add to New Group": {
+  "tr": "Yeni gruba ekle",
+  "es": "Añadir a un grupo nuevo",
+  "pt": "Adicionar a um novo grupo",
+  "fr": "Ajouter à un nouveau groupe",
+  "uk": "Додати до нової групи"
+ },
+ "Rename Group…": {
+  "tr": "Grubu yeniden adlandır…",
+  "es": "Renombrar grupo…",
+  "pt": "Renomear grupo…",
+  "fr": "Renommer le groupe…",
+  "uk": "Перейменувати групу…"
+ },
+ "New Tab in Group": {
+  "tr": "Grupta yeni sekme",
+  "es": "Nueva pestaña en el grupo",
+  "pt": "Nova aba no grupo",
+  "fr": "Nouvel onglet dans le groupe",
+  "uk": "Нова вкладка в групі"
+ },
+ "Ungroup": {
+  "tr": "Grubu çöz",
+  "es": "Desagrupar",
+  "pt": "Desagrupar",
+  "fr": "Dissocier",
+  "uk": "Розгрупувати"
+ },
+ "Close Group": {
+  "tr": "Grubu kapat",
+  "es": "Cerrar grupo",
+  "pt": "Fechar grupo",
+  "fr": "Fermer le groupe",
+  "uk": "Закрити групу"
+ },
+ "Added to group": {
+  "tr": "Gruba eklendi",
+  "es": "Añadida al grupo",
+  "pt": "Adicionada ao grupo",
+  "fr": "Ajouté au groupe",
+  "uk": "Додано до групи"
+ },
+ "Show group": {
+  "tr": "Grubu göster",
+  "es": "Mostrar grupo",
+  "pt": "Mostrar grupo",
+  "fr": "Afficher le groupe",
+  "uk": "Показати групу"
+ },
+ "Hide group": {
+  "tr": "Grubu gizle",
+  "es": "Ocultar grupo",
+  "pt": "Ocultar grupo",
+  "fr": "Masquer le groupe",
+  "uk": "Сховати групу"
+ },
+ "Group name": {
+  "tr": "Grup adı",
+  "es": "Nombre del grupo",
+  "pt": "Nome do grupo",
+  "fr": "Nom du groupe",
+  "uk": "Назва групи"
+ },
+ "Group": {
+  "tr": "Grup",
+  "es": "Grupo",
+  "pt": "Grupo",
+  "fr": "Groupe",
+  "uk": "Група"
+ },
+ "Save download": {
+  "tr": "İndirmeyi kaydet",
+  "es": "Guardar descarga",
+  "pt": "Salvar download",
+  "fr": "Enregistrer le téléchargement",
+  "uk": "Зберегти завантаження"
+ },
+ "Arc stops opening on December 22. Bring everything over in a minute; nothing leaves your Mac.": {
+  "tr": "Arc 22 Aralık'ta açılmayı bırakıyor. Her şeyi bir dakikada taşı; hiçbir şey Mac'inden çıkmaz.",
+  "es": "Arc dejará de abrirse el 22 de diciembre. Trae todo en un minuto; nada sale de tu Mac.",
+  "pt": "O Arc deixa de abrir em 22 de dezembro. Traga tudo em um minuto; nada sai do seu Mac.",
+  "fr": "Arc ne s’ouvrira plus à partir du 22 décembre. Rapatriez tout en une minute ; rien ne quitte votre Mac.",
+  "uk": "Arc перестане відкриватися 22 грудня. Перенесіть усе за хвилину; нічого не покидає ваш Mac."
+ },
+ "Bring your Arc": {
+  "tr": "Arc'ını getir",
+  "es": "Trae tu Arc",
+  "pt": "Traga seu Arc",
+  "fr": "Rapatriez votre Arc",
+  "uk": "Перенесіть свій Arc"
+ },
+ "Pinned tabs, favorites, bookmarks, passwords and history, from every Arc profile.": {
+  "tr": "Her Arc profilinden sabit sekmeler, favoriler, yer imleri, parolalar ve geçmiş.",
+  "es": "Pestañas fijadas, favoritos, marcadores, contraseñas e historial de cada perfil de Arc.",
+  "pt": "Abas fixadas, favoritos, marcadores, senhas e histórico de cada perfil do Arc.",
+  "fr": "Onglets épinglés, favoris, signets, mots de passe et historique de chaque profil Arc.",
+  "uk": "Закріплені вкладки, обране, закладки, паролі й історія з кожного профілю Arc."
+ },
+ "Import from Arc": {
+  "tr": "Arc'tan içe aktar",
+  "es": "Importar desde Arc",
+  "pt": "Importar do Arc",
+  "fr": "Importer depuis Arc",
+  "uk": "Імпортувати з Arc"
+ },
+ "Stay signed in to Google": {
+  "tr": "Google oturumun açık kalsın",
+  "es": "Mantén tu sesión de Google",
+  "pt": "Continue conectado ao Google",
+  "fr": "Restez connecté à Google",
+  "uk": "Залишайтеся в Google"
+ },
+ "Google blocks new sign-ins in some browsers. Prism can carry over the sign-in you already have in Arc.": {
+  "tr": "Google bazı tarayıcılarda yeni oturum açmayı engelliyor. Prism, Arc'ta zaten açık olan oturumunu taşıyabilir.",
+  "es": "Google bloquea nuevos inicios de sesión en algunos navegadores. Prism puede traer la sesión que ya tienes en Arc.",
+  "pt": "O Google bloqueia novos logins em alguns navegadores. O Prism pode trazer o login que você já tem no Arc.",
+  "fr": "Google bloque les nouvelles connexions dans certains navigateurs. Prism peut reprendre la connexion que vous avez déjà dans Arc.",
+  "uk": "Google блокує нові входи в деяких браузерах. Prism може перенести вхід, який уже є в Arc."
+ },
+ "Bring Google Sign-in": {
+  "tr": "Google oturumunu getir",
+  "es": "Traer sesión de Google",
+  "pt": "Trazer login do Google",
+  "fr": "Reprendre la connexion Google",
+  "uk": "Перенести вхід Google"
+ },
+ "Make Prism your browser": {
+  "tr": "Prism'i tarayıcın yap",
+  "es": "Haz de Prism tu navegador",
+  "pt": "Torne o Prism seu navegador",
+  "fr": "Faites de Prism votre navigateur",
+  "uk": "Зробіть Prism своїм браузером"
+ },
+ "Links from other apps open in Prism.": {
+  "tr": "Diğer uygulamalardaki bağlantılar Prism'de açılır.",
+  "es": "Los enlaces de otras apps se abren en Prism.",
+  "pt": "Links de outros apps abrem no Prism.",
+  "fr": "Les liens des autres apps s’ouvrent dans Prism.",
+  "uk": "Посилання з інших програм відкриваються в Prism."
+ },
+ "Make Default": {
+  "tr": "Varsayılan yap",
+  "es": "Hacer predeterminado",
+  "pt": "Tornar padrão",
+  "fr": "Définir par défaut",
+  "uk": "Зробити типовим"
+ },
+ "Where things are": {
+  "tr": "Neler nerede",
+  "es": "Dónde está cada cosa",
+  "pt": "Onde fica cada coisa",
+  "fr": "Où trouver quoi",
+  "uk": "Де що знаходиться"
+ },
+ "Show me around Prism": {
+  "tr": "Prism'i gezdir",
+  "es": "Enséñame Prism",
+  "pt": "Me mostre o Prism",
+  "fr": "Faites-moi visiter Prism",
+  "uk": "Покажіть мені Prism"
+ },
+ "Command bar": {
+  "tr": "Komut çubuğu",
+  "es": "Barra de comandos",
+  "pt": "Barra de comandos",
+  "fr": "Barre de commandes",
+  "uk": "Командний рядок"
+ },
+ "Pinned tabs and Favorites": {
+  "tr": "Sabit sekmeler ve Favoriler",
+  "es": "Pestañas fijadas y Favoritos",
+  "pt": "Abas fixadas e Favoritos",
+  "fr": "Onglets épinglés et Favoris",
+  "uk": "Закріплені вкладки й обране"
+ },
+ "Pinned and Favorites": {
+  "tr": "Sabitler ve Favoriler",
+  "es": "Fijadas y Favoritos",
+  "pt": "Fixadas e Favoritos",
+  "fr": "Épinglés et Favoris",
+  "uk": "Закріплені й обране"
+ },
+ "Tidy and Archive": {
+  "tr": "Toparla ve Arşiv",
+  "es": "Ordenar y Archivo",
+  "pt": "Organizar e Arquivo",
+  "fr": "Ranger et Archives",
+  "uk": "Прибрати й Архів"
+ },
+ "Boosts (hide parts of a site)": {
+  "tr": "Boosts (sitenin parçalarını gizle)",
+  "es": "Boosts (ocultar partes de un sitio)",
+  "pt": "Boosts (ocultar partes de um site)",
+  "fr": "Boosts (masquer des parties d’un site)",
+  "uk": "Boosts (приховати частини сайту)"
+ },
+ "Media controls": {
+  "tr": "Medya kontrolleri",
+  "es": "Controles multimedia",
+  "pt": "Controles de mídia",
+  "fr": "Commandes multimédia",
+  "uk": "Керування медіа"
+ },
+ "Sidebar miniplayer": {
+  "tr": "Kenar çubuğu mini oynatıcı",
+  "es": "Minirreproductor lateral",
+  "pt": "Miniplayer na barra lateral",
+  "fr": "Mini-lecteur latéral",
+  "uk": "Мініплеєр на бічній панелі"
+ },
+ "Ask in Beam": {
+  "tr": "Beam'de sor",
+  "es": "Preguntar en Beam",
+  "pt": "Perguntar no Beam",
+  "fr": "Demander dans Beam",
+  "uk": "Запитати в Beam"
+ },
+ "Arc ad blocking": {
+  "tr": "Arc reklam engelleme",
+  "es": "Bloqueo de anuncios de Arc",
+  "pt": "Bloqueio de anúncios do Arc",
+  "fr": "Blocage des pubs d’Arc",
+  "uk": "Блокування реклами в Arc"
+ },
+ "⇧-click or force click a link": {
+  "tr": "Bağlantıya ⇧-tık veya güçlü tık",
+  "es": "⇧-clic o clic fuerte en un enlace",
+  "pt": "⇧-clique ou clique forte num link",
+  "fr": "⇧-clic ou clic forcé sur un lien",
+  "uk": "⇧-клік або сильне натискання на посилання"
+ },
+ "drag a tab up": {
+  "tr": "sekmeyi yukarı sürükle",
+  "es": "arrastra una pestaña hacia arriba",
+  "pt": "arraste uma aba para cima",
+  "fr": "glissez un onglet vers le haut",
+  "uk": "перетягніть вкладку вгору"
+ },
+ "drag a tab onto the page": {
+  "tr": "sekmeyi sayfanın üstüne sürükle",
+  "es": "arrastra una pestaña sobre la página",
+  "pt": "arraste uma aba sobre a página",
+  "fr": "glissez un onglet sur la page",
+  "uk": "перетягніть вкладку на сторінку"
+ },
+ "site controls, lock icon": {
+  "tr": "site kontrolleri, kilit simgesi",
+  "es": "controles del sitio, icono del candado",
+  "pt": "controles do site, ícone de cadeado",
+  "fr": "réglages du site, icône du cadenas",
+  "uk": "керування сайтом, значок замка"
+ },
+ "plays when you leave the tab": {
+  "tr": "sekmeden ayrılınca görünür",
+  "es": "aparece al salir de la pestaña",
+  "pt": "aparece ao sair da aba",
+  "fr": "apparaît quand vous quittez l’onglet",
+  "uk": "з’являється, коли ви залишаєте вкладку"
+ },
+ "Claude or Apple Intelligence": {
+  "tr": "Claude veya Apple Intelligence",
+  "es": "Claude o Apple Intelligence",
+  "pt": "Claude ou Apple Intelligence",
+  "fr": "Claude ou Apple Intelligence",
+  "uk": "Claude або Apple Intelligence"
+ },
+ "on by default": {
+  "tr": "varsayılan olarak açık",
+  "es": "activado por defecto",
+  "pt": "ativado por padrão",
+  "fr": "activé par défaut",
+  "uk": "увімкнено за замовчуванням"
+ },
  "Help": {
   "tr": "Yardım",
   "es": "Ayuda",
@@ -6845,6 +7356,237 @@ const catalog={
   "pt": "Indisponível no modo Privado.",
   "fr": "Indisponible en navigation privée.",
   "uk": "Недоступно в приватному режимі."
+ },
+ "Never sleep this tab": {
+  "tr": "Bu sekmeyi asla uyutma",
+  "es": "No suspender nunca esta pestaña",
+  "pt": "Nunca suspender este separador",
+  "fr": "Ne jamais mettre cet onglet en veille",
+  "uk": "Ніколи не призупиняти цю вкладку"
+ },
+ "Never Sleep This Tab": {
+  "tr": "Bu Sekmeyi Asla Uyutma",
+  "es": "No suspender nunca esta pestaña",
+  "pt": "Nunca suspender este separador",
+  "fr": "Ne jamais mettre cet onglet en veille",
+  "uk": "Ніколи не призупиняти цю вкладку"
+ },
+ "Let this tab sleep": {
+  "tr": "Bu sekme uyuyabilsin",
+  "es": "Permitir suspender esta pestaña",
+  "pt": "Permitir suspender este separador",
+  "fr": "Autoriser la veille de cet onglet",
+  "uk": "Дозволити призупинення цієї вкладки"
+ },
+ "Never sleeps": {
+  "tr": "Hiç uyumaz",
+  "es": "Nunca se suspende",
+  "pt": "Nunca é suspenso",
+  "fr": "Jamais en veille",
+  "uk": "Ніколи не призупиняється"
+ },
+ "Never sleeps — click to let it sleep": {
+  "tr": "Hiç uyumaz — uyuyabilmesi için tıkla",
+  "es": "Nunca se suspende: pulsa para permitirlo",
+  "pt": "Nunca é suspenso: clique para permitir",
+  "fr": "Jamais en veille : cliquer pour l’autoriser",
+  "uk": "Ніколи не призупиняється — натисніть, щоб дозволити"
+ },
+ "Can sleep again": {
+  "tr": "Yine uyuyabilir",
+  "es": "Puede suspenderse de nuevo",
+  "pt": "Pode voltar a ser suspenso",
+  "fr": "Peut de nouveau se mettre en veille",
+  "uk": "Знову може призупинятися"
+ },
+ "Liquid Glass": {
+  "tr": "Liquid Glass",
+  "es": "Liquid Glass",
+  "pt": "Liquid Glass",
+  "fr": "Liquid Glass",
+  "uk": "Liquid Glass"
+ },
+ "From clear to tinted, for the sidebar, popovers and Lens.": {
+  "tr": "Şeffaftan renkliye; kenar çubuğu, açılır pencereler ve Lens için.",
+  "es": "De transparente a tintado, para la barra lateral, los paneles y Lens.",
+  "pt": "De transparente a tingido, para a barra lateral, os painéis e o Lens.",
+  "fr": "De transparent à teinté, pour la barre latérale, les fenêtres et Lens.",
+  "uk": "Від прозорого до тонованого: бічна панель, спливні вікна й Lens."
+ },
+ "Tinted": {
+  "tr": "Renkli",
+  "es": "Tintado",
+  "pt": "Tingido",
+  "fr": "Teinté",
+  "uk": "Тоноване"
+ },
+ "Today {time}": {
+  "tr": "Bugün {time}",
+  "es": "Hoy {time}",
+  "pt": "Hoje {time}",
+  "fr": "Aujourd’hui {time}",
+  "uk": "Сьогодні {time}"
+ },
+ "about usual": {
+  "tr": "her zamanki gibi",
+  "es": "lo habitual",
+  "pt": "o habitual",
+  "fr": "comme d’habitude",
+  "uk": "як зазвичай"
+ },
+ "vs usual": {
+  "tr": "her zamana göre",
+  "es": "vs. lo habitual",
+  "pt": "vs. o habitual",
+  "fr": "vs d’habitude",
+  "uk": "порівняно зі звичним"
+ },
+ "Right at your usual pace": {
+  "tr": "Tam her zamanki temponuzda",
+  "es": "Justo a tu ritmo habitual",
+  "pt": "Bem no seu ritmo habitual",
+  "fr": "Pile à votre rythme habituel",
+  "uk": "Саме у звичному темпі"
+ },
+ "{time} more than usual": {
+  "tr": "Her zamankinden {time} fazla",
+  "es": "{time} más de lo habitual",
+  "pt": "{time} a mais que o habitual",
+  "fr": "{time} de plus que d’habitude",
+  "uk": "На {time} більше, ніж зазвичай"
+ },
+ "{time} less than usual": {
+  "tr": "Her zamankinden {time} az",
+  "es": "{time} menos de lo habitual",
+  "pt": "{time} a menos que o habitual",
+  "fr": "{time} de moins que d’habitude",
+  "uk": "На {time} менше, ніж зазвичай"
+ },
+ "By this time on your last {count} days": {
+  "tr": "Son {count} gününüzde bu saate kadar",
+  "es": "A esta hora en tus últimos {count} días",
+  "pt": "A esta hora nos seus últimos {count} dias",
+  "fr": "À cette heure, sur vos {count} derniers jours",
+  "uk": "На цю годину за останні {count} дн."
+ },
+ "{time} focused on {activity}": {
+  "tr": "{time} odak: {activity}",
+  "es": "{time} centrado en {activity}",
+  "pt": "{time} focado em {activity}",
+  "fr": "{time} concentré sur {activity}",
+  "uk": "{time} зосередження: {activity}"
+ },
+ "Longest in a while": {
+  "tr": "Uzun süredir en uzunu",
+  "es": "La más larga en un tiempo",
+  "pt": "A mais longa em algum tempo",
+  "fr": "La plus longue depuis un moment",
+  "uk": "Найдовше за останній час"
+ },
+ "More {activity} than usual": {
+  "tr": "Her zamankinden fazla {activity}",
+  "es": "Más {activity} de lo habitual",
+  "pt": "Mais {activity} que o habitual",
+  "fr": "Plus de {activity} que d’habitude",
+  "uk": "Більше, ніж зазвичай: {activity}"
+ },
+ "{time} so far, usually {usual}": {
+  "tr": "Şimdiye kadar {time}, genelde {usual}",
+  "es": "{time} hasta ahora, normalmente {usual}",
+  "pt": "{time} até agora, normalmente {usual}",
+  "fr": "{time} jusqu’ici, d’habitude {usual}",
+  "uk": "{time} наразі, зазвичай {usual}"
+ },
+ "{time} so far": {
+  "tr": "Şimdiye kadar {time}",
+  "es": "{time} hasta ahora",
+  "pt": "{time} até agora",
+  "fr": "{time} jusqu’ici",
+  "uk": "{time} наразі"
+ },
+ "{count} site switches in the last hour": {
+  "tr": "Son bir saatte {count} site değişimi",
+  "es": "{count} cambios de sitio en la última hora",
+  "pt": "{count} trocas de site na última hora",
+  "fr": "{count} changements de site dans la dernière heure",
+  "uk": "{count} перемикань сайтів за останню годину"
+ },
+ "A scattered hour": {
+  "tr": "Dağınık bir saat",
+  "es": "Una hora dispersa",
+  "pt": "Uma hora dispersa",
+  "fr": "Une heure dispersée",
+  "uk": "Розпорошена година"
+ },
+ "Busiest hour: {hour}": {
+  "tr": "En yoğun saat: {hour}",
+  "es": "Hora más activa: {hour}",
+  "pt": "Hora mais ativa: {hour}",
+  "fr": "Heure la plus chargée : {hour}",
+  "uk": "Найактивніша година: {hour}"
+ },
+ "{time} that hour": {
+  "tr": "O saatte {time}",
+  "es": "{time} en esa hora",
+  "pt": "{time} nessa hora",
+  "fr": "{time} cette heure-là",
+  "uk": "{time} за ту годину"
+ },
+ "Your usual day by now: {time}": {
+  "tr": "Bu saate kadar olağan gününüz: {time}",
+  "es": "Tu día habitual a esta hora: {time}",
+  "pt": "O seu dia habitual a esta hora: {time}",
+  "fr": "Votre journée habituelle à cette heure : {time}",
+  "uk": "Ваш звичний день на цю годину: {time}"
+ },
+ "usually {time}": {
+  "tr": "genelde {time}",
+  "es": "normalmente {time}",
+  "pt": "normalmente {time}",
+  "fr": "d’habitude {time}",
+  "uk": "зазвичай {time}"
+ },
+ "Minutes per hour today": {
+  "tr": "Bugün saat başına dakika",
+  "es": "Minutos por hora hoy",
+  "pt": "Minutos por hora hoje",
+  "fr": "Minutes par heure aujourd’hui",
+  "uk": "Хвилини за годину сьогодні"
+ },
+ "Chapters": {
+  "tr": "Bölümler",
+  "es": "Capítulos",
+  "pt": "Capítulos",
+  "fr": "Chapitres",
+  "uk": "Розділи"
+ },
+ "Latest chapters": {
+  "tr": "Son bölümler",
+  "es": "Últimos capítulos",
+  "pt": "Últimos capítulos",
+  "fr": "Derniers chapitres",
+  "uk": "Останні розділи"
+ },
+ "Usually around now": {
+  "tr": "Genelde bu saatlerde",
+  "es": "Lo habitual a esta hora",
+  "pt": "O habitual a esta hora",
+  "fr": "D’habitude à cette heure",
+  "uk": "Зазвичай приблизно зараз"
+ },
+ "Last 7 days": {
+  "tr": "Son 7 gün",
+  "es": "Últimos 7 días",
+  "pt": "Últimos 7 dias",
+  "fr": "7 derniers jours",
+  "uk": "Останні 7 днів"
+ },
+ "Average {time}": {
+  "tr": "Ortalama {time}",
+  "es": "Media {time}",
+  "pt": "Média {time}",
+  "fr": "Moyenne {time}",
+  "uk": "У середньому {time}"
  }
 };
 const languages=["en","tr","es","pt","fr","uk"];
