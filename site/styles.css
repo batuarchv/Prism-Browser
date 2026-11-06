@@ -51,13 +51,6 @@ button { font: inherit; color: inherit; }
 h1, h2, h3 { margin: 0; }
 :focus-visible { outline: 2px solid var(--indigo); outline-offset: 3px; border-radius: 8px; }
 
-/* ---------- The card: the page sits in a rounded white rim on grey, like a print on a mount ---------- */
-.frame {
-  position: fixed; inset: var(--inset); z-index: 60; pointer-events: none; border-radius: 30px;
-  box-shadow: 0 0 0 6px var(--rim), 0 0 0 200vmax var(--outer), inset 0 0 0 1px rgba(0, 0, 0, .04);
-  transition: box-shadow 1.4s var(--ease);
-}
-
 /* ---------- Atmosphere: the underwater logo loop, turned to a pale ghost behind the slides ---------- */
 .sky { position: fixed; inset: 0; z-index: -3; overflow: hidden; pointer-events: none; transition: opacity 1.6s var(--ease); }
 .sky-video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: .5; mix-blend-mode: multiply; filter: invert(1) grayscale(.7) contrast(.85) brightness(1.04); }
@@ -181,6 +174,14 @@ body::before { content: ""; position: absolute; top: 0; left: 0; right: 0; heigh
 .mem-big { margin: 0; font: 800 clamp(70px, 12vw, 170px)/.85 var(--display); font-stretch: 72%; color: var(--ink); font-variant-numeric: tabular-nums; }
 .mem-big small { font-size: .32em; margin-left: .12em; color: var(--green); }
 .memory-card .tiny { margin: 0; }
+/* Feature cards drawn in HTML where a screenshot would say less: web apps in the Dock. */
+.fcard { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: clamp(12px, 2.4vw, 26px); padding: clamp(16px, 4vw, 48px); background: var(--card); color: var(--ink-2); text-align: center; overflow: hidden; }
+.fcard p { margin: 0; }
+.dock { display: flex; gap: clamp(8px, 1.6vw, 16px); padding: clamp(10px, 1.6vw, 16px); border-radius: clamp(20px, 3vw, 30px); }
+.dock span { display: grid; place-items: center; width: clamp(44px, 8vw, 84px); aspect-ratio: 1; border-radius: 24%; background: var(--a); color: #fff; font: 800 clamp(20px, 3.4vw, 36px)/1 var(--display); box-shadow: 0 10px 24px -14px rgba(0, 0, 0, .5); }
+.dock .new { position: relative; animation: dock-in 4.8s var(--spring) infinite; }
+.dock .new::after { content: "3"; position: absolute; top: -6px; right: -6px; min-width: 22px; height: 22px; display: grid; place-items: center; border-radius: 11px; background: var(--red); font: 700 12px/1 var(--sans); }
+@keyframes dock-in { 0% { transform: translateY(-40%); opacity: 0; } 12%, 100% { transform: none; opacity: 1; } }
 .feature-list { list-style: none; gap: 2px; }
 .feature button { all: unset; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; padding: 2px 4px; color: var(--ink-3); transition: color .25s, background .25s; }
 .feature button::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: var(--c); opacity: 0; transition: opacity .25s; }
@@ -229,7 +230,6 @@ body::before { content: ""; position: absolute; top: 0; left: 0; right: 0; heigh
 :root[data-theme="dark"] .glass::before { background: linear-gradient(135deg, rgba(255, 255, 255, .5), rgba(255, 255, 255, .06) 30%, rgba(255, 255, 255, 0) 55%, rgba(255, 255, 255, .2)); }
 :root[data-theme="dark"] .glass::after { background: radial-gradient(220px circle at var(--mx, 30%) var(--my, -20%), rgba(255, 255, 255, .14), transparent 60%); }
 :root[data-theme="dark"] .feature-frame { box-shadow: inset 0 1px 0 rgba(255, 255, 255, .38), 0 40px 80px -50px var(--glow, transparent), 0 26px 60px -24px rgba(0, 0, 0, .7); }
-:root[data-theme="dark"] .frame { box-shadow: 0 0 0 6px var(--rim), 0 0 0 200vmax var(--outer), inset 0 0 0 1px rgba(255, 255, 255, .05); }
 
 /* ---------- Release notes page ---------- */
 .notes-head { padding: calc(var(--inset) + 150px) calc(var(--inset) + var(--gutter)) 70px; max-width: 1240px; margin: 0 auto; }
@@ -271,7 +271,6 @@ body::before { content: ""; position: absolute; top: 0; left: 0; right: 0; heigh
   transition: opacity .9s var(--ease), transform 1s var(--ease), filter .9s var(--ease);
 }
 html.intro body { overflow: hidden; background: #000; }
-html.intro .frame { box-shadow: 0 0 0 6px #000, 0 0 0 200vmax #000; }
 html.intro .intro-later, html.intro .nav, html.intro .dots { opacity: 0; transform: translateY(12px); }
 html.intro .nav, html.intro .dots { transform: none; }
 html.intro .sky, html.intro body::before { opacity: 0; }
@@ -311,7 +310,6 @@ html.prism .logo-stage::after { animation: wake 1.4s var(--ease) forwards; }
 }
 @media (max-width: 700px) {
   :root { --inset: 8px; }
-  .frame { border-radius: 22px; box-shadow: 0 0 0 4px var(--rim), 0 0 0 200vmax var(--outer); }
   .nav { top: calc(var(--inset) + 12px); }
   .brand span { display: none; }
   .slide { grid-template-columns: 1fr; grid-template-rows: minmax(0, 1fr) auto auto; row-gap: 26px; padding: calc(var(--inset) + 84px) calc(var(--inset) + var(--gutter)) calc(var(--inset) + 70px); }
@@ -323,6 +321,7 @@ html.prism .logo-stage::after { animation: wake 1.4s var(--ease) forwards; }
   .fshot { inset: 5px; width: calc(100% - 10px); height: calc(100% - 10px); border-radius: 12px; }
   .feature-list { flex-direction: row; flex-wrap: wrap; gap: 4px 6px; }
   .feature button::before { opacity: 1; }
+  .fcard { padding: 14px; gap: 10px; }
   .hero .slide-side { flex-direction: row; align-items: center; justify-content: space-between; width: 100%; }
   .dots { bottom: calc(var(--inset) + 22px); }
   .sky-video { opacity: .28; }

@@ -6,7 +6,7 @@
   <meta name="theme-color" content="#e8e8e7" media="(prefers-color-scheme: light)">
   <meta name="theme-color" content="#121214" media="(prefers-color-scheme: dark)">
   <meta name="color-scheme" content="light dark">
-  <meta name="description" content="Prism is a quiet, fast browser for Mac. It blocks the junk, gets past censorship and puts idle tabs to sleep. No agents, no chatbots, just a browser.">
+  <meta name="description" content="Prism is a quiet, fast browser for Mac. It shows your day in Spectrum, peeks with Lens, finds anything with Beam and blocks the junk. No agents, no chatbots, just a browser.">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Prism Browser">
   <meta property="og:url" content="https://batuarchv.github.io/Prism-Browser/">
@@ -38,7 +38,6 @@
       <source src="assets/video/prism-bg.mp4" type="video/mp4">
     </video>
   </div>
-  <div class="frame" aria-hidden="true"></div>
 
   <header class="nav" id="nav">
     <a class="brand" href="#top" aria-label="Prism home"><b>Prism</b><span>Browser</span></a>
@@ -69,7 +68,7 @@
         <h1 class="title"><span class="intro-later">See the web in a new</span> <em class="intro-word">light<i class="spec-dot"></i></em></h1>
       </div>
       <div class="slide-side intro-later">
-        <p class="tags tiny"><mark data-version="Prism {v}">Prism</mark><br><mark>for macOS</mark></p>
+        <p class="tags tiny"><mark data-version="Prism {v}">Prism</mark><br><mark>Mac · Windows</mark></p>
         <a class="btn btn-solid" data-link="download" href="https://github.com/batuarchv/Prism-Browser/releases/latest">Download for Mac<span class="btn-sub" data-version="v{v} · Apple Silicon · free">Apple Silicon · free</span></a>
       </div>
     </section>
@@ -79,9 +78,9 @@
       <div class="slide-object device-wrap">
         <div class="device glass" data-lens id="device">
           <div class="device-screen">
-            <img class="shot is-on" data-look="light" src="assets/shots/sidebar-light.jpg" alt="Prism with the address bar in the sidebar, light appearance" width="2880" height="1800">
-            <img class="shot" data-look="dark" src="assets/shots/sidebar-dark.jpg" alt="Prism with the address bar in the sidebar, dark appearance" width="2880" height="1800" loading="lazy">
-            <img class="shot" data-look="top" src="assets/shots/topbar.jpg" alt="Prism with the address bar above the page" width="2880" height="1800" loading="lazy">
+            <img class="shot is-on" data-look="light" src="assets/shots/sidebar-light.jpg" alt="Prism with the address bar in the sidebar, light appearance" width="2000" height="1250">
+            <img class="shot" data-look="dark" src="assets/shots/sidebar-dark.jpg" alt="Prism with the address bar in the sidebar, dark appearance" width="2000" height="1250" loading="lazy">
+            <img class="shot" data-look="top" src="assets/shots/topbar.jpg" alt="Prism with the address bar above the page" width="2000" height="1250" loading="lazy">
           </div>
         </div>
       </div>
@@ -99,34 +98,45 @@
       </div>
     </section>
 
-    <!-- 03 · Seven features, seven colours -->
+    <!-- 03 · The features, one colour each, from red to violet: Spectrum, Lens and Beam lead -->
     <section class="slide features" id="features" aria-label="Features">
       <div class="slide-object feature-view" id="spectrum-stage">
         <div class="feature-frame glass" data-lens id="feature-frame">
-          <img class="fshot is-on" data-shot="shield" src="assets/shots/shield.jpg" alt="Prism Shield settings: ads and trackers blocked on the current page" loading="lazy" width="2880" height="1800">
-          <img class="fshot" data-shot="bypass" src="assets/shots/bypass.jpg" alt="Private network settings with Bypass censorship on for chosen sites" loading="lazy" width="2880" height="1800">
-          <img class="fshot" data-shot="spectrum" src="assets/shots/spectrum.jpg" alt="Spectrum's day card: today in chapters with the tabs from each moment" loading="lazy" width="2880" height="1800">
-          <div class="fshot memory-card" data-shot="memory" aria-label="Ten busy sites: about 2 GB awake, about 0.8 GB once idle">
-            <p class="mem-big"><span class="count" data-to="0.8">0.8</span><small>GB</small></p>
-            <p class="tiny">Ten busy sites, once idle. Down from 2 GB.</p>
+          <img class="fshot is-on" data-shot="spectrum" src="assets/shots/spectrum.jpg" alt="Spectrum at a glance: today's time against your usual day, minutes per hour, notes and chapters" width="1760" height="1100">
+          <img class="fshot" data-shot="lens" src="assets/shots/lens.jpg" alt="Lens: a linked page floating over the current one, with its own address bar" loading="lazy" width="1760" height="1100">
+          <img class="fshot" data-shot="beam" src="assets/shots/beam.jpg" alt="Beam: the tabs you were just in and recent pages, before you type" loading="lazy" width="1760" height="1100">
+          <img class="fshot" data-shot="shield" src="assets/shots/shield.jpg" alt="Prism Shield settings: ads and trackers blocked on the current page" loading="lazy" width="1760" height="1100">
+          <img class="fshot" data-shot="bypass" src="assets/shots/bypass.jpg" alt="Private network settings with Bypass censorship on for chosen sites" loading="lazy" width="1760" height="1100">
+          <img class="fshot" data-shot="reader" src="assets/shots/reader.jpg" alt="Reader: an essay on a quiet sepia page" loading="lazy" width="1760" height="1100">
+          <div class="fshot fcard dock-card" data-shot="apps" role="img" aria-label="Web apps: sites turned into their own apps in the Mac Dock">
+            <p class="dock glass" aria-hidden="true"><span style="--a:#ff4d5e">M</span><span style="--a:#3fb4ff">C</span><span class="new" style="--a:#121213">N</span><span style="--a:#4fdc7c">S</span><span style="--a:#ffd23f">D</span></p>
+            <p class="tiny">File → Add to Dock</p>
           </div>
-          <img class="fshot" data-shot="clear-view" src="assets/shots/clear-view.jpg" alt="Clear view: only the page, no sidebar or toolbar" loading="lazy" width="2880" height="1800">
-          <img class="fshot" data-shot="lens" src="assets/shots/lens.jpg" alt="Lens: a linked page floating over the current one" loading="lazy" width="2880" height="1800">
-          <img class="fshot" data-shot="beam" src="assets/shots/beam.jpg" alt="Beam: a search field over the page with matching tabs and actions" loading="lazy" width="2880" height="1800">
+          <img class="fshot" data-shot="imports" src="assets/shots/imports.jpg" alt="Settings → Imports: Chrome, Arc and Safari, each with bookmarks, passwords and history" loading="lazy" width="1760" height="1100">
+          <div class="fshot fcard memory-card" data-shot="memory" aria-label="Ten busy sites: about 2 GB awake, about 0.8 GB once idle">
+            <p class="mem-big"><span class="count" data-to="0.8">0.8</span><small>GB</small></p>
+            <p class="tiny">Ten busy sites, once idle. Down from 2 GB.<br>⌥⌘A keeps a tab awake.</p>
+          </div>
+          <img class="fshot" data-shot="clear-view" src="assets/shots/clear-view.jpg" alt="Clear view: only the page, no sidebar or toolbar" loading="lazy" width="1760" height="1100">
+          <img class="fshot" data-shot="liquid-glass" src="assets/shots/liquid-glass.jpg" alt="Settings → Appearance with the Liquid Glass slider from Clear to Tinted" loading="lazy" width="1760" height="1100">
         </div>
       </div>
       <div class="slide-title reveal">
-        <p class="slide-no tiny">03 <span id="feature-tag">Ad &amp; tracker blocking</span></p>
-        <h2 class="title" id="feature-title">Prism Shield<i class="spec-dot"></i></h2>
+        <p class="slide-no tiny">03 <span id="feature-tag">Your day at a glance</span></p>
+        <h2 class="title" id="feature-title">Spectrum<i class="spec-dot"></i></h2>
       </div>
       <ol class="slide-side feature-list tiny reveal" id="feature-list" aria-label="Features">
-        <li class="feature is-on" data-shot="shield" data-tag="Ad &amp; tracker blocking" style="--c:var(--red)"><button aria-pressed="true">Prism Shield</button></li>
-        <li class="feature" data-shot="bypass" data-tag="No VPN, no account" style="--c:var(--orange)"><button aria-pressed="false">Bypass censorship</button></li>
-        <li class="feature" data-shot="spectrum" data-tag="Your day as a line of light" style="--c:var(--yellow)"><button aria-pressed="false">Spectrum</button></li>
-        <li class="feature" data-shot="memory" data-tag="Idle tabs really sleep" style="--c:var(--green)"><button aria-pressed="false">Low memory</button></li>
-        <li class="feature" data-shot="clear-view" data-tag="⌥⌘S, just the page" style="--c:var(--blue)"><button aria-pressed="false">Clear view</button></li>
-        <li class="feature" data-shot="lens" data-tag="Shift-click to peek" style="--c:var(--indigo)"><button aria-pressed="false">Lens</button></li>
-        <li class="feature" data-shot="beam" data-tag="⌘T for everything" style="--c:var(--violet)"><button aria-pressed="false">Beam</button></li>
+        <li class="feature is-on" data-shot="spectrum" data-tag="Your day at a glance" style="--c:var(--red)"><button aria-pressed="true">Spectrum</button></li>
+        <li class="feature" data-shot="lens" data-tag="Peek, or keep it as a window" style="--c:color-mix(in oklab, var(--red), var(--orange))"><button aria-pressed="false">Lens</button></li>
+        <li class="feature" data-shot="beam" data-tag="⌘T, ranked by where you go" style="--c:var(--orange)"><button aria-pressed="false">Beam</button></li>
+        <li class="feature" data-shot="shield" data-tag="Ads, trackers, tracking links" style="--c:color-mix(in oklab, var(--orange), var(--yellow))"><button aria-pressed="false">Prism Shield</button></li>
+        <li class="feature" data-shot="bypass" data-tag="No VPN, no account" style="--c:var(--yellow)"><button aria-pressed="false">Bypass censorship</button></li>
+        <li class="feature" data-shot="reader" data-tag="Just the words, no clutter" style="--c:var(--green)"><button aria-pressed="false">Reader</button></li>
+        <li class="feature" data-shot="apps" data-tag="Any site, in your Dock" style="--c:color-mix(in oklab, var(--green), var(--blue))"><button aria-pressed="false">Web apps</button></li>
+        <li class="feature" data-shot="imports" data-tag="One click from Chrome, Arc or Safari" style="--c:var(--blue)"><button aria-pressed="false">Imports</button></li>
+        <li class="feature" data-shot="memory" data-tag="Idle tabs sleep, unless you say" style="--c:color-mix(in oklab, var(--blue), var(--indigo))"><button aria-pressed="false">Low memory</button></li>
+        <li class="feature" data-shot="clear-view" data-tag="⌥⌘S, just the page" style="--c:var(--indigo)"><button aria-pressed="false">Clear view</button></li>
+        <li class="feature" data-shot="liquid-glass" data-tag="Clear to tinted, one slider" style="--c:var(--violet)"><button aria-pressed="false">Liquid Glass</button></li>
       </ol>
     </section>
 
@@ -143,6 +153,7 @@
         <li>Chromium 156</li>
         <li>Chrome extensions</li>
         <li>Touch ID passwords</li>
+        <li>Mac &amp; Windows</li>
         <li>No account</li>
       </ul>
     </section>
@@ -164,6 +175,7 @@
         <ul class="facts tiny">
           <li><a href="releases.html">Release notes →</a></li>
           <li><a data-link="repo" href="https://github.com/batuarchv/Prism-Browser">GitHub ↗</a></li>
+          <li><a href="https://github.com/batuarchv/Prism-Browser/releases/latest">Windows installer ↗</a></li>
           <li><a data-link="install" href="https://github.com/batuarchv/Prism-Browser#install">How to install</a></li>
         </ul>
         <p class="fine">Beta, not notarized yet: Control-click Prism and choose Open. GPL-3.0.</p>
