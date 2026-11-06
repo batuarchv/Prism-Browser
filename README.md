@@ -15,8 +15,8 @@
 
 <p align="center">
   <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="docs/screenshot-dark.png">
-    <img src="docs/screenshot-light.png" alt="Prism with its sidebar of tabs and the start page" width="880">
+    <source media="(prefers-color-scheme: dark)" srcset="docs/shots/sidebar-dark.jpg">
+    <img src="docs/shots/sidebar-light.jpg" alt="Prism with its sidebar of tabs, favorites and an article open" width="880">
   </picture>
 </p>
 
@@ -24,6 +24,10 @@ Prism is a personal browser project built on Electron and Chromium. Tabs live in
 
 ## Features
 
+- **Spectrum** — a band at the foot of the sidebar that shows your day: time so far against your usual day, minutes per hour, a few short notes and your last seven days. It stays on your Mac and keeps no sites for past days.
+- **Lens** — Shift-click a link to peek at it over the page, with its own address bar. Keep it open as a small glass window (⌥⌘N).
+- **Beam** — ⌘T for everything: the tabs you were just in, pages you visit most, actions and quick sums.
+- **Reader** (⇧⌘R), **web apps in the Dock** and **one-click imports** from Chrome, Arc, Safari, Brave and Edge.
 - **Glass interface** — native macOS glass materials, light and dark, six colour themes and a design studio for your own.
 - **Sidebar tabs** — pinned bookmarks and folders, favorites, inline rename, a right-click menu (duplicate, close others, add to folder…), one-click *Organize tabs by site*, and undo for anything you close or delete.
 - **Sleeping tabs** — idle tabs sleep after a few minutes and wake when you click them; *Memory balance* lets you keep fewer tabs awake.
@@ -38,7 +42,14 @@ Prism is a personal browser project built on Electron and Chromium. Tabs live in
 - **Six languages** — English, Türkçe, Español, Português, Français, Українська.
 - **Automatic updates** — new versions come from this repository's releases, are checked against Prism's release signature, and install on the next launch.
 
-<p align="center"><img src="docs/screenshot-settings.png" alt="Prism Settings" width="720"></p>
+## Screenshots
+
+| | |
+|:-:|:-:|
+| <img src="docs/shots/spectrum.jpg" alt="Spectrum at a glance in the sidebar" width="420"><br><sub>Spectrum</sub> | <img src="docs/shots/lens.jpg" alt="Lens: a linked page floating over the current one" width="420"><br><sub>Lens</sub> |
+| <img src="docs/shots/beam.jpg" alt="Beam over the page with recent tabs" width="420"><br><sub>Beam</sub> | <img src="docs/shots/reader.jpg" alt="Reader in sepia" width="420"><br><sub>Reader</sub> |
+| <img src="docs/shots/shield.jpg" alt="Prism Shield settings" width="420"><br><sub>Prism Shield</sub> | <img src="docs/shots/imports.jpg" alt="Settings, Imports" width="420"><br><sub>Imports</sub> |
+| <img src="docs/shots/liquid-glass.jpg" alt="The Liquid Glass slider in Settings" width="420"><br><sub>Liquid Glass</sub> | <img src="docs/shots/sidebar-dark.jpg" alt="Prism in dark appearance" width="420"><br><sub>Dark</sub> |
 
 ## Install
 
